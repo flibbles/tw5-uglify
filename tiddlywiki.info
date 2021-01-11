@@ -10,7 +10,7 @@
 	"build": {
 		"dist": [
 			"--output", "./docs/",
-			"--setfield", "$:/config/flibbles/uglify/stub", "text", "templates/no", "text/plain",
+			"--load", "./env/dist.multids",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
 		],
 		"empty": [
@@ -19,7 +19,7 @@
 		],
 		"test": [
 			"--output", "./docs/",
-			"--setfield", "$:/config/flibbles/uglify/stub", "text", "templates/pretty", "text/plain",
+			"--load", "./env/test.multids",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		]
 	}

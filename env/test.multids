@@ -1,0 +1,9 @@
+title: $:/config/flibbles/uglify/
+
+# The testing environment disables javascript compression
+# not only so that tests on NodeJS run faster
+# but also so debugging is possible on the browser
+javascript: no
+
+# This doesn't actually make a difference with javascript compression off
+stub: pretty

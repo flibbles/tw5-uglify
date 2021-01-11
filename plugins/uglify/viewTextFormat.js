@@ -15,29 +15,36 @@ var compressor = require("./javascript/uglify.js");
 var oldText = formats.text;
 
 formats.text = exports.text = function(widget, mode, template) {
-	var pluginInfo = widget.wiki.getPluginInfo(widget.viewTitle);
-	if (pluginInfo && widget.viewField === "text") {
-		return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
-			var newInfo = $tw.utils.extend({}, pluginInfo);
-			if (widget.viewTitle === "$:/plugins/flibbles/uglify") {
-				var config = stubPlugin(widget.wiki);
-				if (config === 'no') {
+	if (compressJSSetting(widget.wiki)) {
+		var pluginInfo = widget.wiki.getPluginInfo(widget.viewTitle);
+		if (pluginInfo && widget.viewField === "text") {
+			return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
+				var newInfo = $tw.utils.extend({}, pluginInfo);
+				if (widget.viewTitle === "$:/plugins/flibbles/uglify") {
+					var config = stubPluginSetting(widget.wiki);
+					if (config === 'no') {
+						newInfo.tiddlers = compressTiddlers(pluginInfo);
+					} else if (config !== 'pretty') {
+						newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
+					} //else 'pretty', or pass it through uncompressed
+				} else {
 					newInfo.tiddlers = compressTiddlers(pluginInfo);
-				} else if (config !== 'pretty') {
-					newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
-				} //else 'pretty', or pass it through uncompressed
-			} else {
-				newInfo.tiddlers = compressTiddlers(pluginInfo);
-			}
-			return JSON.stringify(newInfo, null, '\t');
-		});
+				}
+				return JSON.stringify(newInfo, null, '\t');
+			});
+		}
 	}
 	return oldText(widget, mode, template);
 };
 
-function stubPlugin(wiki) {
+function stubPluginSetting(wiki) {
 	var config = wiki.getTiddler("$:/config/flibbles/uglify/stub");
 	return (config && config.fields.text) || 'yes';
+};
+
+function compressJSSetting(wiki) {
+	var config = wiki.getTiddler("$:/config/flibbles/uglify/javascript");
+	return !config || (config.fields.text === 'yes');
 };
 
 function pluginStubTiddlers(pluginInfo) {
@@ -57,7 +64,7 @@ function compressTiddlers(pluginInfo) {
 		var tiddler = pluginInfo.tiddlers[title];
 		if (tiddler.type === "application/javascript") {
 			tiddler = $tw.utils.extend({}, tiddler);
-			//tiddler.text = compressor.compress(tiddler.text);
+			tiddler.text = compressor.compress(tiddler.text);
 		}
 		newTiddlers[title] = tiddler;
 	}
