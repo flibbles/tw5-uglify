@@ -20,24 +20,24 @@ formats.text = exports.text = function(widget, mode, template) {
 		return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
 			var newInfo = $tw.utils.extend({}, pluginInfo);
 			if (widget.viewTitle === "$:/plugins/flibbles/uglify") {
-				newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
+				var config = stubPlugin(widget.wiki);
+				if (config === 'no') {
+					newInfo.tiddlers = compressTiddlers(pluginInfo);
+				} else if (config !== 'pretty') {
+					newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
+				} //else 'pretty', or pass it through uncompressed
 			} else {
-				var newTiddlers = Object.create(null);
-				for (var title in pluginInfo.tiddlers) {
-					var tiddler = pluginInfo.tiddlers[title];
-					if (tiddler.type === "application/javascript") {
-						tiddler = $tw.utils.extend({}, tiddler);
-						//tiddler.text = compressor.compress(tiddler.text);
-					}
-					newTiddlers[title] = tiddler;
-				}
-				newInfo = $tw.utils.extend({}, pluginInfo);
-				newInfo.tiddlers = newTiddlers;
+				newInfo.tiddlers = compressTiddlers(pluginInfo);
 			}
 			return JSON.stringify(newInfo, null, '\t');
 		});
 	}
 	return oldText(widget, mode, template);
+};
+
+function stubPlugin(wiki) {
+	var config = wiki.getTiddler("$:/config/flibbles/uglify/stub");
+	return (config && config.fields.text) || 'yes';
 };
 
 function pluginStubTiddlers(pluginInfo) {
@@ -49,4 +49,17 @@ function pluginStubTiddlers(pluginInfo) {
 		}
 	});
 	return tiddlers;
+};
+
+function compressTiddlers(pluginInfo) {
+	var newTiddlers = Object.create(null);
+	for (var title in pluginInfo.tiddlers) {
+		var tiddler = pluginInfo.tiddlers[title];
+		if (tiddler.type === "application/javascript") {
+			tiddler = $tw.utils.extend({}, tiddler);
+			//tiddler.text = compressor.compress(tiddler.text);
+		}
+		newTiddlers[title] = tiddler;
+	}
+	return newTiddlers;
 };

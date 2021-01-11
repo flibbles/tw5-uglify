@@ -9,10 +9,17 @@
 	],
 	"build": {
 		"dist": [
+			"--output", "./docs/",
+			"--setfield", "$:/config/flibbles/uglify/stub", "text", "templates/no", "text/plain",
+			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
+		],
+		"empty": [
+			"--output", "./docs/",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
 		],
 		"test": [
-			"--setfield", "$:/config/flibbles/uglify/stub", "text", templates/no", "text/plain",
+			"--output", "./docs/",
+			"--setfield", "$:/config/flibbles/uglify/stub", "text", "templates/pretty", "text/plain",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		]
 	}

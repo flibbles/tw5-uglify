@@ -7,7 +7,7 @@
 	"core-version": ">=5.1.23",
 	"source": "https://github.com/flibbles/tw5-uglify",
 	"demo": "http://flibbles.github.io/tw5-relink/",
-	"list": "readme configuration license",
+	"list": "readme license",
 	"dependents": "",
 	"plugin-type": "plugin"
 }

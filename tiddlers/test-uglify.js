@@ -17,7 +17,7 @@ function exec(input) {
 	return module.exports;
 };
 
-describe('javascript compressor', function() {
+describe('javascript uglify', function() {
 
 it('modules', function() {
 	var exports = exec("exports.add = function(first, second) {return first + second; }");

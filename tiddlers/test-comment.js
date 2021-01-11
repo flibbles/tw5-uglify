@@ -13,7 +13,7 @@ function test(input, expected) {
 	expect(output).toBe(expected);
 };
 
-describe('javascript compressor', function() {
+describe('javascript comments', function() {
 
 it('simple block comments', function() {
 	test("A /* Comment */ B", "A  B");
