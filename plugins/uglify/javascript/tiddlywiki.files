@@ -1,0 +1,17 @@
+{
+	"directories": [
+		{
+			"path": ".",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"module-type": "library",
+				"title": {
+					"source": "filename",
+					"prefix": "$:/plugins/flibbles/uglify/javascript/"
+				},
+				"type": "application/javascript"
+			}
+		}
+	]
+}

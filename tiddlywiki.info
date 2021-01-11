@@ -1,0 +1,19 @@
+{
+	"description": "Testing and demo framework for tw5-uglify",
+	"plugins": [
+		"tiddlywiki/jasmine"
+	],
+	"themes": [
+		"tiddlywiki/vanilla",
+		"tiddlywiki/snowwhite"
+	],
+	"build": {
+		"dist": [
+			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
+		],
+		"test": [
+			"--setfield", "$:/config/flibbles/uglify/stub", "text", templates/no", "text/plain",
+			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
+		]
+	}
+}

@@ -1,0 +1,6 @@
+title: $:/plugins/flibbles/uglify/readme
+tags: $:/tags/flibbles/uglify/Stub
+
+TW5-Uglify compressed the javascript of your Tiddlywiki on the server, and then it left only this README file behind since you don't need it on the browser anymore.
+
+For more information on TW5-Uglify, visit [[the website|https://github.com/flibbles/tw5-uglify]].
