@@ -37,7 +37,7 @@ formats.text = exports.text = function(widget, mode, template) {
 				} else {
 					newInfo.tiddlers = compressTiddlers(pluginInfo);
 				}
-				return JSON.stringify(newInfo, null, '\t');
+				return JSON.stringify(newInfo, null);
 			});
 		}
 	}
