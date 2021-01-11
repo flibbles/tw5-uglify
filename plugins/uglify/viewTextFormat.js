@@ -14,10 +14,17 @@ var compressor = require("./javascript/uglify.js");
 
 var oldText = formats.text;
 
+var systemTargets = {"$:/boot/boot.js": true, "$:/boot/bootprefix.js": true};
+
 formats.text = exports.text = function(widget, mode, template) {
-	if (compressJSSetting(widget.wiki)) {
+	if (compressJSSetting(widget.wiki) && widget.viewField === "text") {
+		if (systemTargets[widget.viewTitle]) {
+			return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
+				return compressor.compress(oldText(widget, mode, template));
+			});
+		}
 		var pluginInfo = widget.wiki.getPluginInfo(widget.viewTitle);
-		if (pluginInfo && widget.viewField === "text") {
+		if (pluginInfo) {
 			return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
 				var newInfo = $tw.utils.extend({}, pluginInfo);
 				if (widget.viewTitle === "$:/plugins/flibbles/uglify") {

@@ -29,7 +29,7 @@ function addPlugin(pluginName, tiddlers, options) {
 	return wiki;
 };
 
-function renderPlugin(wiki, pluginTitle) {
+function renderTiddler(wiki, pluginTitle) {
 	var renderText =  "<$tiddler tiddler='"+pluginTitle+"'><$view field='text' format='htmlencoded' /></$tiddler>";
 	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
 };
@@ -40,15 +40,39 @@ it("javascript setting", function() {
 			{title: "readme", text: "This is the readme text"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 	var wiki = addPlugin(name, tiddlers);
-	var text = renderPlugin(wiki, name);
+	var text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
 
 	// The same wiki should be alterable without worrying about cached values
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'no'});
-	text = renderPlugin(wiki, name);
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).toContain('longArgName');
+
+	// The same wiki should be alterable without worrying about cached values
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'yes'});
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('readme text');
+	expect(text).not.toContain('longArgName');
+});
+
+it('javascript settings and boot code', function() {
+	var wiki = new $tw.Wiki();
+	wiki.addTiddlers([
+		{title: "$:/boot/boot.js", text: "function func(longArgName) {return longArgName;}"},
+		{title: "$:/boot/bootprefix.js", text: "function func(longPrefixName) {return longPrefixName;}"}]);
+
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
+
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'no'});
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('longArgName');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).toContain('longPrefixName');
+
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'yes'});
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });
 
 it("stub setting", function() {
@@ -60,21 +84,21 @@ it("stub setting", function() {
 
 	// unspecified should stub on NodeJS
 	var wiki = addPlugin(name, tiddlers);
-	var text = renderPlugin(wiki, name);
+	var text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).not.toContain('zebra');
 	
 	// yes should stub
 	wiki = addPlugin(name, tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
-	text = renderPlugin(wiki, name);
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).not.toContain('zebra');
 
 	// no should not stub, but it will compress
 	wiki = addPlugin(name, tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
-	text = renderPlugin(wiki, name);
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).toContain('zebra');
 	expect(text).toContain('code.js');
@@ -83,7 +107,7 @@ it("stub setting", function() {
 	// no should not stub, but it will compress
 	wiki = addPlugin("$:/plugins/flibbles/uglify", tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'pretty'});
-	text = renderPlugin(wiki, name);
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).toContain('zebra');
 	expect(text).toContain('code.js');
