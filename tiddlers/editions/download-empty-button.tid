@@ -1,0 +1,6 @@
+title: editions/download-empty-button
+
+<$button class="tc-btn-download">
+<$action-sendmessage $message="tm-download-file" $param="editions/download-empty" filename="empty.html"/>
+Download Empty {{$:/core/images/save-button}}
+</$button>

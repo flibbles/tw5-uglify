@@ -11,11 +11,7 @@
 		"dist": [
 			"--output", "./docs/",
 			"--load", "./env/dist.multids",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
-		],
-		"empty": [
-			"--output", "./docs/",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
+			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[test/]]"
 		],
 		"test": [
 			"--output", "./docs/",
