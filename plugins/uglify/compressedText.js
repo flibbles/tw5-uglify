@@ -10,23 +10,31 @@ type: application/javascript
 'use strict';
 
 var compressor = require('./javascript/uglify.js');
+var cacher = require('./cache.js');
 
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
+
+var logger = new $tw.utils.Logger('uglifier', {colour: 'green'});
 
 exports.getTiddlerCompressedText = function(title) {
 	var wiki = this;
 	return this.getCacheForTiddler(title, 'uglify', function() {
 		var pluginInfo = wiki.getPluginInfo(title);
+		var tiddler = wiki.getTiddler(title);
 		if (pluginInfo) {
 			var newInfo = $tw.utils.extend({}, pluginInfo);
 			if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(wiki)) {
 				newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
+				return JSON.stringify(newInfo, null);
 			} else {
-				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
+				// TODO: If pluginInfo theoretically had any info besides
+				// tiddlers, it could go stale.
+				return cacher.getFileCacheForTiddler(title, pluginInfo.text, function() {
+					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
+					return JSON.stringify(newInfo, null);
+				});
 			}
-			return JSON.stringify(newInfo, null);
 		} else { 
-			var tiddler = wiki.getTiddler(title);
 			if (!tiddler) {
 				return undefined;
 			}
@@ -58,8 +66,6 @@ function pluginStubTiddlers(pluginInfo) {
 	});
 	return tiddlers;
 };
-
-var logger = new $tw.utils.Logger('uglifier', {colour: 'green'});
 
 function compressSubtiddlers(title, pluginInfo) {
 	logger.log("Compressing:", title);
