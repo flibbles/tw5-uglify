@@ -20,7 +20,7 @@ formats.text = exports.text = function(widget, mode, template) {
 	if (compressJSSetting(widget.wiki) && widget.viewField === "text") {
 		if (systemTargets[widget.viewTitle]) {
 			return widget.wiki.getCacheForTiddler(widget.viewTitle, "uglify", function() {
-				return compressor.compress(oldText(widget, mode, template));
+				return compressor.compress({title: widget.viewTitle, text: oldText(widget, mode, template)});
 			});
 		}
 		var pluginInfo = widget.wiki.getPluginInfo(widget.viewTitle);
@@ -68,12 +68,12 @@ function pluginStubTiddlers(pluginInfo) {
 function compressTiddlers(pluginInfo) {
 	var newTiddlers = Object.create(null);
 	for (var title in pluginInfo.tiddlers) {
-		var tiddler = pluginInfo.tiddlers[title];
-		if (tiddler.type === "application/javascript") {
-			tiddler = $tw.utils.extend({}, tiddler);
-			tiddler.text = compressor.compress(tiddler.text);
+		var fields = pluginInfo.tiddlers[title];
+		if (fields.type === "application/javascript") {
+			fields = $tw.utils.extend({}, fields);
+			fields.text = compressor.compress(fields);
 		}
-		newTiddlers[title] = tiddler;
+		newTiddlers[title] = fields;
 	}
 	return newTiddlers;
 };

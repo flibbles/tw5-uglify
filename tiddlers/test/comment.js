@@ -9,7 +9,7 @@ Tests the comments javascript compressor.
 var js = require("$:/plugins/flibbles/uglify/javascript/comments");
 
 function test(input, expected) {
-	var output = js.compress(input);
+	var output = js.compress({title: 'test.js', text: input});
 	expect(output).toBe(expected);
 };
 

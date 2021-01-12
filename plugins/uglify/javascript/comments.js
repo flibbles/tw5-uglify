@@ -2,7 +2,8 @@
 /*global $tw: false */
 "use strict";
 
-exports.compress = function(text) {
+exports.compress = function(fields) {
+	var text = fields.text;
 	var output = '';
 	var index = 0;
 	var start = 0;

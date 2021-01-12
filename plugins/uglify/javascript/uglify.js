@@ -18226,8 +18226,10 @@ function minify(files, options) {
 	...or the same files (and order) as implied in tools/node.js. Then add the method(s) below.
 */
 
-exports.compress = function(text) {
-	var results = minify(text);
+exports.compress = function(fields) {
+	var code = {};
+	code[fields.title] = fields.text;
+	var results = minify(code);
 	if (results.error) {
 		throw results.error;
 	}
