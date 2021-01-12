@@ -3,14 +3,21 @@ title: $:/plugins/flibbles/uglify/cache.js
 module-type: library
 type: application/javascript
 
+This exports one file: getFileCacheForTiddler, which behaves like
+getCacheForTiddler, except  that its cache is in a file, not in memory.
+
 \*/
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
 'use strict';
 
-exports.getFileCacheForTiddler = function(title, textKey, method) {
-	return method();
+exports.getFileCacheForTiddler = function(wiki, title, textKey, method) {
+	var processedText = method();
+	if (cachingEnabled(wiki)) {
+		saveTiddlerCache(title, processedText);
+	}
+	return processedText;
 };
 
 function saveTiddlerCache(title, text) {
@@ -20,10 +27,13 @@ function saveTiddlerCache(title, text) {
 		hasMetaFile: false,
 		type: 'application/x-tiddler',
 		filepath: filepath};
-	console.warn("CONTENT:", text);
 	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {
-		logger.log("Cached:", title, err);
+		console.log("Cached:", title, err);
 	});
+};
+
+function cachingEnabled(wiki) {
+	return wiki.getTiddlerText('$:/config/flibbles/uglify/cache', 'yes') === 'yes';
 };
 
 function loadTiddlerCache(title) {
@@ -31,7 +41,7 @@ function loadTiddlerCache(title) {
 	var info = $tw.loadTiddlersFromFile(path);
 	if (info.tiddlers.length > 0) {
 		var tiddler = info.tiddlers[0];
-
+		return tiddler;
 	}
 	return undefined;
 };

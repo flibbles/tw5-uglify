@@ -29,7 +29,7 @@ exports.getTiddlerCompressedText = function(title) {
 			} else {
 				// TODO: If pluginInfo theoretically had any info besides
 				// tiddlers, it could go stale.
-				return cacher.getFileCacheForTiddler(title, pluginInfo.text, function() {
+				return cacher.getFileCacheForTiddler(wiki, title, pluginInfo.text, function() {
 					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 					return JSON.stringify(newInfo, null);
 				});
@@ -47,13 +47,11 @@ exports.getTiddlerCompressedText = function(title) {
 };
 
 exports.compressionEnabled = function() {
-	var config = this.getTiddler('$:/config/flibbles/uglify/javascript');
-	return !config || (config.fields.text === 'yes');
+	return this.getTiddlerText('$:/config/flibbles/uglify/javascript', 'yes') === 'yes';
 };
 
 function stubbingEnabled(wiki) {
-	var config = wiki.getTiddler('$:/config/flibbles/uglify/stub');
-	return !config || (config.fields.text === 'yes');
+	return wiki.getTiddlerText('$:/config/flibbles/uglify/stub', 'yes') === 'yes';
 };
 
 function pluginStubTiddlers(pluginInfo) {
