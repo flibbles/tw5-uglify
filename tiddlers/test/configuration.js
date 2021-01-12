@@ -34,15 +34,33 @@ function renderTiddler(wiki, pluginTitle) {
 	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
 };
 
+function collectLog(method) {
+	var oldLog = console.log;
+	var messages = [];
+	console.log = function(/* args */) {
+		messages.push(Array.prototype.join.call(arguments, ' '));
+	};
+	try {
+		method();
+	} finally {
+		console.log = oldLog;
+	}
+	return messages;
+};
+
 it("javascript setting", function() {
 	var name = "$:/plugins/flibbles/whatever";
 	var tiddlers = [
 			{title: "readme", text: "This is the readme text"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 	var wiki = addPlugin(name, tiddlers);
-	var text = renderTiddler(wiki, name);
+	var text;
+	var log = collectLog(function() {
+		text = renderTiddler(wiki, name);
+	});
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
+	expect(log[0]).toContain('uglifier: Compressing: $:/plugins/flibbles/whatever');
 
 	// The same wiki should be alterable without worrying about cached values
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'no'});
@@ -98,11 +116,14 @@ it("stub setting", function() {
 	// no should not stub, but it will compress
 	wiki = addPlugin(name, tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
-	text = renderTiddler(wiki, name);
+	var log = collectLog(function() {
+		text = renderTiddler(wiki, name);
+	});
 	expect(text).toContain('elephant');
 	expect(text).toContain('zebra');
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
+	expect(log[0]).toContain('uglifier: Compressing: $:/plugins/flibbles/uglify');
 
 	// no should not stub, but it will compress
 	wiki = addPlugin("$:/plugins/flibbles/uglify", tiddlers);

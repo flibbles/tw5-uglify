@@ -22,12 +22,12 @@ exports.getTiddlerCompressedText = function(title) {
 			if (title === '$:/plugins/flibbles/uglify') {
 				var config = stubPluginSetting(wiki);
 				if (config === 'no') {
-					newInfo.tiddlers = compressSubtiddlers(pluginInfo);
+					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 				} else if (config !== 'pretty') {
 					newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
 				} //else 'pretty', or pass it through uncompressed
 			} else {
-				newInfo.tiddlers = compressSubtiddlers(pluginInfo);
+				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 			}
 			return JSON.stringify(newInfo, null);
 		} else { 
@@ -64,7 +64,10 @@ function pluginStubTiddlers(pluginInfo) {
 	return tiddlers;
 };
 
-function compressSubtiddlers(pluginInfo) {
+var logger = new $tw.utils.Logger('uglifier', {colour: 'green'});
+
+function compressSubtiddlers(title, pluginInfo) {
+	logger.log("Compressing:", title);
 	var newTiddlers = Object.create(null);
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
