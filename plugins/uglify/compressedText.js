@@ -19,13 +19,8 @@ exports.getTiddlerCompressedText = function(title) {
 		var pluginInfo = wiki.getPluginInfo(title);
 		if (pluginInfo) {
 			var newInfo = $tw.utils.extend({}, pluginInfo);
-			if (title === '$:/plugins/flibbles/uglify') {
-				var config = stubPluginSetting(wiki);
-				if (config === 'no') {
-					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
-				} else if (config !== 'pretty') {
-					newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
-				} //else 'pretty', or pass it through uncompressed
+			if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(wiki)) {
+				newInfo.tiddlers = pluginStubTiddlers(pluginInfo);
 			} else {
 				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 			}
@@ -48,9 +43,9 @@ exports.compressionEnabled = function() {
 	return !config || (config.fields.text === 'yes');
 };
 
-function stubPluginSetting(wiki) {
+function stubbingEnabled(wiki) {
 	var config = wiki.getTiddler('$:/config/flibbles/uglify/stub');
-	return (config && config.fields.text) || 'yes';
+	return !config || (config.fields.text === 'yes');
 };
 
 function pluginStubTiddlers(pluginInfo) {

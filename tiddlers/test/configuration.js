@@ -124,15 +124,6 @@ it("stub setting", function() {
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
 	expect(log[0]).toContain('uglifier: Compressing: $:/plugins/flibbles/uglify');
-
-	// no should not stub, but it will compress
-	wiki = addPlugin("$:/plugins/flibbles/uglify", tiddlers);
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'pretty'});
-	text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	expect(text).toContain('zebra');
-	expect(text).toContain('code.js');
-	expect(text).toContain('longArgName');
 });
 
 });

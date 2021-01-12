@@ -6,4 +6,4 @@ title: $:/config/flibbles/uglify/
 javascript: no
 
 # This doesn't actually make a difference with javascript compression off
-stub: pretty
+stub: no
