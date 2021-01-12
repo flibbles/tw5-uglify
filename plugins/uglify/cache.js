@@ -12,24 +12,25 @@ getCacheForTiddler, except  that its cache is in a file, not in memory.
 /*global $tw: false */
 'use strict';
 
-exports.getFileCacheForTiddler = function(wiki, title, textKey, method) {
+exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) {
 	var processedText = method();
 	if (cachingEnabled(wiki)) {
-		saveTiddlerCache(title, processedText);
+		saveTiddlerCache(title, processedText, onSave);
 	}
 	return processedText;
 };
 
-function saveTiddlerCache(title, text) {
+function saveTiddlerCache(title, text, onSave) {
 	var newTiddler = new $tw.Tiddler({title: title, text: text});
 	var filepath = generateCacheFilepath(title);
 	var fileInfo = {
 		hasMetaFile: false,
 		type: 'application/x-tiddler',
 		filepath: filepath};
-	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {
+	onSave = onSave || function(err) {
 		console.log("Cached:", title, err);
-	});
+	};
+	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, onSave);
 };
 
 function cachingEnabled(wiki) {
