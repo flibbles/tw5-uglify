@@ -75,7 +75,11 @@ function cachingEnabled(wiki) {
 };
 
 function cachingDir(wiki) {
-	return wiki.getTiddlerText('$:/config/flibbles/uglify/cacheDirectory', './.cache');
+	var title = '$:/config/flibbles/uglify/cacheDirectory';
+	return wiki.getCacheForTiddler(title, 'uglifycachedir', function() {
+		var text = wiki.getTiddlerText(title, './.cache');
+		return text.trim();
+	});
 };
 
 function loadTiddlerCache(wiki, title) {

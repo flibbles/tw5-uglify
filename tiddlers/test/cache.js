@@ -162,8 +162,29 @@ if ($tw.node) {
 		test('ﬂᴂȿ', 'flaes.tid');
 		test('\x8D\x8E', '141142.tid');
 		test('ﬂ\x8E', 'fl142.tid');
-		// TODO: Test absolute paths
-		// TODO: directories not ending in a slash
+	});
+
+	it('can handle peculiar cache directories', function() {
+		function test(inputDir, expected) {
+			const wiki = new $tw.Wiki();
+			wiki.addTiddler({title: dirTiddler, text: inputDir});
+			const output = library.generateCacheFilepath(wiki, 'test');
+			expect(output).toBe(expected);
+		};
+		// absolute paths
+		test('/tmp/uglifycache/', '/tmp/uglifycache/test.tid');
+		test('/usr/local/lib/node_modules/tiddlywiki/.cache/',
+			'/usr/local/lib/node_modules/tiddlywiki/.cache/test.tid');
+		// without ending '/'
+		test('/noslashcache', '/noslashcache/test.tid');
+		// ending newline. This can happen easily if
+		// someone made the file with vi or something.
+		test('/newline/\n', '/newline/test.tid');
+		test('/newline\n', '/newline/test.tid');
+		// These ones are... less likely
+		test('\n/newline', '/newline/test.tid');
+		test('/newline\n\n', '/newline/test.tid');
+		test('/newline\r\n', '/newline/test.tid');
 	});
 
 	afterAll(async function() {
