@@ -58,6 +58,16 @@ if ($tw.node) {
 		await fs.rm(path);
 	});
 
+	it('insists on being passed a string', function() {
+		// because just using toString() would likely result in unreliable
+		// hashes.
+		const wiki = testWiki();
+		const name = newName();
+		expect(function() {
+			cacheSync(wiki, name, {tiddler: {title: 'textContent'}}, () => '');
+		}).toThrowError('Expected string for file cache key, not [object Object]');
+	});
+
 	it('can be disabled', async function(done) {
 		var wiki = new $tw.Wiki();
 		wiki.addTiddler({title: cacheTiddler, text: 'no'});

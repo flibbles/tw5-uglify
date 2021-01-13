@@ -28,7 +28,7 @@ exports.getTiddlerCompressedText = function(title) {
 			} else {
 				// TODO: If pluginInfo theoretically had any info besides
 				// tiddlers, it could go stale.
-				return cacher.getFileCacheForTiddler(wiki, title, pluginInfo.text, function() {
+				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 					return JSON.stringify(newInfo, null);
 				});

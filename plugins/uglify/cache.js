@@ -22,6 +22,9 @@ var logger = require('./logger.js');
  */
 exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) {
 	var processedText;
+	if (typeof textKey !== 'string') {
+		throw new Error('Expected string for file cache key, not ' + textKey);
+	}
 	if ($tw.node && cachingEnabled(wiki)) {
 		var cachedFields = loadTiddlerCache(wiki, title),
 			checksum = hashString(textKey);
