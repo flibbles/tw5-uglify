@@ -12,6 +12,8 @@ getCacheForTiddler, except  that its cache is in a file, not in memory.
 /*global $tw: false */
 'use strict';
 
+var logger = require('./logger.js');
+
 /**
  * @param onSave is an async callback that takes (err, saved, value)
  *    err - an error or if there was an error saving the cache
@@ -57,7 +59,11 @@ function saveTiddlerCache(wiki, title, checksum, text, onSave) {
 			type: 'application/x-tiddler',
 			filepath: filepath};
 	onSave = onSave || function(err) {
-		console.log("Cached:", title, err);
+		if (err) {
+			// That empty string puts a space before the alert so it lines up
+			// with all the log messages. I'm neurotic like that.
+			logger.alert('', logger.componentName + ':', err);
+		}
 	};
 	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {
 		onSave(err, true, text);

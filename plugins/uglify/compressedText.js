@@ -11,10 +11,9 @@ type: application/javascript
 
 var compressor = require('./javascript/uglify.js');
 var cacher = require('./cache.js');
+var logger = require('./logger.js');
 
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
-
-var logger = new $tw.utils.Logger('uglifier', {colour: 'green'});
 
 exports.getTiddlerCompressedText = function(title) {
 	var wiki = this;

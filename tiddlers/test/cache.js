@@ -8,13 +8,12 @@ Tests the file caching mechanism.
 \*/
 
 const library = require('$:/plugins/flibbles/uglify/cache.js');
+const logger = require('$:/plugins/flibbles/uglify/logger.js');
 const cacheTiddler = '$:/config/flibbles/uglify/cache';
 const dirTiddler = '$:/config/flibbles/uglify/cacheDirectory';
 const testDir = './.testcache';
 
-// TODO: Test bad caching directory and error handling
-
-function cache(wiki, title, textKey, method, onsave) {
+function cacheSync(wiki, title, textKey, method, onsave) {
 	return library.getFileCacheForTiddler(wiki, title, textKey, method, onsave);
 };
 
@@ -55,9 +54,8 @@ if ($tw.node) {
 		var path = './.cache/'+name+'.tid';
 		var info = await cache(wiki, name, 'textContent', () => 'output');
 		expect(info.saved).toBe(true);
-		const stats = await fs.stat(path); // TODO: chance this to fs.access, but it needs exception handling
+		await fs.access(path); // ensure it exists
 		await fs.rm(path);
-		expect(stats).toBeTruthy();
 	});
 
 	it('can be disabled', async function(done) {
@@ -68,7 +66,7 @@ if ($tw.node) {
 		var info = await cache(wiki, name, 'textContent', () => 'output');
 		expect(info.saved).toBe(false);
 		try {
-			await fs.stat(path);
+			await fs.access(path);
 			done(new Error(`File ${path} was written but caching is disabled`));
 		} catch (err) {
 			done();
@@ -88,6 +86,39 @@ if ($tw.node) {
 			}
 		});
 		expect(nameCount).toBe(1);
+	});
+
+	it('handles bad writes with callback', async function(done) {
+		const wiki = new $tw.Wiki();
+		const name = newName();
+		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
+		try {
+			await cache(wiki, name, 'anything', () => 'output');
+			// Oddly, we can't test that 'output' was returned because of how
+			// promises work. oh well, we'll test it in the bad write test
+			// WITHOUT the callback.
+			done(new Error('an error should have been emited. Tiddlywiki.info is not a directory'));
+		} catch (err) {
+			done(!err);
+		}
+	});
+
+	it('handles bad writes without callback', function(done) {
+		const wiki = new $tw.Wiki();
+		const name = newName();
+		const oldAlert = logger.alert;
+		// yeah... there's no try/finally for setting the logger.alert back.
+		// Can't do it here. Just have to hope this test works as expected.
+		logger.alert = function(/* messages */) {
+			var message = Array.prototype.join.call(arguments, ' ');
+			expect(message).toContain('not a directory');
+			expect(message).toContain('uglifier:');
+			logger.alert = oldAlert;
+			done();
+		}
+		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
+		var output = cacheSync(wiki, name, 'anything', () => 'output');
+		expect(output).toBe('output');
 	});
 
 	it('works', async function() {
@@ -131,6 +162,8 @@ if ($tw.node) {
 		test('ﬂᴂȿ', 'flaes.tid');
 		test('\x8D\x8E', '141142.tid');
 		test('ﬂ\x8E', 'fl142.tid');
+		// TODO: Test absolute paths
+		// TODO: directories not ending in a slash
 	});
 
 	afterAll(async function() {
