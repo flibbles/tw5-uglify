@@ -12,17 +12,19 @@ getCacheForTiddler, except  that its cache is in a file, not in memory.
 /*global $tw: false */
 'use strict';
 
+var path = require('path');
+
 exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) {
 	var processedText = method();
-	if (cachingEnabled(wiki)) {
-		saveTiddlerCache(title, processedText, onSave);
+	if ($tw.node && cachingEnabled(wiki)) {
+		saveTiddlerCache(wiki, title, processedText, onSave);
 	}
 	return processedText;
 };
 
-function saveTiddlerCache(title, text, onSave) {
+function saveTiddlerCache(wiki, title, text, onSave) {
 	var newTiddler = new $tw.Tiddler({title: title, text: text});
-	var filepath = generateCacheFilepath(title);
+	var filepath = generateCacheFilepath(wiki, title);
 	var fileInfo = {
 		hasMetaFile: false,
 		type: 'application/x-tiddler',
@@ -37,8 +39,12 @@ function cachingEnabled(wiki) {
 	return wiki.getTiddlerText('$:/config/flibbles/uglify/cache', 'yes') === 'yes';
 };
 
-function loadTiddlerCache(title) {
-	var path = generateCacheFilepath(title);
+function cachingDir(wiki) {
+	return wiki.getTiddlerText('$:/config/flibbles/uglify/cacheDirectory', './.cache');
+};
+
+function loadTiddlerCache(wiki, title) {
+	var path = generateCacheFilepath(wiki, title);
 	var info = $tw.loadTiddlersFromFile(path);
 	if (info.tiddlers.length > 0) {
 		var tiddler = info.tiddlers[0];
@@ -47,8 +53,25 @@ function loadTiddlerCache(title) {
 	return undefined;
 };
 
-function generateCacheFilepath(title) {
-	return $tw.utils.generateTiddlerFilepath(title, {
-		extension: ".tid",
-		directory: './.cache'});
+function generateCacheFilepath(wiki, title) {
+	// Remove any forward or backward slashes so we don't create directories
+	var filepath = title.replace(/\/|\\/g,"_");
+	// Remove any characters that can't be used in cross-platform filenames
+	filepath = $tw.utils.transliterate(filepath.replace(/<|>|~|\:|\"|\||\?|\*|\^/g,"_"));
+	// Truncate the filename if it is too long
+	if(filepath.length > 200) {
+		filepath = filepath.substr(0,200);
+	}
+	// If the resulting filename is blank (eg because the title is just punctuation characters)
+	if(!filepath) {
+		// ...then just use the character codes of the title
+		filepath = "";
+		$tw.utils.each(title.split(""),function(char) {
+			if(filepath) {
+				filepath += "-";
+			}
+			filepath += char.charCodeAt(0).toString();
+		});
+	}
+	return path.resolve(cachingDir(wiki), filepath + '.tid');
 };
