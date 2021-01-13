@@ -43,11 +43,6 @@ exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) 
 	return processedText;
 };
 
-var path;
-if ($tw.node) {
-	path = require('path');
-}
-
 function hashString(string) {
     for(var i = 0, h = 0; i < string.length; i++)
         h = Math.imul(31, h) + string.charCodeAt(i) | 0;
@@ -56,7 +51,7 @@ function hashString(string) {
 
 function saveTiddlerCache(wiki, title, checksum, text, onSave) {
 	var newTiddler = new $tw.Tiddler({title: title, text: text, checksum: checksum}),
-		filepath = generateCacheFilepath(wiki, title),
+		filepath = exports.generateCacheFilepath(wiki, title),
 		fileInfo = {
 			hasMetaFile: false,
 			type: 'application/x-tiddler',
@@ -78,7 +73,7 @@ function cachingDir(wiki) {
 };
 
 function loadTiddlerCache(wiki, title) {
-	var filepath = generateCacheFilepath(wiki, title);
+	var filepath = exports.generateCacheFilepath(wiki, title);
 	try {
 		var info = $tw.loadTiddlersFromFile(filepath);
 		if (info.tiddlers.length > 0) {
@@ -91,26 +86,28 @@ function loadTiddlerCache(wiki, title) {
 	return undefined;
 };
 
-// TODO: This isn't really tested very much
-function generateCacheFilepath(wiki, title) {
-	// Remove any forward or backward slashes so we don't create directories
-	var filename = title.replace(/\/|\\/g,"_");
-	// Remove any characters that can't be used in cross-platform filenames
-	filename = $tw.utils.transliterate(filename.replace(/<|>|~|\:|\"|\||\?|\*|\^/g,"_"));
-	// Truncate the filename if it is too long
-	if(filename.length > 200) {
-		filename = filename.substr(0,200);
-	}
-	// If the resulting filename is blank (eg because the title is just punctuation characters)
-	if(!filename) {
-		// ...then just use the character codes of the title
-		filename = "";
-		$tw.utils.each(title.split(""),function(char) {
-			if(filename) {
-				filename += "-";
-			}
-			filename += char.charCodeAt(0).toString();
+if ($tw.node) {
+	var path = require('path');
+
+	exports.generateCacheFilepath = function(wiki, title) {
+		// Remove any forward or backward slashes so we don't create directories
+		// Remove any characters that can't be used in cross-platform filenames
+		var filename = $tw.utils.transliterate(title.replace(/\/|\\|<|>|~|\:|\"|\||\?|\*|\^/g,"_"));
+		// Having it start with a '.' can be problematic in some cases.
+		if (filename[0] == '.') {
+			filename = filename.replace('.', '_');
+		}
+		filename = filename.replace(/[^\x00-\x7F]/g, function(ch) {
+			return ch.charCodeAt(0).toString();
 		});
-	}
-	return path.resolve(cachingDir(wiki), filename + '.tid');
-};
+		// Truncate the filename if it is too long
+		if(filename.length > 200) {
+			filename = filename.substr(0,200);
+		}
+		// If the resulting filename is blank (eg because the title is just punctuation characters)
+		if(!filename) {
+			filename = '.tid';
+		}
+		return path.resolve(cachingDir(wiki), filename + '.tid');
+	};
+}

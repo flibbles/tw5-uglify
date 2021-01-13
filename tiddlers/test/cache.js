@@ -97,22 +97,45 @@ if ($tw.node) {
 			name = newName();
 		function outputter() {
 			accessCount++;
-			return 'output';
+			return 'output ' + accessCount;
 		};
 		info = await cache(wiki, name, 'input1', outputter);
+		expect(info.output).toBe('output 1');
 		expect(info.saved).toBe(true);
 		expect(accessCount).toBe(1);
 		info = await cache(wiki, name, 'input1', outputter);
+		expect(info.output).toBe('output 1');
 		expect(info.saved).toBe(false);
 		expect(accessCount).toBe(1);
 		info = await cache(wiki, name, 'input2', outputter);
+		expect(info.output).toBe('output 2');
 		expect(info.saved).toBe(true);
 		expect(accessCount).toBe(2);
 	});
 
+	it('can handle strange tiddler names', function() {
+		const wiki = new $tw.Wiki();
+		function test(input, expected) {
+			const output = library.generateCacheFilepath(wiki, input);
+			const cacheDir = '/.cache/';
+			const start = output.indexOf(cacheDir) + cacheDir.length;
+			expect(output.substr(start)).toBe(expected);
+		};
+		test('$:/plugin/file', '$__plugin_file.tid');
+		test('C:\\windows\\file', 'C__windows_file.tid');
+		test('..file', '_.file.tid');
+		test('.file', '_file.tid');
+		test('-file', '-file.tid'); // Legal, albeit hard to use on terminal
+		test('', '.tid.tid'); // Strange, but valid
+		test('café', 'cafe.tid');
+		test('ﬂᴂȿ', 'flaes.tid');
+		test('\x8D\x8E', '141142.tid');
+		test('ﬂ\x8E', 'fl142.tid');
+	});
+
 	afterAll(async function() {
 		await fs.rmdir(testDir, {recursive: true});
-	})
+	});
 
 } else { // !$tw.node
 
@@ -124,7 +147,8 @@ if ($tw.node) {
 			throw new Error('onSave should never be called on the browser since caching is impossible there.');
 		};
 		var output = await cache(wiki, 'title', 'textKey', () => 'expected', onSave);
-		expect(output).toBe('expected');
+		expect(output.output).toBe('expected');
+		expect(output.saved).toBe(false);
 	});
 }
 
