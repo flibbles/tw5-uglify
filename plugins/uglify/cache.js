@@ -19,10 +19,23 @@ getCacheForTiddler, except  that its cache is in a file, not in memory.
  *    value - the results of method.
  */
 exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) {
-	var processedText = method();
+	var processedText;
 	if ($tw.node && cachingEnabled(wiki)) {
-		saveTiddlerCache(wiki, title, processedText, onSave);
+		var cachedFields = loadTiddlerCache(wiki, title),
+			checksum = hashString(textKey);
+		if (cachedFields) {
+			if (checksum === parseInt(cachedFields.checksum)) {
+				var oldText = cachedFields.text;
+				if (onSave) {
+					onSave(null, false, oldText);
+				}
+				return oldText;
+			}
+		}
+		processedText = method();
+		saveTiddlerCache(wiki, title, checksum, processedText, onSave);
 	} else {
+		processedText = method();
 		if (onSave) {
 			onSave(null, false, processedText);
 		}
@@ -35,13 +48,19 @@ if ($tw.node) {
 	path = require('path');
 }
 
-function saveTiddlerCache(wiki, title, text, onSave) {
-	var newTiddler = new $tw.Tiddler({title: title, text: text});
-	var filepath = generateCacheFilepath(wiki, title);
-	var fileInfo = {
-		hasMetaFile: false,
-		type: 'application/x-tiddler',
-		filepath: filepath};
+function hashString(string) {
+    for(var i = 0, h = 0; i < string.length; i++)
+        h = Math.imul(31, h) + string.charCodeAt(i) | 0;
+    return h;
+};
+
+function saveTiddlerCache(wiki, title, checksum, text, onSave) {
+	var newTiddler = new $tw.Tiddler({title: title, text: text, checksum: checksum}),
+		filepath = generateCacheFilepath(wiki, title),
+		fileInfo = {
+			hasMetaFile: false,
+			type: 'application/x-tiddler',
+			filepath: filepath};
 	onSave = onSave || function(err) {
 		console.log("Cached:", title, err);
 	};
@@ -60,10 +79,14 @@ function cachingDir(wiki) {
 
 function loadTiddlerCache(wiki, title) {
 	var filepath = generateCacheFilepath(wiki, title);
-	var info = $tw.loadTiddlersFromFile(filepath);
-	if (info.tiddlers.length > 0) {
-		var tiddler = info.tiddlers[0];
-		return tiddler;
+	try {
+		var info = $tw.loadTiddlersFromFile(filepath);
+		if (info.tiddlers.length > 0) {
+			var tiddler = info.tiddlers[0];
+			return tiddler;
+		}
+	} catch (err) {
+		// Do nothing. It probably wasn't there.
 	}
 	return undefined;
 };
