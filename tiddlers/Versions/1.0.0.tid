@@ -1,0 +1,4 @@
+title: Versions/1.0.0
+
+* Inaugural release of TW5-Uglify
+* Supports serving compressed javascript from node servers, compressing standalone tiddlywikis, and creating compressed versions of plugin files for distribution.
