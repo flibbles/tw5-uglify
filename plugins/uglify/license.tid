@@ -1,0 +1,8 @@
+tags: $:/tags/flibbles/uglify/Stub
+title: $:/plugins/flibbles/uglify/license
+
+<a href={{$:/plugins/flibbles/uglify!!demo}}>Uglify Plugin</a> Copyright (c) 2021-<<now YYYY>> Cameron Fischer
+
+[[UglifyJS|https://github.com/mishoo/UglifyJS]] [[Copyright (c) 2012-2019 Mihai Bazon|https://raw.githubusercontent.com/mishoo/UglifyJS/master/LICENSE]]
+
+[[BSD License|https://raw.githubusercontent.com/flibbles/tw5-uglify/master/LICENSE]]
