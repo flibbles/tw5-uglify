@@ -55,7 +55,7 @@ function hashString(string) {
 };
 
 function saveTiddlerCache(wiki, title, checksum, text, onSave) {
-	var newTiddler = new $tw.Tiddler({title: title, text: text, checksum: checksum}),
+	var newTiddler = new $tw.Tiddler({text: text, checksum: checksum}),
 		filepath = exports.generateCacheFilepath(wiki, title),
 		fileInfo = {
 			hasMetaFile: false,
