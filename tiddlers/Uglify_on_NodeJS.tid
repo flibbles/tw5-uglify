@@ -1,0 +1,52 @@
+title: Uglify on Node.JS
+tags: Solutions
+caption: I want my NodeJS server to serve compressed javascript.
+
+You can install ''Uglify'' on your Node.JS server, and it will serve plugins with compressed javascript to browsers, thus reducing network overhead and increasing browser performance.
+
+!! To install
+
+<ol>
+
+<li>Checkout the [[sourcecode on github|https://github.com/flibbles/tw5-uglify]].</li>
+<li>
+
+Copy the contents of the `plugins` directory into the `plugins` directory of your tiddlywiki installation. If you installed with NPM, it's likely in `/usr/local/lib/node_modules/tiddlywki/plugins/flibbles`. You may need to create the `flibbles` directory.
+
+If you've installed it correctly, the path to the Uglify `plugin.info` file should look something like:
+
+```
+/usr/local/lib/node_modules/tiddlywiki/plugins/flibbles/uglify/plugin.info
+```
+</li><li>
+
+Add the plugin to your Node.JS project's `tiddlywiki.info` file. The plugin section will look something like this:
+
+```
+{
+	...
+	"plugins": [
+		...
+		"flibbles/uglify"
+	],
+	...
+}
+```
+</li><li>
+
+And that's it. After you restart your server, it will compress all your plugins. (This will take a while the first time, [[but it will be faster in subsequent reboots|Caching]]). And it will automatically send out compressed and optimized plugins to client browsers.
+</li></ol>
+
+!! How it works
+
+Tiddlywiki Node servers will have access to all of your plugins in their good ol' uncompressed format. When it starts, it will create compressed versions of those plugins which it will send to browsers to use. //Internally//, however, NodeJS will still be using the uncompressed versions.
+
+Technically that means Node is doing more work and consuming more memory, but that's okay. Node servers aren't what //Uglify// are trying to optimize. Servers tend to be big strong computers with lots of memory. It's your network traffic and browser clients which we're aiming to improve. Now your users can access your server on your old Android phone, which //will// benefit from netork and performance improvements.
+
+Also, since all the compression is done on the server, there's no need for the clients to do it, which is why by default, the server will send a [[stubbed version of //Uglify//|Stubbing]] to the clients instead.
+
+!! Limitations
+
+Uglify does //not// compress javascript which is not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
+
+If a javascript shadow tiddler is overridden, the override will not be touched. This means you can [[disable compression|Toggling Compression]], override a shadow tiddler, and then reenable compression. That tiddler will remain pretty and easy to manipulate.

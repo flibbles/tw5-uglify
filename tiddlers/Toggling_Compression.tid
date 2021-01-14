@@ -1,0 +1,19 @@
+title: Toggling Compression
+tags: Solutions
+caption: I still want to be able to debug/edit my javascript from time to time.
+
+Compressed core and plugin code is nice, but sometimes you don't always want it. Maybe you want to:
+
+* step through code with the debugger.
+* make edits and override javascript shadow tiddlers.
+* Make sense of the stack trace of some exception that keeps getting thrown.
+
+That's why NodeJS servers are able to toggle compression on and off with the press of a button. Just go to the //Uglify// plugin page in settings, disable compression, and then refresh your page. The server will send you a fresh session with uncompressed code. You don't even have to restart it.
+
+After you're done. Re-enable compression and refresh. Compression is back!
+
+!! Limitation on Self-serving tiddlywiki file
+
+Node servers can disable compression because they still have uncompressed versions of all the plugins available.
+
+This isn't the case if you're using this plugin with a standalone Tiddlywiki file. All of your plugins are self-contained, and if //Uglify// has already compressed them, then it can't exactly //uncompress// them, can it? All disabling compression will do is prevent //Uglify// from compressing any further plugins you install.
