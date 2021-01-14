@@ -18229,7 +18229,8 @@ function minify(files, options) {
 exports.compress = function(fields) {
 	var code = {};
 	code[fields.title] = fields.text;
-	var results = minify(code);
+	var options = {output: {quote_style: 1}}; // single quotes. Smaller in TW.
+	var results = minify(code, options);
 	if (results.error) {
 		throw results.error;
 	}
