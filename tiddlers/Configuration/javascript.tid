@@ -1,0 +1,4 @@
+title: Configuration/javascript
+default: yes
+
+Configure whether //Uglify// will compress javascript found in plugins. In Node.js, that means sending compressed plugins to the client. In a standalone wiki, this configures whether the wiki compresses its own plugins when saving.

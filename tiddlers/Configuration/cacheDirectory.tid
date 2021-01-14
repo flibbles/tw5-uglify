@@ -1,0 +1,4 @@
+title: Configuration/cacheDirectory
+default: ./.cache
+
+Configure which directory //Uglify// will use to cache its compressed files. This can be a local path, or absolute so that multiple TW projects can share the same cache directory.

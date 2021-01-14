@@ -1,0 +1,10 @@
+title: Configuration
+tags: Documentation
+
+//Uglify// can be configured through numerous config tiddlers
+
+<ul>
+<$list filter="[prefix[Configuration/]]">
+<$vars configTiddler={{{ [all[current]removeprefix[Configuration/]addprefix[$:/config/flibbles/uglify/]] }}} >
+<li>''<$text text=<<configTiddler>> />:'' <$transclude /> //(default: {{!!default}})//</li>
+</$vars></$list></ul>

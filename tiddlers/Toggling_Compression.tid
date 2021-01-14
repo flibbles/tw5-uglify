@@ -8,7 +8,7 @@ Compressed core and plugin code is nice, but sometimes you don't always want it.
 * make edits and override javascript shadow tiddlers.
 * Make sense of the stack trace of some exception that keeps getting thrown.
 
-That's why NodeJS servers are able to toggle compression on and off with the press of a button. Just go to the //Uglify// plugin page in settings, disable compression, and then refresh your page. The server will send you a fresh session with uncompressed code. You don't even have to restart it.
+That's why Node.js servers are able to toggle compression on and off with the press of a button. Just go to the //Uglify// plugin page in settings, disable compression, and then refresh your page. The server will send you a fresh session with uncompressed code. You don't even have to restart it.
 
 After you're done. Re-enable compression and refresh. Compression is back!
 

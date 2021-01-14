@@ -103,7 +103,7 @@ it("stub setting", function() {
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
 	// TODO: I don't think changing the stubbing setting should require a server restart.
-	// unspecified should stub on NodeJS
+	// unspecified should stub on Node.js
 	var wiki = addPlugin(name, tiddlers);
 	var text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
