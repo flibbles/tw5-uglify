@@ -1,5 +1,5 @@
 /*\
-title: test/configuration.js
+title: Test/configuration.js
 type: application/javascript
 tags: $:/tags/test-spec
 

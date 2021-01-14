@@ -1,5 +1,5 @@
 /*\
-title: test/cache.js
+title: Test/cache.js
 type: application/javascript
 tags: $:/tags/test-spec
 

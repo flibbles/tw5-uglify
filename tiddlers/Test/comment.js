@@ -1,5 +1,5 @@
 /*\
-title: test/comments.js
+title: Test/comments.js
 type: application/javascript
 tags: $:/tags/test-spec
 
