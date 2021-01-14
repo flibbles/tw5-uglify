@@ -1,5 +1,18 @@
 title: Uglify
 
-This is the introduction. More will go here.
+\define plugin() $:/plugins/flibbles/uglify
+
+<$tiddler tiddler=<<plugin>> >
+
+|!Version |{{!!version}} |
+|!Build date |<$view field="created" format="date" template="MMM DDth, YYYY" /> |
+|!TW5 compatibility |{{!!core-version}} |
+
+This is the documentation site for ''Uglify'', a Tiddlywiki5 plugin which takes care of compressing javascript for users and plugin developers alike.
+
+<<ul Uglify>>
+
+To report an issue, please visit <a href={{!!source}}>the github page</a>.
+</$tiddler>
 
 Click here to download a minified empty copy of TiddlyWiki: {{editions/download-empty-button}}
