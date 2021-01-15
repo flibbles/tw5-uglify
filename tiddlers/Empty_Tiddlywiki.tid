@@ -1,0 +1,8 @@
+title: Empty Tiddlywiki
+tags: Solutions
+caption: ... but all I want is an empty compressed Tiddlywiki.
+list-after: Uglify on Tiddlywiki
+
+Sure thing. Here you go: {{editions/download-empty-button}}
+
+This is for version {{$:/core!!version}}. I'll try to keep this up-to-date with the latest releases, but in the likely case I fall behind, you can create your own compressed empty tiddlywiki by downloading a fresh empty Tiddlywiki from [[the Tiddlywiki website|https://tiddlywiki.com/]], and then following the instructions [[on compressing your standalone Tiddlywiki file|Uglify on Tiddlywiki]].

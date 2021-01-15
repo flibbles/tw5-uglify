@@ -1,6 +1,6 @@
 title: editions/download-empty-button
 
-<$button class="tc-btn-download">
+<$button class="uglify-empty">
 <$action-sendmessage $message="tm-download-file" $param="editions/download-empty" filename="empty.html"/>
-Download Empty {{$:/core/images/save-button}}
+Download Empty.min {{$:/core/images/save-button}}
 </$button>

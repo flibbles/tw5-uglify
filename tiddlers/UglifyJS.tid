@@ -1,3 +1,5 @@
 title: UglifyJS
 
 TW5-Uglify is a wrapper for [[UglifyJS|https://github.com/mishoo/UglifyJS]], a javascript parser, minifier, compressor and beautifier toolkit. It comprises the bulk of the //Uglify// plugin.
+
+TW5-Uglify is a fairly hefty program. It takes up over 700kB of data uncompressed, which is why Node.JS will [[stub|Stubbing]] its own plugin when sending files to a browser.

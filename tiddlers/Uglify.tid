@@ -14,5 +14,3 @@ This is the documentation site for ''Uglify'', a Tiddlywiki5 plugin which takes 
 
 To report an issue, please visit <a href={{!!source}}>the github page</a>.
 </$tiddler>
-
-Click here to download a minified empty copy of TiddlyWiki: {{editions/download-empty-button}}
