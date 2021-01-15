@@ -1,9 +1,0 @@
-title: $:/config/flibbles/uglify/
-
-# Javascript compression is enabled for the distribution build
-#javascript: yes
-
-# We also don't want Uglifier to be stubbed, so that it's available on the
-# Tiddlywiki standalone page. This, of course, means compressing all of
-# UglifyJS, which is actually a lot of code, and takes forever...
-stub: no

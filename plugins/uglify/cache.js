@@ -63,9 +63,7 @@ function saveTiddlerCache(wiki, title, checksum, text, onSave) {
 			filepath: filepath};
 	onSave = onSave || function(err) {
 		if (err) {
-			// That empty string puts a space before the alert so it lines up
-			// with all the log messages. I'm neurotic like that.
-			logger.alert('', logger.componentName + ':', err);
+			logger.warn(err);
 		}
 	};
 	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {

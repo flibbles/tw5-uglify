@@ -10,12 +10,11 @@
 	"build": {
 		"dist": [
 			"--output", "./docs/",
-			"--load", "./env/dist.multids",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]]"
 		],
 		"test": [
 			"--output", "./docs/",
-			"--load", "./env/test.multids",
+			"--uglify", "javascript", "no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		]
 	}

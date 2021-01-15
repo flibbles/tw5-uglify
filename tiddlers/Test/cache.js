@@ -122,7 +122,7 @@ if ($tw.node) {
 		logger.alert = function(/* messages */) {
 			var message = Array.prototype.join.call(arguments, ' ');
 			expect(message).toContain('not a directory');
-			expect(message).toContain('uglifier:');
+			expect(message).toContain('uglify:');
 			logger.alert = oldAlert;
 			done();
 		}

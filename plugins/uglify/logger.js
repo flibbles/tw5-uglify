@@ -10,4 +10,15 @@ The logger used by the uglifier plugin.
 /*global $tw: false */
 'use strict';
 
-module.exports = new $tw.utils.Logger('uglifier', {colour: 'green'});
+var logger = new $tw.utils.Logger('uglify', {colour: 'green'});
+var oldAlert = logger.alert;
+
+logger.warn = function(/*arguments*/) {
+	// That empty string puts a space before the alert so it lines up
+	// with all the log messages. I'm neurotic like that.
+	var args = ['', this.componentName + ':'];
+	args.push.apply(args, arguments);
+	return this.alert.apply(this, args);
+};
+
+module.exports = logger;
