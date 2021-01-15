@@ -1,0 +1,14 @@
+title: Caching
+tags: Documentation
+
+Compressing javascript is expensive work, that's why //Uglify// caches the resulting compressed plugins so it doesn't have to bother doing it again.
+
+!! On Node.JS
+
+By default, //Uglify// will store compressed plugin tiddlers in `./.cache` off of its root directory. However, this can be [[configured|Configuration]].
+
+If you update your plugins, or alter them in any way, //Uglify// will automatically detect it and refresh the cache.
+
+!! On standalone Tiddlywiki
+
+There isn't really caching if you're using //Uglify// in a Tiddlywiki file. It just replaces your existing plugins with the compressed ones. However, it does tag those plugins with <<tag $:/tags/flibbles/uglify/Compressed>> once it's done so it knows not to bother compressing them again.

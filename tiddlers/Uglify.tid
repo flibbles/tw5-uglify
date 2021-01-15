@@ -1,5 +1,6 @@
 title: Uglify
 
+\rules except wikilink
 \define plugin() $:/plugins/flibbles/uglify
 
 <$tiddler tiddler=<<plugin>> >

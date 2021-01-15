@@ -1,0 +1,10 @@
+title: Wikimethods
+tags: Documentation
+
+//Uglify// introduces one wikimethod.
+
+''getTiddlerCompressedText(title)``
+
+Given a tiddler title, it will return its text in the most compressed way it can. That means if it's javascript, it will be minified javascript. If it's a plugin, it will be compressed, and all internal files will be compressed.
+
+This method works even if compression is disabled. However, it won't be present on the browser if [[plugin stubbing|Stubbing]] is enabled.
