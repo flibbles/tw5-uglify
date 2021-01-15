@@ -25,15 +25,11 @@ function Command(params, commander, callback) {
 	this.callback = callback;
 };
 
-var settings = {
-	javascript: Boolean,
-	stub: Boolean,
-	cache: Boolean,
-	cacheDirectory: String
-};
-
 Command.prototype.execute = function() {
 	var wiki = this.commander.wiki;
+	if (this.params.length == 0) {
+		return list(wiki);
+	}
 	for (var i = 0; i < this.params.length; i+=2) {
 		var property = this.params[i];
 		var value = this.params[i+1];
@@ -48,6 +44,18 @@ Command.prototype.execute = function() {
 			logger.warn('Unrecognized configuration flag: ' + property);
 		}
 	}
+};
+
+function list(wiki) {
+	var settings = utils.getSettings(wiki);
+	var maxKeyLength = 0;
+	for (var key in settings) {
+		maxKeyLength = Math.max(maxKeyLength, key.length);
+	}
+	$tw.utils.each(settings, function(value, key) {
+		var padding = new Array(maxKeyLength + 1 - key.length).join(' ');
+		console.log(key + ':' + padding, value);
+	});
 };
 
 exports.Command = Command;

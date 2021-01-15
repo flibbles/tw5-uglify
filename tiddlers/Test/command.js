@@ -49,4 +49,17 @@ it('recognizes nonexistent configuration', function() {
 	expect(warnings[0]).toContain('uglify: Unrecognized configuration flag: silly');
 });
 
+it('prints out current settings with no arguments', function() {
+	const wiki = new $tw.Wiki();
+	const title = prefix+'cache';
+	wiki.addTiddler({title: title, text: 'bananas'});
+	const log = $tw.utils.test.collect(console, 'log', () => exec(wiki));
+	expect(log).toEqual([
+		'javascript:     yes',
+		'stub:           yes',
+		'cache:          bananas',
+		'cacheDirectory: ./.cache',
+	]);
+});
+
 });

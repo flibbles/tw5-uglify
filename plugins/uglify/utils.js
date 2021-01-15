@@ -26,3 +26,11 @@ exports.getSetting = function(wiki, key) {
 		return value ? value.trim() : undefined;
 	});
 };
+
+exports.getSettings = function(wiki) {
+	var settings = Object.create(null);
+	for (var key in config) {
+		settings[key] = exports.getSetting(wiki, key);
+	}
+	return settings;
+};
