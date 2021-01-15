@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/compressedText
+title: $:/plugins/flibbles/uglify/wikimethods.js
 module-type: wikimethod
 type: application/javascript
 
