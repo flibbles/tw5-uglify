@@ -12,6 +12,7 @@ Commands for configuring uglify during build tasks.
 'use strict';
 
 var logger = require('./logger.js');
+var utils = require('./utils.js');
 
 exports.info = {
 	name: "uglify",
@@ -32,11 +33,11 @@ var settings = {
 };
 
 Command.prototype.execute = function() {
+	var wiki = this.commander.wiki;
 	for (var i = 0; i < this.params.length; i+=2) {
 		var property = this.params[i];
 		var value = this.params[i+1];
-		if (settings[property]) {
-			var wiki = this.commander.wiki;
+		if (utils.getSetting(wiki, property) !== undefined) {
 			var title = '$:/config/flibbles/uglify/' + property;
 			if (value) {
 				wiki.addTiddler({title: title, text: value});

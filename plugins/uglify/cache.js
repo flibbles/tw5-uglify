@@ -13,6 +13,7 @@ getCacheForTiddler, except  that its cache is in a file, not in memory.
 'use strict';
 
 var logger = require('./logger.js');
+var utils = require('./utils.js');
 
 /**
  * @param onSave is an async callback that takes (err, saved, value)
@@ -72,15 +73,11 @@ function saveTiddlerCache(wiki, title, checksum, text, onSave) {
 };
 
 function cachingEnabled(wiki) {
-	return wiki.getTiddlerText('$:/config/flibbles/uglify/cache', 'yes') === 'yes';
+	return utils.getSetting(wiki, 'cache') === 'yes';
 };
 
 function cachingDir(wiki) {
-	var title = '$:/config/flibbles/uglify/cacheDirectory';
-	return wiki.getCacheForTiddler(title, 'uglifycachedir', function() {
-		var text = wiki.getTiddlerText(title, './.cache');
-		return text.trim();
-	});
+	return utils.getSetting(wiki, 'cacheDirectory');
 };
 
 function loadTiddlerCache(wiki, title) {

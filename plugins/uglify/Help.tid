@@ -1,0 +1,15 @@
+title: $:/language/Help/uglify
+description: Configures //Uglify// plugin
+
+Manages the //Uglify// plugin settings. If the `tiddlywiki/filesystem` is installed, these settings are persisted. Otherwise they'll exist only for the current Tiddlywiki session.
+
+```
+--uglify (<key> <value>)+
+```
+
+The parameters are:
+
+* ''key'' - settings key to set
+* ''value'' - value to set that setting to. If blank or missing, sets the option to its default value
+
+Calling `--uglify` without any options will list out the available settings and their current values.

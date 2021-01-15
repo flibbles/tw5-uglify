@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/wikimethods.js
+title: $:/plugins/flibbles/uglify/wikimethod.js
 module-type: wikimethod
 type: application/javascript
 
@@ -12,6 +12,7 @@ type: application/javascript
 var compressor = require('./javascript/uglify.js');
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
+var utils = require('./utils.js');
 
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
@@ -44,11 +45,11 @@ exports.getTiddlerCompressedText = function(title) {
 };
 
 exports.compressionEnabled = function() {
-	return this.getTiddlerText('$:/config/flibbles/uglify/javascript', 'yes') === 'yes';
+	return utils.getSetting(this, 'javascript') === 'yes';
 };
 
 function stubbingEnabled(wiki) {
-	return wiki.getTiddlerText('$:/config/flibbles/uglify/stub', 'yes') === 'yes';
+	return utils.getSetting(wiki, 'stub') === 'yes';
 };
 
 function pluginStubTiddlers(pluginInfo) {
