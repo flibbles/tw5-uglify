@@ -114,4 +114,23 @@ it("stub setting", function() {
 	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 });
 
+it('on failure, resorts to uncompressed code', function() {
+	const plugin = '$:/plugins/anything';
+	const badText = 'function func() { content does not compile;';
+	const tiddlers = [
+		{title: 'bad.js', type: 'application/javascript', text: badText}];
+
+	const wiki = addPlugin(plugin, tiddlers);
+	var errors = $tw.utils.test.collect(console, 'error', function() {
+		$tw.utils.test.collect(console, 'log', function() {
+			const text = renderTiddler(wiki, plugin);
+			expect(text).toContain(badText);
+		});
+	});
+	expect(errors.length).toBe(1);
+	expect(errors[0]).toContain('tiddler: bad.js');
+	expect(errors[0]).toContain('line: 1');
+	expect(errors[0]).toContain(plugin);
+});
+
 });

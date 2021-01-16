@@ -52,16 +52,12 @@ it('notifies which file caused a failure', function() {
 	var text =  "exports.run = function(number) { if (isNaN(x)) { return 'not ";
 	var wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'Luigi.js', text:text, type:'application/javascript'});
-	var method = function() {
-		try {
-			wiki.getTiddlerCompressedText('Luigi.js');
-		} catch (e) {
-			error = e;
-			throw e;
-		}
-	};
-	expect(method).toThrow();
-	expect(error.filename).toBe('Luigi.js');
+	var errors = $tw.utils.test.collect(console, 'error', function() {
+		wiki.getTiddlerCompressedText('Luigi.js');
+	});
+	expect(errors.length).toBe(1);
+	expect(errors[0]).toContain('tiddler: Luigi.js');
+	expect(errors[0]).toContain('line: 1');
 });
 
 /*

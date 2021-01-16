@@ -44,14 +44,21 @@ function newName() {
 
 describe('caching', function() {
 
-it('passes exception up if initializer throws without onComplete', function() {
-	const wiki = new $tw.Wiki();
+it('passes exception up if initializer throws without onComplete', async function() {
+	const wiki = testWiki();
+	const name = newName();
 	function thrower() {
 		throw 'test exception';
 	};
 	expect(function() {
-		cacheSync(wiki, newName(), 'key1', thrower);
+		cacheSync(wiki, name, 'key1', thrower);
 	}).toThrow('test exception');
+	try {
+		// Test to make sure the file never got written
+		await fs.access(testDir + '/' + name + '.tid');
+		fail('file got written despite the exception');
+	} catch (err) {
+	}
 	wiki.addTiddler({title: cacheTiddler, text: 'no'});
 	expect(function() {
 		cacheSync(wiki, newName(), 'key2', thrower);
@@ -60,12 +67,20 @@ it('passes exception up if initializer throws without onComplete', function() {
 
 it('passes exceptions to onComplete if supplied; caching on', function(done) {
 	const wiki = testWiki();
-	cache(wiki, newName(), 'key1', function() { throw 'test exception'; } )
+	const name = newName();
+	const path = testDir + '/' + name + '.tid';
+	cache(wiki, name, 'key1', function() { throw 'test exception'; } )
 		.then(function(info) {
 			done('Exception was not passed to callback method');
 		})
-		.catch(function(err) {
-			done(expect(err).toBe('test exception'));
+		.catch(async function(err) {
+			expect(err).toBe('test exception');
+			try {
+				await fs.access(path); // ensure it exists
+				done('file got written despite the exception');
+			} catch {
+				done();
+			}
 		});
 });
 

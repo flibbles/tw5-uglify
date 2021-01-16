@@ -26,20 +26,28 @@ exports.getTiddlerCompressedText = function(title) {
 	return this.getCacheForTiddler(title, 'uglify', function() {
 		var pluginInfo = wiki.getPluginInfo(title);
 		var tiddler = wiki.getTiddler(title);
-		if (pluginInfo) {
-			var newInfo = $tw.utils.extend({}, pluginInfo);
-			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
-				return JSON.stringify(newInfo, null);
-			});
-		} else { 
-			if (!tiddler) {
-				return undefined;
+		try {
+			if (pluginInfo) {
+				var newInfo = $tw.utils.extend({}, pluginInfo);
+				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
+					return JSON.stringify(newInfo, null);
+				});
+			} else {
+				if (!tiddler) {
+					return undefined;
+				}
+				if (tiddler.fields.type === 'application/javascript') {
+					return compressor.compress(tiddler.fields);
+				}
+				return tiddler.text || '';
 			}
-			if (tiddler.fields.type === 'application/javascript') {
-				return compressor.compress(tiddler.fields);
-			}
-			return tiddler.text || '';
+		} catch (err) {
+			// It failed to compress for some reason. Just log a message
+			// and return the uncompressed version.
+			// Unless this file changes, we'll keep returning that too.
+			logger.warn('Failed to compress', title + '.\n\n    * tiddler:', err.filename, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
+			return tiddler.fields.text;
 		}
 	});
 };
