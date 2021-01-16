@@ -18,7 +18,7 @@ function cacheSync(wiki, title, textKey, method, onsave) {
 };
 
 function cache(wiki, title, textKey, method) {
-	return new Promise((resolve, reject) => {
+	var promise = new Promise((resolve, reject) => {
 		return library.getFileCacheForTiddler(wiki, title, textKey, method, function(err, saved, cachedResults) {
 			if (err) {
 				reject(err);
@@ -27,6 +27,7 @@ function cache(wiki, title, textKey, method) {
 			}
 		});
 	});
+	return promise;
 };
 
 /* testWikis do their caching in a test directory, which we'll delete later */
@@ -43,6 +44,44 @@ function newName() {
 
 describe('caching', function() {
 
+it('passes exception up if initializer throws without onComplete', function() {
+	const wiki = new $tw.Wiki();
+	function thrower() {
+		throw 'test exception';
+	};
+	expect(function() {
+		cacheSync(wiki, newName(), 'key1', thrower);
+	}).toThrow('test exception');
+	wiki.addTiddler({title: cacheTiddler, text: 'no'});
+	expect(function() {
+		cacheSync(wiki, newName(), 'key2', thrower);
+	}).toThrow('test exception');
+});
+
+it('passes exceptions to onComplete if supplied; caching on', function(done) {
+	const wiki = testWiki();
+	cache(wiki, newName(), 'key1', function() { throw 'test exception'; } )
+		.then(function(info) {
+			done('Exception was not passed to callback method');
+		})
+		.catch(function(err) {
+			done(expect(err).toBe('test exception'));
+		});
+});
+
+it('passes exceptions to onComplete if supplied; caching off', function(done) {
+	const wiki = testWiki();
+	wiki.addTiddler({title: cacheTiddler, text: 'no'});
+	cache(wiki, newName(), 'key1', function() { throw 'test exception'; } )
+		.then(function(info) {
+			done('Exception was not passed to callback method');
+		})
+		.catch(function(err) {
+			done(expect(err).toBe('test exception'));
+		});
+});
+
+// Node only tests
 if ($tw.node) {
 
 	const fs = require('fs/promises');
@@ -204,15 +243,15 @@ if ($tw.node) {
 } else { // !$tw.node
 
 	it('doesn\'t try caching on the browser', async function() {
-		var wiki = new $tw.Wiki();
-		// Set this to 'yes', even though it should be overridden.
+		const wiki = new $tw.Wiki();
+		// Set this to 'yes', even though it shouldn't need to be overridden.
 		wiki.addTiddler({title: cacheTiddler, text: 'yes'});
-		function onSave(err) {
-			throw new Error('onSave should never be called on the browser since caching is impossible there.');
-		};
-		var output = await cache(wiki, 'title', 'textKey', () => 'expected', onSave);
-		expect(output.output).toBe('expected');
-		expect(output.saved).toBe(false);
+		// First check without onComplete passed.
+		const output = cacheSync(wiki, 'titleA', 'keyA', () => 'expectedA');
+		expect(output).toBe('expectedA');
+		const results = await cache(wiki, 'titleB', 'keyB', () => 'expectedB');
+		expect(results.output).toBe('expectedB');
+		expect(results.saved).toBe(false);
 	});
 }
 

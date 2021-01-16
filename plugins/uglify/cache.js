@@ -20,8 +20,10 @@ var utils = require('./utils.js');
  *    err - an error or if there was an error saving the cache
  *    saved - boolean, true if the file cache was refreshed, false otherwise
  *    value - the results of method.
+ *        if the initializer throws an error, it throws
+ *        out and never calls onComplete
  */
-exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) {
+exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onComplete) {
 	var processedText;
 	if (typeof textKey !== 'string') {
 		throw new Error('Expected string for file cache key, not ' + textKey);
@@ -32,18 +34,18 @@ exports.getFileCacheForTiddler = function(wiki, title, textKey, method, onSave) 
 		if (cachedFields) {
 			if (checksum === parseInt(cachedFields.checksum)) {
 				var oldText = cachedFields.text;
-				if (onSave) {
-					onSave(null, false, oldText);
+				if (onComplete) {
+					onComplete(null, false, oldText);
 				}
 				return oldText;
 			}
 		}
-		processedText = method();
-		saveTiddlerCache(wiki, title, checksum, processedText, onSave);
+		processedText = initializer();
+		saveTiddlerCache(wiki, title, checksum, processedText, onComplete);
 	} else {
-		processedText = method();
-		if (onSave) {
-			onSave(null, false, processedText);
+		processedText = initializer();
+		if (onComplete) {
+			onComplete(null, false, processedText);
 		}
 	}
 	return processedText;
@@ -55,20 +57,20 @@ function hashString(string) {
     return h;
 };
 
-function saveTiddlerCache(wiki, title, checksum, text, onSave) {
+function saveTiddlerCache(wiki, title, checksum, text, onComplete) {
 	var newTiddler = new $tw.Tiddler({text: text, checksum: checksum}),
 		filepath = exports.generateCacheFilepath(wiki, title),
 		fileInfo = {
 			hasMetaFile: false,
 			type: 'application/x-tiddler',
 			filepath: filepath};
-	onSave = onSave || function(err) {
+	onComplete = onComplete || function(err) {
 		if (err) {
 			logger.warn(err);
 		}
 	};
 	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {
-		onSave(err, true, text);
+		onComplete(err, true, text);
 	});
 };
 
