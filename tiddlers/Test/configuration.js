@@ -88,26 +88,23 @@ it("stub setting", function() {
 			{title: "zebra"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
-	// TODO: I don't think changing the stubbing setting should require a server restart.
 	// unspecified should stub on Node.js
-	var wiki = addPlugin(name, tiddlers);
+	const wiki = addPlugin(name, tiddlers);
 	var text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).not.toContain('zebra');
 	
 	// yes should stub
-	wiki = addPlugin(name, tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).not.toContain('zebra');
 
 	// no should not stub, but it will compress
-	wiki = addPlugin(name, tiddlers);
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
 	// Let's not worry about caching for this test
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/cache', text: 'no'});
-	var log = $tw.utils.test.collect(console, 'log', function() {
+	const log = $tw.utils.test.collect(console, 'log', function() {
 		text = renderTiddler(wiki, name);
 	});
 	expect(text).toContain('elephant');
