@@ -24,7 +24,7 @@ it("javascript setting", function() {
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/cache', text:'no'});
+	wiki.addTiddler($tw.utils.test.noCache);
 	var text;
 	var log = $tw.utils.test.collect(console, 'log', function() {
 		text = renderTiddler(wiki, name);
@@ -75,7 +75,7 @@ it("stub setting", function() {
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/cache', text: 'no'});
+	wiki.addTiddler($tw.utils.test.noCache);
 
 	// no should not stub on either Node or browser, but it will compress
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});

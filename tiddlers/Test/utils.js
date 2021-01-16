@@ -42,3 +42,5 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 	wiki.readPluginInfo();
 	wiki.unpackPluginTiddlers();
 };
+
+test.noCache = {title: '$:/config/flibbles/uglify/cache', text: 'no'};
