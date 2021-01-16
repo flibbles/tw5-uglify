@@ -59,7 +59,7 @@ exports.compressionEnabled = function() {
 };
 
 function stubbingEnabled(wiki) {
-	return utils.getSetting(wiki, 'stub') === 'yes';
+	return !$tw.browser && utils.getSetting(wiki, 'stub') === 'yes';
 };
 
 function pluginStub(wiki, title) {

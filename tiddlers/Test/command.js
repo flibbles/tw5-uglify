@@ -43,10 +43,10 @@ it('reverts to default if no or empty value given', function() {
 });
 
 it('recognizes nonexistent configuration', function() {
-	var warnings = $tw.utils.test.collect(logger, 'alert', function() {
+	var warnings = $tw.utils.test.collect(logger, 'warn', function() {
 		const wiki = exec(new $tw.Wiki(), 'silly', 'yes');
 	});
-	expect(warnings[0]).toContain('uglify: Unrecognized configuration flag: silly');
+	expect(warnings[0]).toContain('Unrecognized configuration flag: silly');
 });
 
 it('prints out current settings with no arguments', function() {

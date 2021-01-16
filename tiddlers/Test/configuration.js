@@ -66,28 +66,19 @@ it('javascript settings and boot code', function() {
 
 it("stub setting", function() {
 	var name = "$:/plugins/flibbles/uglify";
+	var text;
 	var tiddlers = [
 			{title: "elephant", tags: "$:/tags/flibbles/uglify/Stub"},
 			{title: "zebra"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
-	// unspecified should stub on Node.js
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
-	var text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	expect(text).not.toContain('zebra');
-	
-	// yes should stub
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
-	text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	expect(text).not.toContain('zebra');
-
-	// no should not stub, but it will compress
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
 	// Let's not worry about caching for this test
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/cache', text: 'no'});
+
+	// no should not stub on either Node or browser, but it will compress
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
 	const log = $tw.utils.test.collect(console, 'log', function() {
 		text = renderTiddler(wiki, name);
 	});
@@ -96,6 +87,26 @@ it("stub setting", function() {
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
 	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
+
+	// yes should stub on Node.JS, but still NOT stub on browser
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('elephant');
+	if ($tw.node) {
+		expect(text).not.toContain('zebra');
+	} else {
+		expect(text).toContain('zebra');
+	}
+
+	// unspecified should stub on Node.js. NOT stub on browser
+	wiki.deleteTiddler('$:/config/flibbles/uglify/stub');
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('elephant');
+	if ($tw.node) {
+		expect(text).not.toContain('zebra');
+	} else {
+		expect(text).toContain('zebra');
+	}
 });
 
 });
