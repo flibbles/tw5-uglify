@@ -24,24 +24,26 @@ exports.getTiddlerCompressedText = function(title) {
 		return pluginStub(wiki, title);
 	}
 	return this.getCacheForTiddler(title, 'uglify', function() {
-		var pluginInfo = wiki.getPluginInfo(title);
 		var tiddler = wiki.getTiddler(title);
+		if (!tiddler) {
+			return undefined;
+		}
+		var pluginInfo = wiki.getPluginInfo(title);
 		try {
 			if (pluginInfo) {
 				var newInfo = $tw.utils.extend({}, pluginInfo);
 				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+					logger.log("Compressing:", title);
 					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 					return JSON.stringify(newInfo, null);
 				});
-			} else {
-				if (!tiddler) {
-					return undefined;
-				}
-				if (tiddler.fields.type === 'application/javascript') {
+			} else if (tiddler.fields.type === 'application/javascript') {
+				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+					logger.log("Compressing:", title);
 					return compressor.compress(tiddler.fields);
-				}
-				return tiddler.text || '';
+				});
 			}
+			return tiddler.text || '';
 		} catch (err) {
 			// It failed to compress for some reason. Just log a message
 			// and return the uncompressed version.
@@ -77,7 +79,6 @@ function pluginStub(wiki, title) {
 };
 
 function compressSubtiddlers(title, pluginInfo) {
-	logger.log("Compressing:", title);
 	var newTiddlers = Object.create(null);
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];

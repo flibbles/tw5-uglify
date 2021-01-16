@@ -6,13 +6,12 @@ tags: $:/tags/test-spec
 Tests the uglify compressor.
 \*/
 
-const js = require("$:/plugins/flibbles/uglify/javascript/uglify");
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
+const compresser = require('$:/plugins/flibbles/uglify/javascript/uglify.js');
 
-function compress(input) {
-	var wiki = new $tw.Wiki();
-	wiki.addTiddler({title: 'test', text:input, type:'application/javascript'});
-	return wiki.getTiddlerCompressedText('test');
+function compress(input, title) {
+	title = title || 'test';
+	return compresser.compress({title: title, text: input});
 };
 
 function exec(text) {
@@ -48,17 +47,16 @@ it('minifies variables at top level scope', function() {
 	expect(exports.count()).toBe(2);
 });
 
-it('notifies which file caused a failure', function() {
+it('throws useful error on failure', function() {
 	var error;
 	var text =  "exports.run = function(number) { if (isNaN(x)) { return 'not ";
-	var wiki = new $tw.Wiki();
-	wiki.addTiddler({title: 'Luigi.js', text:text, type:'application/javascript'});
-	var errors = $tw.utils.test.collect(logger, 'warn', function() {
-		wiki.getTiddlerCompressedText('Luigi.js');
-	});
-	expect(errors.length).toBe(1);
-	expect(errors[0]).toContain('tiddler: Luigi.js');
-	expect(errors[0]).toContain('line: 1');
+	try {
+		compress(text, 'Luigi.js');
+		fail('Javascript should have caused an error to be thrown')
+	} catch (error) {
+		expect(error.filename).toBe('Luigi.js');
+		expect(error.line).toBe(1);
+	}
 });
 
 /*
