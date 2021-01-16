@@ -18,6 +18,7 @@ If we're not running a server, don't bother precaching.
 
 exports.name = 'uglify';
 exports.synchronous = true;
+exports.before = ['commands'];
 exports.platforms = ['node'];
 
 var systemTargets = ["$:/boot/boot.js", "$:/boot/bootprefix.js"];
