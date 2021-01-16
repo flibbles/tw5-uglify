@@ -46,7 +46,7 @@ exports.getTiddlerCompressedText = function(title) {
 			// It failed to compress for some reason. Just log a message
 			// and return the uncompressed version.
 			// Unless this file changes, we'll keep returning that too.
-			logger.warn('Failed to compress', title + '.\n\n    * tiddler:', err.filename, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
+			logger.warn('Failed to compress', title + '.\n\n    * message:', err.message, '\n    * tiddler:', err.filename, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
 			return tiddler.fields.text;
 		}
 	});

@@ -14,9 +14,12 @@ var logger = new $tw.utils.Logger('uglify', {colour: 'green'});
 var oldAlert = logger.alert;
 
 logger.warn = function(/*arguments*/) {
-	// That empty string puts a space before the alert so it lines up
-	// with all the log messages. I'm neurotic like that.
-	var args = ['', this.componentName + ':'];
+	var args = [];
+	if ($tw.node) {
+		// That empty string puts a space before the alert so it lines up
+		// with all the log messages. I'm neurotic like that.
+		args.push('', this.componentName + ':');
+	}
 	args.push.apply(args, arguments);
 	return this.alert.apply(this, args);
 };

@@ -6,7 +6,8 @@ tags: $:/tags/test-spec
 Tests the uglify compressor.
 \*/
 
-var js = require("$:/plugins/flibbles/uglify/javascript/uglify");
+const js = require("$:/plugins/flibbles/uglify/javascript/uglify");
+const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 function compress(input) {
 	var wiki = new $tw.Wiki();
@@ -52,7 +53,7 @@ it('notifies which file caused a failure', function() {
 	var text =  "exports.run = function(number) { if (isNaN(x)) { return 'not ";
 	var wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'Luigi.js', text:text, type:'application/javascript'});
-	var errors = $tw.utils.test.collect(console, 'error', function() {
+	var errors = $tw.utils.test.collect(logger, 'warn', function() {
 		wiki.getTiddlerCompressedText('Luigi.js');
 	});
 	expect(errors.length).toBe(1);

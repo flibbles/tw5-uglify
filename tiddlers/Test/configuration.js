@@ -7,6 +7,8 @@ This ensures that only a stub of the plugin shows up on the browser.
 
 \*/
 
+const logger = require('$:/plugins/flibbles/uglify/logger.js');
+
 describe('Configuration', function() {
 
 function addPlugin(pluginName, tiddlers, options) {
@@ -121,7 +123,7 @@ it('on failure, resorts to uncompressed code', function() {
 		{title: 'bad.js', type: 'application/javascript', text: badText}];
 
 	const wiki = addPlugin(plugin, tiddlers);
-	var errors = $tw.utils.test.collect(console, 'error', function() {
+	var errors = $tw.utils.test.collect(logger, 'alert', function() {
 		$tw.utils.test.collect(console, 'log', function() {
 			const text = renderTiddler(wiki, plugin);
 			expect(text).toContain(badText);
