@@ -38,6 +38,15 @@ it('prefers single quotes', function() {
 	expect(exports.doubles).toBe('doubles');
 });
 
+it('minifies variables at top level scope', function() {
+	const text = compress('var counterVar=0;\nexports.count = function() { return counterVar++; }');
+	expect(text).not.toContain('counterVar');
+	const exports = exec(text);
+	expect(exports.count()).toBe(0);
+	expect(exports.count()).toBe(1);
+	expect(exports.count()).toBe(2);
+});
+
 it('notifies which file caused a failure', function() {
 	var error;
 	var text =  "exports.run = function(number) { if (isNaN(x)) { return 'not ";
