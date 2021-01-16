@@ -24,3 +24,21 @@ test.collect = function(container, logMethod, block) {
 	}
 	return messages;
 };
+
+test.addPlugin = function(wiki, pluginName, tiddlers, options) {
+	options = options || {};
+	var tiddlerHash = Object.create(null);
+	$tw.utils.each(tiddlers, function(hash) {
+		tiddlerHash[hash.title] = hash;
+	});
+	var content = { tiddlers: tiddlerHash }
+	wiki.addTiddler({
+		title: pluginName,
+		type: "application/json",
+		"plugin-type": "plugin",
+		description: options.description || undefined,
+		text: JSON.stringify(content)});
+	wiki.registerPluginTiddlers("plugin");
+	wiki.readPluginInfo();
+	wiki.unpackPluginTiddlers();
+};

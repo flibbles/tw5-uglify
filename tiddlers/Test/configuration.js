@@ -11,26 +11,6 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('Configuration', function() {
 
-function addPlugin(pluginName, tiddlers, options) {
-	options = options || {};
-	var wiki = options.wiki || new $tw.Wiki();
-	var tiddlerHash = Object.create(null);
-	$tw.utils.each(tiddlers, function(hash) {
-		tiddlerHash[hash.title] = hash;
-	});
-	var content = { tiddlers: tiddlerHash }
-	wiki.addTiddler({
-		title: pluginName,
-		type: "application/json",
-		"plugin-type": "plugin",
-		description: options.description || undefined,
-		text: JSON.stringify(content)});
-	wiki.registerPluginTiddlers("plugin");
-	wiki.readPluginInfo();
-	wiki.unpackPluginTiddlers();
-	return wiki;
-};
-
 function renderTiddler(wiki, pluginTitle) {
 	var renderText =  "<$tiddler tiddler='"+pluginTitle+"'><$view field='text' format='htmlencoded' /></$tiddler>";
 	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
@@ -41,7 +21,8 @@ it("javascript setting", function() {
 	var tiddlers = [
 			{title: "readme", text: "This is the readme text"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
-	var wiki = addPlugin(name, tiddlers);
+	const wiki = new $tw.Wiki();
+	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/cache', text:'no'});
 	var text;
@@ -91,7 +72,8 @@ it("stub setting", function() {
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
 	// unspecified should stub on Node.js
-	const wiki = addPlugin(name, tiddlers);
+	const wiki = new $tw.Wiki();
+	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	var text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).not.toContain('zebra');
@@ -114,25 +96,6 @@ it("stub setting", function() {
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
 	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
-});
-
-it('on failure, resorts to uncompressed code', function() {
-	const plugin = '$:/plugins/anything';
-	const badText = 'function func() { content does not compile;';
-	const tiddlers = [
-		{title: 'bad.js', type: 'application/javascript', text: badText}];
-
-	const wiki = addPlugin(plugin, tiddlers);
-	var errors = $tw.utils.test.collect(logger, 'alert', function() {
-		$tw.utils.test.collect(console, 'log', function() {
-			const text = renderTiddler(wiki, plugin);
-			expect(text).toContain(badText);
-		});
-	});
-	expect(errors.length).toBe(1);
-	expect(errors[0]).toContain('tiddler: bad.js');
-	expect(errors[0]).toContain('line: 1');
-	expect(errors[0]).toContain(plugin);
 });
 
 });
