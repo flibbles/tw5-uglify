@@ -16,4 +16,4 @@ After you're done. Re-enable compression and refresh. Compression is back!
 
 Node servers can disable compression because they still have uncompressed versions of all the plugins available.
 
-Tiddlywiki files can't really //toggle// compression though. All of your plugins are self-contained, and if //Uglify// has already compressed them, then it can't exactly //uncompress// them, can it? However, disabling compression does prevent //Uglify// from recompressing your Tiddlywiki every time you save.
+TiddlyWiki files can't really //toggle// compression though. All of your plugins are self-contained, and if //Uglify// has already compressed them, then it can't exactly //uncompress// them, can it? However, disabling compression does prevent //Uglify// from recompressing your TiddlyWiki every time you save.

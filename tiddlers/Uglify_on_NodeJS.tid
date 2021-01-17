@@ -39,7 +39,7 @@ And that's it. After you restart your server, it will compress all your plugins.
 
 !! How it works
 
-Tiddlywiki Node servers will have access to all of your plugins in their good ol' uncompressed format. When it starts, it will create compressed versions of those plugins which it will send to browsers to use. //Internally//, however, Node.js will still be using the uncompressed versions.
+TiddlyWiki Node servers will have access to all of your plugins in their good ol' uncompressed format. When it starts, it will create compressed versions of those plugins which it will send to browsers to use. //Internally//, however, Node.js will still be using the uncompressed versions.
 
 Technically that means Node is doing more work and consuming more memory, but that's okay. Node servers aren't what //Uglify// are trying to optimize. Servers tend to be big strong computers with lots of memory. It's your network traffic and browser clients which we're aiming to improve. Now your users can access your server on your old Android phone, which //will// benefit from netork and performance improvements.
 

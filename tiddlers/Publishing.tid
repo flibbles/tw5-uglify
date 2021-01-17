@@ -26,18 +26,18 @@ Use build targets and the [[uglify command|Command]]. Let's take a look at what 
 	}
 	...
 ```
-Calling `tiddlywiki --build dist` creates the distribution build, first by enabling compression through the uglify command (it was enabled by default), then by saving the plugin. It will be compressed. The `publishFilter` part of rendering is a filter that filters out //Uglify// entirely from your distributable Tiddlywiki. You don't need it. It will all be compressed already.
+Calling `tiddlywiki --build dist` creates the distribution build, first by enabling compression through the uglify command (it was enabled by default), then by saving the plugin. It will be compressed. The `publishFilter` part of rendering is a filter that filters out //Uglify// entirely from your distributable TiddlyWiki. You don't need it. It will all be compressed already.
 
 Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project.
 
 If you want a real-life example of build tasks, check out the `tiddlywiki.info` file in [[Uglify's very own project|https://github.com/flibbles/tw5-uglify]].
 
-!! Standalone Tiddlywiki
+!! Standalone TiddlyWiki
 
 You //can//, but it's not worth it.
 
-[[The Tiddlywiki development website outlines how to make plugins in Tiddlywiki itself.|https://tiddlywiki.com/dev/static/How%2520to%2520create%2520plugins%2520in%2520the%2520browser.html]] but trying to compress them there is problematic.
+[[The TiddlyWiki development website outlines how to make plugins in TiddlyWiki itself.|https://tiddlywiki.com/dev/static/How%2520to%2520create%2520plugins%2520in%2520the%2520browser.html]] but trying to compress them there is problematic.
 
-Every single time you repack your plugin, Tiddlywiki will refresh //all// plugins, which will force //Uglify// to recompress them all. So at the very least, you need to [[disable compression|Toggle Compression]] while you work.
+Every single time you repack your plugin, TiddlyWiki will refresh //all// plugins, which will force //Uglify// to recompress them all. So at the very least, you need to [[disable compression|Toggle Compression]] while you work.
 
-But even then, Tiddlywiki will merge your javascript modules into your plugin, and once you finally do compress, you'll lose the originals, because `$tw.utils.repackPlugin` deletes the your javascript tiddlers, leaving only the shadows, which are compressed and uneditable.
+But even then, TiddlyWiki will merge your javascript modules into your plugin, and once you finally do compress, you'll lose the originals, because `$tw.utils.repackPlugin` deletes the your javascript tiddlers, leaving only the shadows, which are compressed and uneditable.

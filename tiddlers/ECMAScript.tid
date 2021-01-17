@@ -1,0 +1,5 @@
+title: ECMAScript
+
+//Uglify// does not support ECMAScript 2015 (ES6) and above. This is due to the limitations of the [[underlying compression engine|UglifyJS]]. That means features such as the template literal (``var string = `Interpolated value: ${myVar}`;``) will cause errors during compression.
+
+This is an inconvenience, however, TiddlyWiki itself does not support ES6 in order to maintain compatibility with Internet Explorer and other earlier browsers. So with any luck, most plugins conform to this limitation as well so as not to restrict browsers TiddlyWiki otherwise supports.

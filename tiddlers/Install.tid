@@ -2,8 +2,8 @@ title: Install
 caption: Installing
 tags: Uglify
 
-//Uglify// can be installed on Node.JS servers and also on Tiddlywiki
+//Uglify// can be installed on Node.JS servers and also on TiddlyWiki
 
 !! [[Node.JS|Uglify on Node.JS]]
 
-!! [[Tiddlywiki|Uglify on Tiddlywiki]]
+!! [[TiddlyWiki|Uglify on TiddlyWiki]]
