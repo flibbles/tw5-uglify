@@ -1,5 +1,5 @@
 title: Toggling Compression
-tags: Solutions
+tags: Also
 caption: I still want to be able to debug/edit my javascript from time to time.
 
 Compressed core and plugin code is nice, but sometimes you don't always want it. Maybe you want to:

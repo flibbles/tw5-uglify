@@ -1,6 +1,6 @@
 title: Empty Tiddlywiki
-tags: Solutions
-caption: ... but all I want is an empty compressed Tiddlywiki.
+tags: Also
+caption: All I really want is an empty Tiddlywiki that's compressed.
 list-after: Uglify on Tiddlywiki
 
 Sure thing. Here you go: {{editions/download-empty-button}}
