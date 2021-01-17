@@ -18226,9 +18226,9 @@ function minify(files, options) {
 	...or the same files (and order) as implied in tools/node.js. Then add the method(s) below.
 */
 
-exports.compress = function(fields) {
+exports.compress = function(text, title) {
 	var code = {};
-	code[fields.title] = fields.text;
+	code[title] = text;
 	var options = {
 		toplevel: true, // top level can be minified. These are modules.
 		output: {quote_style: 1}}; // single quotes. Smaller in TW.

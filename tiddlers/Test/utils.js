@@ -29,7 +29,13 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 	options = options || {};
 	var tiddlerHash = Object.create(null);
 	$tw.utils.each(tiddlers, function(hash) {
-		tiddlerHash[hash.title] = hash;
+		var fieldsHash = Object.create(null);
+		for (var field in hash) {
+			if (field !== 'title') {
+				fieldsHash[field] = hash[field];
+			}
+		}
+		tiddlerHash[hash.title] = fieldsHash;
 	});
 	var content = { tiddlers: tiddlerHash }
 	wiki.addTiddler({

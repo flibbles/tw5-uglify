@@ -11,7 +11,7 @@ const compresser = require('$:/plugins/flibbles/uglify/javascript/uglify.js');
 
 function compress(input, title) {
 	title = title || 'test';
-	return compresser.compress({title: title, text: input});
+	return compresser.compress(input, title);
 };
 
 function exec(text) {

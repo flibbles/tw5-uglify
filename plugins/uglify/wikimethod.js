@@ -40,7 +40,7 @@ exports.getTiddlerCompressedText = function(title) {
 			} else if (tiddler.fields.type === 'application/javascript') {
 				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 					logger.log("Compressing:", title);
-					return compressor.compress(tiddler.fields);
+					return compressor.compress(tiddler.fields.text, title);
 				});
 			}
 			return tiddler.text || '';
@@ -84,7 +84,7 @@ function compressSubtiddlers(title, pluginInfo) {
 		var fields = pluginInfo.tiddlers[title];
 		if (fields.type === 'application/javascript') {
 			fields = $tw.utils.extend({}, fields);
-			fields.text = compressor.compress(fields);
+			fields.text = compressor.compress(fields.text, title);
 		}
 		newTiddlers[title] = fields;
 	}
