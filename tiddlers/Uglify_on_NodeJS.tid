@@ -2,7 +2,7 @@ title: Uglify on Node.JS
 tags: Solutions
 caption: I want my Node.js server to serve compressed javascript.
 
-You can install ''Uglify'' on your Node.JS server, and it will serve plugins with compressed javascript to browsers, thus reducing network overhead and increasing browser performance.
+You can install //Uglify// on your Node.JS server, and it will serve plugins with compressed javascript to browsers, thus reducing network overhead and increasing browser performance.
 
 !! To install
 
@@ -13,7 +13,7 @@ You can install ''Uglify'' on your Node.JS server, and it will serve plugins wit
 
 Copy the contents of the `plugins` directory into the `plugins/flibbles` directory of your tiddlywiki installation. If you installed with NPM, it's likely in `/usr/local/lib/node_modules/tiddlywki/plugins/flibbles`. You'll likely need to create the `flibbles` directory.
 
-If you've installed it correctly, the path to the Uglify `plugin.info` file should look something like:
+If you've installed it correctly, the path to the //Uglify// `plugin.info` file should look something like:
 
 ```
 /usr/local/lib/node_modules/tiddlywiki/plugins/flibbles/uglify/plugin.info
@@ -47,6 +47,6 @@ Also, since all the compression is done on the server, there's no need for the c
 
 !! Limitations
 
-Uglify does //not// compress javascript which is not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
+//Uglify// does //not// compress javascript which is not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
 
 If a javascript shadow tiddler is overridden, the override will not be touched. This means you can [[disable compression|Toggling Compression]], override a shadow tiddler, and then reenable compression. That tiddler will remain pretty and easy to manipulate.

@@ -2,7 +2,7 @@ title: Uglify on Tiddlywiki
 tags: Solutions
 caption: I want to compress my standalone Tiddlywiki.
 
-Even though ''Uglify'' is better suited for a node server, you can install ''Uglify'' on your standalone Tiddlywiki file in order to compress it. Follow these instructions:
+Even though //Uglify// is better suited for a node server, you can install //Uglify// on your standalone Tiddlywiki file in order to compress it. Follow these instructions:
 
 <ol>
 <li>
@@ -20,24 +20,24 @@ Drag the following pill onto your Tiddlywiki project and saying "yes" to import.
 Save and reload, just like Tiddlywiki will ask you to.
 </li><li>
 
-''Delete Uglify''. Do this by going to your $:/ControlPanel, openin the "Plugins" tab, clicking the "Uglify", editing the tiddler, and clicking delete.
+''Delete //Uglify//''. Do this by going to your $:/ControlPanel, openin the "Plugins" tab, clicking the "Uglify", editing the tiddler, and clicking delete.
 </li><li>
 
-Save and reload, just like Tiddlywiki is asking you to. (This save will take a long while, so long your browser may warn you that your page is unresponsive. Wait it out.) Once Uglify has done its work, it will see itself out.
+Save and reload, just like Tiddlywiki is asking you to. (This save will take a long while, so long your browser may warn you that your page is unresponsive. Wait it out.) Once //Uglify// has done its work, it will see itself out.
 </li><li>
 
-When Tiddlywiki comes back, you're done. Uglify will have seen itself out, which is good, because you don't want it anymore. Its work is done.
+When Tiddlywiki comes back, you're done. //Uglify// will have seen itself out, which is good, because you don't want it anymore. Its work is done.
 </li>
 </ol>
 
 !! Why delete it?
 
-Because you don't want it anymore. ''Uglify'' takes up [[a lot of space|UglifyJS]], and keeping it would defeat the purpose of minifying.
+Because you don't want it anymore. //Uglify// takes up [[a lot of space|UglifyJS]], and keeping it would defeat the purpose of minifying.
 
 If you //do// want to keep it around, maybe because you have a use for its [[wikimethods or something|API]], then make sure you [[disable compression|Toggling Compression]], or else it's going to keep compressing your Tiddlywiki every time you save, which will make saving take forever.
 
 !! Caution
 
-I strongly recommend making a backup of your project first. ''Uglify'' has not been tested on all the possible saving mechanisms that exist. And even if you're just doing a standard browser save, if a problem occurs, you'll need that backup.
+I strongly recommend making a backup of your project first. //Uglify// has not been tested on all the possible saving mechanisms that exist. And even if you're just doing a standard browser save, if a problem occurs, you'll need that backup.
 
 //Even if// everything goes right, you must realize that compressing your Tiddlywiki is a ''one-way operation''. The only way to //un//compress your plugins would be to reimport them from wherever you originally got them.

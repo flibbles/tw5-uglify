@@ -9,7 +9,7 @@ title: Uglify
 |!Build date |<$view field="created" format="date" template="MMM DDth, YYYY" /> |
 |!TW5 compatibility |{{!!core-version}} |
 
-This is the documentation site for ''Uglify'', a Tiddlywiki5 plugin which takes care of compressing javascript for users and plugin developers alike.
+This is the documentation site for //Uglify//, a Tiddlywiki5 plugin which takes care of compressing javascript for users and plugin developers alike.
 
 <<ul Uglify>>
 
