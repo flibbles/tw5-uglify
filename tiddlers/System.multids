@@ -4,3 +4,4 @@ DefaultTiddlers: Uglify [[What does Uglify do?]]
 SiteTitle: Uglify
 SiteSubtitle: Tiddler compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
+config/WikiParserRules/Inline/wikilink: disable

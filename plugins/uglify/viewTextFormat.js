@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/viewWidgetText
+title: $:/plugins/flibbles/uglify/viewWidgetText.js
 module-type: viewwidgetformat
 type: application/javascript
 

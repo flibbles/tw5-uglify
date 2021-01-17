@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/viewWidgetHack
+title: $:/plugins/flibbles/uglify/viewWidgetHack.js
 module-type: startup
 type: application/javascript
 
