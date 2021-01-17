@@ -3,22 +3,17 @@ title: $:/plugins/flibbles/uglify/viewWidgetText
 module-type: viewwidgetformat
 type: application/javascript
 
+This is the preferred way to introduce uglify into the ViewWidget.
+
+This replaces the viewwidgetformat 'text'.
+
 \*/
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
-"use strict";
+'use strict';
 
-var formats = require("$:/core/modules/widgets/view/formats.js");
+var formats = require('$:/core/modules/widgets/view/formats.js');
+var utils = require('./utils.js');
 
-var oldText = formats.text;
-var systemTargets = {"$:/boot/boot.js": true, "$:/boot/bootprefix.js": true};
-
-formats.text = exports.text = function(widget) {
-	if (widget.wiki.compressionEnabled() && widget.viewField === "text") {
-		if (systemTargets[widget.viewTitle] || widget.wiki.getPluginInfo(widget.viewTitle)) {
-			return widget.wiki.getTiddlerCompressedText(widget.viewTitle);
-		}
-	}
-	return oldText.call(this, widget);
-};
+formats.text = exports.text = utils.getPluginOrBootCompressedTextMethod(formats.text);

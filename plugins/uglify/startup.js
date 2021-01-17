@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/startup
+title: $:/plugins/flibbles/uglify/startup.js
 module-type: startup
 type: application/javascript
 
@@ -16,7 +16,7 @@ If we're not running a server, don't bother precaching.
 
 'use strict';
 
-exports.name = 'uglify';
+exports.name = 'uglify-precache';
 exports.synchronous = true;
 exports.before = ['commands'];
 exports.platforms = ['node'];
