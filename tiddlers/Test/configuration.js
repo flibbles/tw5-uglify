@@ -34,13 +34,13 @@ it("javascript setting", function() {
 	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/whatever');
 
 	// The same wiki should be alterable without worrying about cached values
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'no'});
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'no'});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).toContain('longArgName');
 
 	// The same wiki should be alterable without worrying about cached values
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'yes'});
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'yes'});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
@@ -55,11 +55,11 @@ it('javascript settings and boot code', function() {
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'no'});
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'no'});
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).toContain('longPrefixName');
 
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/javascript', text:'yes'});
+	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'yes'});
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });

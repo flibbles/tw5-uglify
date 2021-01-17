@@ -55,7 +55,7 @@ exports.getTiddlerCompressedText = function(title) {
 };
 
 exports.compressionEnabled = function() {
-	return utils.getSetting(this, 'javascript') === 'yes';
+	return utils.getSetting(this, 'compress') === 'yes';
 };
 
 function stubbingEnabled(wiki) {

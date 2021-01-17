@@ -14,7 +14,7 @@ Utility methods for Uglify
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
 var config = {
-	javascript: 'yes',
+	compress: 'yes',
 	stub: 'yes',
 	cache: 'yes',
 	cacheDirectory: './.cache'

@@ -21,12 +21,12 @@ function exec(wiki, /* arguments */) {
 describe('command', function() {
 
 it('can toggle compression', function() {
-	const wiki = exec(new $tw.Wiki(), 'javascript', 'no');
+	const wiki = exec(new $tw.Wiki(), 'compress', 'no');
 	expect(wiki.compressionEnabled()).toBe(false);
 });
 
 it('can set multiple properties', function() {
-	const wiki = exec(new $tw.Wiki(), 'javascript', 'no', 'cache', 'yes');
+	const wiki = exec(new $tw.Wiki(), 'compress', 'no', 'cache', 'yes');
 	expect(wiki.compressionEnabled()).toBe(false);
 	expect(wiki.getTiddler(prefix + 'cache').fields.text).toBe('yes');
 });
@@ -55,7 +55,7 @@ it('prints out current settings with no arguments', function() {
 	wiki.addTiddler({title: title, text: 'bananas'});
 	const log = $tw.utils.test.collect(console, 'log', () => exec(wiki));
 	expect(log).toEqual([
-		'javascript:     yes',
+		'compress:       yes',
 		'stub:           yes',
 		'cache:          bananas',
 		'cacheDirectory: ./.cache',

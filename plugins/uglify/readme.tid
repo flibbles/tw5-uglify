@@ -2,7 +2,7 @@ title: $:/plugins/flibbles/uglify/readme
 tags: $:/tags/flibbles/uglify/Stub
 
 \rules except wikilink
-\define config() $:/config/flibbles/uglify/javascript
+\define config() $:/config/flibbles/uglify/compress
 
 TW5-Uglify compressed the javascript of your Tiddlywiki on the server, and then it left only this README file behind since you don't need it on the browser anymore.
 
