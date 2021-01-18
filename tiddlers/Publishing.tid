@@ -38,6 +38,6 @@ You //can//, but it's not worth it.
 
 [[The TiddlyWiki development website outlines how to make plugins in TiddlyWiki itself.|https://tiddlywiki.com/dev/static/How%2520to%2520create%2520plugins%2520in%2520the%2520browser.html]] but trying to compress them there is problematic.
 
-Every single time you repack your plugin, TiddlyWiki will refresh //all// plugins, which will force //Uglify// to recompress them all. So at the very least, you need to [[disable compression|Toggle Compression]] while you work.
+Every single time you repack your plugin, TiddlyWiki will refresh //all// plugins, which will force //Uglify// to recompress them all. So at the very least, you need to [[disable compression|Toggling Compression]] while you work.
 
 But even then, TiddlyWiki will merge your javascript modules into your plugin, and once you finally do compress, you'll lose the originals, because `$tw.utils.repackPlugin` deletes the your javascript tiddlers, leaving only the shadows, which are compressed and uneditable.

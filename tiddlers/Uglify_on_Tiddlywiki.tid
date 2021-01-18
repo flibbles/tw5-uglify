@@ -34,7 +34,7 @@ When TiddlyWiki comes back, you're done. //Uglify// will have seen itself out, w
 
 Because you don't want it anymore. //Uglify// takes up [[a lot of space|UglifyJS]], and keeping it would defeat the purpose of minifying.
 
-If you //do// want to keep it around, maybe because you have a use for its [[wikimethods or something|API]], then make sure you [[disable compression|Toggling Compression]], or else it's going to keep compressing your TiddlyWiki every time you save, which will make saving take forever.
+If you //do// want to keep it around, maybe because you have a use for its [[wikimethods or something|Wikimethods]], then make sure you [[disable compression|Toggling Compression]], or else it's going to keep compressing your TiddlyWiki every time you save, which will make saving take forever.
 
 !! Caution
 
