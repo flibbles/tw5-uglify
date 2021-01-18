@@ -16,7 +16,7 @@ var utils = require('./utils.js');
 
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
-exports.getTiddlerCompressedText = function(title) {
+exports.getTiddlerUglifiedText = function(title) {
 	var wiki = this;
 	// Currently we only support stubbing uglify itself.
 	// Support for stubbing other plugins may come later.

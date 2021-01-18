@@ -27,7 +27,7 @@ function getPluginCompressedText(options) {
 	&& this.viewField === 'text'
 	&& this.wiki.compressionEnabled()
 	&& (this.wiki.getPluginInfo(this.viewTitle) || systemTargets[this.viewTitle])) {
-		return this.wiki.getTiddlerCompressedText(this.viewTitle);
+		return this.wiki.getTiddlerUglifiedText(this.viewTitle);
 	}
 	return oldGetValue.call(this, options);
 };

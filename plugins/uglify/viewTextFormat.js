@@ -15,5 +15,5 @@ alterned in the future to better handle non-text fields and such.
 // That means it can only be a first format, and it can't grab anything but text.
 // I will probably fix this post-V1
 exports.jsuglified = function(text, widget) {
-	return widget.wiki.getTiddlerCompressedText(widget.viewTitle);
+	return widget.wiki.getTiddlerUglifiedText(widget.viewTitle);
 };

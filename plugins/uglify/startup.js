@@ -37,5 +37,5 @@ function precache() {
 };
 
 function precacheTiddler(title) {
-	$tw.wiki.getTiddlerCompressedText(title);
+	$tw.wiki.getTiddlerUglifiedText(title);
 }
