@@ -1,5 +1,5 @@
 /*\
-title: Test/configuration.js
+title: Test/viewWidget.js
 type: application/javascript
 tags: $:/tags/test-spec
 
@@ -9,8 +9,7 @@ This ensures that only a stub of the plugin shows up on the browser.
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
-// TODO: Rename this file because it's just testing view
-describe('Configuration', function() {
+describe('widget: view', function() {
 
 function renderTiddler(wiki, pluginTitle, format) {
 	format = format || 'htmlencoded'
@@ -36,13 +35,13 @@ it("javascript setting", function() {
 	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/whatever');
 
 	// The same wiki should be alterable without worrying about cached values
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'no'});
+	wiki.addTiddler($tw.utils.test.noCompress());
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).toContain('longArgName');
 
 	// The same wiki should be alterable without worrying about cached values
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'yes'});
+	wiki.addTiddler($tw.utils.test.yesCompress());
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
@@ -58,11 +57,11 @@ it('javascript settings and boot code', function() {
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'no'});
+	wiki.addTiddler($tw.utils.test.noCompress());
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).toContain('longPrefixName');
 
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/compress', text:'yes'});
+	wiki.addTiddler($tw.utils.test.yesCompress());
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });
