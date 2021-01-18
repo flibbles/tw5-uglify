@@ -1,5 +1,5 @@
 title: Command
-tags: Documentation
+tags: API Documentation
 caption: //Uglify// Command
 
 //Uglify// ships with a command-line tool: `--uglify`, which can be used on the command-line, or as part of a build target.

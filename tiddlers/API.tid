@@ -1,0 +1,12 @@
+title: API
+
+<$list filter='[all[current]tagging[]]'>
+
+<$set name='title' value={{!!caption}} emptyValue={{!!title}}>
+
+!! <<title>>
+
+<$transclude />
+
+</$set>
+</$list>

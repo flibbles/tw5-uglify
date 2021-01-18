@@ -7,9 +7,15 @@ title: Templates/Demo
 -->
 <$list variable="refreshText" filter="[{!!text}first[]]">
 
-!! {{!!title}}
+!! <$link to=<<currentTiddler>> />
 
-Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code updated [[in real time|Interactive Demo]]!
+<!-- Encouraging editing plugins through rawtext is a bad idea.
+     Lots of exceptions will be thrown.
+-->
+<$reveal type='nomatch' stateTitle=<<currentTiddler>> stateField='plugin-type' text='plugin'>
+
+Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code updated [[in real time|Interactive Demo]].
+</$reveal>
 
 <div>
 
@@ -24,7 +30,7 @@ Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the ugl
 @@
 
 @@.uglify-demo-description
-<$transclude field="description" />
+<div />
 @@
 
 </div>

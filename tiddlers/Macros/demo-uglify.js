@@ -15,8 +15,12 @@ exports.params = [
 	{name: 'tiddler'}
 ];
 
-exports.run = function(tiddler) {
-	var compressedCode = this.wiki.getTiddlerUglifiedText(tiddler);
-	var strCode = $tw.utils.stringify(compressedCode);
-	return '<$codeblock language="application/javascript" code="""'+compressedCode+'""" />'
+exports.run = function(title) {
+	var tiddler = this.wiki.getTiddler(title);
+	if (!tiddler) {
+		return '';
+	}
+	var compressedCode = this.wiki.getTiddlerUglifiedText(title);
+	var type = tiddler.fields.type;
+	return '<$codeblock language="'+type+'" code="""'+compressedCode+'""" />'
 };

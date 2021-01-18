@@ -1,0 +1,39 @@
+title: Demo/plugin
+author: Flibbles
+tags: Demo
+caption: Plugins
+list-after: 
+core-version: >=5.1.23
+description: Demonstrates Uglify's plugin compression
+list: readme
+name: Example plugin
+plugin-type: plugin
+type: application/json
+version: 1.0.0
+
+{
+    "tiddlers": {
+        "$:/language/plugins/Demo/plugin/pi": {
+            "title": "$:/language/plugins/Demo/plugin/pi",
+            "text": "This is defined as the ratio of a circle's circumfrence to its diameter."
+        },
+        "$:/language/plugins/Demo/plugin/e": {
+            "title": "$:/language/plugins/Demo/plugin/e",
+            "text": "Euler's number. It is the base of the natural logerithm."
+        },
+        "$:/language/plugins/Demo/plugin/i": {
+            "title": "$:/language/plugins/Demo/plugin/i",
+            "text": "Represents the square root of -1. Used to represent imaginary numbers."
+        },
+        "Demo/plugin/shapes.js": {
+            "text": "/*\\\ntitle: Demo/plugin/shapes.js\ntype: application/javascript\nmodule-type: library\n*/\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\"use strict\";\n\nvar PI = 3.14159;\n\nvar Circle = exports.circle = function(radius) {\n\tthis.radius = radius;\n};\n\nvar CirclePrototype = Circle.prototype;\n\nCirclePrototype.circumference = function() {\n\treturn PI * this.radius * 2;\n};\n\nCirclePrototype.area = function() {\n\treturn PI * this.radius * this.radius;\n};",
+            "title": "Demo/plugin/shapes.js",
+            "type": "application/javascript",
+            "module-type": "library"
+        },
+        "Demo/plugin/readme": {
+            "text": "\\define lingo-base() $:/language/plugins/Demo/plugin/\n\nDemonstrates //Uglify//'s ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<ul>\n<$list filter='pi e i'>\n<li>''<<currentTiddler>>'': <$macrocall $name='lingo' title=<<currentTiddler>> /></li>\n</$list></ul>",
+            "title": "Demo/plugin/readme"
+        }
+    }
+}
