@@ -1,6 +1,7 @@
 {
 	"description": "Testing and demo framework for tw5-uglify",
 	"plugins": [
+		"tiddlywiki/highlight",
 		"tiddlywiki/jasmine"
 	],
 	"themes": [

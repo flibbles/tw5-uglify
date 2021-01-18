@@ -1,0 +1,8 @@
+title: Demo
+
+<$macrocall
+	$name="tabs"
+	tabsList="[all[current]tagging[]]"
+	default={{{ [all[current]tagging[]first[]] }}}
+	template="Templates/Demo"
+/>

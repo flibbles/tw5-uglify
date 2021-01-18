@@ -1,0 +1,33 @@
+title: Templates/Demo
+
+<$tiddler tiddler=<<currentTab>> >
+<!-- We put the first character of the currentTiddler's text into a dummy
+     variable, just so that if that tiddler's text changes, it forces a refresh
+     of everything contained inside this widget. i.e. the demo-uglify macro.
+-->
+<$list variable="refreshText" filter="[{!!text}first[]]">
+
+!! {{!!title}}
+
+Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code updated [[in real time|Interactive Demo]]!
+
+<div>
+
+@@.uglify-demo-before
+
+<$transclude />
+@@
+
+@@.uglify-demo-after
+
+<$macrocall $name='demo-uglify' tiddler=<<currentTiddler>> />
+@@
+
+@@.uglify-demo-description
+<$transclude field="description" />
+@@
+
+</div>
+
+</$list>
+</$tiddler>

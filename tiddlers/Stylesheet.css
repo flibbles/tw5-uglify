@@ -22,23 +22,52 @@ a.uglify-dragger {
 	text-shadow:0px -1px 0px #2b665e;
 }
 
+a.uglify-dragger:hover {
+	text-decoration: none;
+}
+
 a.uglify-dragger:active {
 	position:relative;
 	top:1px;
 }
 
 .uglify-empty {
-    width: 250px;
-    padding: 10px;
-    border-radius: 5px;
-    background: #1462ff;
-    border-radius: 5px;
-    border: none;
-    box-shadow: 0 2px 2px 0 #4a74c9;
-    overflow: hidden;
-    cursor: pointer;
-    font-size: 1.2em;
-    line-height: 1.4em;
-    color: #fff;
-    fill: #fff;
+	width: 250px;
+	padding: 10px;
+	border-radius: 5px;
+	background: #1462ff;
+	border-radius: 5px;
+	border: none;
+	box-shadow: 0 2px 2px 0 #4a74c9;
+	overflow: hidden;
+	cursor: pointer;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	color: #fff;
+	fill: #fff;
+}
+
+.uglify-demo-before {
+	float: left;
+	width: 49%;
+	border: 1px solid #cccccc;
+	margin: 0px;
+}
+
+.uglify-demo-after {
+	float: right;
+	width: 49%;
+	border: 1px solid #cccccc;
+	margin: 0px;
+}
+
+.uglify-demo-before > pre, .uglify-demo-after > pre {
+	padding: 6px;
+	margin: 0px;
+	border: none;
+}
+
+.uglify-demo-description {
+	clear: both;
+	padding-top: 5px;
 }

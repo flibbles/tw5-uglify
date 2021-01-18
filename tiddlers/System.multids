@@ -1,6 +1,6 @@
 title: $:/
 
-DefaultTiddlers: Uglify
+DefaultTiddlers: Uglify Demo
 SiteTitle: Uglify
 SiteSubtitle: Tiddler compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
