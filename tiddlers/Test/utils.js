@@ -49,4 +49,6 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 	wiki.unpackPluginTiddlers();
 };
 
-test.noCache = {title: '$:/config/flibbles/uglify/cache', text: 'no'};
+test.noCache = () => ({title: '$:/config/flibbles/uglify/cache', text: 'no'});
+test.noCompress = () => ({title: '$:/config/flibbles/uglify/compress', text:'no'});
+test.yesCompress = () => ({title: '$:/config/flibbles/uglify/compress', text: 'yes'});

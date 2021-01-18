@@ -9,10 +9,12 @@ This ensures that only a stub of the plugin shows up on the browser.
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
+// TODO: Rename this file because it's just testing view
 describe('Configuration', function() {
 
-function renderTiddler(wiki, pluginTitle) {
-	var renderText =  "<$tiddler tiddler='"+pluginTitle+"'><$view field='text' format='htmlencoded' /></$tiddler>";
+function renderTiddler(wiki, pluginTitle, format) {
+	format = format || 'htmlencoded'
+	var renderText =  "<$view tiddler='"+pluginTitle+"' field='text' format='"+format+"' />";
 	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
 };
 
@@ -24,7 +26,7 @@ it("javascript setting", function() {
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
-	wiki.addTiddler($tw.utils.test.noCache);
+	wiki.addTiddler($tw.utils.test.noCache());
 	var text;
 	var log = $tw.utils.test.collect(console, 'log', function() {
 		text = renderTiddler(wiki, name);
@@ -50,7 +52,8 @@ it('javascript settings and boot code', function() {
 	var wiki = new $tw.Wiki();
 	wiki.addTiddlers([
 		{title: "$:/boot/boot.js", text: "function func(longArgName) {return longArgName;}"},
-		{title: "$:/boot/bootprefix.js", text: "function func(longPrefixName) {return longPrefixName;}"}]);
+		{title: "$:/boot/bootprefix.js", text: "function func(longPrefixName) {return longPrefixName;}"},
+		$tw.utils.test.noCache()]);
 
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
@@ -75,7 +78,7 @@ it("stub setting", function() {
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test
-	wiki.addTiddler($tw.utils.test.noCache);
+	wiki.addTiddler($tw.utils.test.noCache());
 
 	// no should not stub on either Node or browser, but it will compress
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
@@ -107,6 +110,28 @@ it("stub setting", function() {
 	} else {
 		expect(text).toContain('zebra');
 	}
+});
+
+it('supports jsuglified view format', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddlers([
+		{title: 'myFile.js', type: 'application/javascript', text: 'exports.func = function(longArgName) {return longArgName;}'},
+		$tw.utils.test.noCache()]);
+
+	var logs = $tw.utils.test.collect(console, 'log', function() {
+		var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
+		expect(output).toContain('exports.func');
+		expect(output).not.toContain('longArgName');
+
+		wiki.addTiddler($tw.utils.test.noCompress());
+		// should still compress
+		var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
+		expect(output).toContain('exports.func');
+		expect(output).not.toContain('longArgName');
+	});
+	// It would compress once and log about it, then a tiddler cache will still
+	// have the results for the second call.
+	expect(logs.length).toBe(1);
 });
 
 });
