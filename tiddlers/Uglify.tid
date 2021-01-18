@@ -20,5 +20,5 @@ Anything else?
 
 <<ul Also>>
 
-To report an issue, please visit <a href={{!!source}}>the github page</a>. But first, [[is your problem with ECMAScript 6|ECMAScript]]?
+Powered by [[UglifyJS|https://github.com/mishoo/UglifyJS]]. To report an issue, please visit <a href={{!!source}}>the github page</a>. But first, [[is your problem with ECMAScript 6|ECMAScript]]?
 </$tiddler>

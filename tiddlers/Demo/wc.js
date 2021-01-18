@@ -18,8 +18,8 @@ The operand specifies which field whose text to count (defaults to text).
 
 exports.wc = function(source, operator, options) {
 	var results = [];
-	var field = operator.operand || 'text';
-	if (field == 'title') {
+	var field = operator.operand || "text";
+	if (field == "title") {
 		source(function(tiddler, title) {
 			results.push(count(title).toString());
 		});
@@ -29,7 +29,7 @@ exports.wc = function(source, operator, options) {
 				var c = count(tiddler.fields[field]);
 				results.push(c.toString());
 			} else {
-				results.push('0');
+				results.push("0");
 			}
 		});
 	}

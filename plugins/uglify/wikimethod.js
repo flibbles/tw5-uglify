@@ -82,11 +82,18 @@ function compressSubtiddlers(title, pluginInfo) {
 	var newTiddlers = Object.create(null);
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
-		if (fields.type === 'application/javascript') {
-			fields = $tw.utils.extend({}, fields);
-			fields.text = compressor.compress(fields.text, title);
+		var abridgedFields = Object.create(null);
+		// We do not need to copy the title field. It's redundant since the
+		// key to this object is the title.
+		for (var field in fields) {
+			if (field !== 'title') {
+				abridgedFields[field] = fields[field];
+			}
 		}
-		newTiddlers[title] = fields;
+		if (fields.type === 'application/javascript') {
+			abridgedFields.text = compressor.compress(fields.text, title);
+		}
+		newTiddlers[title] = abridgedFields;
 	}
 	return newTiddlers;
 };
