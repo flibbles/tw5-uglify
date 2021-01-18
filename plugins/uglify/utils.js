@@ -11,8 +11,6 @@ Utility methods for Uglify
 /*global $tw: false */
 'use strict';
 
-var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
-
 var config = {
 	compress: 'yes',
 	stub: 'yes',
@@ -35,19 +33,4 @@ exports.getSettings = function(wiki) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
 	return settings;
-};
-
-// This is the method that replaces viewWidget.getText some way or another.
-// Maybe the viewwidgetformat replaces the 'text' viewwidgetformat, or
-// maybe we monkey-patch ViewWidget directly. Either way, this method is the
-// crux of Uglify.
-exports.getPluginOrBootCompressedTextMethod = function(oldText) {
-	return function(widget) {
-		if (widget.wiki.compressionEnabled() && widget.viewField === "text") {
-			if (systemTargets[widget.viewTitle] || widget.wiki.getPluginInfo(widget.viewTitle)) {
-				return widget.wiki.getTiddlerCompressedText(widget.viewTitle);
-			}
-		}
-		return oldText.call(this, widget);
-	};
 };
