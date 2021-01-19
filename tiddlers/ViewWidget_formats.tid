@@ -1,7 +1,7 @@
 title: ViewWidget formats
 tags: API Documentation
 
-The `<$view>` widget has various formats, such as `htmlencoded` or `plainwikified`. //Uglify// introduces a new one.
+The `<$view>` widget has various formats, such as `htmlencoded` or `plainwikified`. //Uglify// introduces a new one. //This feature is somewhat experimental at the moment.//
 
 ''jsuglified''
 
