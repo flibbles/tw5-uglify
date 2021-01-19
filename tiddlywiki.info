@@ -11,6 +11,7 @@
 	"build": {
 		"dist": [
 			"--output", "./docs/",
+			"--uglify", "stub", "no",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]]"
 		],
 		"test": [
