@@ -1,3 +1,15 @@
+/*\
+title: Test/comments-impl.js
+type: application/javascript
+module-type: library
+
+This is an experimental comment remover I was writing as part of my
+POC hacking. However it's buggy and doesn't work right, and I don't know
+if anyone would actually want it. I couldn't quite bring myself to throw it
+away though, so I moved it into the test directory for now.
+
+\*/
+
 /*jslint node: true, browser: true */
 /*global $tw: false */
 "use strict";

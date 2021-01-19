@@ -6,7 +6,7 @@ tags: $:/tags/test-spec
 Tests the comments javascript compressor.
 \*/
 
-var js = require("$:/plugins/flibbles/uglify/javascript/comments");
+var js = require("Test/comments-impl");
 
 function test(input, expected) {
 	var output = js.compress({title: 'test.js', text: input});
