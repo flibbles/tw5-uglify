@@ -3,12 +3,8 @@ title: $:/plugins/flibbles/uglify/startup.js
 module-type: startup
 type: application/javascript
 
-If starting a server, this task gets uglifying out of the way immediately
-on NodeJS so it doesn't wait until the first request. If compression is
-initially disabled, nothing happens, and if it's later enabled, it does
-get done on the next request.
+Performs all necessary startup work for Uglify.
 
-If we're not running a server, don't bother precaching.
 \*/
 
 /*jslint node: true, browser: true */
@@ -16,15 +12,40 @@ If we're not running a server, don't bother precaching.
 
 'use strict';
 
-exports.name = 'uglify-precache';
+exports.name = 'uglify';
 exports.synchronous = true;
+// Before commands, or else the server hook may get called before this does.
 exports.before = ['commands'];
-exports.platforms = ['node'];
 
-var systemTargets = ["$:/boot/boot.js", "$:/boot/bootprefix.js"];
+var ViewWidgetProto = require('$:/core/modules/widgets/view.js').view.prototype;
+var oldGetValue;
+var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
 exports.startup = function() {
+	// This task gets uglifying out of the way immediately when servers start.
+	// on NodeJS so it doesn't wait until the first request. If compression is
+	// initially disabled, nothing happens, and if it's later enabled, it does
+	// get done on the next request.
 	$tw.hooks.addHook('th-server-command-post-start', precache);
+
+	// Hotswaps the old ViewWidget getValue method with ours, which is
+	// unfortuantely the only way to inject uglified code into ViewWidget
+	// since we need to remain <v5.1.23 compliant.
+	oldGetValue = ViewWidgetProto.getValue;
+	ViewWidgetProto.getValue = getPluginCompressedText;
+};
+
+// This is the method that replaces viewWidget.getValue.
+// This method is the crux of Uglify.
+function getPluginCompressedText(options) {
+	if(!this.viewIndex
+	&& !this.viewSubtiddler
+	&& this.viewField === 'text'
+	&& this.wiki.compressionEnabled()
+	&& (this.wiki.getPluginInfo(this.viewTitle) || systemTargets[this.viewTitle])) {
+		return this.wiki.getTiddlerUglifiedText(this.viewTitle);
+	}
+	return oldGetValue.call(this, options);
 };
 
 function precache() {
@@ -32,7 +53,7 @@ function precache() {
 		var indexer = $tw.wiki.getIndexer('FieldIndexer');
 		var titles = indexer.lookup('plugin-type', 'plugin');
 		$tw.utils.each(titles, precacheTiddler);
-		$tw.utils.each(systemTargets, precacheTiddler);
+		$tw.utils.each(Object.keys(systemTargets), precacheTiddler);
 	}
 };
 
