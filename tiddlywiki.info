@@ -12,11 +12,11 @@
 		"dist": [
 			"--output", "./docs/",
 			"--uglify", "stub", "no",
+			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]]"
 		],
 		"test": [
 			"--output", "./docs/",
-			"--uglify", "compress", "no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		]
 	}

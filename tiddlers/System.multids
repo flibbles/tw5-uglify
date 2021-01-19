@@ -5,3 +5,4 @@ SiteTitle: Uglify
 SiteSubtitle: Tiddler compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
 config/WikiParserRules/Inline/wikilink: disable
+config/flibbles/uglify/compress: no
