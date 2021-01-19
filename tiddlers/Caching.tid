@@ -1,5 +1,5 @@
 title: Caching
-tags: Documentation
+tags: Documentation Concept
 
 Compressing javascript is expensive work, that's why //Uglify// caches the resulting compressed plugins so it doesn't have to bother doing it again.
 

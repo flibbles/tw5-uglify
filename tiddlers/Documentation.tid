@@ -3,4 +3,10 @@ tags: Uglify
 
 //Uglify// is already set up to automatically begin compressing plugins, but it can be used in various ways.
 
-<<ul Documentation>>
+!! API
+
+<<ul API>>
+
+!! Uglify concepts
+
+<<ul Concept>>
