@@ -49,13 +49,17 @@ it('recognizes nonexistent configuration', function() {
 	expect(warnings[0]).toContain('Unrecognized configuration flag: silly');
 });
 
+it('can work with string arrays', function() {
+	const wiki = exec(new $tw.Wiki(), 'blacklist', 'A B [[C D]]');
+	expect(wiki.getTiddlerText(prefix + 'blacklist')).toBe('A B [[C D]]');
+});
+
 it('prints out current settings with no arguments', function() {
-	const wiki = new $tw.Wiki();
-	const title = prefix+'cache';
-	wiki.addTiddler({title: title, text: 'bananas'});
+	const wiki = exec(new $tw.Wiki(), 'cache', 'bananas', 'blacklist', 'pluginA [[plugin B]]');
 	const log = $tw.utils.test.collect(console, 'log', () => exec(wiki));
 	expect(log).toEqual([
 		'compress:       yes',
+		'blacklist:      pluginA,plugin B',
 		'stub:           yes',
 		'cache:          bananas',
 		'cacheDirectory: ./.cache',

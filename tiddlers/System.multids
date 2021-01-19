@@ -5,4 +5,4 @@ SiteTitle: Uglify
 SiteSubtitle: Plugin compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
 config/WikiParserRules/Inline/wikilink: disable
-config/flibbles/uglify/compress: no
+config/flibbles/uglify/blacklist: Demo/plugin

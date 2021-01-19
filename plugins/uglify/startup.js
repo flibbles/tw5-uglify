@@ -12,6 +12,8 @@ Performs all necessary startup work for Uglify.
 
 'use strict';
 
+var utils = require('./utils.js');
+
 exports.name = 'uglify';
 exports.synchronous = true;
 // Before commands, or else the server hook may get called before this does.
@@ -42,10 +44,15 @@ function getPluginCompressedText(options) {
 	&& !this.viewSubtiddler
 	&& this.viewField === 'text'
 	&& this.wiki.compressionEnabled()
-	&& (this.wiki.getPluginInfo(this.viewTitle) || systemTargets[this.viewTitle])) {
+	&& (this.wiki.getPluginInfo(this.viewTitle) || systemTargets[this.viewTitle])
+	&& !blacklisted(this.wiki, this.viewTitle)) {
 		return this.wiki.getTiddlerUglifiedText(this.viewTitle);
 	}
 	return oldGetValue.call(this, options);
+};
+
+function blacklisted(wiki, title) {
+	return utils.getSetting(wiki, 'blacklist').indexOf(title) >= 0;
 };
 
 function precache() {

@@ -13,9 +13,14 @@ Utility methods for Uglify
 
 var config = {
 	compress: 'yes',
+	blacklist: '',
 	stub: 'yes',
 	cache: 'yes',
 	cacheDirectory: './.cache'
+};
+
+var configType = {
+	blacklist: Array
 };
 
 exports.getSetting = function(wiki, key) {
@@ -23,7 +28,15 @@ exports.getSetting = function(wiki, key) {
 	return wiki.getCacheForTiddler(title, 'uglifysetting', function() {
 		var def = config[key],
 			value = wiki.getTiddlerText(title, def);
-		return value ? value.trim() : undefined;
+		switch (configType[key]) {
+			case Boolean:
+				return value.trim() === 'yes';
+			case Array:
+				return $tw.utils.parseStringArray(value);
+			case String:
+			default:
+				return value ? value.trim() : undefined;
+		}
 	});
 };
 

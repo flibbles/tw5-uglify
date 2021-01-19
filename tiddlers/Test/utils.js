@@ -52,3 +52,6 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 test.noCache = () => ({title: '$:/config/flibbles/uglify/cache', text: 'no'});
 test.noCompress = () => ({title: '$:/config/flibbles/uglify/compress', text:'no'});
 test.yesCompress = () => ({title: '$:/config/flibbles/uglify/compress', text: 'yes'});
+test.blacklist = function(listArray) {
+	return {title: '$:/config/flibbles/uglify/blacklist', text: $tw.utils.stringifyList(listArray)};
+};

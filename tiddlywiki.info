@@ -17,6 +17,7 @@
 		],
 		"test": [
 			"--output", "./docs/",
+			"--uglify", "compress", "no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		]
 	}

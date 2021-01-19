@@ -17,7 +17,7 @@ function renderTiddler(wiki, pluginTitle, format) {
 	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
 };
 
-it("javascript setting", function() {
+it("compress setting", function() {
 	var name = "$:/plugins/flibbles/whatever";
 	var tiddlers = [
 			{title: "readme", text: "This is the readme text"},
@@ -47,6 +47,38 @@ it("javascript setting", function() {
 	expect(text).not.toContain('longArgName');
 });
 
+it('respects the blacklist', function() {
+	var name = "$:/plugins/flibbles/blacklistTest";
+	var tiddlers = [
+			{title: "readme", text: "This is the readme text"},
+			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
+	const wiki = new $tw.Wiki();
+	var text;
+	$tw.utils.test.addPlugin(wiki, name, tiddlers);
+
+	// Let's not worry about caching for this test.
+	wiki.addTiddler($tw.utils.test.noCache());
+	// Test without a blacklist
+	var log = $tw.utils.test.collect(console, 'log', function() {
+		text = renderTiddler(wiki, name);
+	});
+	expect(text).toContain('readme text');
+	expect(text).not.toContain('longArgName');
+	expect(log[0]).toContain(name);
+
+	// Now we use a filled out blacklist
+	wiki.addTiddler($tw.utils.test.blacklist([name]));
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('readme text');
+	expect(text).toContain('longArgName');
+
+	// Now with a blank blacklist
+	wiki.addTiddler($tw.utils.test.blacklist());
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('readme text');
+	expect(text).not.toContain('longArgName');
+});
+
 it('javascript settings and boot code', function() {
 	var wiki = new $tw.Wiki();
 	wiki.addTiddlers([
@@ -63,6 +95,11 @@ it('javascript settings and boot code', function() {
 
 	wiki.addTiddler($tw.utils.test.yesCompress());
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
+
+	// Test that boot code can be blacklisted
+	wiki.addTiddler($tw.utils.test.blacklist('$:/boot/boot.js'));
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });
 
