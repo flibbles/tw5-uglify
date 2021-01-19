@@ -12,10 +12,12 @@ title: Templates/Demo
 <!-- Encouraging editing plugins through rawtext is a bad idea.
      Lots of exceptions will be thrown.
 -->
-<$reveal type='nomatch' stateTitle=<<currentTiddler>> stateField='plugin-type' text='plugin'>
 
-Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code updated [[in real time|Interactive Demo]].
-</$reveal>
+<$list variable='notes' filter='[all[current]addsuffix[/notes]is[tiddler]]'>
+
+<$transclude tiddler=<<notes>> />
+
+</$list>
 
 <div>
 
