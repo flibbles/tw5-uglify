@@ -4,7 +4,7 @@ tags: Uglify
 
 //Uglify// can be installed on Node.JS servers and also on TiddlyWiki
 
-<$list filter="[[Uglify on Node.JS]] [[Uglify on TiddlyWIki]]">
+<$list filter="[[Uglify on Node.JS]] [[Uglify on TiddlyWiki]]">
 
 <$vars title={{{ [all[current]removeprefix[Uglify on ]] }}} >
 
