@@ -102,7 +102,7 @@ if ($tw.node) {
 	exports.generateCacheFilepath = function(wiki, title) {
 		// Remove any forward or backward slashes so we don't create directories
 		// Remove any characters that can't be used in cross-platform filenames
-		var filename = $tw.utils.transliterate(title.replace(/\/|\\|<|>|~|\:|\"|\||\?|\*|\^/g,"_"));
+		var filename = $tw.utils.transliterate(title.replace(/\/|\\|<|>|~|\:|\"|\||\?|\*|\^/g,'_'));
 		// Having it start with a '.' can be problematic in some cases.
 		if (filename[0] == '.') {
 			filename = filename.replace('.', '_');

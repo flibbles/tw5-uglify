@@ -15,7 +15,7 @@ var logger = require('./logger.js');
 var utils = require('./utils.js');
 
 exports.info = {
-	name: "uglify",
+	name: 'uglify',
 	synchronous: true
 };
 

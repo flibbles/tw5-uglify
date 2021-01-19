@@ -23,11 +23,11 @@ Disable Compression</$button>
 @@
 
 <!-- This filter determines if we're on a Node.JS backed tiddlywiki which has the tiddlyweb plugin needed to write back changes. -->
-<$list filter="[[$:/plugins/tiddlywiki/tiddlyweb]is[tiddler]]">
+<$list filter='[[$:/plugins/tiddlywiki/tiddlyweb]is[tiddler]]'>
 
 <!-- That reveal text determines the current compression state of the boot code sent to the browser. That search string only shows up in a comment, which would be culled from compressed code. -->
 <$reveal
-	type="match"
+	type='match'
 	state=<<config>>
 	text={{{ [[$:/boot/boot.js]search::literal[type: application/javascript]then[yes]] ~no }}}>
 

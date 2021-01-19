@@ -33,13 +33,13 @@ exports.getTiddlerUglifiedText = function(title) {
 			if (pluginInfo) {
 				var newInfo = $tw.utils.extend({}, pluginInfo);
 				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-					logger.log("Compressing:", title);
+					logger.log('Compressing:', title);
 					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 					return JSON.stringify(newInfo, null);
 				});
 			} else if (tiddler.fields.type === 'application/javascript') {
 				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-					logger.log("Compressing:", title);
+					logger.log('Compressing:', title);
 					return compressor.compress(tiddler.fields.text, title);
 				});
 			}
