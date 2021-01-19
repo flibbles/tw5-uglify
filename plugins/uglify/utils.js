@@ -20,7 +20,10 @@ var config = {
 };
 
 var configType = {
-	blacklist: Array
+	compress: Boolean,
+	blacklist: Array,
+	stub: Boolean,
+	cache: Boolean
 };
 
 exports.getSetting = function(wiki, key) {

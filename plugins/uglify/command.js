@@ -54,8 +54,17 @@ function list(wiki) {
 	}
 	$tw.utils.each(settings, function(value, key) {
 		var padding = new Array(maxKeyLength + 1 - key.length).join(' ');
-		console.log(key + ':' + padding, value);
+		console.log(key + ':' + padding, stringify(value));
 	});
+};
+
+function stringify(value) {
+	switch(typeof value) {
+		case 'boolean':
+			return value? 'yes' : 'no';
+		default:
+			return value.toString();
+	}
 };
 
 exports.Command = Command;

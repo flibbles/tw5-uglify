@@ -75,7 +75,7 @@ function saveTiddlerCache(wiki, title, checksum, text, onComplete) {
 };
 
 function cachingEnabled(wiki) {
-	return utils.getSetting(wiki, 'cache') === 'yes';
+	return utils.getSetting(wiki, 'cache');
 };
 
 function cachingDir(wiki) {

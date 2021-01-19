@@ -55,13 +55,13 @@ it('can work with string arrays', function() {
 });
 
 it('prints out current settings with no arguments', function() {
-	const wiki = exec(new $tw.Wiki(), 'cache', 'bananas', 'blacklist', 'pluginA [[plugin B]]');
+	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
 	const log = $tw.utils.test.collect(console, 'log', () => exec(wiki));
 	expect(log).toEqual([
 		'compress:       yes',
 		'blacklist:      pluginA,plugin B',
 		'stub:           yes',
-		'cache:          bananas',
+		'cache:          no',
 		'cacheDirectory: ./.cache',
 	]);
 });

@@ -55,11 +55,11 @@ exports.getTiddlerUglifiedText = function(title) {
 };
 
 exports.compressionEnabled = function() {
-	return utils.getSetting(this, 'compress') === 'yes';
+	return utils.getSetting(this, 'compress');
 };
 
 function stubbingEnabled(wiki) {
-	return !$tw.browser && utils.getSetting(wiki, 'stub') === 'yes';
+	return !$tw.browser && utils.getSetting(wiki, 'stub');
 };
 
 function pluginStub(wiki, title) {
