@@ -4,7 +4,7 @@ tags: Documentation Concept
 //Uglify// can be configured through numerous config tiddlers
 
 <table>
-<$list filter="[prefix[Configuration/]]">
+<$list filter="[all[current]tagging[]]">
 <$vars configTiddler={{{ [all[current]removeprefix[Configuration/]addprefix[$:/config/flibbles/uglify/]] }}} >
 <tr><td>''<$text text=<<configTiddler>> />''</td><td>
 

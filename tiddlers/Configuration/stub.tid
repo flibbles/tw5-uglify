@@ -1,4 +1,3 @@
-title: Configuration/stub
 default: yes
 
 Configure whether //Uglify// will create a [[stub of itself|Stubbing]] to send to clients in lieu of sending the entire plugin. This setting has no effect for standalone TiddlyWikis.
