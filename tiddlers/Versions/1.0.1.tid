@@ -1,0 +1,5 @@
+title: Versions/1.0.1
+created: 20210119202323795
+
+* Added support for blacklisting plugins you don't want compressed. ...mostly so I could stop compressing the demo plugin automatically.
+* Compiling using a slightly modified version of TW5 which includes some size optimizations which haven't been merged yet.
