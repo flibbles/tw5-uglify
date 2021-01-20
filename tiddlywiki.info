@@ -19,6 +19,10 @@
 			"--output", "./docs/",
 			"--uglify", "compress", "no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
+		],
+		"empty": [
+			"--output", "./docs/",
+			"--rendertiddler","editions/download-empty","empty.html","text/plain"
 		]
 	}
 }
