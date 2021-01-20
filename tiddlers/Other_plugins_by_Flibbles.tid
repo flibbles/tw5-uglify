@@ -1,0 +1,11 @@
+title: Other plugins by Flibbles
+
+Other plugins I've developed for TiddlyWiki5
+
+!! [[Relink|https://flibbles.github.io/tw5-relink/]]
+
+Automatically updates all references to a tiddler when you rename it. //All// references.
+
+!! [[XML|https://flibbles.github.io/tw5-xml/]]
+
+Toolkit for doing all things XML --- XPath and JQuery-like filters and widgets. XML rendering. Automatic template application. And more.
