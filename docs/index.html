@@ -532,7 +532,9 @@ This is an inconvenience, however, TiddlyWiki itself does not support ES6 in ord
 
 You'll see exceptions pointing you to parts of your source where the problem is, though it won't say it's an EC6 problem. It will say something more like, "unexpected token here" or such.
 
-Your TiddlyWiki will still work, but that particular plugin will not be compressed.
+Your TiddlyWiki will still work. That plugin will still be compressed, but any files within it that encountered errors will not be compressed.
+
+If you're on Node.js your server will cache the suboptimal results to a file, so you won't see the errors again on subsequent server boots. However, it will automatically try again on the next reboot as soon as you've updated the plugin.
 </pre>
 </div>
 <div title="editions/download-empty">
