@@ -47,18 +47,6 @@ it('minifies variables at top level scope', function() {
 	expect(exports.count()).toBe(2);
 });
 
-it('throws useful error on failure', function() {
-	var error;
-	var text =  "exports.run = function(number) { if (isNaN(x)) { return 'not ";
-	try {
-		compress(text, 'Luigi.js');
-		fail('Javascript should have caused an error to be thrown')
-	} catch (error) {
-		expect(error.filename).toBe('Luigi.js');
-		expect(error.line).toBe(1);
-	}
-});
-
 /*
 it('can handle backticks?', function() {
 	try {

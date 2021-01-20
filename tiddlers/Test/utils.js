@@ -49,6 +49,11 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 	wiki.unpackPluginTiddlers();
 };
 
+test.uniqName = function() {
+	var bit = (Date.now() % 1000000).toString();
+	return bit + Math.floor(Math.random() * 1000000);
+};
+
 test.noCache = () => ({title: '$:/config/flibbles/uglify/cache', text: 'no'});
 test.noCompress = () => ({title: '$:/config/flibbles/uglify/compress', text:'no'});
 test.yesCompress = () => ({title: '$:/config/flibbles/uglify/compress', text: 'yes'});

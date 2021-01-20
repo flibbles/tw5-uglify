@@ -29,28 +29,20 @@ exports.getTiddlerUglifiedText = function(title) {
 			return undefined;
 		}
 		var pluginInfo = wiki.getPluginInfo(title);
-		try {
-			if (pluginInfo) {
-				var newInfo = $tw.utils.extend({}, pluginInfo);
-				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-					logger.log('Compressing:', title);
-					newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
-					return JSON.stringify(newInfo, null);
-				});
-			} else if (tiddler.fields.type === 'application/javascript') {
-				return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-					logger.log('Compressing:', title);
-					return compressor.compress(tiddler.fields.text, title);
-				});
-			}
-			return tiddler.text || '';
-		} catch (err) {
-			// It failed to compress for some reason. Just log a message
-			// and return the uncompressed version.
-			// Unless this file changes, we'll keep returning that too.
-			logger.warn('Failed to compress', title + '.\n\n    * message:', err.message, '\n    * tiddler:', err.filename, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
-			return tiddler.fields.text;
+		if (pluginInfo) {
+			var newInfo = $tw.utils.extend({}, pluginInfo);
+			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+				logger.log('Compressing:', title);
+				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
+				return JSON.stringify(newInfo, null);
+			});
+		} else if (tiddler.fields.type === 'application/javascript') {
+			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+				logger.log('Compressing:', title);
+				return compressor.compress(tiddler.fields.text, title);
+			});
 		}
+		return tiddler.text || '';
 	});
 };
 

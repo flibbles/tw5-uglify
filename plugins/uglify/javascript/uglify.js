@@ -18226,6 +18226,8 @@ function minify(files, options) {
 	...or the same files (and order) as implied in tools/node.js. Then add the method(s) below.
 */
 
+var logger = require('../logger.js');
+
 exports.compress = function(text, title) {
 	var code = {};
 	code[title] = text;
@@ -18234,7 +18236,10 @@ exports.compress = function(text, title) {
 		output: {quote_style: 1}}; // single quotes. Smaller in TW.
 	var results = minify(code, options);
 	if (results.error) {
-		throw results.error;
+		var err = results.error;
+		logger.warn('Failed to compress', err.filename + '.\n\n    * message:', err.message, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
+		// Return the uncompressed text as a backup
+		return text;
 	}
 	return results.code;
 };

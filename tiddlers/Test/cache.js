@@ -37,16 +37,11 @@ function testWiki() {
 	return wiki;
 };
 
-function newName() {
-	var bit = (Date.now() % 1000000).toString();
-	return bit + Math.floor(Math.random() * 1000000);
-};
-
 describe('caching', function() {
 
 it('passes exception up if initializer throws without onComplete', async function() {
 	const wiki = testWiki();
-	const name = newName();
+	const name = $tw.utils.test.uniqName();
 	function thrower() {
 		throw 'test exception';
 	};
@@ -61,13 +56,13 @@ it('passes exception up if initializer throws without onComplete', async functio
 	}
 	wiki.addTiddler({title: cacheTiddler, text: 'no'});
 	expect(function() {
-		cacheSync(wiki, newName(), 'key2', thrower);
+		cacheSync(wiki, $tw.utils.test.uniqName(), 'key2', thrower);
 	}).toThrow('test exception');
 });
 
 it('passes exceptions to onComplete if supplied; caching on', function(done) {
 	const wiki = testWiki();
-	const name = newName();
+	const name = $tw.utils.test.uniqName();
 	const path = testDir + '/' + name + '.tid';
 	cache(wiki, name, 'key1', function() { throw 'test exception'; } )
 		.then(function(info) {
@@ -87,7 +82,7 @@ it('passes exceptions to onComplete if supplied; caching on', function(done) {
 it('passes exceptions to onComplete if supplied; caching off', function(done) {
 	const wiki = testWiki();
 	wiki.addTiddler({title: cacheTiddler, text: 'no'});
-	cache(wiki, newName(), 'key1', function() { throw 'test exception'; } )
+	cache(wiki, $tw.utils.test.uniqName(), 'key1', function() { throw 'test exception'; } )
 		.then(function(info) {
 			done('Exception was not passed to callback method');
 		})
@@ -104,7 +99,7 @@ if ($tw.node) {
 	it('can use a default directory', async function() {
 		var wiki = new $tw.Wiki();
 		// defaults to .cache
-		var name = newName();
+		var name = $tw.utils.test.uniqName();
 		var path = './.cache/'+name+'.tid';
 		var info = await cache(wiki, name, 'textContent', () => 'output');
 		expect(info.saved).toBe(true);
@@ -116,7 +111,7 @@ if ($tw.node) {
 		// because just using toString() would likely result in unreliable
 		// hashes.
 		const wiki = testWiki();
-		const name = newName();
+		const name = $tw.utils.test.uniqName();
 		expect(function() {
 			cacheSync(wiki, name, {tiddler: {title: 'textContent'}}, () => '');
 		}).toThrowError('Expected string for file cache key, not [object Object]');
@@ -125,7 +120,7 @@ if ($tw.node) {
 	it('can be disabled', async function(done) {
 		var wiki = new $tw.Wiki();
 		wiki.addTiddler({title: cacheTiddler, text: 'no'});
-		var name = newName();
+		var name = $tw.utils.test.uniqName();
 		var path = './.cache/'+name+'.tid';
 		var info = await cache(wiki, name, 'textContent', () => 'output');
 		expect(info.saved).toBe(false);
@@ -139,7 +134,7 @@ if ($tw.node) {
 
 	it('overwrites existing caches, not make iterative ones', async function() {
 		const wiki = testWiki();
-		var name = newName();
+		var name = $tw.utils.test.uniqName();
 		await cache(wiki, name, 'first', () => 'output1');
 		await cache(wiki, name, 'second', () => 'output2');
 		const files = await fs.readdir(testDir);
@@ -154,7 +149,7 @@ if ($tw.node) {
 
 	it('handles bad writes with callback', async function(done) {
 		const wiki = new $tw.Wiki();
-		const name = newName();
+		const name = $tw.utils.test.uniqName();
 		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
 		try {
 			await cache(wiki, name, 'anything', () => 'output');
@@ -169,7 +164,7 @@ if ($tw.node) {
 
 	it('handles bad writes without callback', function(done) {
 		const wiki = new $tw.Wiki();
-		const name = newName();
+		const name = $tw.utils.test.uniqName();
 		const oldAlert = logger.alert;
 		// yeah... there's no try/finally for setting the logger.alert back.
 		// Can't do it here. Just have to hope this test works as expected.
@@ -189,7 +184,7 @@ if ($tw.node) {
 		var info,
 			accessCount = 0;
 		const wiki = testWiki(),
-			name = newName();
+			name = $tw.utils.test.uniqName();
 		function outputter() {
 			accessCount++;
 			return 'output ' + accessCount;
