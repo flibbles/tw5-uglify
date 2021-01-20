@@ -1,0 +1,5 @@
+title: Versions/1.0.2
+created: 20210120033039999
+
+* Added build target to create empty tiddler from command line.
+* When encountering compression failure, continue trying to compress the rest of the plugin and file cache the results anyway.

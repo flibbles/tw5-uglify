@@ -3,7 +3,7 @@
 	"title": "$:/plugins/flibbles/uglify",
 	"description": "Minify and compress javascript plugins",
 	"author": "Flibbles",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"core-version": ">=5.1.23",
 	"source": "https://github.com/flibbles/tw5-uglify",
 	"demo": "http://flibbles.github.io/tw5-relink/",
