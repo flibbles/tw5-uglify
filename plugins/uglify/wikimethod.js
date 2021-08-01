@@ -42,7 +42,7 @@ exports.getTiddlerUglifiedText = function(title) {
 				return compressor.compress(tiddler.fields.text, title);
 			});
 		}
-		return tiddler.text || '';
+		return tiddler.fields.text || '';
 	});
 };
 

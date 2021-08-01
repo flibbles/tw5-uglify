@@ -11,6 +11,14 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('wikimethod: getTiddlerUglifiedText', function() {
 
+it('passes through nonjavascript entities', function() {
+	var wiki = new $tw.Wiki();
+	wiki.addTiddlers([
+		{title: 'nonJava',
+		 text: 'pass through'}]);
+	expect(wiki.getTiddlerUglifiedText('nonJava')).toEqual('pass through');
+});
+
 it('on failure, be graceful', async function() {
 	// We test many things in this beastly test...
 	const pluginName = 'plugin_' + $tw.utils.test.uniqName();
