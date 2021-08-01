@@ -79,12 +79,19 @@ it('respects the blacklist', function() {
 it('javascript settings and boot code', function() {
 	var wiki = new $tw.Wiki();
 	wiki.addTiddlers([
-		{title: "$:/boot/boot.js", text: "function func(longArgName) {return longArgName;}"},
-		{title: "$:/boot/bootprefix.js", text: "function func(longPrefixName) {return longPrefixName;}"},
+		{title: "$:/boot/boot.js",
+		 type: "application/javascript",
+		 text: "exports.func = function(longArgName) {return longArgName;}"},
+		{title: "$:/boot/bootprefix.js",
+		 type: "application/javascript",
+		 text: "exports.func = function(longPrefixName) {return longPrefixName;}"},
 		$tw.utils.test.noCache()]);
 
+	spyOn(console, 'log');
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('function');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).toContain('function');
 
 	wiki.addTiddler($tw.utils.test.noCompress());
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('longArgName');
@@ -93,6 +100,8 @@ it('javascript settings and boot code', function() {
 	wiki.addTiddler($tw.utils.test.yesCompress());
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
+	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('function');
+	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).toContain('function');
 
 	// Test that boot code can be blacklisted
 	wiki.addTiddler($tw.utils.test.blacklist('$:/boot/boot.js'));
