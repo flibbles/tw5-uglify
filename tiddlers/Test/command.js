@@ -43,10 +43,9 @@ it('reverts to default if no or empty value given', function() {
 });
 
 it('recognizes nonexistent configuration', function() {
-	var warnings = $tw.utils.test.collect(logger, 'warn', function() {
-		const wiki = exec(new $tw.Wiki(), 'silly', 'yes');
-	});
-	expect(warnings[0]).toContain('Unrecognized configuration flag: silly');
+	spyOn(logger, 'warn');
+	const wiki = exec(new $tw.Wiki(), 'silly', 'yes');
+	expect(logger.warn).toHaveBeenCalledWith('Unrecognized configuration flag: silly');
 });
 
 it('can work with string arrays', function() {
@@ -56,14 +55,13 @@ it('can work with string arrays', function() {
 
 it('prints out current settings with no arguments', function() {
 	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
-	const log = $tw.utils.test.collect(console, 'log', () => exec(wiki));
-	expect(log).toEqual([
-		'compress:       yes',
-		'blacklist:      pluginA,plugin B',
-		'stub:           yes',
-		'cache:          no',
-		'cacheDirectory: ./.cache',
-	]);
+	spyOn(console, 'log');
+	exec(wiki);
+	expect(console.log).toHaveBeenCalledWith('compress:      ', 'yes');
+	expect(console.log).toHaveBeenCalledWith('blacklist:     ', 'pluginA,plugin B');
+	expect(console.log).toHaveBeenCalledWith('stub:          ', 'yes');
+	expect(console.log).toHaveBeenCalledWith('cache:         ', 'no');
+	expect(console.log).toHaveBeenCalledWith('cacheDirectory:', './.cache');
 });
 
 });

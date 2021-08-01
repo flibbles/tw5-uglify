@@ -22,24 +22,22 @@ it('on failure, be graceful', async function() {
 		{title: 'good.js', type: 'application/javascript', text: goodText}];
 
 	const wiki = new $tw.Wiki();
-	var text;
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	var logs;
-	var errors = $tw.utils.test.collect(logger, 'alert', function() {
-		logs = $tw.utils.test.collect(console, 'log', function() {
-			text = wiki.getTiddlerUglifiedText(pluginName);
-			// Test: The bad code is there, uncompressed but usable
-			expect(text).toContain(badText);
-			// Test: The good code is still fully compressed
-			expect(text).toContain('exports.func');
-			expect(text).not.toContain('argName');
-		});
-		expect(logs.length).toBe(1);
-	});
+	spyOn(console, 'log');
+	spyOn(logger, 'alert');
+	const text = wiki.getTiddlerUglifiedText(pluginName);
+	// Test: The bad code is there, uncompressed but usable
+	expect(text).toContain(badText);
+	// Test: The good code is still fully compressed
+	expect(text).toContain('exports.func');
+	expect(text).not.toContain('argName');
+	expect(console.log.calls.count()).toEqual(1);
+
 	// Test: The logged error is helpful
-	expect(errors.length).toBe(1);
-	expect(errors[0]).toContain('bad.js');
-	expect(errors[0]).toContain('line: 1');
+	expect(logger.alert.calls.count()).toEqual(1);
+	var error = logger.alert.calls.mostRecent().args.join(' ');
+	expect(error).toContain('bad.js');
+	expect(error).toContain('line: 1');
 
 	// The rest of this test concerns node.js file caching
 	if($tw.node) {

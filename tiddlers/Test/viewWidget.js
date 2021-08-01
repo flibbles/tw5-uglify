@@ -26,13 +26,11 @@ it("compress setting", function() {
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
 	wiki.addTiddler($tw.utils.test.noCache());
-	var text;
-	var log = $tw.utils.test.collect(console, 'log', function() {
-		text = renderTiddler(wiki, name);
-	});
+	spyOn(console, 'log');
+	var text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
-	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/whatever');
+	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/whatever');
 
 	// The same wiki should be alterable without worrying about cached values
 	wiki.addTiddler($tw.utils.test.noCompress());
@@ -58,13 +56,12 @@ it('respects the blacklist', function() {
 
 	// Let's not worry about caching for this test.
 	wiki.addTiddler($tw.utils.test.noCache());
+	spyOn(console, 'log');
 	// Test without a blacklist
-	var log = $tw.utils.test.collect(console, 'log', function() {
-		text = renderTiddler(wiki, name);
-	});
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
-	expect(log[0]).toContain(name);
+	expect(console.log.calls.mostRecent().args.join(' ')).toContain(name);
 
 	// Now we use a filled out blacklist
 	wiki.addTiddler($tw.utils.test.blacklist([name]));
@@ -118,14 +115,13 @@ it("stub setting", function() {
 
 	// no should not stub on either Node or browser, but it will compress
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
-	const log = $tw.utils.test.collect(console, 'log', function() {
-		text = renderTiddler(wiki, name);
-	});
+	spyOn(console, 'log');
+	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
 	expect(text).toContain('zebra');
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
-	expect(log[0]).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
+	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 
 	// yes should stub on Node.JS, but still NOT stub on browser
 	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
@@ -154,20 +150,20 @@ it('supports jsuglified view format', function() {
 		{title: 'myFile.js', type: 'application/javascript', text: 'exports.func = function(longArgName) {return longArgName;}'},
 		$tw.utils.test.noCache()]);
 
-	var logs = $tw.utils.test.collect(console, 'log', function() {
-		var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
-		expect(output).toContain('exports.func');
-		expect(output).not.toContain('longArgName');
+	spyOn(console, 'log');
+	var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
+	expect(output).toContain('exports.func');
+	expect(output).not.toContain('longArgName');
 
-		wiki.addTiddler($tw.utils.test.noCompress());
-		// should still compress
-		var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
-		expect(output).toContain('exports.func');
-		expect(output).not.toContain('longArgName');
-	});
+	wiki.addTiddler($tw.utils.test.noCompress());
+	// should still compress
+	var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
+	expect(output).toContain('exports.func');
+	expect(output).not.toContain('longArgName');
+
 	// It would compress once and log about it, then a tiddler cache will still
 	// have the results for the second call.
-	expect(logs.length).toBe(1);
+	expect(console.log.calls.count()).toEqual(1);
 });
 
 });

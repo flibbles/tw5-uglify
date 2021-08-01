@@ -11,20 +11,6 @@ this file in all the test suites.
 
 var test = exports.test = Object.create(null);
 
-test.collect = function(container, logMethod, block) {
-	var oldLog = container[logMethod];
-	var messages = [];
-	container[logMethod] = function(/* args */) {
-		messages.push(Array.prototype.join.call(arguments, ' '));
-	};
-	try {
-		block();
-	} finally {
-		container[logMethod] = oldLog;
-	}
-	return messages;
-};
-
 test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 	options = options || {};
 	var tiddlerHash = Object.create(null);
