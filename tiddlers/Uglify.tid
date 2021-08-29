@@ -10,6 +10,8 @@ title: Uglify
 
 This is the documentation site for //Uglify//, a TiddlyWiki5 plugin which compresses plugins seamlessly. Never again will developers have to deal with npm-gulp, and end-users can easily compress plugins they've collected at their own discretion.
 
+''Note:'' Uglify doesn't really work for Tiddlywiki V5.2.x. I've pushed Uglify V2.0, which manages to do it through the hackiest of hacks, but it's flimsy. Don't keep Uglify around after you've compressed your plugins, because it has a permanent performance overhead now.
+
 <<ul Uglify>>
 
 So what can //Uglify// do for you? Well, it can solve several problems. What do you want to accomplish?
