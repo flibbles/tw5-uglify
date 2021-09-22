@@ -1,0 +1,5 @@
+title: Versions/1.0.3
+created: 20210922044809931
+
+* Uglify will now work with Tiddlywiki V5.2.* correctly. ...once it is officially released.
+** And once it's released, Uglify will likely have a more official release, which may drop support for Tiddlywiki V5.1.*.
