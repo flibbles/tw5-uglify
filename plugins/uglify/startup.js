@@ -43,16 +43,10 @@ function getPluginCompressedText(options) {
 	if(!this.viewIndex
 	&& !this.viewSubtiddler
 	&& this.viewField === 'text'
-	&& this.wiki.compressionEnabled()
-	&& (this.wiki.getPluginInfo(this.viewTitle) || systemTargets[this.viewTitle])
-	&& !blacklisted(this.wiki, this.viewTitle)) {
+	&& utils.shouldCompress(this.wiki,this.viewTitle)) {
 		return this.wiki.getTiddlerUglifiedText(this.viewTitle);
 	}
 	return oldGetValue.call(this, options);
-};
-
-function blacklisted(wiki, title) {
-	return utils.getSetting(wiki, 'blacklist').indexOf(title) >= 0;
 };
 
 function precache() {

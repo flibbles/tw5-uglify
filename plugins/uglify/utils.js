@@ -11,6 +11,8 @@ Utility methods for Uglify
 /*global $tw: false */
 'use strict';
 
+var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
+
 var config = {
 	compress: 'yes',
 	blacklist: '',
@@ -49,4 +51,18 @@ exports.getSettings = function(wiki) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
 	return settings;
+};
+
+/**
+ * Returns true if the given title is something which should be compressed
+ * During saving or serving.
+ */
+exports.shouldCompress = function(wiki,title) {
+	return wiki.compressionEnabled()
+	    && (wiki.getPluginInfo(title) || systemTargets[title])
+	    && !blacklisted(wiki, title);
+};
+
+function blacklisted(wiki, title) {
+	return exports.getSetting(wiki, 'blacklist').indexOf(title) >= 0;
 };

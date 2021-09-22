@@ -14,8 +14,9 @@ var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
 
-var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
-
+/**This returns the compressed tiddlers regardless of whether it would be
+ * compressed during saving or serving.
+ */
 exports.getTiddlerUglifiedText = function(title) {
 	var wiki = this;
 	// Currently we only support stubbing uglify itself.
