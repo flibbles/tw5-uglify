@@ -153,6 +153,7 @@ it("stub setting", function() {
 	}
 });
 
+/** This test relied on Tiddlywiki changes which were never pushed.
 it('supports jsuglified view format', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddlers([
@@ -174,5 +175,6 @@ it('supports jsuglified view format', function() {
 	// have the results for the second call.
 	expect(console.log.calls.count()).toEqual(1);
 });
+*/
 
 });
