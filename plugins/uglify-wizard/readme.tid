@@ -1,0 +1,5 @@
+title: $:/plugins/flibbles/uglify-wizard/readme
+
+This plugin contains the user interface components used to create the uglifier wizard for the uglify plugin.
+
+[[Source code|https://github.com/flibbles/tw5-uglify]]

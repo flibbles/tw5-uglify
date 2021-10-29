@@ -1,0 +1,58 @@
+title: Wizard
+tags: $:/tags/AboveStory
+
+<div class="tc-uglify-wizard-wrapper">
+
+<div class="tc-uglify-wizard">
+
+! ~TiddlyWiki Uglifier Wizard
+
+<$list filter="[[$:/Import]is[missing]]">
+
+{{$:/core/images/download-button}}
+
+Drag a ~TiddlyWiki file here to compress it
+
+or click to pick a file <$browse/>
+
+</$list>
+
+<$reveal state="$:/Import!!status" type="match" text="pending">
+
+The following tiddlers will be compressed <$button message="tm-perform-import" param="$:/Import">Uglify</$button>
+
+{{$:/Import||$:/core/ui/ImportListing}}
+
+</$reveal>
+
+<$reveal state="$:/Import!!status" type="match" text="complete">
+
+Compression completed. Click the button below to save your compressed ~TiddlyWiki file
+
+Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
+
+<$reveal type="match" state="$:/isEncrypted" text="yes">
+
+''The file will be encrypted with your existing password.''
+
+</$reveal>
+
+{{$:/plugins/flibbles/uglify-wizard/save}}
+
+Close this browser window to prevent others from being able to access your data.
+
+For help and support, visit [[the uglify github page|https://github.com/flibbles/tw5-uglify]].
+
+</$reveal>
+
+</div>
+
+version <<version>>
+
+//Your data will not leave your browser. <a href="#" download="uglified.html">Download</a> this compressor to use it offline//
+
+//If clicking the link doesn't work, right-click the link and save it that way.//
+
+//Your browser may ask you to accept the download before it begins.//
+
+</div>

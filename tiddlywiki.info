@@ -20,6 +20,10 @@
 			"--uglify", "compress", "no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", ""
 		],
+		"wizard": [
+			"--output", "./docs/",
+			"--rendertiddler","editions/uglify-wizard","wizard.html","text/plain"
+		],
 		"empty": [
 			"--output", "./docs/",
 			"--rendertiddler","editions/download-empty","empty.html","text/plain"

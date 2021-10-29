@@ -1,0 +1,10 @@
+{
+	"name": "Uglify-wizard",
+	"title": "$:/plugins/flibbles/uglify-wizard",
+	"description": "Wizard for uglifying standalone Tiddlywikis",
+	"author": "Flibbles",
+	"source": "https://github.com/flibbles/tw5-uglify",
+	"list": "readme license",
+	"dependents": ["$:/plugins/flibbles/uglify"],
+	"plugin-type": "plugin"
+}

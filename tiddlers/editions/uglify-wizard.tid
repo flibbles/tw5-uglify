@@ -1,0 +1,6 @@
+title: editions/uglify-wizard
+
+\define saveTiddlerFilter()
+[[$:/core]] [[$:/plugins/flibbles/uglify]] [[$:/plugins/flibbles/uglify-wizard]] [[$:/themes/tiddlywiki/vanilla]]
+\end
+{{$:/core/templates/tiddlywiki5.html}}
