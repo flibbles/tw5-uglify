@@ -5,7 +5,7 @@ tags: $:/tags/AboveStory
 
 <div class="tc-uglify-wizard">
 
-! ~TiddlyWiki Uglifier Wizard
+! ~TiddlyWiki Uglifier
 
 <$list filter="[[$:/Import]is[missing]]">
 
@@ -19,7 +19,7 @@ or click to pick a file <$browse/>
 
 <$reveal state="$:/Import!!status" type="match" text="pending">
 
-The following tiddlers will be compressed <$button message="tm-perform-import" param="$:/Import">Uglify</$button>
+The following tiddlers will be loaded <$button message="tm-perform-import" param="$:/Import">Confirm</$button>
 
 {{$:/Import||$:/core/ui/ImportListing}}
 
@@ -27,7 +27,7 @@ The following tiddlers will be compressed <$button message="tm-perform-import" p
 
 <$reveal state="$:/Import!!status" type="match" text="complete">
 
-Compression completed. Click the button below to save your compressed ~TiddlyWiki file
+Load completed. Click the button below to compress and save ~TiddlyWiki file.
 
 Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
 
@@ -39,9 +39,14 @@ Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
 
 {{$:/plugins/flibbles/uglify-wizard/save}}
 
+The following tiddlers will be compressed.
+
+<p class="tc-uglify-compress-list"><$list filter="[[$:/boot/boot.js]] [[$:/boot/bootprefix.js]] [has[plugin-type]] -[[$:/plugins/flibbles/uglify]] -[[$:/plugins/flibbles/uglify-wizard]] -[[$:/temp/info-plugin]] +[sort[title]]">
+<$text text=<<currentTiddler>> /><br>
+</$list></p>
 Close this browser window to prevent others from being able to access your data.
 
-For help and support, visit [[the uglify github page|https://github.com/flibbles/tw5-uglify]].
+For help and support, visit [[the Uglify github page|https://github.com/flibbles/tw5-uglify]].
 
 </$reveal>
 
@@ -49,7 +54,7 @@ For help and support, visit [[the uglify github page|https://github.com/flibbles
 
 version <<version>>
 
-//Your data will not leave your browser. <a href="#" download="uglified.html">Download</a> this compressor to use it offline//
+//Your data will not leave your browser. <a href="#" download="wizard.html">Download</a> this compressor to use it offline//
 
 //If clicking the link doesn't work, right-click the link and save it that way.//
 

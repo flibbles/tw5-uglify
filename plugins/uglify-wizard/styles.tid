@@ -42,6 +42,14 @@ tags: $:/tags/Stylesheet
 	text-align: left;
 }
 
+.tc-uglify-wizard .tc-uglify-compress-list {
+	text-align: left;
+	border-width: 1px;
+	border-color: lightgray;
+	border-style: solid;
+	padding: 12px;
+}
+
 .tc-uglify-wizard input[type=file] {
 	position: absolute;
 	top: 0;
