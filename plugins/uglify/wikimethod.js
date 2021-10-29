@@ -29,7 +29,7 @@ exports.getTiddlerUglifiedText = function(title) {
 		if (!tiddler) {
 			return undefined;
 		}
-		var pluginInfo = wiki.getPluginInfo(title);
+		var pluginInfo = utils.getPluginInfo(wiki, title);
 		if (pluginInfo) {
 			var newInfo = $tw.utils.extend({}, pluginInfo);
 			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {

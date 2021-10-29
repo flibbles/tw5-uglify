@@ -22,6 +22,7 @@
 		],
 		"wizard": [
 			"--output", "./docs/",
+			"--uglify", "stub", "no",
 			"--rendertiddler","editions/uglify-wizard","wizard.html","text/plain"
 		],
 		"empty": [

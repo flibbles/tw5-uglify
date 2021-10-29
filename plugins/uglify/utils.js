@@ -59,8 +59,23 @@ exports.getSettings = function(wiki) {
  */
 exports.shouldCompress = function(wiki,title) {
 	return wiki.compressionEnabled()
-	    && (wiki.getPluginInfo(title) || systemTargets[title])
+	    && (exports.getPluginInfo(wiki, title) || systemTargets[title])
 	    && !blacklisted(wiki, title);
+};
+
+exports.getPluginInfo = function(wiki, title) {
+	var info = wiki.getPluginInfo(title);
+	if (info) {
+		return info;
+	}
+	var tiddler = wiki.getTiddler(title);
+	if (tiddler
+	&& tiddler.fields['plugin-type']
+	&& tiddler.fields.type === 'application/json') {
+		// It's a plugin, but it's not installed.
+		return wiki.getTiddlerDataCached(title, {tiddlers:[]});;
+	}
+	return undefined;
 };
 
 function blacklisted(wiki, title) {
