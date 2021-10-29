@@ -1,0 +1,3 @@
+title: $:/plugins/flibbles/uglify-wizard/pending
+
+<$button class="uglify-pending">Compressing...</$button>

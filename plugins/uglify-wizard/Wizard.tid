@@ -43,7 +43,7 @@ Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
 </$reveal>
 <$reveal state="$:/plugins/flibbles/uglify-wizard/status!!text" type="match" text="working">
 
-Compressing...
+{{$:/plugins/flibbles/uglify-wizard/pending}}
 </$reveal>
 
 The following tiddlers will be compressed.
