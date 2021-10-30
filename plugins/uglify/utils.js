@@ -78,6 +78,25 @@ exports.getPluginInfo = function(wiki, title) {
 	return undefined;
 };
 
+// Returns all tiddlers that would be compressed
+exports.allEligibleTiddlers = function(wiki) {
+	var titles = [];
+	if (wiki.compressionEnabled()) {
+		titles.push.apply(titles, Object.keys(systemTargets));
+		var indexer = $tw.wiki.getIndexer('FieldIndexer');
+		$tw.utils.each(['plugin', 'theme', 'language'], function(type) {
+			var plugins = indexer.lookup('plugin-type', type);
+			$tw.utils.each(plugins, function(title) {
+				if (!blacklisted(wiki, title)) {
+					titles.push(title);
+				}
+			});
+		});
+		titles.sort();
+	}
+	return titles;
+};
+
 function blacklisted(wiki, title) {
 	return exports.getSetting(wiki, 'blacklist').indexOf(title) >= 0;
 };

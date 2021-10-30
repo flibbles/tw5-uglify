@@ -12,31 +12,48 @@ Startup module for creating the tm-uglify-download action
 /*global $tw: false */
 "use strict";
 
+var utils = require('$:/plugins/flibbles/uglify/utils.js');
+
 // Export name and synchronous status
 exports.name = "uglify-download";
 exports.after = ["startup"];
 exports.synchronous = true;
 
-var statusTiddler = "$:/plugins/flibbles/uglify-wizard/status";
+var currentTiddler = "$:/plugins/flibbles/uglify-wizard/current";
 
 exports.startup = function() {
 	$tw.rootWidget.addEventListener("tm-uglify-download", function(event) {
 		// This event does three things in order
-		// 1. It sets statusTiddler to "working"
-		// 2. It initiates the compression and download of the wiki
-		// 3. It deletes the statusTiddler
-		// The reason for doing it here instead of as three actions,
-		// is becase we need to inject a pause between 1 and 2 so
-		// the DOM can update.
-		var wiki = $tw.wiki;
-		wiki.addTiddler({title: statusTiddler, text: "working"});
-		$tw.utils.nextTick(function() {
-			$tw.utils.nextTick(function() {
+		// 1. It sets currentTiddler to the first tiddler to compress
+		// 2. It pauses so Tiddlywiki can redraw
+		// 3. It compresses
+		// 4. If there is another to compress, go to 1, otherwise 5
+		// 5. Initiate a download
+		// By pausing, it allows the dom to make progress updates.
+		var wiki = $tw.wiki,
+			targets = utils.allEligibleTiddlers(wiki),
+			index = 0;
+		function prepNext() {
+			if (index < targets.length) {
+				wiki.addTiddler({title: currentTiddler, text: targets[index]});
+				$tw.utils.nextTick(function() {
+					// wrapping it in two nextTicks ensures that redrawing
+					// the page happens between compresses.
+					$tw.utils.nextTick(function() {
+						var target = targets[index];
+						index++;
+						// Force it to compress
+						wiki.getTiddlerUglifiedText(target)
+						prepNext();
+					});
+				});
+			} else {
 				event.type = "tm-download-file";
 				event.widget.dispatchEvent(event);
-				wiki.deleteTiddler(statusTiddler);
-			});
-		});
+				wiki.deleteTiddler(currentTiddler);
+			}
+		};
+		prepNext();
 	});
 };
 

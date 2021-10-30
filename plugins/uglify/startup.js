@@ -50,13 +50,7 @@ function getPluginCompressedText(options) {
 };
 
 function precache() {
-	if ($tw.wiki.compressionEnabled()) {
-		var indexer = $tw.wiki.getIndexer('FieldIndexer');
-		$tw.utils.each(indexer.lookup('plugin-type','plugin'), precacheTiddler);
-		$tw.utils.each(indexer.lookup('plugin-type','theme'), precacheTiddler);
-		$tw.utils.each(indexer.lookup('plugin-type','language'), precacheTiddler);
-		$tw.utils.each(Object.keys(systemTargets), precacheTiddler);
-	}
+	$tw.utils.each(utils.allEligibleTiddlers($tw.wiki), precacheTiddler);
 };
 
 function precacheTiddler(title) {

@@ -1,0 +1,4 @@
+title: $:/config/flibbles/uglify/blacklist
+
+$:/plugins/flibbles/uglify
+$:/plugins/flibbles/uglify-wizard

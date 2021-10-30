@@ -37,11 +37,11 @@ Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
 
 </$reveal>
 
-<$reveal state="$:/plugins/flibbles/uglify-wizard/status!!text" type="nomatch" text="working">
+<$reveal state="$:/plugins/flibbles/uglify-wizard/current!!text" type="match" text="">
 
 {{$:/plugins/flibbles/uglify-wizard/save}}
 </$reveal>
-<$reveal state="$:/plugins/flibbles/uglify-wizard/status!!text" type="match" text="working">
+<$reveal state="$:/plugins/flibbles/uglify-wizard/current!!text" type="nomatch" text="">
 
 {{$:/plugins/flibbles/uglify-wizard/pending}}
 </$reveal>
