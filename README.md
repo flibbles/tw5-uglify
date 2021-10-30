@@ -1,8 +1,10 @@
 # Uglify
 
-If you've ever wanted to compress your Tiddlywiki file or plugins, TW5-Uglify is for you. It can be used to automatically compress the core code and plugins served from a Node server. Or it can compress an existing standalone tiddlywiki file.
+If you've ever wanted to compress your Tiddlywiki file or plugins, TW5-Uglify is for you. 
 
-Check out the [demo site](https://flibbles.github.io/tw5-uglify/) for documentation and further explanation.
+To compress your Tiddlywiki file, you can visit the [uglify wizard](https://flibbles.github.io/tw5-uglify/uglified.html) to compress it without even having to install the plugin.
+
+You can also have your Node.JS TiddlyWiki server automatically compress all core code and plugins it serves. Check out the [demo site](https://flibbles.github.io/tw5-uglify/) for documentation and further explanation.
 
 _Note_: Uglify cannot process plugins which use ECMAScript 2015 or above. This isn't a problem for core code because Tiddlywiki doesn't support it either, but some 3rd party plugins may not abide by this limitation.
 
