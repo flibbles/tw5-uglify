@@ -1,8 +1,11 @@
+tags: Usage
 title: Uglify on TiddlyWiki
-tags: Solutions
-caption: I want to compress my standalone TiddlyWiki.
+caption: Installing into a TiddlyWiki file
 
-Even though //Uglify// is better suited for a node server, you can install //Uglify// on your standalone TiddlyWiki file in order to compress it. Follow these instructions:
+
+There isn't really a reason to install //Uglify// on your standalone TiddlyWiki. The idea is to make your file //smaller//. Instead, you probably want to use the [[Uglifier wizard]].
+
+But if for some reason you can't use the Wizard, then it's still possible to install //Uglify// on your Tiddlywiki file in order to reduce its size. Follow these instructions:
 
 <ol>
 <li>

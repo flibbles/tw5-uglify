@@ -8,17 +8,16 @@ title: Uglify
 |!Build date |<$view field="created" format="date" template="MMM DDth, YYYY" /> |
 |!TW5 compatibility |{{!!core-version}} |
 
-This is the documentation site for //Uglify//, a TiddlyWiki5 plugin which compresses plugins seamlessly. Never again will developers have to deal with npm-gulp, and end-users can easily compress plugins they've collected at their own discretion.
+//Uglify// is a TiddlyWiki5 plugin which handles all of your TiddlyWiki compression needs. What can it do for you?
 
-<<ul Uglify>>
+@@.uglify-solutions
+[ext[Compress my TiddlyWiki file|./uglified.html]]
+-or-
+[[Have NodeJS serve compressed TiddlyWikis|Uglify on Node.JS]]
+-or-
+[[Have my plugin project generate compressed output|Publishing]]
+@@
 
-So what can //Uglify// do for you? Well, it can solve several problems. What do you want to accomplish?
+For more information, see the [[Documentation]].
 
-<<ul Solutions>>
-
-Anything else?
-
-<<ul Also>>
-
-To report an issue, please visit <a href={{!!source}}>the github page</a>. But first, [[is your problem with ECMAScript 6|ECMAScript]]?
 </$tiddler>

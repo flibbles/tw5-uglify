@@ -71,3 +71,11 @@ a.uglify-dragger:active {
 	clear: both;
 	padding-top: 5px;
 }
+
+.uglify-solutions {
+	text-align: center;
+}
+
+.uglify-solutions a {
+	display: block;
+	font-size: large;

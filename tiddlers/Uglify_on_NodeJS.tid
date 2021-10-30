@@ -1,6 +1,6 @@
+tags: Usage
 title: Uglify on Node.JS
-tags: Solutions
-caption: I want my Node.js server to serve compressed javascript.
+caption: Installing onto Node.JS
 
 You can install //Uglify// on your Node.JS server, and it will serve plugins with compressed javascript to browsers, thus reducing network overhead and increasing browser performance.
 
@@ -50,3 +50,7 @@ Also, since all the compression is done on the server, there's no need for the c
 //Uglify// does //not// compress javascript which is not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
 
 If a javascript shadow tiddler is overridden, the override will not be touched. This means you can [[disable compression|Toggling Compression]], override a shadow tiddler, and then reenable compression. That tiddler will remain pretty and easy to manipulate.
+
+!! Disabling Compression temporarily
+
+{{Toggling Compression}}

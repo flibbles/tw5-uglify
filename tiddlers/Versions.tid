@@ -1,6 +1,6 @@
 title: Versions
 caption: Release Notes
-tags: Uglify
+tags: Usage
 
 <$macrocall
 	$name="tabs"
