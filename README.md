@@ -10,7 +10,7 @@ _Note_: Uglify cannot process plugins which use ECMAScript 2015 or above. This i
 
 ## How to install
 
-Uglify is primarily intended to be used on Node.js. But if you wish to utilize compression on a Tiddlywiki file, see the [documentation](https://flibbles.github.io/tw5-uglify/#Uglify%20on%20TiddlyWiki) for details.
+Installing Uglify is primarily intended for use on Node.js. If you have a standalone TiddlyWiki file, use the [uglify wizard](https://flibbles.github.io/tw5-uglify/uglified.html) instead, since you won't need to compress your file more than once.
 
 ### Node.js
 
