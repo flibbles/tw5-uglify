@@ -3,7 +3,7 @@ title: Uglify on TiddlyWiki
 caption: Installing into a TiddlyWiki file
 
 
-There isn't really a reason to install //Uglify// on your standalone TiddlyWiki. The idea is to make your file //smaller//. Instead, you probably want to use the [[Uglifier wizard]].
+There isn't really a reason to install //Uglify// on your standalone TiddlyWiki. The idea is to make your file //smaller//. Instead, you probably want to use the <<wizard "Uglifier wizard">>, which will compress your TiddlyWiki file without you ever needing to install anything.
 
 But if for some reason you can't use the Wizard, then it's still possible to install //Uglify// on your Tiddlywiki file in order to reduce its size. Follow these instructions:
 

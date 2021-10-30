@@ -10,13 +10,13 @@ title: Uglify
 
 //Uglify// is a TiddlyWiki5 plugin which handles all of your TiddlyWiki compression needs. What can it do for you?
 
-@@.uglify-solutions
-[ext[Compress my TiddlyWiki file|./uglified.html]]
+<p class="uglify-solutions">
+<<wizard "Compress my TiddlyWiki file">>
 -or-
 [[Have NodeJS serve compressed TiddlyWikis|Uglify on Node.JS]]
 -or-
 [[Have my plugin project generate compressed output|Publishing]]
-@@
+</p>
 
 For more information, see the [[Documentation]].
 

@@ -74,8 +74,12 @@ a.uglify-dragger:active {
 
 .uglify-solutions {
 	text-align: center;
+	margin-top: 0.4in;
+	margin-bottom: 0.4in;
 }
 
 .uglify-solutions a {
 	display: block;
 	font-size: large;
+	margin: 12px;
+}

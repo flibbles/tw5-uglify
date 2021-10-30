@@ -6,3 +6,4 @@ SiteSubtitle: Plugin compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
 config/WikiParserRules/Inline/wikilink: disable
 config/flibbles/uglify/blacklist: Demo/plugin
+config/flibbles/uglify/compress: no
