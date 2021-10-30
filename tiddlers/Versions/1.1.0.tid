@@ -1,0 +1,4 @@
+title: Versions/1.1.0
+created: 20211030182103076
+
+Added the Uglify Wizard which takes care of uglifying your tiddlywiki files for you. There is no longer any need for you to install uglify onto your tiddlywiki files.
