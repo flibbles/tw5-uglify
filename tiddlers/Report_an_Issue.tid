@@ -1,4 +1,13 @@
 tags: Usage
 title: Report an Issue
 
-To report an issue, please visit <a href={{!!source}}>the github page</a>. But first, [[is your problem with ECMAScript 6|ECMAScript]]?
+\import Uglify
+\define body(link)
+To report an issue, please visit [ext[the github page|$link$]]. But first, [[is your problem with ECMAScript 6|ECMAScript]]?
+\end
+
+<$tiddler tiddler=<<plugin>> >
+
+<$macrocall $name=body link={{!!source}} />
+
+</$tiddler>

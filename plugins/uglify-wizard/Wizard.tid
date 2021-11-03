@@ -53,8 +53,6 @@ The following tiddlers will be compressed.
 </$list></p>
 Close this browser window to prevent others from being able to access your data.
 
-For help and support, visit [[the Uglify github page|https://github.com/flibbles/tw5-uglify]].
-
 </$reveal>
 
 </div>
@@ -64,4 +62,6 @@ For help and support, visit [[the Uglify github page|https://github.com/flibbles
 //If your file's version is older, the uglifier will update it for you.//
 
 //Your data will not leave your browser.//
+
+For help and support, visit [[the Uglify page|https://flibbles.github.io/tw5-uglify]].
 </div>
