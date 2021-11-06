@@ -7,11 +7,12 @@ Tests the uglify compressor.
 \*/
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
-const compresser = require('$:/plugins/flibbles/uglify/javascript.js');
+
+describe('javascript uglify', function() {
 
 function compress(input, title) {
 	title = title || 'test';
-	return compresser.compress(input, title);
+	return $tw.wiki.getUglifier('application/javascript').uglify(input, title);
 };
 
 function exec(text) {
@@ -21,8 +22,6 @@ function exec(text) {
 	method(module, module.exports);
 	return module.exports;
 };
-
-describe('javascript uglify', function() {
 
 it('modules', function() {
 	var text = compress("exports.add = function(first, second) {return first + second; }");

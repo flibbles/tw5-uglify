@@ -1,13 +1,15 @@
 /*\
 title: $:/plugins/flibbles/uglify/javascript.js
-module-type: library
+module-type: uglifier
 type: application/javascript
 \*/
 
 var logger = require('./logger.js');
 var uglifyjs = require('./javascript/uglify.js');
 
-exports.compress = function(text, title) {
+exports.type = "application/javascript";
+
+exports.uglify = function(text, title) {
 	var code = {};
 	code[title] = text;
 	var options = {

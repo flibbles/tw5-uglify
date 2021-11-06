@@ -9,10 +9,10 @@ type: application/javascript
 /*global $tw: false */
 'use strict';
 
-var compressor = require('./javascript.js');
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
+var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
 /**This returns the compressed tiddlers regardless of whether it would be
  * compressed during saving or serving.
@@ -37,10 +37,11 @@ exports.getTiddlerUglifiedText = function(title) {
 				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
 				return JSON.stringify(newInfo, null);
 			});
-		} else if (tiddler.fields.type === 'application/javascript') {
+		} else if (uglifiers[tiddler.fields.type]) {
 			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+				var uglifier = uglifiers[tiddler.fields.type];
 				logger.log('Compressing:', title);
-				return compressor.compress(tiddler.fields.text, title);
+				return uglifier.uglify(tiddler.fields.text, title);
 			});
 		}
 		return tiddler.fields.text || '';
@@ -49,6 +50,10 @@ exports.getTiddlerUglifiedText = function(title) {
 
 exports.compressionEnabled = function() {
 	return utils.getSetting(this, 'compress');
+};
+
+exports.getUglifier = function(type) {
+	return uglifiers[type];
 };
 
 function stubbingEnabled(wiki) {
@@ -83,8 +88,8 @@ function compressSubtiddlers(title, pluginInfo) {
 				abridgedFields[field] = fields[field];
 			}
 		}
-		if (fields.type === 'application/javascript') {
-			abridgedFields.text = compressor.compress(fields.text, title);
+		if (uglifiers[fields.type]) {
+			abridgedFields.text = uglifiers[fields.type].uglify(fields.text, title);
 		}
 		newTiddlers[title] = abridgedFields;
 	}
