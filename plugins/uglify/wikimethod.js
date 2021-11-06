@@ -9,7 +9,7 @@ type: application/javascript
 /*global $tw: false */
 'use strict';
 
-var compressor = require('./javascript/uglify.js');
+var compressor = require('./javascript.js');
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');

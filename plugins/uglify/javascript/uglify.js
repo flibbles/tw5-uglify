@@ -1,3 +1,21 @@
+/* This file was created by concatenating together the following UglifyJS files
+
+    lib/utils.js
+    lib/ast.js
+    lib/parse.js
+    lib/transform.js
+    lib/scope.js
+    lib/output.js
+    lib/compress.js
+    lib/sourcemap.js
+    lib/mozilla-ast.js
+    lib/propmangle.js
+    lib/minify.js
+
+	...or the same files (and order) as implied in tools/node.js. Then add the following line...
+*/
+exports.minify = minify;
+
 /***********************************************************************
 
   A JavaScript tokenizer / parser / beautifier / compressor.
@@ -18205,41 +18223,3 @@ function minify(files, options) {
         AST_Node.disable_validation();
     }
 }
-
-// FLIBBLES Everything above this comment is 'cat'ed together from other files
-// ----------------------------------------
-// FLIBBLES Everything below this comment is custom'ish
-/* This file was created by concatenating together the following UglifyJS files
-
-    lib/utils.js
-    lib/ast.js
-    lib/parse.js
-    lib/transform.js
-    lib/scope.js
-    lib/output.js
-    lib/compress.js
-    lib/sourcemap.js
-    lib/mozilla-ast.js
-    lib/propmangle.js
-    lib/minify.js
-
-	...or the same files (and order) as implied in tools/node.js. Then add the method(s) below.
-*/
-
-var logger = require('../logger.js');
-
-exports.compress = function(text, title) {
-	var code = {};
-	code[title] = text;
-	var options = {
-		toplevel: true, // top level can be minified. These are modules.
-		output: {quote_style: 1}}; // single quotes. Smaller in TW.
-	var results = minify(code, options);
-	if (results.error) {
-		var err = results.error;
-		logger.warn('Failed to compress', err.filename + '.\n\n    * message:', err.message, '\n    * line:', err.line, '\n    * col:', err.col, '\n    * pos:', err.pos);
-		// Return the uncompressed text as a backup
-		return text;
-	}
-	return results.code;
-};

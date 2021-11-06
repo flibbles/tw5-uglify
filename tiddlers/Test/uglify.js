@@ -7,7 +7,7 @@ Tests the uglify compressor.
 \*/
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
-const compresser = require('$:/plugins/flibbles/uglify/javascript/uglify.js');
+const compresser = require('$:/plugins/flibbles/uglify/javascript.js');
 
 function compress(input, title) {
 	title = title || 'test';
