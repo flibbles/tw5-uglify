@@ -1,5 +1,5 @@
 /*\
-title: Test/uglify.js
+title: Test/javascript.js
 type: application/javascript
 tags: $:/tags/test-spec
 
@@ -8,7 +8,7 @@ Tests the uglify compressor.
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
-describe('javascript uglify', function() {
+describe('javascript uglifier', function() {
 
 function compress(input, title) {
 	title = title || 'test';
