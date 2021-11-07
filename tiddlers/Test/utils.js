@@ -40,6 +40,10 @@ test.uniqName = function() {
 	return bit + Math.floor(Math.random() * 1000000);
 };
 
+test.setting = function(key, value) {
+	return {title: '$:/config/flibbles/uglify/' + key, text: value};
+};
+
 test.noCache = () => ({title: '$:/config/flibbles/uglify/cache', text: 'no'});
 test.noCompress = () => ({title: '$:/config/flibbles/uglify/compress', text:'no'});
 test.yesCompress = () => ({title: '$:/config/flibbles/uglify/compress', text: 'yes'});

@@ -63,4 +63,23 @@ it('on failure, be graceful', async function() {
 	}
 });
 
+it('can toggle particular uglifiers', function() {
+	const javascript = 'exports.method = function(argName) {return argName;}';
+	const tiddlers = [
+		{title: 'test.js', text: javascript, type: 'application/javascript'},
+		$tw.utils.test.noCache()];
+	spyOn(console, 'log');
+	var wiki = new $tw.Wiki();
+	wiki.addTiddlers(tiddlers);
+	var output = wiki.getTiddlerUglifiedText('test.js');
+	expect(output).toContain('method');
+	expect(output).not.toContain('argName');
+
+	// But now we disable javascript
+	wiki = new $tw.Wiki();
+	wiki.addTiddlers(tiddlers);
+	wiki.addTiddler($tw.utils.test.setting('application/javascript', 'no'));
+	expect(wiki.getTiddlerUglifiedText('test.js')).toBe(javascript);
+});
+
 });

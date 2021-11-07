@@ -54,7 +54,7 @@ exports.compressionEnabled = function() {
 // Returns the given uglifier, but only if it hasn't been deactivated.
 // undefined otherwise.
 exports.getUglifier = function(type) {
-	return uglifiers[type];
+	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
 };
 
 function stubbingEnabled(wiki) {
