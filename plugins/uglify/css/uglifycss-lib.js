@@ -5,11 +5,12 @@
  * MIT licenced
  */
 
-// FLIBBLES This file is copied as-is from uglifycss-lib.js in UglifyCSS.
+// FLIBBLES
+// This file is copied as-is from uglifycss-lib.js in flibbles/UglifyCSS.
+// (use mine, because it has bug fixes that the main fork doesn't.)
 // To remake this, copy that file here, and then comment out all the lines
 // below that have FLIBBLES before them, like I've done below.
 // * I removed some "require"s because they aren't needed
-// * I made some backtick strings into normal strings so this file can compress
 
 /**
  * cssmin.js
@@ -177,7 +178,6 @@ function convertRelativeUrls(css, options, preservedTokens) {
                 sb.push(preserver)
 
             } else {
-                // FLIBBLES: Removed backtick string
                 sb.push('url('+token+')')
             }
 
@@ -553,7 +553,6 @@ function processString(content = '', options = defaultOptions) {
         }
 
         // in all other cases kill the comment
-        // FLIBBLES: Removed backtick string
         content = content.replace('/*'+placeholder+'*/', '')
     }
 
@@ -611,6 +610,12 @@ function processString(content = '', options = defaultOptions) {
     // remove spaces before the things that should not have spaces before them.
     content = content.replace(/\s+([!{};:>+\(\)\],])/g, '$1')
 
+    //add removed spaces for `not(`, `and(`, `or(`
+    content = content.replace(/\s+not\(/g, ' not (');
+    content = content.replace(/and\(/g, 'and (');
+    content = content.replace(/or\(/g, 'or (');
+    content = content.replace(/@supports\(/g, '@supports (');
+
     // restore spaces for !important
     content = content.replace(/!important/g, ' !important')
 
@@ -636,7 +641,6 @@ function processString(content = '', options = defaultOptions) {
         preservedTokens.push(f2b.pop())
         f2b.push(___PRESERVED_TOKEN_ + (preservedTokens.length - 1) + '___')
         f2b = f2b.join(' ')
-        // FLIBBLES: Removed backtick string
         return ''+f1+':'+f2b
     })
 
@@ -710,7 +714,7 @@ function processString(content = '', options = defaultOptions) {
     content = content.replace(/;+\}/g, '}')
 
     // replace 0(px,em,%) with 0.
-    content = content.replace(/(^|[^.0-9\\])(?:0?\.)?0(?:ex|ch|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|px|deg|g?rad|turn|m?s|k?Hz|dpi|dpcm|dppx|%)/gi, '$10')
+    content = content.replace(/(^|[^.0-9\\])(?:0?\.)?0(?:ex|ch|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|px|g?rad|turn|m?s|k?Hz|dpi|dpcm|dppx|%)/gi, '$10')
 
     // Replace x.0(px,em,%) with x(px,em,%).
     content = content.replace(/([0-9])\.0(ex|ch|r?em|vw|vh|vmin|vmax|cm|mm|in|pt|pc|px|deg|g?rad|turn|m?s|k?Hz|dpi|dpcm|dppx|%| |;)/gi, '$1$2')
@@ -721,8 +725,8 @@ function processString(content = '', options = defaultOptions) {
     content = content.replace(/:0 0(;|\})/g, ':0$1')
 
     // replace background-position:0; with background-position:0 0;
-    // same for transform-origin and box-shadow
-    pattern = /(background-position|transform-origin|webkit-transform-origin|moz-transform-origin|o-transform-origin|ms-transform-origin|box-shadow):0(;|\})/gi
+    // same for transform-origin and box-shadow and text-shadow
+    pattern = /(background-position|transform-origin|webkit-transform-origin|moz-transform-origin|o-transform-origin|ms-transform-origin|box-shadow|text-shadow):0(;|\})/gi
     content = content.replace(pattern, (_, f1, f2) => f1.toLowerCase() + ':0 0' + f2)
 
     // replace 0.6 to .6, but only when preceded by : or a white-space
@@ -829,7 +833,7 @@ function processString(content = '', options = defaultOptions) {
  * @return {string} Uglified result
  */
 
-// FLIBBLES: WE don't need this method
+// FLIBBLES: We don't need this method
 /*
 function processFiles(filenames = [], options = defaultOptions) {
 
@@ -868,6 +872,6 @@ function processFiles(filenames = [], options = defaultOptions) {
 module.exports = {
     defaultOptions,
     processString//,
-    // FLIBBLES: Removed this here.
+    // FLIBBLES: Removed this here
     //processFiles
 }
