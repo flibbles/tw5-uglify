@@ -44,9 +44,7 @@ test.setting = function(key, value) {
 	return {title: '$:/config/flibbles/uglify/' + key, text: value};
 };
 
-test.noCache = () => ({title: '$:/config/flibbles/uglify/cache', text: 'no'});
-test.noCompress = () => ({title: '$:/config/flibbles/uglify/compress', text:'no'});
-test.yesCompress = () => ({title: '$:/config/flibbles/uglify/compress', text: 'yes'});
-test.blacklist = function(listArray) {
-	return {title: '$:/config/flibbles/uglify/blacklist', text: $tw.utils.stringifyList(listArray)};
-};
+test.noCache = () => test.setting('cache', 'no');
+test.noCompress = () => test.setting('compress', 'no');
+test.yesCompress = () => test.setting('compress', 'yes');
+test.blacklist = (list) => test.setting('blacklist', $tw.utils.stringifyList(list));
