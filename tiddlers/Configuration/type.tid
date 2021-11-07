@@ -1,0 +1,10 @@
+default: yes
+caption: <em>[type]</em>
+
+Toggle uglifiers for specific tiddler types. Values for ''//[type]//'' include the following:
+
+<ul><$list
+	variable="type"
+	filter="[[uglifier]modules[]get[name]]">
+	<li>''<$text text=<<type>> />''</li>
+</$list></ul>

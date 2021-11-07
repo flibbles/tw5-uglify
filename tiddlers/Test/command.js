@@ -42,6 +42,14 @@ it('reverts to default if no or empty value given', function() {
 	expect(exec(testWiki(), 'cache', '').getTiddler(title)).toBeUndefined();
 });
 
+it('can toggle particular uglifiers', function() {
+	spyOn(logger, 'warn');
+	exec(new $tw.Wiki(), 'javascript', 'no');
+	expect(logger.warn).not.toHaveBeenCalled();
+	exec(new $tw.Wiki(), 'css', 'yes');
+	expect(logger.warn).not.toHaveBeenCalled();
+});
+
 it('recognizes nonexistent configuration', function() {
 	spyOn(logger, 'warn');
 	const wiki = exec(new $tw.Wiki(), 'silly', 'yes');

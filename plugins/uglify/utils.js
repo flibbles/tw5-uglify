@@ -13,6 +13,8 @@ Utility methods for Uglify
 
 var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
+var modulesAddedToConfig = false;
+
 var config = {
 	compress: 'yes',
 	blacklist: '',
@@ -31,7 +33,7 @@ var configType = {
 exports.getSetting = function(wiki, key) {
 	var title = '$:/config/flibbles/uglify/'+key;
 	return wiki.getCacheForTiddler(title, 'uglifysetting', function() {
-		var def = config[key],
+		var def = getConfig(wiki)[key],
 			value = wiki.getTiddlerText(title, def);
 		switch (configType[key]) {
 			case Boolean:
@@ -47,7 +49,7 @@ exports.getSetting = function(wiki, key) {
 
 exports.getSettings = function(wiki) {
 	var settings = Object.create(null);
-	for (var key in config) {
+	for (var key in getConfig(wiki)) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
 	return settings;
@@ -95,6 +97,22 @@ exports.allEligibleTiddlers = function(wiki) {
 		titles.sort();
 	}
 	return titles;
+};
+
+// Create a config entry for each uglifier module.
+function getConfig(wiki) {
+	if (!modulesAddedToConfig) {
+		$tw.modules.forEachModuleOfType('uglifier', function(title, module) {
+			var tiddler = wiki.getTiddler(title);
+			if (tiddler && tiddler.fields.name) {
+				var name = tiddler.fields.name;
+				config[name] = 'yes';
+				configType[name] = Boolean;
+			}
+		});
+		modulesAddedToConfig = true;
+	}
+	return config;
 };
 
 function blacklisted(wiki, title) {

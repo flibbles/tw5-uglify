@@ -1,5 +1,6 @@
 /*\
 title: $:/plugins/flibbles/uglify/css.js
+name: css
 module-type: uglifier
 type: application/javascript
 \*/

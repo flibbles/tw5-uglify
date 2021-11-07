@@ -6,6 +6,8 @@
  */
 
 // FLIBBLES This file is copied as-is from uglifycss-lib.js in UglifyCSS.
+// To remake this, copy that file here, and then comment out all the lines
+// below that have FLIBBLES before them, like I've done below.
 
 /**
  * cssmin.js
@@ -27,8 +29,9 @@
  */
 
 
-const { readFileSync } = require('fs')
-const { sep, resolve } = require('path')
+// FLIBBLES: These aren't needed, and they make the browser version fail.
+//const { readFileSync } = require('fs')
+//const { sep, resolve } = require('path')
 
 /**
  * @type {string} - Output path separator
@@ -40,7 +43,9 @@ const SEP = '/'
  * @type {string} - System path separator
  */
 
-const PATH_SEP = sep
+const PATH_SEP = '/'
+// FLIBBLES: We just use '/' instead of sep, because it'll never actually be used.
+//const PATH_SEP = sep
 
 /**
  * @type {string} - placeholder prefix
