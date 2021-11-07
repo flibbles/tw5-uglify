@@ -8,6 +8,8 @@
 // FLIBBLES This file is copied as-is from uglifycss-lib.js in UglifyCSS.
 // To remake this, copy that file here, and then comment out all the lines
 // below that have FLIBBLES before them, like I've done below.
+// * I removed some "require"s because they aren't needed
+// * I made some backtick strings into normal strings so this file can compress
 
 /**
  * cssmin.js
@@ -175,7 +177,8 @@ function convertRelativeUrls(css, options, preservedTokens) {
                 sb.push(preserver)
 
             } else {
-                sb.push(`url(${token})`)
+                // FLIBBLES: Removed backtick string
+                sb.push('url('+token+')')
             }
 
             appendIndex = endIndex + 1
@@ -550,7 +553,8 @@ function processString(content = '', options = defaultOptions) {
         }
 
         // in all other cases kill the comment
-        content = content.replace(`/*${placeholder}*/`, '')
+        // FLIBBLES: Removed backtick string
+        content = content.replace('/*'+placeholder+'*/', '')
     }
 
     // parse simple @variables blocks and remove them
@@ -632,7 +636,8 @@ function processString(content = '', options = defaultOptions) {
         preservedTokens.push(f2b.pop())
         f2b.push(___PRESERVED_TOKEN_ + (preservedTokens.length - 1) + '___')
         f2b = f2b.join(' ')
-        return `${f1}:${f2b}`
+        // FLIBBLES: Removed backtick string
+        return ''+f1+':'+f2b
     })
 
     // preserve 0% in hsl and hsla color definitions
@@ -824,6 +829,8 @@ function processString(content = '', options = defaultOptions) {
  * @return {string} Uglified result
  */
 
+// FLIBBLES: WE don't need this method
+/*
 function processFiles(filenames = [], options = defaultOptions) {
 
     if (options.convertUrls) {
@@ -856,9 +863,11 @@ function processFiles(filenames = [], options = defaultOptions) {
     // return concat'd results
     return uglies.join('')
 }
+*/
 
 module.exports = {
     defaultOptions,
-    processString,
-    processFiles
+    processString//,
+    // FLIBBLES: Removed this here.
+    //processFiles
 }
