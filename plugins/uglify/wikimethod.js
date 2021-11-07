@@ -18,7 +18,7 @@ var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
  * compressed during saving or serving.
  */
 exports.getTiddlerUglifiedText = function(title) {
-	var wiki = this;
+	var wiki = this, uglifier;
 	// Currently we only support stubbing uglify itself.
 	// Support for stubbing other plugins may come later.
 	if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(this)) {
@@ -34,12 +34,11 @@ exports.getTiddlerUglifiedText = function(title) {
 			var newInfo = $tw.utils.extend({}, pluginInfo);
 			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 				logger.log('Compressing:', title);
-				newInfo.tiddlers = compressSubtiddlers(title, pluginInfo);
+				newInfo.tiddlers = compressSubtiddlers(wiki, title, pluginInfo);
 				return JSON.stringify(newInfo, null);
 			});
-		} else if (uglifiers[tiddler.fields.type]) {
+		} else if (uglifier = wiki.getUglifier(tiddler.fields.type)) {
 			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-				var uglifier = uglifiers[tiddler.fields.type];
 				logger.log('Compressing:', title);
 				return uglifier.uglify(tiddler.fields.text, title);
 			});
@@ -52,6 +51,8 @@ exports.compressionEnabled = function() {
 	return utils.getSetting(this, 'compress');
 };
 
+// Returns the given uglifier, but only if it hasn't been deactivated.
+// undefined otherwise.
 exports.getUglifier = function(type) {
 	return uglifiers[type];
 };
@@ -76,8 +77,8 @@ function pluginStub(wiki, title) {
 	});
 };
 
-function compressSubtiddlers(title, pluginInfo) {
-	var newTiddlers = Object.create(null);
+function compressSubtiddlers(wiki, title, pluginInfo) {
+	var newTiddlers = Object.create(null), uglifier;
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
 		var abridgedFields = Object.create(null);
@@ -88,8 +89,8 @@ function compressSubtiddlers(title, pluginInfo) {
 				abridgedFields[field] = fields[field];
 			}
 		}
-		if (uglifiers[fields.type]) {
-			abridgedFields.text = uglifiers[fields.type].uglify(fields.text, title);
+		if (uglifier = wiki.getUglifier(fields.type)) {
+			abridgedFields.text = uglifier.uglify(fields.text, title);
 		}
 		newTiddlers[title] = abridgedFields;
 	}

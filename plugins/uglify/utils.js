@@ -102,13 +102,10 @@ exports.allEligibleTiddlers = function(wiki) {
 // Create a config entry for each uglifier module.
 function getConfig(wiki) {
 	if (!modulesAddedToConfig) {
-		$tw.modules.forEachModuleOfType('uglifier', function(title, module) {
-			var tiddler = wiki.getTiddler(title);
-			if (tiddler && tiddler.fields.name) {
-				var name = tiddler.fields.name;
-				config[name] = 'yes';
-				configType[name] = Boolean;
-			}
+		var uglifiers = $tw.modules.getModulesByTypeAsHashmap('uglifier', 'type');
+		$tw.utils.each(uglifiers, function(module, type) {
+			config[type] = 'yes';
+			configType[type] = Boolean;
 		});
 		modulesAddedToConfig = true;
 	}

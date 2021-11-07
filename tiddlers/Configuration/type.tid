@@ -5,6 +5,6 @@ Toggle uglifiers for specific tiddler types. Values for ''//[type]//'' include t
 
 <ul><$list
 	variable="type"
-	filter="[[uglifier]modules[]get[name]]">
+	filter="[all[uglifiers]]">
 	<li>''<$text text=<<type>> />''</li>
 </$list></ul>

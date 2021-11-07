@@ -44,9 +44,9 @@ it('reverts to default if no or empty value given', function() {
 
 it('can toggle particular uglifiers', function() {
 	spyOn(logger, 'warn');
-	exec(new $tw.Wiki(), 'javascript', 'no');
+	exec(new $tw.Wiki(), 'application/javascript', 'no');
 	expect(logger.warn).not.toHaveBeenCalled();
-	exec(new $tw.Wiki(), 'css', 'yes');
+	exec(new $tw.Wiki(), 'text/css', 'yes');
 	expect(logger.warn).not.toHaveBeenCalled();
 });
 
@@ -65,11 +65,12 @@ it('prints out current settings with no arguments', function() {
 	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
 	spyOn(console, 'log');
 	exec(wiki);
-	expect(console.log).toHaveBeenCalledWith('compress:      ', 'yes');
-	expect(console.log).toHaveBeenCalledWith('blacklist:     ', 'pluginA,plugin B');
-	expect(console.log).toHaveBeenCalledWith('stub:          ', 'yes');
-	expect(console.log).toHaveBeenCalledWith('cache:         ', 'no');
-	expect(console.log).toHaveBeenCalledWith('cacheDirectory:', './.cache');
+	expect(console.log).toHaveBeenCalledWith('compress:              ', 'yes');
+	expect(console.log).toHaveBeenCalledWith('blacklist:             ', 'pluginA,plugin B');
+	expect(console.log).toHaveBeenCalledWith('stub:                  ', 'yes');
+	expect(console.log).toHaveBeenCalledWith('cache:                 ', 'no');
+	expect(console.log).toHaveBeenCalledWith('cacheDirectory:        ', './.cache');
+	expect(console.log).toHaveBeenCalledWith('application/javascript:', 'yes');
 });
 
 });
