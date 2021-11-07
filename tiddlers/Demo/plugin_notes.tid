@@ -4,3 +4,4 @@ Besides compressing the files inside of plugins, //Uglify// also compresses the 
 
 # It removes all pretty-print whitespace in the JSON object.
 # It removes redundant `title` fields which TiddlyWiki core doesn't need.
+# It removes empty `tags` fields, which plugin writers sometimes accidentally include.
