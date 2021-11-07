@@ -1,0 +1,5 @@
+title: Versions/1.2.0
+
+* //Uglify// now compresses CSS as well as javascript and plugin packing. This doesn't gain much in the way of gains, but it's nice to have.
+* Empty `tags` fields are removed from shadow tiddlers.
+

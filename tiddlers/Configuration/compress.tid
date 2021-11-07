@@ -1,4 +1,4 @@
 default: yes
 list-before: 
 
-Configure whether //Uglify// will compress plugins and javascript. In Node.js, that means sending compressed plugins to the client. In a standalone wiki, this configures whether the wiki compresses its own plugins when saving.
+Configure whether //Uglify// will compress anything at all. In Node.js, that means sending compressed plugins to the client. In a standalone wiki, this configures whether the wiki compresses its own plugins when saving.
