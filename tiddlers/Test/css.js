@@ -38,7 +38,7 @@ it('handles case #71, fixed by lukasstankiewicz', function() {
 		position : -webkit-sticky
 		position : sticky;
 	}
-}`)).toBe(`@supports((position:-webkit-sticky) or (position:sticky)){.element{position:-webkit-sticky position:sticky}}`);
+}`)).toBe(`@supports ((position:-webkit-sticky) or (position:sticky)){.element{position:-webkit-sticky position:sticky}}`);
 });
 
 it('handles case #74', function() {
