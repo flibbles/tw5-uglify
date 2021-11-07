@@ -27,7 +27,7 @@ version: 1.0.0
         },
         "$:/language/plugins/Demo/plugin/φ": {
             "title": "$:/language/plugins/Demo/plugin/φ",
-            "text": "The golden ratio. The ratio between two quantaties that have the same ratio between their sum and the larger of the two quantaties."
+            "text": "The golden ratio. The ratio between two quantities that have the same ratio between their sum and the larger of the two quantities."
         },
         "$:/language/plugins/Demo/plugin/λ": {
             "title": "$:/language/plugins/Demo/plugin/λ",

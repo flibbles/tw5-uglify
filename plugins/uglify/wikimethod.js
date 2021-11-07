@@ -82,12 +82,18 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
 		var abridgedFields = Object.create(null);
-		// We do not need to copy the title field. It's redundant since the
-		// key to this object is the title.
 		for (var field in fields) {
-			if (field !== 'title') {
-				abridgedFields[field] = fields[field];
+			// We don't need to copy the title field. It's redundant
+			// since the key to this object is the title.
+			if (field === 'title') {
+				continue;
 			}
+			// Also, empty tags fields are pointless, but easy for
+			// plugin writers to accidentally make. Drop em.
+			if (field === 'tags' && !fields.tags) {
+				continue;
+			}
+			abridgedFields[field] = fields[field];
 		}
 		if (uglifier = wiki.getUglifier(fields.type)) {
 			abridgedFields.text = uglifier.uglify(fields.text, title);
