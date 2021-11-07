@@ -1,4 +1,5 @@
 title: Demo
+list: Demo/wc.js
 
 <$macrocall
 	$name="tabs"

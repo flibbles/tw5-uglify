@@ -2,4 +2,4 @@ title: Demo/wc.js/notes
 
 //Uglify// utilizes [[UglifyJS|https://github.com/mishoo/UglifyJS]] to compress a plugin's javascript down to their minimum size. Unlike other compressers which would need to preserve the long preambles containing a file's fields, //Uglify// can dispose of them since compression happens after the fields have been imported.
 
-Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code updated [[in real time|Interactive Demo]].
+Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglfied code update [[in real time|Interactive Demo]].

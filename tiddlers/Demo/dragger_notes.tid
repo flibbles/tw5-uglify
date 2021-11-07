@@ -1,0 +1,14 @@
+title: Demo/dragger.css/notes
+
+<p>//Uglify// utilizes [[UglifyCSS|https://github.com/flibbles/UglifyCSS]] to compress a plugin's stylesheets down to their minimum size. Just like with the javascript, this will strip away any preambles containing file fields, which uglifiers not associated with Tiddlywiki can do.</p>
+
+@@float:left;width:49%;
+Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglified code update [[in real time|Interactive Demo]]. The results of this css appear as the button to the right.
+@@
+
+@@float:right;width:49%;text-align:center;
+<$link to=<<currentTiddler>> class="uglify-dragger">dragger.css</$link>
+@@
+
+<div style="clear: both" />
+
