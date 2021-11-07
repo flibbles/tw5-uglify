@@ -74,6 +74,7 @@ const ___PRESERVED_TOKEN_ = '___PRESERVED_TOKEN_'
 const defaultOptions = {
     maxLineLen: 0,
     expandVars: false,
+    noHacks: false,
     uglyComments: false,
     cuteComments: false,
     convertUrls: '',
@@ -528,7 +529,7 @@ function processString(content = '', options = defaultOptions) {
 
         // \ in the last position looks like hack for Mac/IE5
         // shorten that to /*\*/ and the next one to /**/
-        if (token.charAt(token.length - 1) === '\\') {
+        if (!options.noHacks && token.charAt(token.length - 1) === '\\') {
             preservedTokens.push('\\')
             content = content.replace(placeholder, ___PRESERVED_TOKEN_ + (preservedTokens.length - 1) + '___')
             i = i + 1 // attn: advancing the loop

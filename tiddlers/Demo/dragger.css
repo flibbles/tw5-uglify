@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /*\
 title: Demo/dragger.css
 caption: Stylesheets
@@ -8,8 +10,6 @@ This is a stylesheet which makes the drag-n-drop
 pill for empty tiddlers on this site so pretty.
 
 \*/
-
-@charset "UTF-8";
 
 /* Most of this comes from: https://www.bestcssbuttongenerator.com/ */
 a.uglify-dragger {

@@ -11,7 +11,7 @@ exports.type = "text/css";
 
 exports.uglify = function(text, title) {
 	try {
-		return uglifycss.processString(text, {});
+		return uglifycss.processString(text, {noHacks: true});
 	} catch (e) {
 		logger.warn('Failed to compress', title + "\n\n    * message:", e);
 		return text;

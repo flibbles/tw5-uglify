@@ -32,6 +32,11 @@ it('deals with errors', function() {
 	expect(text).toBe(badCss);
 });
 
+it('removes tiddlywiki preamble comments', function() {
+	var css = "/*\\\ntitle: myTitle.css\n\\*/\n.myclass {\ncolor:red;\n}\n";
+	expect(compress(css)).toBe(".myclass{color:red}");
+});
+
 it('handles case #71, fixed by lukasstankiewicz', function() {
 	expect(compress(`@supports ((position: -webkit-sticky) or (position: sticky)) {
 	.element {
