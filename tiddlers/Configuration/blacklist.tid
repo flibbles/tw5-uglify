@@ -1,5 +1,5 @@
 default: ''
 
-A [[title list|https://tiddlywiki.com/#Title%20List]] of pluginTiddlers to exclude from compression. You can also include any of `$:/boot/boot.js`, `$:/boot/bootprefix.js`, and `$:/core` if you'd like the boot or core code from compression.
+A [[title list|https://tiddlywiki.com/#Title%20List]] of pluginTiddlers to exclude from compression. You can also include any of `$:/boot/boot.css`, `$:/boot/boot.js`, `$:/boot/bootprefix.js`, and `$:/core` if you'd like the boot or core code from compression.
 
 In a standalone wiki, you need to add any plugins you want to exclude to this list //before// saving, or else they'll already be compressed.
