@@ -21,7 +21,6 @@ exports.before = ['commands'];
 
 var ViewWidgetProto = require('$:/core/modules/widgets/view.js').view.prototype;
 var oldGetValue;
-var systemTargets = {'$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
 
 exports.startup = function() {
 	// This task gets uglifying out of the way immediately when servers start.
