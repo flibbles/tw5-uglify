@@ -33,14 +33,20 @@ version: 1.0.0
             "title": "$:/language/plugins/Demo/plugin/λ",
             "text": "Conway's constant. This is the geometric growth of Conway's look-and-say number sequence."
         },
+        "Demo/plugin/math.css": {
+            "text": "/*\\\ntitle: Demo/plugin/math.css\ntype: text/css\n\\*/\n\n.demo-math {\n\tmargin-left: 3em;\n}\n\n.demo-math dt {\n\tmargin-top: 0em;\n\tmargin-bottom: -1.4em;\n}\n\n.demo-math dd {\n\tmargin-left: 2em;\n}\n",
+            "tags": "$:/tags/Stylesheet",
+            "type": "text/css"
+        },
         "Demo/plugin/shapes.js": {
-            "text": "/*\\\ntitle: Demo/plugin/shapes.js\ntype: application/javascript\nmodule-type: library\n*/\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\"use strict\";\n\nvar PI = 3.14159;\n\nvar Circle = exports.circle = function(radius) {\n\tthis.radius = radius;\n};\n\nvar CirclePrototype = Circle.prototype;\n\nCirclePrototype.circumference = function() {\n\treturn PI * this.radius * 2;\n};\n\nCirclePrototype.area = function() {\n\treturn PI * this.radius * this.radius;\n};",
+            "text": "/*\\\ntitle: Demo/plugin/shapes.js\ntype: application/javascript\nmodule-type: library\n\\*/\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\"use strict\";\n\nvar PI = 3.14159;\n\nvar Circle = exports.circle = function(radius) {\n\tthis.radius = radius;\n};\n\nvar CirclePrototype = Circle.prototype;\n\nCirclePrototype.circumference = function() {\n\treturn PI * this.radius * 2;\n};\n\nCirclePrototype.area = function() {\n\treturn PI * this.radius * this.radius;\n};",
             "title": "Demo/plugin/shapes.js",
             "type": "application/javascript",
             "module-type": "library"
         },
         "Demo/plugin/readme": {
-            "text": "Demonstrates //Uglify//'s ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<ul>\n<$list filter='[[Demo/plugin]plugintiddlers[]prefix[$:/language]]'>\n<li>''<$text text={{{ [<currentTiddler>split[/]last[]] }}} />'': {{}}</li>\n</$list></ul>",
+            "text": "Demonstrates //Uglify//'s ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<dl class=\"demo-math\">\n<$list filter=\"[[Demo/plugin]plugintiddlers[]prefix[$:/language]]\">\n<dt><$text text={{{ [<currentTiddler>split[/]last[]] }}} /></dt><dd>{{}}</dd>\n</$list></dl>",
+            "tags": "",
             "title": "Demo/plugin/readme"
         }
     }
