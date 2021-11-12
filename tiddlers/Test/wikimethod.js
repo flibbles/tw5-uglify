@@ -77,21 +77,49 @@ it('on failure, be graceful', async function() {
 	}
 });
 
-it('can toggle particular uglifiers', function() {
-	const javascript = 'exports.method = function(argName) {return argName;}';
+it('can toggle particular uglifiers', async function() {
+	const pluginName = "plugin_" + $tw.utils.test.uniqName();
+	const filepath = './.cache/' + pluginName + '.tid';
+	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
+	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
 	const tiddlers = [
 		{title: 'test.js', text: javascript, type: 'application/javascript'},
-		$tw.utils.test.noCache()];
+		{title: 'test.css', text: stylesheet, type: 'text/css'}];
 	const wiki = new $tw.Wiki();
+	var fs, content;
 	spyOn(console, 'log');
-	wiki.addTiddlers(tiddlers);
-	var output = wiki.getTiddlerUglifiedText('test.js');
-	expect(output).toContain('method');
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	var output = await getTiddlerUglifiedTextAsync(wiki, pluginName);
+	expect(output).toContain('jsPresent');
+	expect(output).toContain('cssPresent');
 	expect(output).not.toContain('argName');
+	expect(output).not.toContain('comment');
 
-	// But now we disable javascript
-	wiki.addTiddler($tw.utils.test.setting('application/javascript', 'no'));
-	expect(wiki.getTiddlerUglifiedText('test.js')).toBe(javascript);
+	if ($tw.node) {
+		fs = require('fs/promises');
+		content = await fs.readFile(filepath);
+		expect(output).toContain('jsPresent');
+		expect(output).toContain('cssPresent');
+		expect(output).not.toContain('argName');
+		expect(output).not.toContain('comment');
+	}
+
+	// But now we disable css
+	wiki.addTiddler($tw.utils.test.setting('text/css', 'no'));
+	var output = await getTiddlerUglifiedTextAsync(wiki, pluginName);
+	expect(output).toContain('jsPresent');
+	expect(output).toContain('cssPresent');
+	expect(output).not.toContain('argName');
+	expect(output).toContain('comment');
+
+	if($tw.node) {
+		content = await fs.readFile(filepath);
+		expect(output).toContain('jsPresent');
+		expect(output).toContain('cssPresent');
+		expect(output).not.toContain('argName');
+		expect(output).toContain('comment');
+		await fs.rm(filepath);
+	}
 });
 
 });
