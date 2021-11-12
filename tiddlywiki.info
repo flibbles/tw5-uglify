@@ -9,7 +9,7 @@
 		"tiddlywiki/snowwhite"
 	],
 	"build": {
-		"dist": [
+		"demo": [
 			"--output", "./docs/",
 			"--uglify", "stub", "no", "compress", "yes", "blacklist", "$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",

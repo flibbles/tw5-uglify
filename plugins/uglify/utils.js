@@ -114,6 +114,15 @@ exports.getSignature = function(wiki) {
 	});
 };
 
+var version;
+// Returns the version of uglify.
+exports.getVersion = function() {
+	if (version === undefined) {
+		version = $tw.wiki.getTiddler('$:/plugins/flibbles/uglify').fields.version;
+	}
+	return version;
+};
+
 // Create a config entry for each uglifier module.
 function getConfig(wiki) {
 	if (!modulesAddedToConfig) {

@@ -33,7 +33,9 @@ exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onC
 			checksum = hashString(textKey),
 			signature = utils.getSignature(wiki);
 		if (cachedFields) {
-			if (checksum === parseInt(cachedFields.checksum) && signature === cachedFields.uglifiers) {
+			if(checksum === parseInt(cachedFields.checksum)
+			&& utils.getVersion() === cachedFields.version
+			&& signature === cachedFields.uglifiers) {
 				var oldText = cachedFields.text;
 				if (onComplete) {
 					onComplete(null, false, oldText);
@@ -59,7 +61,7 @@ function hashString(string) {
 };
 
 function saveTiddlerCache(wiki, title, checksum, signature, text, onComplete) {
-	var newTiddler = new $tw.Tiddler({text: text, checksum: checksum, uglifiers: signature}),
+	var newTiddler = new $tw.Tiddler({checksum: checksum, uglifiers: signature, version: utils.getVersion(), text: text}),
 		filepath = exports.generateCacheFilepath(wiki, title),
 		fileInfo = {
 			hasMetaFile: false,

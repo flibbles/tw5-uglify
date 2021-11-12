@@ -8,6 +8,7 @@ Tests the file caching mechanism.
 \*/
 
 const library = require('$:/plugins/flibbles/uglify/cache.js');
+const utils = require('$:/plugins/flibbles/uglify/utils.js');
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
 const cacheTiddler = '$:/config/flibbles/uglify/cache';
 const dirTiddler = '$:/config/flibbles/uglify/cacheDirectory';
@@ -244,6 +245,22 @@ if ($tw.node) {
 		test('\n/newline', '/newline/test.tid');
 		test('/newline\n\n', '/newline/test.tid');
 		test('/newline\r\n', '/newline/test.tid');
+	});
+
+	it('refreshes on version change', async function() {
+		const wiki = testWiki();
+		var name = $tw.utils.test.uniqName(), info;
+		info = await cache(wiki, name, 'textKey', () => 'output');
+		expect(info.saved).toBe(true);
+		info = await cache(wiki, name, 'textKey', () => 'output');
+		expect(info.saved).toBe(false);
+
+		// Once the version is "changed", the cache should resave again.
+		spyOn(utils, 'getVersion').and.returnValue('different')
+		info = await cache(wiki, name, 'textKey', () => 'output');
+		expect(info.saved).toBe(true);
+		info = await cache(wiki, name, 'textKey', () => 'output');
+		expect(info.saved).toBe(false);
 	});
 
 	afterAll(async function() {
