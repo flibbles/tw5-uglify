@@ -19,7 +19,7 @@ function cacheSync(wiki, title, textKey, method, onsave) {
 
 function cache(wiki, title, textKey, method) {
 	var promise = new Promise((resolve, reject) => {
-		return library.getFileCacheForTiddler(wiki, title, textKey, method, function(err, saved, cachedResults) {
+		library.getFileCacheForTiddler(wiki, title, textKey, method, function(err, saved, cachedResults) {
 			if (err) {
 				reject(err);
 			} else {

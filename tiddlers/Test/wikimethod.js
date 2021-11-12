@@ -11,6 +11,20 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('wikimethod: getTiddlerUglifiedText', function() {
 
+function getTiddlerUglifiedTextAsync(wiki, name) {
+	return new Promise((resolve, reject) => {
+		wiki.getTiddlerUglifiedText(name, {
+			onComplete: function(err, saved, text) {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(text);
+				}
+			}
+		});
+	});
+};
+
 it('passes through nonjavascript entities', function() {
 	var wiki = new $tw.Wiki();
 	wiki.addTiddlers([
@@ -33,7 +47,7 @@ it('on failure, be graceful', async function() {
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	spyOn(console, 'log');
 	spyOn(logger, 'alert');
-	const text = wiki.getTiddlerUglifiedText(pluginName);
+	const text = await getTiddlerUglifiedTextAsync(wiki, pluginName);
 	// Test: The bad code is there, uncompressed but usable
 	expect(text).toContain(badText);
 	// Test: The good code is still fully compressed

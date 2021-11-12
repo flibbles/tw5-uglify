@@ -17,9 +17,10 @@ var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 /**This returns the compressed tiddlers regardless of whether it would be
  * compressed during saving or serving.
  */
-exports.getTiddlerUglifiedText = function(title) {
+exports.getTiddlerUglifiedText = function(title, options) {
 	var wiki = this,
 		uglifier,
+		options = options || {},
 		signature = utils.getSignature(wiki);
 	// Currently we only support stubbing uglify itself.
 	// Support for stubbing other plugins may come later.
@@ -28,26 +29,30 @@ exports.getTiddlerUglifiedText = function(title) {
 	}
 	var cache = this.getCacheForTiddler(title, 'uglify', function() { return {}; });
 	if (cache.signature !== signature) {
+		cache.signature = signature;
 		var tiddler = wiki.getTiddler(title);
 		if (!tiddler) {
 			return undefined;
 		}
 		var pluginInfo = utils.getPluginInfo(wiki, title);
+		var uglifier = undefined;
 		if (pluginInfo) {
-			var newInfo = $tw.utils.extend({}, pluginInfo);
-			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-				logger.log('Compressing:', title);
+			uglifier = {uglify: function(text, title) {
+				var newInfo = $tw.utils.extend({}, pluginInfo);
 				newInfo.tiddlers = compressSubtiddlers(wiki, title, pluginInfo);
 				return JSON.stringify(newInfo, null);
-			});
-		} else if (uglifier = wiki.getUglifier(tiddler.fields.type)) {
-			return cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+			}};
+		} else {
+			uglifier = wiki.getUglifier(tiddler.fields.type);
+		}
+		if (uglifier) {
+			cache.text = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 				logger.log('Compressing:', title);
 				return uglifier.uglify(tiddler.fields.text, title);
-			});
+			}, options.onComplete);
+		} else {
+			cache.text = tiddler.fields.text || '';
 		}
-		cache.text = tiddler.fields.text || '';
-		cache.signature = signature;
 	};
 	return cache.text;
 };
