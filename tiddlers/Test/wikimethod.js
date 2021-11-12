@@ -68,16 +68,14 @@ it('can toggle particular uglifiers', function() {
 	const tiddlers = [
 		{title: 'test.js', text: javascript, type: 'application/javascript'},
 		$tw.utils.test.noCache()];
+	const wiki = new $tw.Wiki();
 	spyOn(console, 'log');
-	var wiki = new $tw.Wiki();
 	wiki.addTiddlers(tiddlers);
 	var output = wiki.getTiddlerUglifiedText('test.js');
 	expect(output).toContain('method');
 	expect(output).not.toContain('argName');
 
 	// But now we disable javascript
-	wiki = new $tw.Wiki();
-	wiki.addTiddlers(tiddlers);
 	wiki.addTiddler($tw.utils.test.setting('application/javascript', 'no'));
 	expect(wiki.getTiddlerUglifiedText('test.js')).toBe(javascript);
 });

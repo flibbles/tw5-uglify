@@ -99,17 +99,40 @@ exports.allEligibleTiddlers = function(wiki) {
 	return titles;
 };
 
+// The signature is a string describing which uglifiers were applied to a
+// given compression. Mismatching signatures means caches must be remade.
+exports.getSignature = function(wiki) {
+	return wiki.getGlobalCache('uglify-signature', function() {
+		var actives = [];
+		$tw.utils.each(uglifierModules(), function(module, type) {
+			if (exports.getSetting(wiki, type)) {
+				actives.push(type);
+			}
+		});
+		actives.sort();
+		return $tw.utils.stringifyList(actives);
+	});
+};
+
 // Create a config entry for each uglifier module.
 function getConfig(wiki) {
 	if (!modulesAddedToConfig) {
-		var uglifiers = $tw.modules.getModulesByTypeAsHashmap('uglifier', 'type');
-		$tw.utils.each(uglifiers, function(module, type) {
+		$tw.utils.each(uglifierModules(), function(module, type) {
 			config[type] = 'yes';
 			configType[type] = Boolean;
 		});
 		modulesAddedToConfig = true;
 	}
 	return config;
+};
+
+var _modules;
+
+function uglifierModules() {
+	if (_modules === undefined) {
+		_modules = $tw.modules.getModulesByTypeAsHashmap('uglifier', 'type');
+	}
+	return _modules;
 };
 
 function blacklisted(wiki, title) {

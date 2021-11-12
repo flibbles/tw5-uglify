@@ -18,13 +18,16 @@ var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
  * compressed during saving or serving.
  */
 exports.getTiddlerUglifiedText = function(title) {
-	var wiki = this, uglifier;
+	var wiki = this,
+		uglifier,
+		signature = utils.getSignature(wiki);
 	// Currently we only support stubbing uglify itself.
 	// Support for stubbing other plugins may come later.
 	if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(this)) {
 		return pluginStub(wiki, title);
 	}
-	return this.getCacheForTiddler(title, 'uglify', function() {
+	var cache = this.getCacheForTiddler(title, 'uglify', function() { return {}; });
+	if (cache.signature !== signature) {
 		var tiddler = wiki.getTiddler(title);
 		if (!tiddler) {
 			return undefined;
@@ -43,8 +46,10 @@ exports.getTiddlerUglifiedText = function(title) {
 				return uglifier.uglify(tiddler.fields.text, title);
 			});
 		}
-		return tiddler.fields.text || '';
-	});
+		cache.text = tiddler.fields.text || '';
+		cache.signature = signature;
+	};
+	return cache.text;
 };
 
 exports.compressionEnabled = function() {
