@@ -76,9 +76,11 @@ Customize
 	type="match"
 	text="open"
 	class="tc-uglify-customize">
+
 	<$list
 		variable="type"
 		filter="[all[uglifiers]]">
+
 	<$checkbox
 		tiddler={{{ [[$:/config/flibbles/uglify/]addsuffix<type>] }}}
 		checked="yes"
@@ -86,7 +88,11 @@ Customize
 		default="yes"
 		field="text"
 		disabled={{{[[$:/plugins/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
-		<$text text=" "/><<type>><br>
+
+		<$text text={{{ [[ ]addsuffix<type>] }}} />
+
+		<br>
+
 </$checkbox></$list></$reveal>
 
 The following tiddlers will be compressed.

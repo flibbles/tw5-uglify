@@ -108,3 +108,7 @@ tags: $:/tags/Stylesheet
 	display: inline-block;
 	text-align: left;
 }
+
+.tc-uglify-customize[hidden=true] {
+	display: none;
+}
