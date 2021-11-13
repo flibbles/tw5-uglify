@@ -67,7 +67,7 @@ tags: $:/tags/Stylesheet
 	display: block;
 }
 
-.uglify-save, .uglify-pending {
+.tc-uglify-save, .tc-uglify-pending {
 	box-shadow:inset 0px 1px 3px 0px #91b8b3;
 	background:linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
 	background-color:#768d87;
@@ -85,22 +85,22 @@ tags: $:/tags/Stylesheet
 	min-width: 250px;
 }
 
-.uglify-save:hover {
+.tc-uglify-save:hover {
 	text-decoration: none;
 	background-color: #567a60;
 	background:linear-gradient(to bottom, #567a60 5%, #4c6c6c 100%);
 }
 
-.uglify-save:active {
+.tc-uglify-save:active {
 	position: relative;
 	top: 1px;
 }
 
-.uglify-pending {
+.tc-uglify-pending {
 	opacity: 50%;
 }
 
-.uglify-pending:hover {
+.tc-uglify-pending:hover {
 	text-decoration: none;
 }
 
