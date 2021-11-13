@@ -1,0 +1,5 @@
+created: 20211113172732907
+
+* Server and browser no longer need a refresh when specific uglifier modules are toggled.
+* Uglify is now smart enough to refresh the file cache when its version changes. This'll be important once Wikitext compression comes up.
+* Also, the wizard can now toggle specific uglifiers.
