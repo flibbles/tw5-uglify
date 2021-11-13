@@ -97,9 +97,14 @@ tags: $:/tags/Stylesheet
 }
 
 .uglify-pending {
-	opacity: 50%
+	opacity: 50%;
 }
 
 .uglify-pending:hover {
 	text-decoration: none;
+}
+
+.tc-uglify-customize {
+	display: inline-block;
+	text-align: left;
 }

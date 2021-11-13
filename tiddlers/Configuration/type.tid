@@ -8,5 +8,3 @@ Toggle uglifiers for specific tiddler types. Values for ''//[type]//'' include t
 	filter="[all[uglifiers]]">
 	<li>''<$text text=<<type>> />''</li>
 </$list></ul>
-
-''Warning:'' These particular settings require a full reset to take effect. This includes wiping your NodeJS server's cacheDirectory.

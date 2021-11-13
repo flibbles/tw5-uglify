@@ -1,17 +1,20 @@
-title: Wizard
+title: $:/plugins/flibbles/uglify-wizard/Wizard
 tags: $:/tags/AboveStory
+
+\rules except wikilink
+\whitespace trim
 
 <div class="tc-uglify-wizard-wrapper">
 
 <div class="tc-uglify-wizard">
 
-! ~TiddlyWiki Uglifier
+! TiddlyWiki Uglifier
 
 <$list filter="[[$:/Import]is[missing]]">
 
 {{$:/core/images/download-button}}
 
-Drag a ~TiddlyWiki file here to compress it
+Drag a TiddlyWiki file here to compress it
 
 or click to pick a file <$browse/>
 
@@ -19,7 +22,7 @@ or click to pick a file <$browse/>
 
 <$reveal state="$:/Import!!status" type="match" text="pending">
 
-The following tiddlers will be loaded <$button message="tm-perform-import" param="$:/Import">Confirm</$button>
+<$text text="The following tiddlers will be loaded "/><$button message="tm-perform-import" param="$:/Import">Confirm</$button>
 
 {{$:/Import||$:/core/ui/ImportListing}}
 
@@ -27,9 +30,9 @@ The following tiddlers will be loaded <$button message="tm-perform-import" param
 
 <$reveal state="$:/Import!!status" type="match" text="complete">
 
-Load completed. Click the button below to compress and save ~TiddlyWiki file.
+Load completed. Click the button below to compress and save TiddlyWiki file.
 
-Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
+Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 <$reveal type="match" state="$:/isEncrypted" text="yes">
 
@@ -46,9 +49,49 @@ Make sure that you keep a safe copy of your previous ~TiddlyWiki file.
 {{$:/plugins/flibbles/uglify-wizard/pending}}
 </$reveal>
 
+<$reveal
+	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	type="nomatch"
+	text="open">
+	<$button class="tc-btn-invisible">
+	<$action-setfield
+		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
+		$value="open" />
+		{{$:/core/images/right-arrow}}
+</$button></$reveal>
+<$reveal
+	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	type="match"
+	text="open">
+	<$button class="tc-btn-invisible">
+	<$action-setfield
+		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
+		$value="close" />
+	{{$:/core/images/down-arrow}}
+</$button></$reveal>
+Customize
+
+<$reveal
+	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	type="match"
+	text="open"
+	class="tc-uglify-customize">
+	<$list
+		variable="type"
+		filter="[all[uglifiers]]">
+	<$checkbox
+		tiddler={{{ [[$:/config/flibbles/uglify/]addsuffix<type>] }}}
+		checked="yes"
+		unchecked="no"
+		default="yes"
+		field="text"
+		disabled={{{[[$:/plugins/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
+		<$text text=" "/><<type>><br>
+</$checkbox></$list></$reveal>
+
 The following tiddlers will be compressed.
 
-<p class="tc-uglify-compress-list"><$list filter="[[$:/boot/boot.js]] [[$:/boot/bootprefix.js]] [has[plugin-type]] -[[$:/plugins/flibbles/uglify]] -[[$:/plugins/flibbles/uglify-wizard]] -[[$:/temp/info-plugin]] +[sort[title]]">
+<p class="tc-uglify-compress-list"><$list filter="[[$:/boot/boot.css]] [[$:/boot/boot.js]] [[$:/boot/bootprefix.js]] [has[plugin-type]] -[[$:/plugins/flibbles/uglify]] -[[$:/plugins/flibbles/uglify-wizard]] -[[$:/temp/info-plugin]] +[sort[title]]">
 <$text text=<<currentTiddler>> /><br>
 </$list></p>
 Close this browser window to prevent others from being able to access your data.
@@ -57,11 +100,11 @@ Close this browser window to prevent others from being able to access your data.
 
 </div>
 
-//This uglifier works with ~TiddlyWiki versions 5.2.0 or later.//
+//This uglifier works with TiddlyWiki versions 5.2.0 or later.//
 
 //If your file's version is older, the uglifier will update it for you.//
 
 //Your data will not leave your browser.//
 
-For help and support, visit [[the Uglify page|https://flibbles.github.io/tw5-uglify]].
+<$text text="For help and support, visit "/>[[the Uglify page|https://flibbles.github.io/tw5-uglify]].
 </div>

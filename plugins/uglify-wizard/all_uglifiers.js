@@ -1,11 +1,9 @@
 /*\
-title: Filters/all_uglifiers.js
+title: $:/plugins/flibbles/uglify-wizard/all_uglifiers.js
 type: application/javascript
 module-type: allfilteroperator
 
 Gives the documentation a list of all tiddler types which have corresponding uglifiers.
-
-This is an exact copy of the uglifier used by the wizard. Copying it just seemed easier than finding a way to share one file without it being in Uglify.
 
 \*/
 
