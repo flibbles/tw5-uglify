@@ -97,7 +97,7 @@ Customize
 
 The following tiddlers will be compressed.
 
-<p class="tc-uglify-compress-list"><$list filter="[[$:/boot/boot.css]] [[$:/boot/boot.js]] [[$:/boot/bootprefix.js]] [has[plugin-type]] -[[$:/plugins/flibbles/uglify]] -[[$:/plugins/flibbles/uglify-wizard]] -[[$:/temp/info-plugin]] +[sort[title]]">
+<p class="tc-uglify-compress-list"><$list filter="[all[uglifiable]]">
 <$text text=<<currentTiddler>> /><br>
 </$list></p>
 Close this browser window to prevent others from being able to access your data.

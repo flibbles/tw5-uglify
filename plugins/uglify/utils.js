@@ -60,9 +60,17 @@ exports.getSettings = function(wiki) {
  * During saving or serving.
  */
 exports.shouldCompress = function(wiki,title) {
-	return wiki.compressionEnabled()
-	    && (exports.getPluginInfo(wiki, title) || systemTargets[title])
-	    && !blacklisted(wiki, title);
+	if (!wiki.compressionEnabled() || blacklisted(wiki, title)) {
+		return false;
+	}
+	if (exports.getPluginInfo(wiki, title)) {
+		return true;
+	}
+	if (!systemTargets[title]) {
+		return false;
+	}
+	var tiddler = wiki.getTiddler(title)
+	return tiddler && exports.getSetting(wiki, tiddler.fields.type || "text/vnd.tiddlywiki");
 };
 
 exports.getPluginInfo = function(wiki, title) {
@@ -84,12 +92,16 @@ exports.getPluginInfo = function(wiki, title) {
 exports.allEligibleTiddlers = function(wiki) {
 	var titles = [];
 	if (wiki.compressionEnabled()) {
-		titles.push.apply(titles, Object.keys(systemTargets));
+		$tw.utils.each(systemTargets, function(v, title) {
+			if (exports.shouldCompress(wiki, title)) {
+				titles.push(title);
+			}
+		});
 		var indexer = $tw.wiki.getIndexer('FieldIndexer');
 		$tw.utils.each(['plugin', 'theme', 'language'], function(type) {
 			var plugins = indexer.lookup('plugin-type', type);
 			$tw.utils.each(plugins, function(title) {
-				if (!blacklisted(wiki, title)) {
+				if (exports.shouldCompress(wiki, title)) {
 					titles.push(title);
 				}
 			});
