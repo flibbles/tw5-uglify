@@ -57,7 +57,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 	<$action-setfield
 		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
 		$value="open" />
-		{{$:/core/images/right-arrow}}
+		{{$:/core/images/right-arrow}} Customize
 </$button></$reveal>
 <$reveal
 	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
@@ -67,9 +67,8 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 	<$action-setfield
 		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
 		$value="close" />
-	{{$:/core/images/down-arrow}}
+	{{$:/core/images/down-arrow}} Customize
 </$button></$reveal>
-Customize
 
 <$reveal
 	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
