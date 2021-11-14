@@ -64,6 +64,7 @@ exports.compressionEnabled = function() {
 // Returns the given uglifier, but only if it hasn't been deactivated.
 // undefined otherwise.
 exports.getUglifier = function(type) {
+	type = type || "text/vnd.tiddlywiki";
 	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
 };
 
@@ -105,7 +106,8 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 			}
 			abridgedFields[field] = fields[field];
 		}
-		if (uglifier = wiki.getUglifier(fields.type)) {
+		uglifier = wiki.getUglifier(fields.type);
+		if (fields.text && uglifier) {
 			abridgedFields.text = uglifier.uglify(fields.text, title);
 		}
 		newTiddlers[title] = abridgedFields;

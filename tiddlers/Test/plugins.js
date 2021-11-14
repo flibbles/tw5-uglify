@@ -36,6 +36,16 @@ it('removes title fields and pretty print', function() {
 	
 });
 
+it('does not add text fields if not there', function() {
+	const wiki = new $tw.Wiki();
+	const tiddlers = [ {title: 'A', tags: 'A'}, ];
+	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.addPlugin(wiki, 'name', tiddlers);
+	spyOn(console, 'log');
+	var output = wiki.getTiddlerUglifiedText('name');
+	expect(output).toBe('{"tiddlers":{"A":{"tags":"A"}}}');
+});
+
 it('removes empty tags fields', function() {
 	const wiki = new $tw.Wiki();
 	const tiddlers = [

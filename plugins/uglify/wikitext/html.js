@@ -15,19 +15,21 @@ exports.uglify = function(text) {
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
 	$tw.utils.each(attributes, function(attr) {
-		tagParts.push(" ", attr.name, "=");
+		tagParts.push(" ", attr.name);
 		switch(attr.type) {
 		case "string":
-			tagParts.push(bestQuoteFor(attr.value, parser));
+			if (attr.value !== "true") {
+				tagParts.push("=", bestQuoteFor(attr.value, parser));
+			}
 			break;
 		case "indirect":
-			tagParts.push("{{", attr.textReference, "}}");
+			tagParts.push("={{", attr.textReference, "}}");
 			break;
 		case "macro":
-			tagParts.push(utils.stringifyMacro(attr.value, parser));
+			tagParts.push("=", utils.stringifyMacro(attr.value, parser));
 			break;
 		case "filtered":
-			tagParts.push("{{{", attr.filter.trim(), "}}}");
+			tagParts.push("={{{", attr.filter.trim(), "}}}");
 			break;
 		default:
 			throw "Not Implemented";

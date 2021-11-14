@@ -22,5 +22,8 @@ exports.run = function(title) {
 	}
 	var compressedCode = this.wiki.getTiddlerUglifiedText(title);
 	var type = tiddler.fields.type;
+	if (type === "text/vnd.tiddlywiki") {
+		type = "html";
+	}
 	return '<$codeblock language="'+type+'" code="""'+compressedCode+'""" />'
 };

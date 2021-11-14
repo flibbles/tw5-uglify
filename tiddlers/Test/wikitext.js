@@ -11,6 +11,10 @@ describe('wikitext uglifier', function() {
 
 const wikitextType = "text/vnd.tiddlywiki";
 
+function testOnlyIf(condition) {
+	return condition? it : xit;
+};
+
 function uglify(text) {
 	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test');
 };
@@ -66,8 +70,9 @@ it('handles widgets', function() {
 	// Filter attributes
 	test("<$text text={{{ butts }}}  />", "<$text text={{{butts}}}/>");
 
-	// Attribute ordering
-	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In</$let>");
+	// Attributes without values
+	test("<$text text />", "<$text text/>");
+	test("<$text text = 'true' />", "<$text text/>");
 
 	// Content
 	test("B<$vars  a='X'  >In</$vars>A", "B<$vars a=X>In</$vars>A");
@@ -84,6 +89,10 @@ it('handles widgets', function() {
 	//br
 	test("top<br>bottom", "top<br>bottom");
 	test("top<br/>bottom", "top<br>bottom");
+});
+
+testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"))('handles html attribute ordering', function() {
+	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In</$let>");
 });
 
 it('handles macrocall', function() {
