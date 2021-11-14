@@ -10,18 +10,13 @@ exports.type = "text/vnd.tiddlywiki";
 
 var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exports.type];
 var logger = require('./logger.js');
+var parseutils = require('./wikitext/utils.js');
 
 exports.uglify = function(text, title) {
 	try {
 		var options = {}
 		var parser = new WikiWalker(undefined, text, options);
-		var stringArray = [];
-		$tw.utils.each(parser.tree, function(node) {
-			if (node.text) {
-				stringArray.push(node.text);
-			}
-		});
-		return stringArray.join('');
+		return parseutils.joinNodeArray(parser.tree);
 	} catch (e) {
 		logger.warn('Failed to compress', title + "\n\n    * message:", e);
 		return text;
@@ -58,15 +53,21 @@ function WikiWalker(type, text, options) {
 		});
 		WikiWalker.prototype.uglifyMethodsInjected = true;
 	}
+	if (text.indexOf("'") >= 0) {
+		this.apostrophesAllowed = true;
+	}
+	if (text.indexOf("]") >= 0) {
+		this.bracketsAllowed = true;
+	}
 	WikiParser.call(this, type, text, options);
 };
 
 WikiWalker.prototype = Object.create(WikiParser.prototype);
 
 WikiWalker.prototype.parsePragmas = function() {
-	var entries = this.tree;
+	var strings = this.tree;
 	while (true) {
-		entries.push(this.preserveWhitespace());
+		this.preserveWhitespace(strings);
 		if (this.pos >= this.sourceLength) {
 			break;
 		}
@@ -74,9 +75,9 @@ WikiWalker.prototype.parsePragmas = function() {
 		if (!nextMatch || nextMatch.matchIndex !== this.pos) {
 			break;
 		}
-		entries.push.apply(entries, this.handleRule(nextMatch));
+		strings.push.apply(strings, this.handleRule(nextMatch));
 	}
-	return entries;
+	return strings;
 };
 
 WikiWalker.prototype.parseInlineRunUnterminated = function(options) {
@@ -139,7 +140,7 @@ WikiWalker.prototype.parseInlineRunTerminated = function(terminatorRegExp,option
 WikiWalker.prototype.parseBlock = function(terminatorRegExpString) {
 	var terminatorRegExp = terminatorRegExpString ? new RegExp("(" + terminatorRegExpString + "|\\r?\\n\\r?\\n)","mg") : /(\r?\n\r?\n)/mg;
 	var strings = [];
-	strings.push(this.preserveWhitespace());
+	this.preserveWhitespace(strings);
 	if (this.pos >= this.sourceLength) {
 		return strings;
 	}
@@ -152,30 +153,7 @@ WikiWalker.prototype.parseBlock = function(terminatorRegExpString) {
 	return strings;
 };
 
-WikiWalker.prototype.amendRules = function(type, names) {
-	var only;
-	WikiParser.prototype.amendRules.call(this, type, names);
-	/*
-	if (type === "only") {
-		only = true;
-	} else if (type === "except") {
-		only = false;
-	} else {
-		return;
-	}
-	if (only !== (names.indexOf("macrodef") >= 0) && this.options.macrodefCanBeDisabled) {
-		this.options.placeholder = undefined
-	}
-	if (only !== (names.indexOf("html") >= 0)) {
-		this.context.allowWidgets = disabled;
-	}
-	if (only !== (names.indexOf("prettylink") >= 0)) {
-		this.context.allowPrettylinks = disabled;
-	}
-	*/
-};
-
-WikiWalker.prototype.preserveWhitespace = function(options) {
+WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 	options = options || {};
 	var output = '';
 	var whitespaceRegExp = options.treatNewlinesAsNonWhitespace ? /([^\S\n]+)/mg : /(\s+)/mg;
@@ -185,7 +163,9 @@ WikiWalker.prototype.preserveWhitespace = function(options) {
 		output = this.source.substring(this.pos, whitespaceRegExp.lastIndex);
 		this.pos = whitespaceRegExp.lastIndex;
 	}
-	return {text: output};
+	if (output) {
+		tree.push({text: output});
+	}
 };
 
 // This doesn't actually produce a text widget anymore. It just produces
@@ -197,24 +177,20 @@ WikiWalker.prototype.pushTextWidget = function(tree,substring) {
 };
 
 WikiWalker.prototype.handleRule = function(ruleInfo) {
+	var substring;
 	if (ruleInfo.rule.uglify) {
-		var start = ruleInfo.matchIndex;
-		var newEntry = ruleInfo.rule.relink(this.source, this.fromTitle, this.toTitle, this.options);
-		if (newEntry !== undefined) {
-			if (newEntry.output) {
-				newEntry.start = start;
-				newEntry.end = this.pos;
-			}
-			return [newEntry];
-		}
+		substring = ruleInfo.rule.uglify(this.source);
 	} else {
 		var start = this.pos;
 		// We parse the rule and look to where it moved the head.
 		// Then we can copy this unknown rule without change
 		ruleInfo.rule.parse();
-		var substring = this.source.substring(start, this.pos);
-		return [{text: substring}];
+		substring = this.source.substring(start, this.pos);
 	}
-	return [];
+	if (substring) {
+		return [{text: substring}];
+	} else {
+		return [];
+	}
 };
 
