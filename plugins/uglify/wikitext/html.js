@@ -13,7 +13,6 @@ exports.uglify = function(text) {
 	var strings = utils.joinNodeArray(tag.children);
 	var tagParts = ["<", tag.tag];
 	var attributes = tag.orderedAttributes || tag.attributes;
-	var returnArray;
 	var parser = this.parser;
 	$tw.utils.each(attributes, function(attr) {
 		tagParts.push(" ", attr.name, "=");
@@ -34,21 +33,22 @@ exports.uglify = function(text) {
 			throw "Not Implemented";
 		}
 	});
-	if (tag.isSelfClosing) {
+	if ($tw.config.htmlVoidElements.indexOf(tag.tag) >= 0) {
+		tagParts.push(">");
+	} else if (tag.isSelfClosing) {
 		tagParts.push("/>");
-		returnArray = tagParts;
 	} else {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
 		}
-		returnArray = tagParts.concat(strings, ["</", tag.tag, ">"]);
+		tagParts = tagParts.concat(strings, ["</", tag.tag, ">"]);
 	}
-	return returnArray.join('');
+	return tagParts.join('');
 };
 
 function bestQuoteFor(string, parser) {
-	if (string.search(/[\/\s>"'=]/) < 0) {
+	if (string.search(/[\/\s>"'=]/) < 0 && string.length > 0) {
 		return string;
 	}
 	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {

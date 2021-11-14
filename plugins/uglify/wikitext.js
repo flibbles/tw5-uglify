@@ -80,6 +80,30 @@ WikiWalker.prototype.parsePragmas = function() {
 	return strings;
 };
 
+WikiWalker.prototype.parseBlocksTerminated = function(terminatorRegExpString) {
+	var terminatorRegExp = new RegExp("(" + terminatorRegExpString + ")","mg"),
+		strings = [];
+	// Skip any whitespace
+	this.skipWhitespace();
+	//  Check if we've got the end marker
+	terminatorRegExp.lastIndex = this.pos;
+	var match = terminatorRegExp.exec(this.source);
+	// Parse the text into blocks
+	while(this.pos < this.sourceLength && !(match && match.index === this.pos)) {
+		var blocks = this.parseBlock(terminatorRegExpString);
+		strings.push.apply(strings,blocks);
+		// Skip any whitespace
+		this.preserveWhitespace(strings);
+		//  Check if we've got the end marker
+		terminatorRegExp.lastIndex = this.pos;
+		match = terminatorRegExp.exec(this.source);
+	}
+	if(match && match.index === this.pos) {
+		this.pos = match.index + match[0].length;
+	}
+	return strings;
+};
+
 WikiWalker.prototype.parseInlineRunUnterminated = function(options) {
 	var strings = [];
 	var nextMatch = this.findNextMatch(this.inlineRules, this.pos);

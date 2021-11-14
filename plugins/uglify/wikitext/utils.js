@@ -29,7 +29,7 @@ exports.stringifyMacro = function(macro, parser) {
 };
 
 function bestQuoteFor(param, parser) {
-	if (param.search(/[\s>"']/) < 0) {
+	if (param.search(/[\s>"']/) < 0 && param.length > 0) {
 		return param;
 	}
 	if (parser.apostrophesAllowed && param.indexOf("'") < 0) {

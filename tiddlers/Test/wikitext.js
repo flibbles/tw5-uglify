@@ -5,26 +5,30 @@ tags: $:/tags/test-spec
 
 Tests the wikitext uglifier.
 
-TODO: Use case where inner quotes take singles, when they need to stay doubles
-      because they make an outerquote impossible
 \*/
 
 describe('wikitext uglifier', function() {
 
 const wikitextType = "text/vnd.tiddlywiki";
 
+function uglify(text) {
+	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test');
+};
+
 function test(text, expected) {
-	var out = $tw.wiki.getUglifier(wikitextType).uglify(text, 'test');
+	var out = uglify(text);
 	if (expected) {
 		expect(out).toBe(expected);
 	}
-	var prettyHtml = $tw.wiki.renderText("text/html", wikitextType, text);
-	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out);
+	var options = {variables: {currentTiddler: 'test'}};
+	var prettyHtml = $tw.wiki.renderText("text/html", wikitextType, text, options);
+	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out, options);
 	expect(uglyHtml).toBe(prettyHtml);
 
-	var prettyPlain = $tw.wiki.renderText("text/plain", wikitextType, text);
-	var uglyPlain = $tw.wiki.renderText("text/plain", wikitextType, out);
+	var prettyPlain = $tw.wiki.renderText("text/plain", wikitextType, text, options);
+	var uglyPlain = $tw.wiki.renderText("text/plain", wikitextType, out, options);
 	expect(uglyPlain).toBe(prettyPlain);
+	return (uglyHtml === prettyHtml && uglyPlain === prettyPlain);
 };
 
 it('handles widgets', function() {
@@ -46,6 +50,9 @@ it('handles widgets', function() {
 	test('Bob\'s<$text text="""f\"p"""/>', "Bob's<$text text='f\"p'/>");
 	test('<$text text="""Nick\'s"""/>', '<$text text="Nick\'s"/>');
 	test('<$text text="Nick\'s"/>', '<$text text="Nick\'s"/>');
+	// Empty attributes
+	test('<$text text=""/>', '<$text text=""/>');
+	test('B\'s<$text text=""/>', "B's<$text text=''/>");
 	// Indirect attributes
 	test('<$text text={{tiddler}} />', '<$text text={{tiddler}}/>');
 	test('<$text text={{tid!!field}} />', '<$text text={{tid!!field}}/>');
@@ -66,12 +73,17 @@ it('handles widgets', function() {
 	test("B<$vars  a='X'  >In</$vars>A", "B<$vars a=X>In</$vars>A");
 	test("<$vars  a='X'  >\n\nIn</$vars>", "<$vars a=X>\n\nIn</$vars>");
 	test("<$vars  a='X'  >\n\nIn</$vars>\n", "<$vars a=X>\n\nIn</$vars>\n");
+	test("<div>\n\n!aardvark\n\n</div>", "<div>\n\n!aardvark\n\n</div>");
 	test("<$vars>\n\n\nIn</$vars>\n", "<$vars>\n\nIn</$vars>\n");
 	test("<$vars>\n\nIn</$vars>\n\n", "<$vars>\n\nIn</$vars>\n\n");
 	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>\nA");
 	test("B<$vars  a='X'  />After", "B<$vars a=X/>After");
 	test("B\n\n<$vars  a='X'  />\n\nAfter", "B\n\n<$vars a=X/>\n\nAfter");
 	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n\n<$vars a=X/>\n\n\nA");
+
+	//br
+	test("top<br>bottom", "top<br>bottom");
+	test("top<br/>bottom", "top<br>bottom");
 });
 
 it('handles macrocall', function() {
@@ -98,32 +110,43 @@ it('handles macrocall', function() {
 	test("[[link]]<<m \"cat dog\">>", "[[link]]<<m [[cat dog]]>>");
 	test("[[link]]<<m \"bra ]ket\">>", "[[link]]<<m [[bra ]ket]]>>");
 	test('[[l]]<<m "bra ]]ket" "a b">>', '[[l]]<<m "bra ]]ket" [[a b]]>>');
+	// Empty params
+	test('<<m val:"">>', '<<m val:"">>');
+	test("<<m val:''>>", "<<m val:''>>");
+	test("<<m val:[[]]>>", '<<m val:[[]]>>');
 });
 
 /*
 it('does an identity transform right now', function() {
 	var tested = 0;
-	$tw.utils.each($tw.wiki.allShadowTitles(), function(title) {
+	function report(text) {
+		console.log("FAILED");
+		console.log("INPUT");
+		console.log(text);
+		console.log("OUTPUT");
+		console.log(uglify(text));
+	};
+
+	const targets = $tw.wiki.allShadowTitles();
+	//const targets = ["$:/core/ui/TiddlerInfo/List"];
+	$tw.utils.each(targets, function(title) {
 		var tiddler = $tw.wiki.getTiddler(title);
 		var type = tiddler.fields.type;
 		if (!type || type === wikitextType) {
 			var text = tiddler.fields.text;
 			if (text) {
+				tested++;
 				try {
-					var out = $tw.wiki.getUglifier(wikitext).uglify(text, title);
-					expect(out).toBe(text);
-					tested++;
-					if (out !== text) {
-						console.log("INPUT");
-						console.log(text);
-						console.log("OUTPUT");
-						console.log(out);
-						return false;
+					if (test(text)) {
+						return true;
 					}
 				} catch (err) {
-					console.log("ERROR ON:", title);
+					console.warn("ERROR ON:", title);
+					report(text);
 					throw err;
 				}
+				report(text);
+				return false;
 			}
 		}
 	});
