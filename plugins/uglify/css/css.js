@@ -4,8 +4,8 @@ module-type: uglifier
 type: application/javascript
 \*/
 
-var logger = require('./logger.js');
-var uglifycss = require('./css/uglifycss-lib.js');
+var logger = require('../logger.js');
+var uglifycss = require('./uglifycss-lib.js');
 
 exports.type = "text/css";
 

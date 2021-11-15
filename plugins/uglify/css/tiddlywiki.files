@@ -1,15 +1,18 @@
 {
-	"directories": [
+	"tiddlers": [
 		{
-			"path": ".",
-			"filesRegExp": "^.*\\.js$",
-			"isTiddlerFile": true,
+			"file": "uglifycss-lib.js",
 			"fields": {
 				"module-type": "library",
-				"title": {
-					"source": "filename",
-					"prefix": "$:/plugins/flibbles/uglify/css/"
-				},
+				"title": "$:/plugins/flibbles/uglify/css/uglifycss-lib.js",
+				"type": "application/javascript"
+			}
+		},
+		{
+			"file": "css.js",
+			"fields": {
+				"module-type": "uglifier",
+				"title": "$:/plugins/flibbles/uglify/css/css.js",
 				"type": "application/javascript"
 			}
 		}
