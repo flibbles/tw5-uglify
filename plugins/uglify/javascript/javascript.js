@@ -1,11 +1,5 @@
-/*\
-title: $:/plugins/flibbles/uglify/javascript.js
-module-type: uglifier
-type: application/javascript
-\*/
-
-var logger = require('./logger.js');
-var uglifyjs = require('./javascript/uglify.js');
+var logger = require('../logger.js');
+var uglifyjs = require('./uglify.js');
 
 exports.type = "application/javascript";
 
