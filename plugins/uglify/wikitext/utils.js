@@ -42,7 +42,7 @@ function getOriginalQuoting(param, parser) {
 		pos++; // SKip over that ":"
 		pos = $tw.utils.skipWhiteSpace(text, pos);
 	}
-	if (text.startsWith('"""', pos)) {
+	if (text.substr(pos,3) === '"""') {
 		return '"""' + string + '"""';
 	}
 	if (text[pos] === '"') {
@@ -51,7 +51,7 @@ function getOriginalQuoting(param, parser) {
 	if (text[pos] === "'") {
 		return "'" + string + "'";
 	}
-	if (text.startsWith("[[", pos)) {
+	if (text.substr(pos,2) === "[[") {
 		return "[[" + string + "]]";
 	}
 	return string;

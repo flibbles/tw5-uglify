@@ -60,7 +60,7 @@ function bestQuoteFor(attr, parser) {
 		pos = $tw.utils.skipWhiteSpace(text, pos);
 		pos++; // Skip right over that "="
 		pos = $tw.utils.skipWhiteSpace(text, pos);
-		if (text.startsWith('"""',pos)) {
+		if (text.substr(pos,3) === '"""') {
 			return '"""' + string + '"""';
 		}
 		if (text[pos] === '"') {
