@@ -25,12 +25,13 @@ function getTiddlerUglifiedTextAsync(wiki, name) {
 	});
 };
 
-it('passes through nonjavascript entities', function() {
+it('passes through nonuglifiable tiddlers', function() {
 	var wiki = new $tw.Wiki();
 	wiki.addTiddlers([
-		{title: 'nonJava',
-		 text: 'pass through'}]);
-	expect(wiki.getTiddlerUglifiedText('nonJava')).toEqual('pass through');
+		{title: 'nonUglify',
+		 text: 'pass through',
+		 type: 'text/x-markdown'}]);
+	expect(wiki.getTiddlerUglifiedText('nonUglify')).toEqual('pass through');
 });
 
 it('on failure, be graceful', async function() {
