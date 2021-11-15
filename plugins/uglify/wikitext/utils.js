@@ -1,5 +1,7 @@
 /*\
+title: $:/plugins/flibbles/uglify/wikitext/utils.js
 module-type: library
+type: application/javascript
 
 Utils for the wikitext uglify rules and parser.
 

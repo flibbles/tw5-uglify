@@ -7,7 +7,7 @@
 			"fields": {
 				"title": {
 					"source": "filename",
-					"prefix": "$:/plugins/flibbles/uglify/wikitext/"
+					"prefix": "$:/plugins/flibbles/uglify/wikitext/rules/"
 				},
 				"module-type": "uglifywikitextrule",
 				"type": "application/javascript"

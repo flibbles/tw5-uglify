@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/wikitext.js
+title: $:/plugins/flibbles/uglify/wikitext/wikitext.js
 module-type: uglifier
 type: application/javascript
 
@@ -9,8 +9,8 @@ Uglifies wikitext
 exports.type = "text/vnd.tiddlywiki";
 
 var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exports.type];
-var logger = require('./logger.js');
-var parseutils = require('./wikitext/utils.js');
+var logger = require('../logger.js');
+var parseutils = require('./utils.js');
 
 exports.uglify = function(text, title, options) {
 	try {

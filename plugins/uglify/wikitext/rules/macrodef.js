@@ -4,7 +4,7 @@ Uglify rule for <<macros and:params>>
 
 \*/
 
-var utils = require("./utils.js");
+var utils = require("../utils.js");
 
 exports.name = "macrodef";
 

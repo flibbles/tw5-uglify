@@ -4,7 +4,7 @@ Uglify rule for \whitespace trim.
 
 \*/
 
-var utils = require("./utils.js");
+var utils = require("../utils.js");
 
 exports.name = "html";
 
