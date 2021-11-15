@@ -12,9 +12,8 @@ var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exp
 var logger = require('./logger.js');
 var parseutils = require('./wikitext/utils.js');
 
-exports.uglify = function(text, title) {
+exports.uglify = function(text, title, options) {
 	try {
-		var options = {}
 		var parser = new WikiWalker(undefined, text, options);
 		return parseutils.joinNodeArray(parser.tree);
 	} catch (e) {
@@ -40,7 +39,6 @@ function collectRules() {
 }
 
 function WikiWalker(type, text, options) {
-	this.options = options;
 	if (!this.uglifyMethodsInjected) {
 		var rules = collectRules();
 		$tw.utils.each([this.pragmaRuleClasses, this.blockRuleClasses, this.inlineRuleClasses], function(classList) {
@@ -59,6 +57,7 @@ function WikiWalker(type, text, options) {
 	if (text.indexOf("]") >= 0) {
 		this.bracketsAllowed = true;
 	}
+	this.placeholders = options.placeholders || Object.create(null);
 	WikiParser.call(this, type, text, options);
 };
 
@@ -218,3 +217,14 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	}
 };
 
+WikiWalker.prototype.containsPlaceholder = function(text) {
+	if (this.placeholderRegExp === undefined) {
+		var placeholderArray = [];
+		for (var placeholder in this.placeholders) {
+			placeholderArray.push($tw.utils.escapeRegExp(placeholder));
+		}
+		placeholderArray.push("\\([^\\)\\$]+\\)");
+		this.placeholderRegExp = new RegExp("\\$(?:" + placeholderArray.join('|') + ")\\$");
+	}
+	return text.search(this.placeholderRegExp) >= 0;
+};

@@ -19,7 +19,7 @@ exports.uglify = function(text) {
 		switch(attr.type) {
 		case "string":
 			if (attr.value !== "true") {
-				tagParts.push("=", bestQuoteFor(attr.value, parser));
+				tagParts.push("=", bestQuoteFor(attr, parser));
 			}
 			break;
 		case "indirect":
@@ -49,7 +49,28 @@ exports.uglify = function(text) {
 	return tagParts.join('');
 };
 
-function bestQuoteFor(string, parser) {
+function bestQuoteFor(attr, parser) {
+	var string = attr.value;
+	if (parser.containsPlaceholder(string)) {
+		// This string contains a placeholder. We can't change the quoting
+		// Figure out what the quoting used to be.
+		var text = parser.source,
+			pos = $tw.utils.skipWhiteSpace(text, attr.start);
+		pos += attr.name.length;
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos++; // Skip right over that "="
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		if (text.startsWith('"""',pos)) {
+			return '"""' + string + '"""';
+		}
+		if (text[pos] === '"') {
+			return '"' + string + '"';
+		}
+		if (text[pos] === "'") {
+			return "'" + string + "'";
+		}
+		return string;
+	}
 	if (string.search(/[\/\s>"'=]/) < 0 && string.length > 0) {
 		return string;
 	}

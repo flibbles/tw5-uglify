@@ -48,7 +48,7 @@ exports.getTiddlerUglifiedText = function(title, options) {
 		if (uglifier) {
 			cache.text = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 				logger.log('Compressing:', title);
-				return uglifier.uglify(tiddler.fields.text, title);
+				return uglifier.uglify(tiddler.fields.text, title, {wiki:wiki});
 			}, options.onComplete);
 		} else {
 			cache.text = tiddler.fields.text || '';
@@ -89,7 +89,8 @@ function pluginStub(wiki, title) {
 };
 
 function compressSubtiddlers(wiki, title, pluginInfo) {
-	var newTiddlers = Object.create(null), uglifier;
+	var newTiddlers = Object.create(null), uglifier,
+		options = {wiki: wiki};
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
 		var abridgedFields = Object.create(null);
@@ -108,7 +109,7 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 		}
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
-			abridgedFields.text = uglifier.uglify(fields.text, title);
+			abridgedFields.text = uglifier.uglify(fields.text, title, options);
 		}
 		newTiddlers[title] = abridgedFields;
 	}

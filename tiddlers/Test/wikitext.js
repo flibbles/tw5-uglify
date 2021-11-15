@@ -16,7 +16,7 @@ function testOnlyIf(condition) {
 };
 
 function uglify(text) {
-	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test');
+	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test', {wiki: $tw.wiki});
 };
 
 function test(text, expected) {
@@ -29,10 +29,7 @@ function test(text, expected) {
 	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out, options);
 	expect(uglyHtml).toBe(prettyHtml);
 
-	var prettyPlain = $tw.wiki.renderText("text/plain", wikitextType, text, options);
-	var uglyPlain = $tw.wiki.renderText("text/plain", wikitextType, out, options);
-	expect(uglyPlain).toBe(prettyPlain);
-	return (uglyHtml === prettyHtml && uglyPlain === prettyPlain);
+	return uglyHtml === prettyHtml;
 };
 
 it('handles widgets', function() {
@@ -49,11 +46,14 @@ it('handles widgets', function() {
 	test('<$vars a="""attr space""">'+dump, '<$vars a="attr space">'+dump);
 	test('Bob\'s<$vars a="""f/p""">'+dump, "Bob's<$vars a='f/p'>"+dump);
 	test('<$vars a="""$love#@<()\\""">'+dump, "<$vars a=$love#@<()\\>"+dump);
+	// Prefers single quotes to double brackets
+	test('[[Bob\'s]]<$vars a="""f/p""">'+dump, "[[Bob's]]<$vars a='f/p'>"+dump);
 	// Quotes in attribute
 	test('<$text text="""f\"p"""/>', '<$text text="""f\"p"""/>');
 	test('Bob\'s<$text text="""f\"p"""/>', "Bob's<$text text='f\"p'/>");
 	test('<$text text="""Nick\'s"""/>', '<$text text="Nick\'s"/>');
 	test('<$text text="Nick\'s"/>', '<$text text="Nick\'s"/>');
+	test('<$text text="$$"/>', '<$text text=$$/>'); // zero placeholders test
 	// Empty attributes
 	test('<$text text=""/>', '<$text text=""/>');
 	test('B\'s<$text text=""/>', "B's<$text text=''/>");
@@ -63,7 +63,7 @@ it('handles widgets', function() {
 	test('<$text text={{tid  !!title}} />', '<$text text={{tid  !!title}}/>');
 	test('<$text text=<<m>> />', '<$text text=<<m>>/>');
 	// Macro attributes
-	const m = "\\define m(val,t,f) Output:$val$,$t$,$f$\n";
+	const m = "\\define m(val,t,f)Output:$val$,$t$,$f$\n";
 	test('<$vars a={{tiddler}} />', '<$vars a={{tiddler}}/>');
 	test(m+'<$text text=<<m   >> />', m+'<$text text=<<m>>/>');
 	test(m+'<$text text=<<m val:t >> />', m+'<$text text=<<m val:t>>/>');
@@ -96,33 +96,115 @@ testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"))('handles html attribute 
 });
 
 it('handles macrocall', function() {
-	const m = "\\define m(val,t,f) Output:$val$,$t$,$f$\n";
-	test("<<m    >>", "<<m>>");
-	test("B<<m>>A", "B<<m>>A");
-	test("B\n\n<<m>>\n\nA", "B\n\n<<m>>\n\nA");
-	test("<<m>>\nA", "<<m>>\nA");
+	const m = "\\define m(val,t,f)Output:$val$,$t$,$f$\n";
+	test(m+"<<m    >>", m+"<<m>>");
+	test(m+"B<<m>>A", m+"B<<m>>A");
+	test(m+"B\n\n<<m>>\n\nA", m+"B\n\n<<m>>\n\nA");
+	test(m+"<<m>>\nA", m+"<<m>>\nA");
 
 	// Params
-	test("<<m  dfd  as  >>", "<<m dfd as>>");
-	test("<<m\nparam\nstuff>>", "<<m param stuff>>");
-	test("<<m  val  :   dad  >>", "<<m val:dad>>");
-	test("<<m  dad\n\tval:sis\n\tbro >>", "<<m dad val:sis bro>>");
+	test(m+"<<m  dfd  as  >>", m+"<<m dfd as>>");
+	test(m+"<<m\nparam\nstuff>>", m+"<<m param stuff>>");
+	test(m+"<<m  val  :   dad  >>", m+"<<m val:dad>>");
+	test(m+"<<m  dad\n\tval:sis\n\tbro >>", m+"<<m dad val:sis bro>>");
 	// params quotation
-	test("<<m \"cat\">>", "<<m cat>>");
-	test("<<m \"bad>char\">>", "<<m \"bad>char\">>");
-	test("B's<<m \"bad'char\">>", "B's<<m \"bad'char\">>");
-	test("<<m \"cat dog\">>", "<<m \"cat dog\">>");
-	test("B's<<m \"cat dog\">>", "B's<<m 'cat dog'>>");
-	test('<<m """bad"char""">>', '<<m """bad"char""">>');
-	test("<<m 'bad\"char'>>", "<<m 'bad\"char'>>");
+	test(m+"<<m \"cat\">>", m+"<<m cat>>");
+	test(m+"<<m \"$$\">>", m+"<<m $$>>"); // zero placeholders test
+	test(m+"<<m \"bad>char\">>", m+"<<m \"bad>char\">>");
+	test(m+"B's<<m \"bad'char\">>", m+"B's<<m \"bad'char\">>");
+	test(m+"<<m \"cat dog\">>", m+"<<m \"cat dog\">>");
+	test(m+"B's<<m \"cat dog\">>", m+"B's<<m 'cat dog'>>");
+	test(m+'<<m """bad"char""">>', m+'<<m """bad"char""">>');
+	test(m+"<<m 'bad\"char'>>", m+"<<m 'bad\"char'>>");
 	// param brackets
-	test("[[link]]<<m \"cat dog\">>", "[[link]]<<m [[cat dog]]>>");
-	test("[[link]]<<m \"bra ]ket\">>", "[[link]]<<m [[bra ]ket]]>>");
-	test('[[l]]<<m "bra ]]ket" "a b">>', '[[l]]<<m "bra ]]ket" [[a b]]>>');
+	test(m+"[[link]]<<m \"cat dog\">>", m+"[[link]]<<m [[cat dog]]>>");
+	test(m+"[[link]]<<m \"bra ]ket\">>", m+"[[link]]<<m \"bra ]ket\">>");
+	test(m+"[[link]]<<m \"bra [ket\">>", m+"[[link]]<<m [[bra [ket]]>>");
+	test(m+'[[l]]<<m "bra ]]ket" "a b">>', m+'[[l]]<<m "bra ]]ket" [[a b]]>>');
 	// Empty params
-	test('<<m val:"">>', '<<m val:"">>');
-	test("<<m val:''>>", "<<m val:''>>");
-	test("<<m val:[[]]>>", '<<m val:[[]]>>');
+	test(m+'<<m val:"">>', m+'<<m val:"">>');
+	test(m+"<<m val:''>>", m+"<<m val:''>>");
+	test(m+"<<m val:[[]]>>", m+'<<m val:[[]]>>');
+});
+
+it('handles macrocall', function() {
+	// empty: We keep empties, because they may be deliberately blanking a var
+	test("\\define m()\n\nContent", "\\define m()\nContent");
+	test("\\define m()    \nContent", "\\define m()\nContent");
+	// odd
+	test("\\define m() bad\n\\end\n\nStuff", "\\define m()bad\n\\end\n\nStuff");
+	// parameters
+	test("\\define m(A) $A$\n<<m value>>", "\\define m(A)$A$\n<<m value>>");
+	test("\\define m(A, B) $A$$B$\n<<m v c>>", "\\define m(A,B)$A$$B$\n<<m v c>>");
+	test("\\define m(A:  'love') $A$\n<<m>>", "\\define m(A:love)$A$\n<<m>>");
+	test("\\define m(A:'a<>b') $A$\n<<m>>", "\\define m(A:a<>b)$A$\n<<m>>");
+	test("\\define m(A:'a<>b') $A$\n<<m>>", "\\define m(A:a<>b)$A$\n<<m>>");
+	test("\\define m(A:\"l h\") $A$\n<<m>>", "\\define m(A:\"l h\")$A$\n<<m>>");
+	test("\\define m(A:\"l h\") $A$\n<<m>>'", "\\define m(A:'l h')$A$\n<<m>>'");
+	test("\\define m(A:\"l h\") $A$\n<<m>>[[l]]", "\\define m(A:[[l h]])$A$\n<<m>>[[l]]");
+	test("\\define m(A:\"l [h\") $A$\n<<m>>[[l]]", "\\define m(A:[[l [h]])$A$\n<<m>>[[l]]");
+	test("\\define m(A:\"l ]h\") $A$\n<<m>>[[l]]", "\\define m(A:\"l ]h\")$A$\n<<m>>[[l]]");
+	test("\\define m(A:\"l[[h]]\") $A$\n<<m>>[[l]]", "\\define m(A:l[[h]])$A$\n<<m>>[[l]]");
+	// collapsing to single line 
+	test("\\define m()   text\n<<m>>", "\\define m()text\n<<m>>");
+	test("\\define m()\ntext\n\\end\n<<m>>", "\\define m()text\n<<m>>");
+	test("\\define m()\n1\n2\n\\end\n<<m>>", "\\define m()\n1\n2\n\\end\n<<m>>");
+	test("\\define m()\n<$text\n\ttext=love />\n\\end\n<<m>>", "\\define m()<$text text=love/>\n<<m>>");
+	// collapsing to single line when whitespace abound
+	test("\\define m()\n text\n\\end\n<$edit-text placeholder=<<m>> />", "\\define m()\n text\n\\end\n<$edit-text placeholder=<<m>>/>");
+	test("\\define m()\n\ttext\n\\end\n<$edit-text placeholder=<<m>> />", "\\define m()\n\ttext\n\\end\n<$edit-text placeholder=<<m>>/>");
+	test("\\define m()\ntext   \n\\end\n<$edit-text placeholder=<<m>> />", "\\define m()text   \n<$edit-text placeholder=<<m>>/>");
+	test("\\define m()\ntext\t\n\\end\n<$edit-text placeholder=<<m>> />", "\\define m()text\t\n<$edit-text placeholder=<<m>>/>");
+	// surrounding whitespace 
+	test("\\define A() x\n\\define B() y\n<<A>><<B>>", "\\define A()x\n\\define B()y\n<<A>><<B>>");
+	/*
+	test("\\define A() x\n\n\n\\define B() y\n<<A>><<B>>", "\\define A()x\n\\define B()y\n<<A>><<B>>");
+	test("\\define A() x\n\\define B() y\n\n\n<<A>><<B>>", "\\define A()x\n\\define B()y\n<<A>><<B>>");
+	*/
+	// macros have their own quoting context
+	test('\\define B(v)$v$\n\\define A() <<B "a b">>\n<<A>>[[l]]\'', '\\define B(v)$v$\n\\define A()<<B "a b">>\n<<A>>[[l]]\'');
+	test('\\define B(v)$v$\n\\define A() <<B "a b">>\'\n<<A>>', "\\define B(v)$v$\n\\define A()<<B 'a b'>>'\n<<A>>");
+	test('\\define B(v)$v$\n\\define A() <<B "a b">>[[l]]\n<<A>>', "\\define B(v)$v$\n\\define A()<<B [[a b]]>>[[l]]\n<<A>>");
+});
+
+it('handles macrocall with quoted local substitutions', function() {
+	// html
+	test('\\define A(a,b) <$text text="""$a$"""/> <$text text="love"/>\n<<A [[a"b"c]]>>',
+		'\\define A(a,b)<$text text="""$a$"""/> <$text text=love/>\n<<A [[a"b"c]]>>');
+	test('\\define A(a,b) <$text   text  =  """$a$"""/> <$text text="love"/>\n<<A [[a"b"c]]>>',
+		'\\define A(a,b)<$text text="""$a$"""/> <$text text=love/>\n<<A [[a"b"c]]>>');
+	test('\\define A(a,b) <$text text="$a$"/> <$text text="love"/>\n<<A [[a\'b\'c]]>>',
+		'\\define A(a,b)<$text text="$a$"/> <$text text=love/>\n<<A [[a\'b\'c]]>>');
+	test('\\define A(a,b) <$text text=\'$a$\'/> <$text text="love"/>\n<<A [[a "b"c]]>>',
+		'\\define A(a,b)<$text text=\'$a$\'/> <$text text=love/>\n<<A \'a "b"c\'>>');
+	// macrocalls
+	test('\\define B(c)$c$\n\\define A(a,b) <<B """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
+		'\\define B(c)$c$\n\\define A(a,b)<<B """b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
+	test('\\define B(c)$c$\n\\define A(a,b) <<B  c  : """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
+		'\\define B(c)$c$\n\\define A(a,b)<<B c:"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
+	test('\\define B(c)$c$\n\\define A(a,b) <<B "b$a$">>\n<$text text="love"/>\n<<A [[a\'b\'c]]>>',
+		'\\define B(c)$c$\n\\define A(a,b)<<B "b$a$">>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
+	test('\\define B(c)$c$\n\\define A(a,b) <<B [[b$a$]]>>\n<$text text="love"/>\n<<A "a\'b\'c">>',
+		'\\define B(c)$c$\n\\define A(a,b)<<B [[b$a$]]>>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
+	// macrodef default parameters
+	test('\\define A(p)\n\\define I(x: """z$p$""", y: """yv""")$x$ $y$\n<<I>>\n\\end\n<<A [[a"b"c]]>>',
+		'\\define A(p)\n\\define I(x:"""z$p$""",y:yv)$x$ $y$\n<<I>>\n\\end\n<<A [[a"b"c]]>>');
+	test('\\define A(p)\n\\define I(x: "z$p$", y: "yv")$x$ $y$\n<<I>>\n\\end\n<<A [[a \'b\'c]]>>',
+		'\\define A(p)\n\\define I(x:"z$p$",y:yv)$x$ $y$\n<<I>>\n\\end\n<<A [[a \'b\'c]]>>');
+	test('\\define A(p)\n\\define I(x: \'z$p$\', y: \'yv\')$x$ $y$\n<<I>>\n\\end\n<<A [[a "b"c]]>>',
+		'\\define A(p)\n\\define I(x:\'z$p$\',y:yv)$x$ $y$\n<<I>>\n\\end\n<<A \'a "b"c\'>>');
+	test('\\define A(p)\n\\define I(x: [[z$p$]], y: \'yv\')$x$ $y$\n<<I>>\n\\end\n<<A [[a "b"c]]>>',
+		'\\define A(p)\n\\define I(x:[[z$p$]],y:yv)$x$ $y$\n<<I>>\n\\end\n<<A \'a "b"c\'>>');
+	// nested placeholders
+	test('\\define A(p)\n\\define G(x) $x$-<$text text="""$p$"""/>-<$text text="""$magic$"""/>\n<<G dog>>\n\\end\n<<A [[cat "mongoose" bat]]>>',
+		'\\define A(p)\n\\define G(x)$x$-<$text text="""$p$"""/>-<$text text=$magic$/>\n<<G dog>>\n\\end\n<<A [[cat "mongoose" bat]]>>');
+});
+
+it('handles macrocall with quoted global substitutions', function() {
+	test('\\define A() <$text text="""$(cat)$"""/> <$text text="""cat"""/>\n\\define cat() qu "ote\n<<A>>',
+		'\\define A()<$text text="""$(cat)$"""/> <$text text=cat/>\n\\define cat()qu "ote\n<<A>>');
+	test('\\define A() <$text text="""$(\'( @)$"""/> <$text text="""cat"""/>\n<$set name="""\'( @""" value=\'set "quote\'><<A>></$set>',
+		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>></$set>');
 });
 
 /*
