@@ -145,6 +145,9 @@ it('handles macrodef', function() {
 	test("\\define m(A:\"l [h\") $A$\n<<m>>[[l]]", "\\define m(A:[[l [h]])$A$\n<<m>>[[l]]");
 	test("\\define m(A:\"l ]h\") $A$\n<<m>>[[l]]", "\\define m(A:\"l ]h\")$A$\n<<m>>[[l]]");
 	test("\\define m(A:\"l[[h]]\") $A$\n<<m>>[[l]]", "\\define m(A:l[[h]])$A$\n<<m>>[[l]]");
+	// parameters with empty defaults
+	test('\\define m(A:"", B) <<dumpvariables>>\n<<m>>', '\\define m(A B)<<dumpvariables>>\n<<m>>');
+	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>', '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined</$list>\n<<m>>');
 	// parameters without quotes bleeding into next param
 	test("\\define m(A:'love', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:love B)$A$-$B$\n<<m B:Y>>");
 	test("\\define m(A:'hi by', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:'hi by'B)$A$-$B$\n<<m B:Y>>");
