@@ -18,12 +18,14 @@ it("supports IE11", function() {
 		regExp = new RegExp(str);
 	$tw.utils.each(plugins, function(plugin) {
 		var info = $tw.wiki.getPluginInfo(plugin);
-		for (var title in info.tiddlers) {
-			var tiddler = info.tiddlers[title];
-			if (tiddler.type !== "application/javascript") {
-				continue;
+		if (info !== undefined) {
+			for (var title in info.tiddlers) {
+				var tiddler = info.tiddlers[title];
+				if (tiddler.type !== "application/javascript") {
+					continue;
+				}
+				expect(tiddler.text.search(regExp)).toBe(-1);
 			}
-			expect(tiddler.text.search(regExp)).toBe(-1);
 		}
 	});
 });
