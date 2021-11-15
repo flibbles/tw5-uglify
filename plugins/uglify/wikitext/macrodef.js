@@ -16,7 +16,14 @@ exports.uglify = function() {
 	for (var index = 0; index < def.params.length; index++) {
 		var param = def.params[index];
 		if (index > 0) {
-			strings.push(",");
+			// Before we put that separating space in, there's a chance
+			// we may not need it if the last default param had quoting
+			var lastString = strings[strings.length-1];
+			if (lastString[0] !== '"'
+			&& lastString[0] !== "'"
+			&& (lastString.substr(0,2) !== "[[" || lastString.substr(lastString.length-2) !== "]]")) {
+				strings.push(" ");
+			}
 		}
 		strings.push(param.name);
 		if (param.default) {
