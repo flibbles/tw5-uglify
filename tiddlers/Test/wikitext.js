@@ -248,6 +248,13 @@ it('test wikirule works', function() {
 	test("?test?cl?<div>\n\n\tcontent\n\n</div>\n?test?", '<p><span class="cl"><div><p>content</p></div>\n</span></p>');
 	test("F?test?cl?\n\n\n\tcontent\n\n?test?", '<p>F<span class="cl">\n\n\n\tcontent\n\n</span></p>');
 });
+
+it('whitespace in unknown wikitext', function() {
+	test("\\whitespace trim\n?test?stuff?\n<div>\n\tContent\n</div>\n?test?",
+		"\\whitespace trim\n?test?stuff?\n<div>\n\tContent\n</div>\n?test?");
+	test("\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?",
+		"\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?");
+});
 /*
 it('does an identity transform right now', function() {
 	var tested = 0;

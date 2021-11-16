@@ -112,14 +112,14 @@ WikiWalker.prototype.parseInlineRunUnterminated = function(options) {
 	var nextMatch = this.findNextMatch(this.inlineRules, this.pos);
 	while (this.pos < this.sourceLength && nextMatch) {
 		if (nextMatch.matchIndex > this.pos) {
-			this.pushTextWidget(strings,this.source.substring(this.pos,nextMatch.matchIndex));
+			this.pushTextWidget(strings,this.source.substring(this.pos,nextMatch.matchIndex), this.pos, nextMatch.matchIndex);
 			this.pos = nextMatch.matchIndex;
 		}
 		strings.push.apply(strings, this.handleRule(nextMatch));
 		nextMatch = this.findNextMatch(this.inlineRules, this.pos);
 	}
 	if(this.pos < this.sourceLength) {
-		this.pushTextWidget(strings, this.source.substr(this.pos));
+		this.pushTextWidget(strings, this.source.substr(this.pos),this.pos,this.sourceLength);
 	}
 	this.pos = this.sourceLength;
 	return strings;
@@ -135,7 +135,7 @@ WikiWalker.prototype.parseInlineRunTerminated = function(terminatorRegExp,option
 		if (terminatorMatch) {
 			if (!inlineRuleMatch || inlineRuleMatch.matchIndex >= terminatorMatch.index) {
 				if(terminatorMatch.index > this.pos) {
-					this.pushTextWidget(strings, this.source.substring(this.pos,terminatorMatch.index));
+					this.pushTextWidget(strings, this.source.substring(this.pos,terminatorMatch.index), this.pos, terminatorMatch.index);
 				}
 				this.pos = terminatorMatch.index;
 				if (options.eatTerminator) {
@@ -146,7 +146,7 @@ WikiWalker.prototype.parseInlineRunTerminated = function(terminatorRegExp,option
 		}
 		if (inlineRuleMatch) {
 			if (inlineRuleMatch.matchIndex > this.pos) {
-				this.pushTextWidget(strings, this.source.substring(this.pos,inlineRuleMatch.matchIndex));
+				this.pushTextWidget(strings, this.source.substring(this.pos,inlineRuleMatch.matchIndex), this.pos, inlineRuleMatch.matchIndex);
 				this.pos = inlineRuleMatch.matchIndex;
 			}
 			strings.push.apply(strings, this.handleRule(inlineRuleMatch));
@@ -157,7 +157,7 @@ WikiWalker.prototype.parseInlineRunTerminated = function(terminatorRegExp,option
 	}
 	// Process the remaining text
 	if(this.pos < this.sourceLength) {
-		this.pushTextWidget(strings, this.source.substr(this.pos));
+		this.pushTextWidget(strings, this.source.substr(this.pos), this.pos, this.sourceLength);
 	}
 	this.pos = this.sourceLength;
 	return strings;
@@ -198,13 +198,17 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 // This doesn't actually produce a text widget anymore. It just produces
 // a parseTreeNode-like objects containing text.
 WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
+	var rtnText = text;
 	if (this.containsPlaceholder(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 	} else if(this.configTrimWhiteSpace) {
-		text = $tw.utils.trim(text);
+		rtnText = $tw.utils.trim(text);
+	}
+	if (rtnText !== text && this.insideUnknownRule) {
+		this.cannotEnsureNoWhiteSpace = true;
 	}
 	if (text) {
-		array.push({type: "text", text: text, start: start, end: end});		
+		array.push({type: "text", text: rtnText, start: start, end: end});
 	}
 };
 
@@ -213,11 +217,14 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	if (ruleInfo.rule.uglify) {
 		substring = ruleInfo.rule.uglify(this.source);
 	} else {
-		var start = this.pos;
+		var start = this.pos,
+			wasInsideUnknownRule = this.insideUnknownRule;
+		this.insideUnknownRule = true;
 		// We parse the rule and look to where it moved the head.
 		// Then we can copy this unknown rule without change
 		ruleInfo.rule.parse();
 		substring = this.source.substring(start, this.pos);
+		this.insideUnknownRule = wasInsideUnknownRule;
 	}
 	if (substring) {
 		return [{text: substring}];
