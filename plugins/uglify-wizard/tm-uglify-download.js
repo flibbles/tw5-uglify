@@ -19,7 +19,7 @@ exports.name = "uglify-download";
 exports.after = ["startup"];
 exports.synchronous = true;
 
-var currentTiddler = "$:/plugins/flibbles/uglify-wizard/current";
+var currentTiddler = "$:/config/flibbles/uglify-wizard/current";
 
 exports.startup = function() {
 	$tw.rootWidget.addEventListener("tm-uglify-download", function(event) {

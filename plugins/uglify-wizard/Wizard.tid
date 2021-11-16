@@ -40,38 +40,38 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 </$reveal>
 
-<$reveal state="$:/plugins/flibbles/uglify-wizard/current!!text" type="match" text="">
+<$reveal state="$:/config/flibbles/uglify-wizard/current!!text" type="match" text="">
 
 {{$:/plugins/flibbles/uglify-wizard/save}}
 </$reveal>
-<$reveal state="$:/plugins/flibbles/uglify-wizard/current!!text" type="nomatch" text="">
+<$reveal state="$:/config/flibbles/uglify-wizard/current!!text" type="nomatch" text="">
 
 {{$:/plugins/flibbles/uglify-wizard/pending}}
 </$reveal>
 
 <$reveal
-	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	state="$:/config/flibbles/uglify-wizard/customize!!text"
 	type="nomatch"
 	text="open">
 	<$button class="tc-btn-invisible">
 	<$action-setfield
-		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
+		$tiddler="$:/config/flibbles/uglify-wizard/customize"
 		$value="open" />
 		{{$:/core/images/right-arrow}} Customize
 </$button></$reveal>
 <$reveal
-	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	state="$:/config/flibbles/uglify-wizard/customize!!text"
 	type="match"
 	text="open">
 	<$button class="tc-btn-invisible">
 	<$action-setfield
-		$tiddler="$:/plugins/flibbles/uglify-wizard/customize"
+		$tiddler="$:/config/flibbles/uglify-wizard/customize"
 		$value="close" />
 	{{$:/core/images/down-arrow}} Customize
 </$button></$reveal>
 
 <$reveal
-	state="$:/plugins/flibbles/uglify-wizard/customize!!text"
+	state="$:/config/flibbles/uglify-wizard/customize!!text"
 	type="match"
 	text="open"
 	class="tc-uglify-customize">
@@ -86,7 +86,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 		unchecked="no"
 		default="yes"
 		field="text"
-		disabled={{{[[$:/plugins/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
+		disabled={{{[[$:/config/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
 
 		<$text text={{{ [[ ]addsuffix<type>] }}} />
 

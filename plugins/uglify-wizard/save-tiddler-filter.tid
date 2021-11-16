@@ -1,6 +1,18 @@
 title: $:/plugins/flibbles/uglify-wizard/save-tiddler-filter
 
 \define saveTiddlerFilter()
-[is[tiddler]] -[[$:/UpgradeLibrary]] -[[$:/plugins/flibbles/uglify]] -[[$:/plugins/flibbles/uglify-wizard]] -[prefix[$:/state/popup/]] -[[$:/HistoryList]] -[[$:/boot/boot.css]] -[type[application/javascript]library[yes]] -[[$:/boot/boot.js]] -[[$:/boot/bootprefix.js]] +[sort[title]]
+[is[tiddler]]
+-[[$:/UpgradeLibrary]]
+-[[$:/plugins/flibbles/uglify]]
+-[[$:/plugins/flibbles/uglify-wizard]]
+-[prefix[$:/config/flibbles/uglify/]]
+-[prefix[$:/config/flibbles/uglify-wizard/]]
+-[prefix[$:/state/popup/]]
+-[[$:/HistoryList]]
+-[[$:/boot/boot.css]]
+-[type[application/javascript]library[yes]]
+-[[$:/boot/boot.js]]
+-[[$:/boot/bootprefix.js]]
++[sort[title]]
 \end
 {{$:/core/templates/tiddlywiki5.html}}
