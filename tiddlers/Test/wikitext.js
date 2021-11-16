@@ -255,6 +255,46 @@ it('whitespace in unknown wikitext', function() {
 	test("\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?",
 		"\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?");
 });
+
+it('handles inline comments', function() {
+	test("First <!--comment-->\nText", "First \nText");
+	test("\\whitespace trim\nFirst <!--comment-->\nText", "FirstText");
+	test("<div>\n\tText\n\t<!--Comment-->\n</div>",
+		"<div>\n\tText\n\t\n</div>");
+	test("\\whitespace trim\n<div>\n\tText\n\t<!--Comment-->\n</div>",
+		"<div>Text</div>");
+	test("<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+	// Inline comments at start or end of blocks can always go
+	test("Text\n<!--Comment-->\n\nSecond", "Text\n<!---->\n\nSecond");
+	test("\\whitespace trim\nText\n<!--Comment-->\n\nSecond", "Text\n\nSecond");
+	test("Text\n<!--Comment--> \n\nSecond", "Text\n \n\nSecond");
+	test("\\whitespace trim\nText\n<!--stuff--> \n\nSecond", "Text\n\nSecond");
+	test("Text\n <!--Comment-->\n\nSecond", "Text\n \n\nSecond");
+	test("\\whitespace trim\nText\n <!--stuff-->\n\nSecond", "Text\n\nSecond");
+	// Removing a comment might splice a block into two
+	test("\\whitespace trim\n<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
+		"<div>\n\nFirstSecond</div>");
+	test("<div>\n<!--Comment-->\nText\n</div>",
+		"<div>\n<!---->\nText\n</div>");
+	test("\\whitespace trim\n<div>\n<!--Comment-->\nText\n</div>",
+		"<div>Text</div>");
+	test("First\n<!--1--> \nText", "First\n \nText");
+	test("\\whitespace trim\nFirst\n<!--1--> \nText", "FirstText");
+	test("First\n <!--1-->\nText", "First\n \nText");
+	test("\\whitespace trim\nFirst\n <!--1-->\nText", "FirstText");
+	// Sequential comments can goof pruning
+	test("<div>\n\nFirst\n<!--1--><!--2-->\nSecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+	test("<div>\n\nFirst\n<!--1--><!--2--><!--3-->\nSecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+	test("<div>\n\nFirst\n<!--1--><!--2--> <!--3-->\nSecond\n</div>",
+		"<div>\n\nFirst\n \nSecond\n</div>");
+	// Lines of comments can't prune very well without whitespace trimming
+	test("First\n<!--1-->\n<!--2-->\nText", "First\n<!---->\n<!---->\nText");
+	test("\\whitespace trim\nFirst\n<!--1-->\n<!--2-->\nText", "FirstText");
+});
+
 /*
 it('does an identity transform right now', function() {
 	var tested = 0;
