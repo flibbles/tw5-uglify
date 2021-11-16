@@ -59,6 +59,10 @@ function WikiWalker(type, text, options) {
 	}
 	this.placeholders = options.placeholders || Object.create(null);
 	WikiParser.call(this, type, text, options);
+	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
+		// Looks like we still need to specify a pragma to be sure
+		this.tree.unshift({text: "\\whitespace trim\n"});
+	}
 };
 
 WikiWalker.prototype = Object.create(WikiParser.prototype);
@@ -193,9 +197,14 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 
 // This doesn't actually produce a text widget anymore. It just produces
 // a parseTreeNode-like objects containing text.
-WikiWalker.prototype.pushTextWidget = function(tree,substring) {
-	if (substring) {
-		tree.push({text: substring});
+WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
+	if (this.containsPlaceholder(text)) {
+		this.cannotEnsureNoWhiteSpace = true;
+	} else if(this.configTrimWhiteSpace) {
+		text = $tw.utils.trim(text);
+	}
+	if (text) {
+		array.push({type: "text", text: text, start: start, end: end});		
 	}
 };
 

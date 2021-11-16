@@ -216,6 +216,17 @@ it('handles macrodef with quoted global substitutions', function() {
 		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>></$set>');
 });
 
+it('handles whitespace trimming', function() {
+	test("\\whitespace trim\n\n\n''Content''\n\n\n", "\n\n''Content''\n\n\n");
+	test("\\whitespace trim\n<div>\n\t''Text''\n</div>", "<div>''Text''</div>");
+	test("\\whitespace trim\n<div>\n\nText\n</div>", "<div>\n\nText</div>");
+	// placeholders in text cannot be trusted
+	test("\\define m(v)\n\\whitespace trim\n<div>\n\t<span>$v$</span>\n</div>\n\\end\n<<m [[''fancy'' content]]>>",
+		"\\define m(v)\n\\whitespace trim\n<div><span>$v$</span></div>\n\\end\n<<m [[''fancy'' content]]>>");
+	test("\\define m(v)\n\\whitespace trim\n<div>\n\n\t<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>",
+		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>");
+});
+
 /*
 it('does an identity transform right now', function() {
 	var tested = 0;
