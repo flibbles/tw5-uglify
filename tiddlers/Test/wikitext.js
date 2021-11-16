@@ -225,8 +225,29 @@ it('handles whitespace trimming', function() {
 		"\\define m(v)\n\\whitespace trim\n<div><span>$v$</span></div>\n\\end\n<<m [[''fancy'' content]]>>");
 	test("\\define m(v)\n\\whitespace trim\n<div>\n\n\t<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>",
 		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>");
+	// multiple whitespace pragma
+	test("\\whitespace trim\n\\whitespace notrim\n<div>\n\tText\n</div>", "<div>\n\tText\n</div>");
+	test("\\whitespace notrim\n\\whitespace trim\n<div>\n\tText\n</div>", "<div>Text</div>");
 });
 
+it('test wikirule works', function() {
+	// testing the testing framework here, but if this secretely didn't
+	// work then the whitespace tests wouldn't be ensuring anything.
+	function test(input, expected) {
+		var options = {variables: {currentTiddler: 'test'}};
+		var output = $tw.wiki.renderText("text/html", wikitextType, input, options);
+		expect(output).toBe(expected);
+	};
+	// block
+	test("?test?cl?\n\n\n\tcontent\n\n?test?", '<p class="cl">content</p>');
+	test("?test?cl?\n<span>\n\tcontent\n</span>\n?test?", '<p class="cl"><span>\n\tcontent\n</span>\n</p>');
+	test("?test?cl?\n<div>\n\n\tcontent\n</div>\n?test?", '<div class="cl"><p>content\n</p></div>');
+	test("?test?cl?\n<div>\n\n\tcontent\n\n</div>\n?test?", '<div class="cl"><p>content</p></div>');
+	// inline
+	test("F?test?cl?content?test?", '<p>F<span class="cl">content</span></p>');
+	test("?test?cl?<div>\n\n\tcontent\n\n</div>\n?test?", '<p><span class="cl"><div><p>content</p></div>\n</span></p>');
+	test("F?test?cl?\n\n\n\tcontent\n\n?test?", '<p>F<span class="cl">\n\n\n\tcontent\n\n</span></p>');
+});
 /*
 it('does an identity transform right now', function() {
 	var tested = 0;

@@ -8,8 +8,7 @@ exports.name = "whitespace";
 
 exports.uglify = function(text) {
 	this.parse();
-	if (!this.parser.configTrimWhiteSpace) {
-		return "\\whitespace notrim\n";
-	}
+	// We remove whitespace trim pragma. We trim it ourselves.
+	// (or we add it back in later if we still need it.)
 	return '';
 };
