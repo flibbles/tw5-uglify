@@ -32,6 +32,11 @@ function test(text, expected) {
 	return uglyHtml === prettyHtml;
 };
 
+it('purges carriage returns when it can', function() {
+	test('A\r\nB', 'A\nB');
+	test('A\r\n\r\nB', 'A\n\nB');
+});
+
 it('handles widgets', function() {
 	// Attributes
 	// Whitespace in element
@@ -285,9 +290,9 @@ it('handles inline comments', function() {
 	test("First\n <!--1-->\nText", "First\n \nText");
 	test("\\whitespace trim\nFirst\n <!--1-->\nText", "FirstText");
 	// Pesky carriage-returns
-	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\r\n<!---->\r\nText\r\n</div>");
+	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\n<!---->\nText\n</div>");
 	test("\\whitespace trim\r\n<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>Text</div>");
-	test("A\r\n<!--comment-->\r\nB", "A\r\n<!---->\r\nB");
+	test("A\r\n<!--comment-->\r\nB", "A\n<!---->\nB");
 	// Sequential comments can goof pruning
 	test("<div>\n\nFirst\n<!--1--><!--2-->\nSecond\n</div>",
 		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
@@ -314,7 +319,10 @@ it('handles inline comments', function() {
 	test("A\n\n<!--Comment--> \n\nB", "A\n\n \n\nB");
 	test("\\whitespace trim\nA\n\n<!--Comment--> \n\nB", "A\n\n \n\nB");
 	// Pesky carriage-returns
-	test("A\r\n\r\n<!--Comment-->\r\n\r\nB", "A\r\n\r\nB");
+	test("A\r\n\r\n<!--Comment-->\r\n\r\nB", "A\n\nB");
+	// pragma comments
+	test("<!--Comment-->\n\n\\define m() M\n<<m>>", "\\define m()M\n<<m>>");
+	test("<!--Comment-->\r\n\\define m() M\r\n<<m>>", "\\define m()M\n<<m>>");
 });
 
 /*

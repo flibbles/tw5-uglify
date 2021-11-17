@@ -190,6 +190,7 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 		output = this.source.substring(this.pos, whitespaceRegExp.lastIndex);
 		this.pos = whitespaceRegExp.lastIndex;
 	}
+	output = output.replace(/\r/mg,"");
 	if (output) {
 		tree.push({text: output});
 	}
@@ -198,17 +199,18 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 // This doesn't actually produce a text widget anymore. It just produces
 // a parseTreeNode-like objects containing text.
 WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
-	var rtnText = text;
+	var original = text;
 	if (this.containsPlaceholder(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 	} else if(this.configTrimWhiteSpace) {
-		rtnText = $tw.utils.trim(text);
+		text = $tw.utils.trim(text);
 	}
-	if (rtnText !== text && this.insideUnknownRule) {
+	if (original !== text && this.insideUnknownRule) {
 		this.cannotEnsureNoWhiteSpace = true;
 	}
+	text = text.replace(/\r/mg,"");
 	if (text) {
-		array.push({type: "text", text: rtnText, start: start, end: end});
+		array.push({type: "text", text: text, start: start, end: end});
 	}
 };
 
