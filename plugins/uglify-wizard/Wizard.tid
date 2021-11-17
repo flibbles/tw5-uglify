@@ -22,7 +22,7 @@ or click to pick a file <$browse/>
 
 <$reveal state="$:/Import!!status" type="match" text="pending">
 
-<$text text="The following tiddlers will be loaded "/><$button message="tm-perform-import" param="$:/Import">Confirm</$button>
+The following tiddlers will be loaded&#32;<$button message="tm-perform-import" param="$:/Import">Confirm</$button>
 
 {{$:/Import||$:/core/ui/ImportListing}}
 
@@ -75,11 +75,9 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 	type="match"
 	text="open"
 	class="tc-uglify-customize">
-
 	<$list
 		variable="type"
 		filter="[all[uglifiers]]">
-
 	<$checkbox
 		tiddler={{{ [[$:/config/flibbles/uglify/]addsuffix<type>] }}}
 		checked="yes"
@@ -87,9 +85,8 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 		default="yes"
 		field="text"
 		disabled={{{[[$:/config/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
-
-		<$text text={{{ [[ ]addsuffix<type>] }}} />
-
+		&#32;
+		<<type>>
 		<br>
 
 </$checkbox></$list></$reveal>
@@ -111,5 +108,5 @@ Close this browser window to prevent others from being able to access your data.
 
 //Your data will not leave your browser.//
 
-<$text text="For help and support, visit "/>[[the Uglify page|https://flibbles.github.io/tw5-uglify]].
+For help and support, visit&#32;[[the Uglify page|https://flibbles.github.io/tw5-uglify]].
 </div>
