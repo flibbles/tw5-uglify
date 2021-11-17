@@ -5,8 +5,6 @@ tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with html and widgets.
 
-// TODO:
-Test row of widgets inside block widget, an also inline widget
 \*/
 
 describe('wikitext uglifier', function() {
@@ -147,12 +145,18 @@ it('inline widgets with a newline after them', function() {
 	test("\\whitespace trim\n<$reveal/>\n<!--comment-->", "<$reveal/>");
 	test("<div>\n\n<$reveal/>\n<!--comment--></div>", "<div>\n\n<$reveal/>\n<!---->");
 	test("\\whitespace trim\n<div>\n\n<$reveal/>\n<!--comment--></div>", "<div>\n\n<$reveal/>");
-	// One case we get wrong. The reveal can never be block, but it's hard
-	// to tell, so we preserve trailing closing tags to be safe.
-	test("<div><$span/>\n\n<$reveal />\n</div>",
-		"<div><$span/>\n\n<$reveal/>\n</div>");
-	test("<div><$span/>\r\n\r\n<$reveal />\r\n</div>",
-		"<div><$span/>\n\n<$reveal/>\n</div>");
+	// One case we get wrong. The reveal isn't in a block, so it can't be
+	// but this is  hard to tell, so we preserve trailing closing tags
+	// to be safe.
+	test("<div><span/>\n\n<$reveal />\n</div>",
+		"<div><span/>\n\n<$reveal/>\n</div>");
+	test("<div><span/>\r\n\r\n<$reveal />\r\n</div>",
+		"<div><span/>\n\n<$reveal/>\n</div>");
+	// ...but whitespace trimming makes it better
+	test("\\whitespace trim\n<div><span/>\n\n<$reveal />\n</div>",
+		"<div><span/><$reveal/>");
+	test("\\whitespace trim\r\n<div><span/>\r\n\r\n<$reveal />\r\n</div>",
+		"<div><span/><$reveal/>");
 });
 
 it('block widgets with a newline after them', function() {
