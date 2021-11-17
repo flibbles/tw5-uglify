@@ -4,6 +4,8 @@ Uglify rule for <!-- inline comments -->.
 
 \*/
 
+var utils = require("../utils.js");
+
 exports.name = "commentinline";
 
 exports.uglify = function(text) {
@@ -15,7 +17,7 @@ exports.uglify = function(text) {
 	} while (this.findNextMatch(this.parser.pos) == this.parser.pos);
 	if (this.parser.cannotEndYet
 	|| (startsLine
-		&& newlineAt(source, this.parser.pos) // Newline after comment
+		&& utils.newlineAt(source, this.parser.pos) // Newline after comment
 		&& !this.parser.configTrimWhiteSpace)) {
 		// We can't remove this comment without risking
 		// splicing or creating blocks, or goofing up parsing
@@ -24,9 +26,4 @@ exports.uglify = function(text) {
 	}
 	// We return nothing, because we don't want comments around
 	return '';
-};
-
-function newlineAt(source, pos) {
-	return source[pos] === "\n"
-		|| (source[pos] === "\r" && source[pos+1] === "\n");
 };

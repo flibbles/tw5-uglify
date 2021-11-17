@@ -75,3 +75,8 @@ exports.quotifyParam = function(param, parser, options) {
 	}
 	return '"""' + param + '"""';
 };
+
+exports.newlineAt = function(source, pos) {
+	return source[pos] === "\n"
+		|| (source[pos] === "\r" && source[pos+1] === "\n");
+};

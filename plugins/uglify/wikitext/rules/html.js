@@ -52,7 +52,9 @@ exports.uglify = function(text) {
 				// We want to jump past those newlines, but not past EOF
 				this.parser.pos = this.parser.sourceLength;
 			}
-		} else if (!this.parser.configTrimWhiteSpace && this.parser.source[this.parser.pos] === "\n") {
+		} else if (!this.parser.configTrimWhiteSpace
+		&& utils.newlineAt(this.parser.source, tag.end)
+		&& startOfBlock(this.parser.source, tag.start)) {
 			// This is a special use case. An inline <closing-tag/> with a
 			// newline following it can only exist if it's followed by
 			// something. So we can't allow the EOF to occur here.
@@ -64,7 +66,7 @@ exports.uglify = function(text) {
 			tagParts.push('\n\n');
 		}
 		tagParts = tagParts.concat(strings, ["</", tag.tag, ">"]);
-		if (!this.parser.cannotEndYet) {
+		if (!this.parser.cannotEndYet && (tag.isBlock || strings !== "\n")) {
 			// That closing tag is potentially trailing junk. Add its length.
 			this.parser.trailingJunkLength += 3 + tag.tag.length;
 		}
@@ -104,4 +106,16 @@ function bestQuoteFor(attr, parser) {
 		return '"' + string + '"';
 	}
 	return '"""' + string + '"""';
+};
+
+function startOfBlock(source, pos) {
+	if (pos === 0 ) {
+		return true; //start of stream
+	}
+	if (source[pos-1] !== "\n") {
+		return false; // Not start of line
+	}
+	// Ensure previous line is blank
+	return (source[pos-2] === "\n"
+		|| (source[pos-2] === "\r" && source[pos-3] === "\n"));
 };

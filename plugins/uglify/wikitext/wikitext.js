@@ -64,6 +64,7 @@ function WikiWalker(type, text, options) {
 	this.placeholders = options.placeholders || Object.create(null);
 	this.trailingJunkLength = 0;
 	WikiParser.call(this, type, text, options);
+	// Now for some post processing
 	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
 		// Looks like we still need to specify a pragma to be sure
 		this.tree.unshift({text: "\\whitespace trim\n"});

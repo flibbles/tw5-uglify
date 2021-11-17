@@ -11,25 +11,10 @@ describe('wikitext uglifier', function() {
 
 const wikitextType = "text/vnd.tiddlywiki";
 
+var test = $tw.utils.test.wikitext.test;
+
 function testOnlyIf(condition) {
 	return condition? it : xit;
-};
-
-function uglify(text) {
-	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test', {wiki: $tw.wiki});
-};
-
-function test(text, expected) {
-	var out = uglify(text);
-	if (expected) {
-		expect(out).toBe(expected);
-	}
-	var options = {variables: {currentTiddler: 'test'}};
-	var prettyHtml = $tw.wiki.renderText("text/html", wikitextType, text, options);
-	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out, options);
-	expect(uglyHtml).toBe(prettyHtml);
-
-	return uglyHtml === prettyHtml;
 };
 
 it('purges carriage returns when it can', function() {
@@ -107,37 +92,15 @@ it('purges unnecessary closing tags', function() {
 	test("<div>\n\nContent\n\n</div>\n", "<div>\n\nContent");
 	test("<div>\n\n<div>\n\nContent</div></div>\n", "<div>\n\n<div>\n\nContent");
 	test("<div>\n\n<div>\n\nContent\n\n</div>\n\n</div>\n\n", "<div>\n\n<div>\n\nContent");
-	// mismatch
-	test("<div><span>Content</div>", "<div><span>Content</div>");
 	// self closing elements don't have trash, and need to keep trailing \n
 	test("<$reveal/>", "<$reveal/>");
 	test("<$reveal/>\n", "<$reveal/>\n");
 	test("<$reveal/>\n\n", "<$reveal/>\n");
-	// TODO: This could trip that trailing </div> because the inner $reveal
-	// must be inline anyway. This isn't that special use case.
-	test("<div><$reveal/>\n</div>", "<div><$reveal/>\n</div>");
-	test("<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>\n</div>");
+	// mismatch
+	test("<div><span>Content</div>", "<div><span>Content</div>");
 	// many trailing newline characters
 	test("B\n\n<$reveal/>\n\n\n\nAfter", "B\n\n<$reveal/>\n\n\n\nAfter");
 	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n\n<$vars a=X/>\n\n\nA");
-});
-
-it('html and its inconsistent block rules', function() {
-	test("<div>\n\n<$reveal/></div>", "<div>\n\n<$reveal/>");
-	test("<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>\n</div>");
-	test("<div>\n\n<$reveal/>\n</div>\n", "<div>\n\n<$reveal/>\n</div>");
-	test("<div>\n\n<$reveal/>\n\n</div>", "<div>\n\n<$reveal/>\n");
-	test("<div>\n\n<$reveal></$reveal>\n</div>", "<div>\n\n<$reveal></$reveal>\n");
-	test("<div>\n\n<$reveal>\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\n");
-	test("<div>\n\n<$reveal>\n\nC\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\nC");
-	test("<div>\n\n<$reveal>\n\nC\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\nC\n");
-	test("<div>\n\n<$reveal>\n\n<$reveal/>\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\n<$reveal/>\n");
-	cmp("<div>\n\n<div>\n\n<$reveal/>\n</div>\n</div>", "<div>\n\n<div>\n\n<$reveal/>\n</div>");
-	test("<div>\n\n<span>\n\n<$reveal/></span>\n</div>", "<div>\n\n<span>\n\n<$reveal/>");
-
-	// widgets and comments
-	test("<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
-	test("\\whitespace trim\n<$reveal/>\n<!--comment-->", "<$reveal/>");
 });
 
 testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"))('handles html attribute ordering', function() {
@@ -373,7 +336,7 @@ it('does an identity transform right now', function() {
 		console.log("INPUT");
 		console.log(text);
 		console.log("OUTPUT");
-		console.log(uglify(text));
+		console.log(utils.uglify(text));
 	};
 
 	const targets = $tw.wiki.allShadowTitles();
