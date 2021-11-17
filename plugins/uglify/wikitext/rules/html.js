@@ -39,12 +39,35 @@ exports.uglify = function(text) {
 		tagParts.push(">");
 	} else if (tag.isSelfClosing) {
 		tagParts.push("/>");
+		if (tag.isBlock) {
+			tagParts.push("\n\n");
+			// This is tricky. if it's a block, it either has two newlines,
+			// or it has a single newline at EOF. We want to claim those two
+			// newlines, but we set the trailing junk to 1, because if this
+			// ends up at EOF, we want to chomp one of those newlines.
+			this.parser.trailingJunkLength++;
+			// No matter the situation, we need to preserve that newline
+			this.parser.pos+=2;
+			if (this.parser.pos > this.parser.sourceLength) {
+				// We want to jump past those newlines, but not past EOF
+				this.parser.pos = this.parser.sourceLength;
+			}
+		} else if (!this.parser.configTrimWhiteSpace && this.parser.source[this.parser.pos] === "\n") {
+			// This is a special use case. An inline <closing-tag/> with a
+			// newline following it can only exist if it's followed by
+			// something. So we can't allow the EOF to occur here.
+			this.cannotBeAtEnd = true;
+		}
 	} else {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
 		}
 		tagParts = tagParts.concat(strings, ["</", tag.tag, ">"]);
+		if (!this.parser.cannotEndYet) {
+			// That closing tag is potentially trailing junk. Add its length.
+			this.parser.trailingJunkLength += 3 + tag.tag.length;
+		}
 	}
 	return tagParts.join('');
 };

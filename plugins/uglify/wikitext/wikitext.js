@@ -15,7 +15,11 @@ var parseutils = require('./utils.js');
 exports.uglify = function(text, title, options) {
 	try {
 		var parser = new WikiWalker(undefined, text, options);
-		return parseutils.joinNodeArray(parser.tree);
+		var string = parseutils.joinNodeArray(parser.tree);
+		if (parser.trailingJunkLength > 0) {
+			string = string.slice(0, -parser.trailingJunkLength);
+		}
+		return string;
 	} catch (e) {
 		logger.warn('Failed to compress', title + "\n\n    * message:", e);
 		return text;
@@ -58,6 +62,7 @@ function WikiWalker(type, text, options) {
 		this.bracketsAllowed = true;
 	}
 	this.placeholders = options.placeholders || Object.create(null);
+	this.trailingJunkLength = 0;
 	WikiParser.call(this, type, text, options);
 	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
 		// Looks like we still need to specify a pragma to be sure
@@ -192,6 +197,7 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 	}
 	output = output.replace(/\r/mg,"");
 	if (output) {
+		this.trailingJunkLength += output.length;
 		tree.push({text: output});
 	}
 };
@@ -211,13 +217,18 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	text = text.replace(/\r/mg,"");
 	if (text) {
 		array.push({type: "text", text: text, start: start, end: end});
+		// There is new text. We have to keep any earlier trailing junk
+		this.trailingJunkLength = 0;
 	}
 };
 
 WikiWalker.prototype.handleRule = function(ruleInfo) {
 	var substring;
+	// We have a new rule. So all the old trailing material will have to stay.
+	this.trailingJunkLength = 0;
 	if (ruleInfo.rule.uglify) {
 		substring = ruleInfo.rule.uglify(this.source);
+		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
 	} else {
 		var start = this.pos,
 			wasInsideUnknownRule = this.insideUnknownRule;
@@ -227,6 +238,14 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		ruleInfo.rule.parse();
 		substring = this.source.substring(start, this.pos);
 		this.insideUnknownRule = wasInsideUnknownRule;
+		// We don't know if the rule had stuff on the end
+		// So we can't risk deleting stuff.
+		this.trailingJunkLength = 0;
+		if (substring) {
+			// unknown rules aren't changed, so they must be okay at the EOF
+			// since they would have already been there.
+			this.cannotEndYet = false;
+		}
 	}
 	if (substring) {
 		return [{text: substring}];

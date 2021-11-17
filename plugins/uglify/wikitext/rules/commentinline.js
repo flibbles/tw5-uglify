@@ -13,11 +13,13 @@ exports.uglify = function(text) {
 	// We loop this to slurp up all sequential comment blocks
 		this.parse();
 	} while (this.findNextMatch(this.parser.pos) == this.parser.pos);
-	if (startsLine
-	&& newlineAt(source, this.parser.pos) // Newline after comment
-	&& !this.parser.configTrimWhiteSpace) {
+	if (this.parser.cannotEndYet
+	|| (startsLine
+		&& newlineAt(source, this.parser.pos) // Newline after comment
+		&& !this.parser.configTrimWhiteSpace)) {
 		// We can't remove this comment without risking
-		// splicing or creating blocks
+		// splicing or creating blocks, or goofing up parsing
+		// of the previous element
 		return '<!---->';
 	}
 	// We return nothing, because we don't want comments around

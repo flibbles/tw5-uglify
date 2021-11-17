@@ -40,7 +40,7 @@ it('purges carriage returns when it can', function() {
 it('handles widgets', function() {
 	// Attributes
 	// Whitespace in element
-	const dump = "<<dumpvariables>></$vars>";
+	const dump = "<<dumpvariables>>";
 	test('Z<$vars  a="X"  >'+dump, "Z<$vars a=X>"+dump);
 	test('Z<$vars\n\ta  =  "X"\n>'+dump, "Z<$vars a=X>"+dump);
 	test("<$vars  a='X'  >\n\n"+dump, "<$vars a=X>\n\n"+dump);
@@ -81,11 +81,11 @@ it('handles widgets', function() {
 
 	// Content
 	test("B<$vars  a='X'  >In</$vars>A", "B<$vars a=X>In</$vars>A");
-	test("<$vars  a='X'  >\n\nIn</$vars>", "<$vars a=X>\n\nIn</$vars>");
-	test("<$vars  a='X'  >\n\nIn</$vars>\n", "<$vars a=X>\n\nIn</$vars>\n");
-	test("<div>\n\n!aardvark\n\n</div>", "<div>\n\n!aardvark\n\n</div>");
-	test("<$vars>\n\n\nIn</$vars>\n", "<$vars>\n\nIn</$vars>\n");
-	test("<$vars>\n\nIn</$vars>\n\n", "<$vars>\n\nIn</$vars>\n\n");
+	test("<$vars  a='X'  >\n\nIn</$vars>", "<$vars a=X>\n\nIn");
+	test("<$vars  a='X'  >\n\nIn</$vars>\n", "<$vars a=X>\n\nIn");
+	test("<div>\n\n!aardvark\n\n</div>", "<div>\n\n!aardvark");
+	test("<$vars>\n\n\nIn</$vars>\n", "<$vars>\n\nIn");
+	test("<$vars>\n\nIn</$vars>\n\n", "<$vars>\n\nIn");
 	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>\nA");
 	test("B<$vars  a='X'  />After", "B<$vars a=X/>After");
 	test("B\n\n<$vars  a='X'  />\n\nAfter", "B\n\n<$vars a=X/>\n\nAfter");
@@ -96,8 +96,52 @@ it('handles widgets', function() {
 	test("top<br/>bottom", "top<br>bottom");
 });
 
+it('purges unnecessary closing tags', function() {
+	test("<div><span>Content</span></div>", "<div><span>Content");
+	test("<div><span>Content</span></div>\n", "<div><span>Content</span></div>\n");
+	test("\\whitespace trim\n<div><span>Content</span></div>\n", "<div><span>Content");
+	test("<div><span>text</span></div> ", "<div><span>text</span></div> ");
+	test("<div>\nContent\n\n</div>", "<div>\nContent\n\n");
+	test("<div>\nContent\n\n</div>\n", "<div>\nContent\n\n</div>\n");
+	test("\\whitespace trim\n<div>\nContent\n\n</div>\n", "<div>Content");
+	test("<div>\n\nContent\n\n</div>\n", "<div>\n\nContent");
+	test("<div>\n\n<div>\n\nContent</div></div>\n", "<div>\n\n<div>\n\nContent");
+	test("<div>\n\n<div>\n\nContent\n\n</div>\n\n</div>\n\n", "<div>\n\n<div>\n\nContent");
+	// mismatch
+	test("<div><span>Content</div>", "<div><span>Content</div>");
+	// self closing elements don't have trash, and need to keep trailing \n
+	test("<$reveal/>", "<$reveal/>");
+	test("<$reveal/>\n", "<$reveal/>\n");
+	test("<$reveal/>\n\n", "<$reveal/>\n");
+	// TODO: This could trip that trailing </div> because the inner $reveal
+	// must be inline anyway. This isn't that special use case.
+	test("<div><$reveal/>\n</div>", "<div><$reveal/>\n</div>");
+	test("<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>\n</div>");
+	// many trailing newline characters
+	test("B\n\n<$reveal/>\n\n\n\nAfter", "B\n\n<$reveal/>\n\n\n\nAfter");
+	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n\n<$vars a=X/>\n\n\nA");
+});
+
+it('html and its inconsistent block rules', function() {
+	test("<div>\n\n<$reveal/></div>", "<div>\n\n<$reveal/>");
+	test("<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>\n</div>");
+	test("<div>\n\n<$reveal/>\n</div>\n", "<div>\n\n<$reveal/>\n</div>");
+	test("<div>\n\n<$reveal/>\n\n</div>", "<div>\n\n<$reveal/>\n");
+	test("<div>\n\n<$reveal></$reveal>\n</div>", "<div>\n\n<$reveal></$reveal>\n");
+	test("<div>\n\n<$reveal>\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\n");
+	test("<div>\n\n<$reveal>\n\nC\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\nC");
+	test("<div>\n\n<$reveal>\n\nC\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\nC\n");
+	test("<div>\n\n<$reveal>\n\n<$reveal/>\n\n</$reveal>\n</div>", "<div>\n\n<$reveal>\n\n<$reveal/>\n");
+	cmp("<div>\n\n<div>\n\n<$reveal/>\n</div>\n</div>", "<div>\n\n<div>\n\n<$reveal/>\n</div>");
+	test("<div>\n\n<span>\n\n<$reveal/></span>\n</div>", "<div>\n\n<span>\n\n<$reveal/>");
+
+	// widgets and comments
+	test("<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
+	test("\\whitespace trim\n<$reveal/>\n<!--comment-->", "<$reveal/>");
+});
+
 testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"))('handles html attribute ordering', function() {
-	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In</$let>");
+	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In");
 });
 
 it('handles macrocall', function() {
@@ -152,7 +196,7 @@ it('handles macrodef', function() {
 	test("\\define m(A:\"l[[h]]\") $A$\n<<m>>[[l]]", "\\define m(A:l[[h]])$A$\n<<m>>[[l]]");
 	// parameters with empty defaults
 	test('\\define m(A:"", B) <<dumpvariables>>\n<<m>>', '\\define m(A B)<<dumpvariables>>\n<<m>>');
-	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>', '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined</$list>\n<<m>>');
+	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>', '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined\n<<m>>');
 	// parameters without quotes bleeding into next param
 	test("\\define m(A:'love', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:love B)$A$-$B$\n<<m B:Y>>");
 	test("\\define m(A:'hi by', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:'hi by'B)$A$-$B$\n<<m B:Y>>");
@@ -218,21 +262,21 @@ it('handles macrodef with quoted global substitutions', function() {
 	test('\\define A() <$text text="""$(cat)$"""/> <$text text="""cat"""/>\n\\define cat() qu "ote\n<<A>>',
 		'\\define A()<$text text="""$(cat)$"""/> <$text text=cat/>\n\\define cat()qu "ote\n<<A>>');
 	test('\\define A() <$text text="""$(\'( @)$"""/> <$text text="""cat"""/>\n<$set name="""\'( @""" value=\'set "quote\'><<A>></$set>',
-		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>></$set>');
+		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>>');
 });
 
 it('handles whitespace trimming', function() {
-	test("\\whitespace trim\n\n\n''Content''\n\n\n", "\n\n''Content''\n\n\n");
-	test("\\whitespace trim\n<div>\n\t''Text''\n</div>", "<div>''Text''</div>");
-	test("\\whitespace trim\n<div>\n\nText\n</div>", "<div>\n\nText</div>");
+	test("\\whitespace trim\n\n\n''Content''\n\n\n", "\n\n''Content''");
+	test("\\whitespace trim\n<div>\n\t''Text''\n</div>", "<div>''Text''");
+	test("\\whitespace trim\n<div>\n\nText\n</div>", "<div>\n\nText");
 	// placeholders in text cannot be trusted
 	test("\\define m(v)\n\\whitespace trim\n<div>\n\t<span>$v$</span>\n</div>\n\\end\n<<m [[''fancy'' content]]>>",
-		"\\define m(v)\n\\whitespace trim\n<div><span>$v$</span></div>\n\\end\n<<m [[''fancy'' content]]>>");
+		"\\define m(v)\n\\whitespace trim\n<div><span>$v$\n\\end\n<<m [[''fancy'' content]]>>");
 	test("\\define m(v)\n\\whitespace trim\n<div>\n\n\t<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>",
-		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>");
+		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n\n\\end\n<<m [[* ''fancy'' content]]>>");
 	// multiple whitespace pragma
-	test("\\whitespace trim\n\\whitespace notrim\n<div>\n\tText\n</div>", "<div>\n\tText\n</div>");
-	test("\\whitespace notrim\n\\whitespace trim\n<div>\n\tText\n</div>", "<div>Text</div>");
+	test("\\whitespace trim\n\\whitespace notrim\n<div>\n\tText\n</div>", "<div>\n\tText\n");
+	test("\\whitespace notrim\n\\whitespace trim\n<div>\n\tText\n</div>", "<div>Text");
 });
 
 it('test wikirule works', function() {
@@ -265,10 +309,8 @@ it('whitespace in unknown wikitext', function() {
 it('handles inline comments', function() {
 	test("First <!--comment-->\nText", "First \nText");
 	test("\\whitespace trim\nFirst <!--comment-->\nText", "FirstText");
-	test("<div>\n\tText\n\t<!--Comment-->\n</div>",
-		"<div>\n\tText\n\t\n</div>");
-	test("\\whitespace trim\n<div>\n\tText\n\t<!--Comment-->\n</div>",
-		"<div>Text</div>");
+	test("<div>\n\tText\n\t<!--Comment-->\n</div>", "<div>\n\tText\n\t\n");
+	test("\\whitespace trim\n<div>\n\tText\n\t<!--C-->\n</div>", "<div>Text");
 	// Inline comments at start or end of blocks can always go
 	test("Text\n<!--Comment-->\n\nSecond", "Text\n<!---->\n\nSecond");
 	test("\\whitespace trim\nText\n<!--Comment-->\n\nSecond", "Text\n\nSecond");
@@ -278,38 +320,36 @@ it('handles inline comments', function() {
 	test("\\whitespace trim\nText\n <!--stuff-->\n\nSecond", "Text\n\nSecond");
 	// Removing a comment might splice a block into two
 	test("<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+		"<div>\n\nFirst\n<!---->\nSecond\n");
 	test("\\whitespace trim\n<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
-		"<div>\n\nFirstSecond</div>");
-	test("<div>\n<!--Comment-->\nText\n</div>",
-		"<div>\n<!---->\nText\n</div>");
-	test("\\whitespace trim\n<div>\n<!--Comment-->\nText\n</div>",
-		"<div>Text</div>");
+		"<div>\n\nFirstSecond");
+	test("<div>\n<!--Comment-->\nText\n</div>", "<div>\n<!---->\nText\n");
+	test("\\whitespace trim\n<div>\n<!--Comment-->\nText\n</div>", "<div>Text");
 	test("First\n<!--1--> \nText", "First\n \nText");
 	test("\\whitespace trim\nFirst\n<!--1--> \nText", "FirstText");
 	test("First\n <!--1-->\nText", "First\n \nText");
 	test("\\whitespace trim\nFirst\n <!--1-->\nText", "FirstText");
 	// Pesky carriage-returns
-	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\n<!---->\nText\n</div>");
-	test("\\whitespace trim\r\n<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>Text</div>");
+	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\n<!---->\nText\n");
+	test("\\whitespace trim\r\n<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>Text");
 	test("A\r\n<!--comment-->\r\nB", "A\n<!---->\nB");
 	// Sequential comments can goof pruning
 	test("<div>\n\nFirst\n<!--1--><!--2-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+		"<div>\n\nFirst\n<!---->\nSecond\n");
 	test("<div>\n\nFirst\n<!--1--><!--2--><!--3-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n</div>");
+		"<div>\n\nFirst\n<!---->\nSecond\n");
 	test("<div>\n\nFirst\n<!--1--><!--2--> <!--3-->\nSecond\n</div>",
-		"<div>\n\nFirst\n \nSecond\n</div>");
+		"<div>\n\nFirst\n \nSecond\n");
 	// Lines of comments can't prune very well without whitespace trimming
 	test("First\n<!--1-->\n<!--2-->\nText", "First\n<!---->\n<!---->\nText");
 	test("\\whitespace trim\nFirst\n<!--1-->\n<!--2-->\nText", "FirstText");
 });
 
 it('handles inline comments', function() {
-	test("<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText\n</div>");
-	test("\\whitespace trim\n<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText</div>");
-	test("<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText\n</div>");
-	test("\\whitespace trim\n<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText</div>");
+	test("<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText\n");
+	test("\\whitespace trim\n<div>\n\n<!--C-->\nText\n</div>", "<div>\n\nText");
+	test("<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText\n");
+	test("\\whitespace trim\n<div>\n\n<!--C-->Text\n</div>", "<div>\n\nText");
 	test("A\n\n<!--Comment-->\n\nB", "A\n\nB");
 	test("A\n\n<!--Comment-->\n\n\n\nB", "A\n\nB");
 	test("A\n\n<!--Comment--><!--Comment-->\n\nB", "A\n\nB");
