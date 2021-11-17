@@ -1,11 +1,5 @@
 title: Templates/Demo
 
-\define showHTML(text)
-```html
-$text$
-```
-\end
-
 <$tiddler tiddler=<<currentTab>> >
 <!-- We put the first character of the currentTiddler's text into a dummy
      variable, just so that if that tiddler's text changes, it forces a refresh
@@ -31,13 +25,13 @@ $text$
 
 <$list variable="html" filter="[all[current]type[text/vnd.tiddlywiki]]" emptyMessage="<$transclude/>">
 
-<$macrocall $name="showHTML" text={{!!text}} />
+<$codeblock code={{!!text}} language="html" />
 
 </$list></p>
 
 @@.uglify-demo-after
 
-<$macrocall $name='demo-uglify' tiddler=<<currentTiddler>> />
+<$codeblock code=<<uglify>> language={{{ [all[current]get[type]!match[text/vnd.tiddlywiki]else[html]] }}} />
 @@
 
 @@.uglify-demo-description
