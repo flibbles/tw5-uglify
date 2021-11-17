@@ -1,17 +1,18 @@
 /*\
-title: Test/wikitext.js
+title: Test/wikitext/framework.js
 type: application/javascript
 tags: $:/tags/test-spec
 
-Tests the wikitext uglifier.
+Tests the wikitext uglifier with inline and block comments.
 
 \*/
 
 describe('wikitext uglifier', function() {
+describe('framework', function() {
+
+const test = $tw.utils.test.wikitext.test;
 
 const wikitextType = "text/vnd.tiddlywiki";
-
-var test = $tw.utils.test.wikitext.test;
 
 /*
 it('does an identity transform right now', function() {
@@ -51,4 +52,4 @@ it('does an identity transform right now', function() {
 });
 */
 
-});
+});});
