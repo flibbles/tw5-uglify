@@ -23,5 +23,7 @@ exports.run = function(title) {
 	if (!tiddler) {
 		return '';
 	}
-	return this.wiki.getTiddlerUglifiedText(title);
+	var ugly = this.wiki.getTiddlerUglifiedText(title);
+	$tw.wiki.addTiddler({title: "$:/config/flibbles/uglify-demo/"+title, text: ugly}, tiddler);
+	return ugly;
 };
