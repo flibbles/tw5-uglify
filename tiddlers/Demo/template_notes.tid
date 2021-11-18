@@ -8,7 +8,7 @@ title: Demo/template/notes
 
 Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglified code update [[in real time|Interactive Demo]].
 
-<$list variable="status" filter="[all[current]addprefix[$:/config/flibbles/uglify-demo/]get[text]match{!!text}then[t]else[f]match[f]]">
+<$list variable="status" filter="[all[current]addprefix[$:/config/flibbles/uglify-demo/]get[text]match{!!text}then[t]else[f]match[fail]]">
 
 <$macrocall $name=report link={{$:/plugins/flibbles/uglify!!source}} />
 

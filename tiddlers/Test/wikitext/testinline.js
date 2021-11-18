@@ -6,7 +6,7 @@ module-type: wikirule
 Fake rule for testing unknown rules containing blocks in wikitext.
 
 ```
-?test?class? Content?test?
+?test?class? $(Content)$ ?test?
 ```
 
 \*/

@@ -3,7 +3,10 @@ title: Test/wikitext/unknown.js
 type: application/javascript
 tags: $:/tags/test-spec
 
-Tests the wikitext uglifier with inline and block comments.
+Tests the wikitext uglifier with an unknown wikitext rule which
+recursively calls the wikiparser.
+
+The rule is a test rule found in testblock.js and testinline.js
 
 \*/
 

@@ -10,14 +10,18 @@ Tests the wikitext uglifier with html and widgets.
 describe('wikitext uglifier', function() {
 describe('html', function() {
 
-var test = $tw.utils.test.wikitext.test;
+const test = $tw.utils.test.wikitext.test;
 
 function testOnlyIf(condition) {
 	return condition? it : xit;
 };
 
+function testIfLet() {
+	return testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"));
+};
+
 it('whitespace among attributes', function() {
-	const dump = "<<dumpvariables>>";
+	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
 	test('Z<$vars  a="X"  >'+dump, "Z<$vars a=X>"+dump);
 	test('Z<$vars\n\ta  =  "X"\n>'+dump, "Z<$vars a=X>"+dump);
 	test("<$vars  a='X'  >\n\n"+dump, "<$vars a=X>\n\n"+dump);
@@ -88,7 +92,7 @@ it('void elements', function() {
 	test("top<br/>bottom", "top<br>bottom");
 });
 
-testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"))('handles html attribute ordering', function() {
+testIfLet()('handles html attribute ordering', function() {
 	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In");
 });
 
@@ -169,6 +173,47 @@ it('block widgets with a newline after them', function() {
 	// but whitespace trimming removes this need again
 	test("\\whitespace trim\n<$reveal >\n</$reveal>", "<$reveal>");
 	test("\\whitespace trim\n<div>\n\n<$reveal >\n</$reveal>", "<div>\n\n<$reveal>");
+});
+
+describe('$set', function() {
+
+it('value types', function() {
+	test('<$set name="v" value="va"><<v>></$set>X', '<$let v=va><<v>></$let>X');
+	test('<$set name="v" value="var"><<v>></$set>', '<$let v=var><<v>>');
+	test('<$set name="v" value={{!!title}}><<v>></$set>',
+		'<$let v={{!!title}}><<v>>');
+	test('<$set name="v" value={{{ [[title]] }}}><<v>></$set>',
+		'<$let v={{{[[title]]}}}><<v>>');
+	test('\\define mac()stuff\n<$set name="v" value=<<mac>>><<v>></$set>',
+		'\\define mac()stuff\n<$let v=<<mac>>><<v>>');
+	test('<$set name="v" value=<<currentTiddler>>><<v>></$set>',
+		'<$let v=<<currentTiddler>>><<v>>');
+});
+
+it('placeholders in value', function() {
+	test('\\define m(a)<$set name="v" value="""$a$"""><<v>></$set>\n<<m B>>',
+		'\\define m(a)<$let v="""$a$"""><<v>>\n<<m B>>');
+	test('\\define m(a)<$set name="v" value="$a$"><<v>></$set>\n<<m B>>',
+		'\\define m(a)<$let v="$a$"><<v>>\n<<m B>>');
+});
+
+it('legal names', function() {
+	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
+	// illegal
+	test('<$set  name="" value=v>'+dump, '<$set name="" value=v>'+dump);
+	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s" value=v>'+dump);
+	test('<$set  name="s p" value=v>'+dump, '<$set name="s p" value=v>'+dump);
+	test('<$set  name="g>t" value=v>'+dump, '<$set name="g>t" value=v>'+dump);
+	test('<$set  name="e=q" value=v>'+dump, '<$set name="e=q" value=v>'+dump);
+	test("<$set  name='q\"t' value=v>"+dump, "<$set name='q\"t' value=v>"+dump);
+	test('<$set  name="a\'p" value=v>'+dump, '<$set name="a\'p" value=v>'+dump);
+	// legal
+	test('<$set  name="\\()$@:#!" value=v>'+dump, '<$let \\()$@:#!=v>'+dump);
+});
+
+it('goes to $vars if $let is not available', function() {
+});
+
 });
 
 });});

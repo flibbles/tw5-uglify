@@ -7,7 +7,7 @@ Fake rule for testing unknown rules containing blocks in wikitext.
 
 ```
 ?test?class?
-
+$(Content)$
 ?test?
 ```
 
