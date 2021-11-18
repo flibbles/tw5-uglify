@@ -194,9 +194,19 @@ ifLetIt('value types', function() {
 		'\\define mac()stuff\n<$let v=<<mac>>>'+dump);
 	test('<$set name="v" value=<<currentTiddler>>>'+dump,
 		'<$let v=<<currentTiddler>>>'+dump);
+	// arguments can be switched around
+	test('<$set value="var" name="v">'+dump, '<$let v=var>'+dump);
 	// Make sure the closing tag is different too.
 	test('<$set name="v" value="va">'+dump+'</$set>X',
 		'<$let v=va>'+dump+'</$let>X');
+});
+
+ifLetIt('other attributes prevent', function() {
+	// Technically, we could actually do something with this, but
+	// it's too complicated for me to bother with right now.
+	// and with too little returns.
+	test('<$set name="v" value="var" emptyValue="empty">'+dump,
+		'<$set name=v value=var emptyValue=empty>'+dump);
 });
 
 ifLetIt('placeholders in value', function() {
