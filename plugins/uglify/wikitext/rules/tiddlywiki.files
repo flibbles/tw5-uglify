@@ -12,6 +12,19 @@
 				"module-type": "uglifywikitextrule",
 				"type": "application/javascript"
 			}
+		},
+		{
+			"path": "./html",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"title": {
+					"source": "filename",
+					"prefix": "$:/plugins/flibbles/uglify/wikitext/rules/html/"
+				},
+				"module-type": "uglifyhtmlwikitextrule",
+				"type": "application/javascript"
+			}
 		}
 	]
 }

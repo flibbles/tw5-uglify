@@ -8,6 +8,8 @@ Utils for the wikitext uglifying.
 
 \*/
 
+const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
+
 const wikitextType = "text/vnd.tiddlywiki";
 
 exports.uglify = function(text) {
@@ -32,6 +34,14 @@ exports.cmp = function(a, b) {
 	var aHtml = $tw.wiki.renderText("text/html", wikitextType, a, options);
 	var bHtml = $tw.wiki.renderText("text/html", wikitextType, b, options);
 	expect(aHtml).toBe(bHtml);
+};
+
+exports.ifLetIt = function(description, fn) {
+	if (parseUtils.letAvailable()) {
+		return it(description, fn);
+	} else {
+		return xit("<$LET> unavailable: " + description);
+	}
 };
 
 $tw.utils.test = $tw.utils.test || {};
