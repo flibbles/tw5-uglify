@@ -1,6 +1,6 @@
 # Uglify
 
-If you've ever wanted to compress your Tiddlywiki file or plugins, TW5-Uglify is for you. 
+If you've ever wanted to compress your Tiddlywiki file or plugins, TW5-Uglify is for you. It compresses javascript, css, and even wikitext with zero effort.
 
 To compress your Tiddlywiki file, you can visit the [uglify wizard](https://flibbles.github.io/tw5-uglify/uglified.html) to compress it without even having to install the plugin.
 
