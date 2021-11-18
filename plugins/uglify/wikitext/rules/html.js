@@ -81,8 +81,13 @@ function improveTag(tag, parser) {
 		if ($tw.utils.count(attrs) === 2
 		&& attrs.name && attrs.name.type === "string" && isLegalAttrName(attrs.name.value)
 		&& attrs.value) {
-			tag.tag = "$let";
-			tag.type = "let";
+			if (utils.letAvailable()) {
+				tag.tag = "$let";
+				tag.type = "let";
+			} else {
+				tag.tag = "$vars";
+				tag.type = "vars";
+			}
 			tag.attributes = {};
 			// I don't change the original name in the
 			// attribute, because we may use that to find

@@ -10,14 +10,20 @@ Tests the wikitext uglifier with html and widgets.
 describe('wikitext uglifier', function() {
 describe('html', function() {
 
+const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
+
 const test = $tw.utils.test.wikitext.test;
 
 function testOnlyIf(condition) {
 	return condition? it : xit;
 };
 
-function testIfLet() {
-	return testOnlyIf(!$tw.wiki.renderText(null, null, "<$let/>"));
+function ifLetIt(description, fn) {
+	if (parseUtils.letAvailable()) {
+		return it(description, fn);
+	} else {
+		return xit("<$LET> unavailable: " + description);
+	}
 };
 
 it('whitespace among attributes', function() {
@@ -92,7 +98,7 @@ it('void elements', function() {
 	test("top<br/>bottom", "top<br>bottom");
 });
 
-testIfLet()('handles html attribute ordering', function() {
+ifLetIt('handles html attribute ordering', function() {
 	test("<$let\n2=cat\n1=dog>In</$let>", "<$let 2=cat 1=dog>In");
 });
 
@@ -177,28 +183,30 @@ it('block widgets with a newline after them', function() {
 
 describe('$set', function() {
 
-it('value types', function() {
-	test('<$set name="v" value="va"><<v>></$set>X', '<$let v=va><<v>></$let>X');
-	test('<$set name="v" value="var"><<v>></$set>', '<$let v=var><<v>>');
-	test('<$set name="v" value={{!!title}}><<v>></$set>',
-		'<$let v={{!!title}}><<v>>');
-	test('<$set name="v" value={{{ [[title]] }}}><<v>></$set>',
-		'<$let v={{{[[title]]}}}><<v>>');
-	test('\\define mac()stuff\n<$set name="v" value=<<mac>>><<v>></$set>',
-		'\\define mac()stuff\n<$let v=<<mac>>><<v>>');
-	test('<$set name="v" value=<<currentTiddler>>><<v>></$set>',
-		'<$let v=<<currentTiddler>>><<v>>');
+const dump = "<$text text={{{[variables[]join[,]]}}}/>";
+
+ifLetIt('value types', function() {
+	test('<$set name="v" value="var">'+dump, '<$let v=var>'+dump);
+	test('<$set name="v" value={{!!title}}>'+dump, '<$let v={{!!title}}>'+dump);
+	test('<$set name="v" value={{{ [[title]] }}}>'+dump,
+		'<$let v={{{[[title]]}}}>'+dump);
+	test('\\define mac()stuff\n<$set name="v" value=<<mac>>>'+dump,
+		'\\define mac()stuff\n<$let v=<<mac>>>'+dump);
+	test('<$set name="v" value=<<currentTiddler>>>'+dump,
+		'<$let v=<<currentTiddler>>>'+dump);
+	// Make sure the closing tag is different too.
+	test('<$set name="v" value="va">'+dump+'</$set>X',
+		'<$let v=va>'+dump+'</$let>X');
 });
 
-it('placeholders in value', function() {
-	test('\\define m(a)<$set name="v" value="""$a$"""><<v>></$set>\n<<m B>>',
-		'\\define m(a)<$let v="""$a$"""><<v>>\n<<m B>>');
-	test('\\define m(a)<$set name="v" value="$a$"><<v>></$set>\n<<m B>>',
-		'\\define m(a)<$let v="$a$"><<v>>\n<<m B>>');
+ifLetIt('placeholders in value', function() {
+	test('\\define m(a)<$set name="v" value="""$a$""">'+dump+'\n<<m B>>',
+		'\\define m(a)<$let v="""$a$""">'+dump+'\n<<m B>>');
+	test('\\define m(a)<$set name="v" value="$a$">'+dump+'\n<<m B>>',
+		'\\define m(a)<$let v="$a$">'+dump+'\n<<m B>>');
 });
 
-it('legal names', function() {
-	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
+ifLetIt('legal names', function() {
 	// illegal
 	test('<$set  name="" value=v>'+dump, '<$set name="" value=v>'+dump);
 	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s" value=v>'+dump);
@@ -212,6 +220,8 @@ it('legal names', function() {
 });
 
 it('goes to $vars if $let is not available', function() {
+	spyOn(parseUtils, "letAvailable").and.returnValue(false);
+	test('<$set name=n value=v>'+dump, '<$vars n=v>'+dump);
 });
 
 });

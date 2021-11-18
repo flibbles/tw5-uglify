@@ -34,6 +34,37 @@ exports.stringifyMacro = function(macro, parser) {
 	return strings.join("");
 };
 
+exports.quotifyParam = function(param, parser, options) {
+	var allowBrackets = options && options.allowBrackets;
+	if (param.search(/[\s"']/) < 0 && param.length > 0 && (allowBrackets || param.indexOf(">") < 0)) {
+		return param;
+	}
+	if (parser.apostrophesAllowed && param.indexOf("'") < 0) {
+		return "'" + param + "'";
+	}
+	if (parser.bracketsAllowed && param.indexOf("]") < 0) {
+		return "[[" + param + "]]";
+	}
+	if (param.indexOf('"') < 0) {
+		return '"' + param + '"';
+	}
+	return '"""' + param + '"""';
+};
+
+exports.newlineAt = function(source, pos) {
+	return source[pos] === "\n"
+		|| (source[pos] === "\r" && source[pos+1] === "\n");
+};
+
+var _letAvail;
+
+exports.letAvailable = function() {
+	if (_letAvail === undefined) {
+		_letAvail = !$tw.wiki.renderText(null, null, "<$let/>");
+	}
+	return _letAvail;
+};
+
 function getOriginalQuoting(param, parser) {
 	var text = parser.source,
 		string = param.value,
@@ -59,24 +90,3 @@ function getOriginalQuoting(param, parser) {
 	return string;
 };
 
-exports.quotifyParam = function(param, parser, options) {
-	var allowBrackets = options && options.allowBrackets;
-	if (param.search(/[\s"']/) < 0 && param.length > 0 && (allowBrackets || param.indexOf(">") < 0)) {
-		return param;
-	}
-	if (parser.apostrophesAllowed && param.indexOf("'") < 0) {
-		return "'" + param + "'";
-	}
-	if (parser.bracketsAllowed && param.indexOf("]") < 0) {
-		return "[[" + param + "]]";
-	}
-	if (param.indexOf('"') < 0) {
-		return '"' + param + '"';
-	}
-	return '"""' + param + '"""';
-};
-
-exports.newlineAt = function(source, pos) {
-	return source[pos] === "\n"
-		|| (source[pos] === "\r" && source[pos+1] === "\n");
-};
