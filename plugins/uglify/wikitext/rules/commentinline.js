@@ -29,8 +29,10 @@ exports.uglify = function(text) {
 	}
 	if (this.parser.cannotStartBlockYet
 	&& utils.newlineAt(source, pos + utils.newlineAt(source, pos))) {
+		if (!this.cannotBeAtEnd) {
+			this.parser.trailingJunkLength += 7;
+		}
 		return '<!---->';
-		this.parser.trailingJunkLength += 7;
 	}
 	if ((startsLine || this.cannotBeAtEnd)
 	&& utils.newlineAt(source, pos) // Newline after comment

@@ -63,7 +63,7 @@ it('inline does not splice or create blocks', function() {
 	test("A\r\n<!--comment-->\r\nB", "A\n<!---->\nB");
 });
 
-it('preceding content cannot be at end', function() {
+it('preceding content that cannot be at end', function() {
 	test(  "<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
 	test(t+"<$reveal/>\n<!--comment-->", "<$reveal/>");
 	test(  "<$reveal/>\n<!--comment-->X", "<$reveal/>\nX");
@@ -72,6 +72,8 @@ it('preceding content cannot be at end', function() {
 	test(t+"<$reveal/>\n<!--comment--> ", "<$reveal/>");
 	test(  "<$reveal/>\n<!--comment-->\n", "<$reveal/>\n<!---->\n");
 	test(t+"<$reveal/>\n<!--comment-->\n", "<$reveal/>");
+	test(  "<$reveal/>\n<!--comment-->\n\n", "<$reveal/>\n<!---->");
+	test(t+"<$reveal/>\n<!--comment-->\n\n", "<$reveal/>");
 	test(  "<$reveal/>\n<!--comment-->\nX", "<$reveal/>\n<!---->\nX");
 	test(t+"<$reveal/>\n<!--comment-->\nX", "<$reveal/>X");
 	test(  "<$reveal/>\n<!--comment-->\n ", "<$reveal/>\n<!---->\n ");
