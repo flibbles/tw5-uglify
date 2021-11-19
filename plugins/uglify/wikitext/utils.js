@@ -52,6 +52,9 @@ exports.quotifyParam = function(param, parser, options) {
 };
 
 // Returns the length of the newline if it's there, otherwise 0.
+// This can be used to check two consecutive newlines by chaining the method.
+// e.g: if (newlineAt(source, pos + newlineAt(source, pos)))
+// The advantage to this is it handles \r\n just fine.
 exports.newlineAt = function(source, pos) {
 	switch (source[pos]) {
 	case "\n":
