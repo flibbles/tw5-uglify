@@ -1,15 +1,19 @@
 title: Demo/template/notes
 
 \define report(link)
-{{$:/core/images/warning}} ''Whoops! You've just found a pattern of wikitext which produces different output once uglified. This is a bug. Could you please [ext[report this bug to the project page?|$link$]]
+{{$:/core/images/warning}} ''Whoops! You've just found a pattern of wikitext which produces different output once uglified. This is a bug. Could you please [ext[report this bug to the project page|$link$]]?
 \end
 
 //Uglify// applies own custom engine for reducing wikitext to its bare minimum while being careful of complicated macros and 3rd party wikitext rules. It ensure the rendered output of the wikitext is //identical// to the output it would produce before uglifying.
 
 Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglified code update [[in real time|Interactive Demo]].
 
-<$list variable="status" filter="[all[current]addprefix[$:/config/flibbles/uglify-demo/]get[text]match{!!text}then[t]else[f]match[fail]]">
+<$wikify name="pretty" output="html" text={{{ [all[current]!match[Demo/template/notes]get[text]] }}} >
+
+<$wikify name="ugly" output="html" text={{{ [all[current]addprefix[$:/config/flibbles/uglify-demo/]get[text]] }}} >
+
+<$list variable="status" filter="[<ugly>!match<pretty>]">
 
 <$macrocall $name=report link={{$:/plugins/flibbles/uglify!!source}} />
 
-</$list>
+</$list></$wikify></$wikify>
