@@ -76,6 +76,8 @@ it('preceding content cannot be at end', function() {
 	test(t+"<$reveal/>\n<!--comment-->\nX", "<$reveal/>X");
 	test(  "<$reveal/>\n<!--comment-->\n ", "<$reveal/>\n<!---->\n ");
 	test(t+"<$reveal/>\n<!--comment-->\n ", "<$reveal/>");
+	test(  "<$reveal/>\n<!--comment-->\n\nX", "<$reveal/>\n<!---->\n\nX");
+	test(t+"<$reveal/>\n<!--comment-->\n\nX", "<$reveal/><!---->\n\nX");
 	test(  "<div>\n\n<$reveal/>\n<!--c--></div>","<div>\n\n<$reveal/>\n</div>");
 	test(t+"<div>\n\n<$reveal/>\n<!--c--></div>","<div>\n\n<$reveal/>");
 });

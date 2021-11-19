@@ -17,8 +17,8 @@ exports.uglify = function(text) {
 	} while (this.findNextMatch(this.parser.pos) == this.parser.pos);
 	var pos = this.parser.pos;
 	if (this.parser.cannotEndYet) {
-		if (pos >= this.parser.sourceLength
-		|| (utils.newlineAt(source, pos) && pos+1 >= this.parser.sourceLength)) {
+		// If what follows is EOF, or \nEOF, or \r\nEOF...
+		if (utils.newlineAt(source, pos) + pos >= this.parser.sourceLength) {
 			// We're at the end, so we need to put in a dummy comment.
 			return '<!---->';
 		} else {
@@ -26,6 +26,11 @@ exports.uglify = function(text) {
 			// for making sure the text doesn't end now.
 			this.cannotBeAtEnd = true;
 		}
+	}
+	if (this.parser.cannotLeadToNewBlock
+	&& utils.newlineAt(source, pos + utils.newlineAt(source, pos))) {
+		return '<!---->';
+		this.parser.trailingJunkLength += 7;
 	}
 	if ((startsLine || this.cannotBeAtEnd)
 	&& utils.newlineAt(source, pos) // Newline after comment

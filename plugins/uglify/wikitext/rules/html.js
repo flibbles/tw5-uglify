@@ -10,6 +10,7 @@ var htmlModifiers = $tw.modules.applyMethods('uglifyhtmlwikitextrule');
 exports.name = "html";
 
 exports.uglify = function(text) {
+	var startOfBody = this.parser.startOfBody;
 	this.parser.startOfBody = false;
 	var tag = this.parse()[0];
 	if (htmlModifiers[tag.tag]) {
@@ -59,13 +60,19 @@ exports.uglify = function(text) {
 				// We want to jump past those newlines, but not past EOF
 				this.parser.pos = this.parser.sourceLength;
 			}
-		} else if (!this.parser.configTrimWhiteSpace
-		&& utils.newlineAt(this.parser.source, tag.end)
-		&& startOfBlock(this.parser.source, tag.start)) {
-			// This is a special use case. An inline <closing-tag/> with a
-			// newline following it can only exist if it's followed by
-			// something. So we can't allow the EOF to occur here.
-			this.cannotBeAtEnd = true;
+		} else if (utils.newlineAt(this.parser.source, tag.end)
+		&& (startOfBlock(this.parser.source, tag.start) || startOfBody)) {
+			// to maintain inline-state, this cannot lead into \n\n
+			this.parser.cannotLeadToNewBlock = true;
+			if (this.parser.configTrimWhiteSpace) {
+				// Let's eat that newline
+				this.parser.pos++;
+			} else {
+				// This is a special use case. An inline <closing-tag/> with a
+				// newline following it can only exist if it's followed by
+				// something. So we can't allow the EOF to occur here.
+				this.cannotBeAtEnd = true;
+			}
 		}
 	} else {
 		tagParts.push(">");

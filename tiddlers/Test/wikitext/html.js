@@ -11,7 +11,9 @@ describe('wikitext uglifier', function() {
 describe('html', function() {
 
 const test = $tw.utils.test.wikitext.test;
+const cmp = $tw.utils.test.wikitext.cmp;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
+const t = "\\whitespace trim\n";
 
 it('whitespace among attributes', function() {
 	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
@@ -112,7 +114,6 @@ it('purges unnecessary closing tags', function() {
 });
 
 it('inline widgets with a newline after them', function() {
-	// TODO: block widgets with pragma right before them will fail, right?
 	// This is a special case. widgets are considered blocks only if
 	// they have two newlines after them, or one newline and the EOF
 	// This means widgets with one newline followed by anything else
@@ -130,8 +131,8 @@ it('inline widgets with a newline after them', function() {
 	test("<div>\n\n<span>\n\n<$reveal/>\n</span>\n</div>", "<div>\n\n<span>\n\n<$reveal/>\n</span>");
 	test("<div>\n\n<span>\n\n<$reveal/></span>\n</div>", "<div>\n\n<span>\n\n<$reveal/>");
 	// whitespace trimming removes the need for this special handling
-	test("\\whitespace trim\n<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>");
-	test("\\whitespace trim\n<div>\n\n<span>\n\n<$reveal/>\n</span>\n</div>",
+	test(t+"<div>\n\n<$reveal/>\n</div>", "<div>\n\n<$reveal/>");
+	test(t+"<div>\n\n<span>\n\n<$reveal/>\n</span>\n</div>",
 		"<div>\n\n<span>\n\n<$reveal/>");
 	// If it couldn't have been a block to begin with,
 	// then no special handling
@@ -146,10 +147,22 @@ it('inline widgets with a newline after them', function() {
 	test("<div><span/>\r\n\r\n<$reveal />\r\n</div>",
 		"<div><span/>\n\n<$reveal/>\n</div>");
 	// ...but whitespace trimming makes it better
-	test("\\whitespace trim\n<div><span/>\n\n<$reveal />\n</div>",
-		"<div><span/><$reveal/>");
+	test(t+"<div><span/>\n\n<$reveal />\n</div>", "<div><span/><$reveal/>");
 	test("\\whitespace trim\r\n<div><span/>\r\n\r\n<$reveal />\r\n</div>",
 		"<div><span/><$reveal/>");
+});
+
+it('inline widgets at the start of the body', function() {
+	test(  "<$reveal/>\n<!--C-->", "<$reveal/>\n<!---->");
+	test(t+"<$reveal/>\n<!--C-->", "<$reveal/>");
+	test(  "\\define d()d\n<$reveal/>\n<!--C-->",
+	       "\\define d()d\n<$reveal/>\n<!---->");
+	test(t+"\\define d()d\n<$reveal/>\n<!--C-->",
+	       "\\define d()d\n<$reveal/>");
+	test(  "\\define d()d\n\n<$reveal/>\n<!--C-->",
+	       "\\define d()d\n\n<$reveal/>\n<!---->");
+	test(t+"\\define d()d\n\n<$reveal/>\n<!--C-->",
+	       "\\define d()d\n\n<$reveal/>");
 });
 
 it('block widgets with a newline after them', function() {

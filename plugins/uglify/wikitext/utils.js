@@ -51,9 +51,18 @@ exports.quotifyParam = function(param, parser, options) {
 	return '"""' + param + '"""';
 };
 
+// Returns the length of the newline if it's there, otherwise 0.
 exports.newlineAt = function(source, pos) {
-	return source[pos] === "\n"
-		|| (source[pos] === "\r" && source[pos+1] === "\n");
+	switch (source[pos]) {
+	case "\n":
+		return 1;
+	case "\r":
+		if (source[pos+1]) {
+			return 2;
+		}
+	default:
+		return 0;
+	}
 };
 
 var _letAvail;
