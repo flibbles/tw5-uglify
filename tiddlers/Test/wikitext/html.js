@@ -112,6 +112,7 @@ it('purges unnecessary closing tags', function() {
 });
 
 it('inline widgets with a newline after them', function() {
+	// TODO: block widgets with pragma right before them will fail, right?
 	// This is a special case. widgets are considered blocks only if
 	// they have two newlines after them, or one newline and the EOF
 	// This means widgets with one newline followed by anything else
@@ -137,11 +138,6 @@ it('inline widgets with a newline after them', function() {
 	test("<div><$reveal/>\n</div>", "<div><$reveal/>\n");
 	test("<div>\n<$reveal/>\n</div>", "<div>\n<$reveal/>\n");
 	test("<div>\r\n<$reveal/>\r\n</div>", "<div>\n<$reveal/>\n");
-	// widgets and comments
-	test("<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
-	test("\\whitespace trim\n<$reveal/>\n<!--comment-->", "<$reveal/>");
-	test("<div>\n\n<$reveal/>\n<!--comment--></div>", "<div>\n\n<$reveal/>\n<!---->");
-	test("\\whitespace trim\n<div>\n\n<$reveal/>\n<!--comment--></div>", "<div>\n\n<$reveal/>");
 	// One case we get wrong. The reveal isn't in a block, so it can't be
 	// but this is  hard to tell, so we preserve trailing closing tags
 	// to be safe.

@@ -11,6 +11,8 @@ describe('wikitext uglifier', function() {
 describe('comment', function() {
 
 const test = $tw.utils.test.wikitext.test;
+const cmp = $tw.utils.test.wikitext.cmp;
+const t = "\\whitespace trim\n";
 
 it('inline sharing line with content can always go', function() {
 	test("First <!--comment-->\nText", "First \nText");
@@ -59,6 +61,23 @@ it('inline does not splice or create blocks', function() {
 	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\n<!---->\nText\n");
 	test("\\whitespace trim\r\n<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>Text");
 	test("A\r\n<!--comment-->\r\nB", "A\n<!---->\nB");
+});
+
+it('preceding content cannot be at end', function() {
+	test(  "<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
+	test(t+"<$reveal/>\n<!--comment-->", "<$reveal/>");
+	test(  "<$reveal/>\n<!--comment-->X", "<$reveal/>\nX");
+	test(t+"<$reveal/>\n<!--comment-->X", "<$reveal/>X");
+	test(  "<$reveal/>\n<!--comment--> ", "<$reveal/>\n ");
+	test(t+"<$reveal/>\n<!--comment--> ", "<$reveal/>");
+	test(  "<$reveal/>\n<!--comment-->\n", "<$reveal/>\n<!---->\n");
+	test(t+"<$reveal/>\n<!--comment-->\n", "<$reveal/>");
+	test(  "<$reveal/>\n<!--comment-->\nX", "<$reveal/>\n<!---->\nX");
+	test(t+"<$reveal/>\n<!--comment-->\nX", "<$reveal/>X");
+	test(  "<$reveal/>\n<!--comment-->\n ", "<$reveal/>\n<!---->\n ");
+	test(t+"<$reveal/>\n<!--comment-->\n ", "<$reveal/>");
+	test(  "<div>\n\n<$reveal/>\n<!--c--></div>","<div>\n\n<$reveal/>\n</div>");
+	test(t+"<div>\n\n<$reveal/>\n<!--c--></div>","<div>\n\n<$reveal/>");
 });
 
 it('block', function() {
