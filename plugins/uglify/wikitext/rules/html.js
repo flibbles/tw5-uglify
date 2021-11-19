@@ -14,7 +14,7 @@ exports.uglify = function(text) {
 	if (htmlModifiers[tag.tag]) {
 		// Before we get started,  we give a chance for all
 		// the custom rules to make modifications to it.
-		htmlModifiers[tag.tag](tag, parser);
+		htmlModifiers[tag.tag](tag, this.parser);
 	}
 	var strings = utils.joinNodeArray(tag.children);
 	var tagParts = ["<", tag.tag];
