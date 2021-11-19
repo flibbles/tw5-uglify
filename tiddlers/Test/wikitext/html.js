@@ -140,18 +140,17 @@ it('inline widgets with a newline after them', function() {
 	test("<div>\n<$reveal/>\n</div>", "<div>\n<$reveal/>\n");
 	test("<div>\r\n<$reveal/>\r\n</div>", "<div>\n<$reveal/>\n");
 	// One case we get wrong. The reveal isn't in a block, so it can't be
-	// but this is  hard to tell, so we preserve trailing closing tags
-	// to be safe.
-	test("<div><span/>\n\n<$reveal />\n</div>",
-		"<div><span/>\n\n<$reveal/>\n</div>");
-	test("<div><span/>\r\n\r\n<$reveal />\r\n</div>",
-		"<div><span/>\n\n<$reveal/>\n</div>");
-	test(t+"<div><span/>\r\n\r\n<$reveal />\r\n</div>",
-		"<div><span/><$reveal/>");
+	// a block itself, but this is hard to tell, so we preserve
+	// trailing closing tags to be safe.
 	// ...but whitespace trimming makes it better
-	test(t+"<div><span/>\n\n<$reveal />\n</div>", "<div><span/><$reveal/>");
-	test("\\whitespace trim\r\n<div><span/>\r\n\r\n<$reveal />\r\n</div>",
-		"<div><span/><$reveal/>");
+	test(  "<div><span/>\n\n<$reveal />\n</div>",
+	       "<div><span/>\n\n<$reveal/>\n</div>");
+	test(t+"<div><span/>\n\n<$reveal />\n</div>",
+	       "<div><span/><$reveal/>");
+	test(  "<div><span/>\r\n\r\n<$reveal />\r\n</div>",
+	       "<div><span/>\n\n<$reveal/>\n</div>");
+	test(t+"<div><span/>\r\n\r\n<$reveal />\r\n</div>",
+	       "<div><span/><$reveal/>");
 });
 
 it('inline widgets at the start of the body', function() {
