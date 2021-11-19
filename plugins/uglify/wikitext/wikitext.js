@@ -63,6 +63,7 @@ function WikiWalker(type, text, options) {
 	}
 	this.placeholders = options.placeholders || Object.create(null);
 	this.trailingJunkLength = 0;
+	this.startOfBody = true;
 	WikiParser.call(this, type, text, options);
 	// Now for some post processing
 	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
@@ -86,6 +87,7 @@ WikiWalker.prototype.parsePragmas = function() {
 		}
 		strings.push.apply(strings, this.handleRule(nextMatch));
 	}
+	this.startOfBody = true;
 	return strings;
 };
 
@@ -116,6 +118,7 @@ WikiWalker.prototype.parseBlocksTerminated = function(terminatorRegExpString) {
 WikiWalker.prototype.parseInlineRunUnterminated = function(options) {
 	var strings = [];
 	var nextMatch = this.findNextMatch(this.inlineRules, this.pos);
+	this.startOfBody = false;
 	while (this.pos < this.sourceLength && nextMatch) {
 		if (nextMatch.matchIndex > this.pos) {
 			this.pushTextWidget(strings,this.source.substring(this.pos,nextMatch.matchIndex), this.pos, nextMatch.matchIndex);
@@ -220,6 +223,7 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 		array.push({type: "text", text: text, start: start, end: end});
 		// There is new text. We have to keep any earlier trailing junk
 		this.trailingJunkLength = 0;
+		this.startOfBody = false;
 	}
 };
 
@@ -248,6 +252,7 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 			this.cannotEndYet = false;
 		}
 	}
+	this.startOfBody = false;
 	if (substring) {
 		return [{text: substring}];
 	} else {

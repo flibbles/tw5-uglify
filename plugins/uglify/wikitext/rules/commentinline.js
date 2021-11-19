@@ -15,8 +15,10 @@ exports.uglify = function(text) {
 	// We loop this to slurp up all sequential comment blocks
 		this.parse();
 	} while (this.findNextMatch(this.parser.pos) == this.parser.pos);
+	var pos = this.parser.pos;
 	if (this.parser.cannotEndYet) {
-		if (this.parser.pos >= this.parser.sourceLength) {
+		if (pos >= this.parser.sourceLength
+		|| (utils.newlineAt(source, pos) && pos+1 >= this.parser.sourceLength)) {
 			// We're at the end, so we need to put in a dummy comment.
 			return '<!---->';
 		} else {
@@ -25,8 +27,8 @@ exports.uglify = function(text) {
 			this.cannotBeAtEnd = true;
 		}
 	}
-	if (startsLine
-	&& utils.newlineAt(source, this.parser.pos) // Newline after comment
+	if ((startsLine || this.cannotBeAtEnd)
+	&& utils.newlineAt(source, pos) // Newline after comment
 	&& !this.parser.configTrimWhiteSpace) {
 		// We can't remove this comment without risking
 		// splicing or creating blocks, or goofing up parsing

@@ -10,6 +10,7 @@ var htmlModifiers = $tw.modules.applyMethods('uglifyhtmlwikitextrule');
 exports.name = "html";
 
 exports.uglify = function(text) {
+	this.parser.startOfBody = false;
 	var tag = this.parse()[0];
 	if (htmlModifiers[tag.tag]) {
 		// Before we get started,  we give a chance for all

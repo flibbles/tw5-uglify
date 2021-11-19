@@ -11,7 +11,8 @@ describe('wikitext uglifier', function() {
 describe('macrocall', function() {
 
 const test = $tw.utils.test.wikitext.test;
-const m = "\\define m(val t f)Output:$val$,$t$,$f$\n";
+const cmp = $tw.utils.test.wikitext.cmp;
+const m = "\\define m(val t f)\nOutput\n\n$val$,$t$,$f$\n\\end\n";
 
 it('whitespace around invocation', function() {
 	test(m+"<<m    >>", m+"<<m>>");
@@ -48,6 +49,41 @@ it('empty parameters', function() {
 	test(m+'<<m val:"">>', m+'<<m val:"">>');
 	test(m+"<<m val:''>>", m+"<<m val:''>>");
 	test(m+"<<m val:[[]]>>", m+'<<m val:[[]]>>');
+});
+
+it('trailing newline or EOF in widgets', function() {
+	// Like with widgets, macrocalls are sensitive to trailing newlines.
+	// They are considered blocks if they're followed by \n OR EOF.
+	// This means if a macrocall is inline because it's followed by
+	// something, that something can't be trimmed.
+	const p = "\\define p(v)$v$\n";
+	const t = "\\whitespace trim\n";
+	test(m+'<div>\n\n<<m "x\n\ny">></div>',m+'<div>\n\n<<m "x\n\ny">></div>');
+	test(m+'<div>\n\n<<m "x\n\ny">>\n</div>',m+'<div>\n\n<<m "x\n\ny">>');
+	test(m+'<div>\n\n<<m "x\n\ny">></div>\n',m+'<div>\n\n<<m "x\n\ny">></div>');
+	test(m+t+'<div>\n\n<<m "x\n\ny">></div>',m+'<div>\n\n<<m "x\n\ny">></div>');
+	test(m+t+'<div>\n\n<<m "x\n\ny">>\n</div>',m+'<div>\n\n<<m "x\n\ny">>');
+	test(m+t+'<div>\n\n<<m "x\n\ny">></div>\n',m+'<div>\n\n<<m "x\n\ny">></div>');
+	test(m+'<div>\n<<m "x\n\ny">></div>',m+'<div>\n<<m "x\n\ny">>');
+	test(m+'<div>\n<<m "x\n\ny">>\n</div>',m+'<div>\n<<m "x\n\ny">>\n');
+	test(m+'<div>\n<<m "x\n\ny">></div>\n',m+'<div>\n<<m "x\n\ny">></div>\n');
+	test(m+t+'<div>\n<<m "x\n\ny">></div>',m+'<div><<m "x\n\ny">>');
+	test(m+t+'<div>\n<<m "x\n\ny">>\n</div>',m+'<div><<m "x\n\ny">>');
+	test(m+t+'<div>\n<<m "x\n\ny">></div>\n',m+'<div><<m "x\n\ny">>');
+});
+
+it('trailing newline or EOF and comments', function() {
+	const p = "\\define p(v)$v$\n";
+	const t = "\\whitespace trim\n";
+	test(  m+'<<m "x\n\ny">><!--C-->', m+'<<m "x\n\ny">><!---->');
+	test(  m+'<<m "x\n\ny">><!--C-->X', m+'<<m "x\n\ny">>X');
+	test(  m+'<<m "x\n\ny">><!--C-->\n', m+'<<m "x\n\ny">><!---->\n');
+	test(t+m+'<<m "x\n\ny">><!--C-->\n', m+'<<m "x\n\ny">><!---->');
+	// TODO: also \r\n
+	// TODO: also \n\n
+	test(  m+'G\n<<m "x\n\ny">><!--C-->', m+'G\n<<m "x\n\ny">>');
+	test(  m+'G\n<<m "x\n\ny">><!--C-->X', m+'G\n<<m "x\n\ny">>X');
+	test(  m+'G\n<<m "x\n\ny">><!--C-->\n', m+'G\n<<m "x\n\ny">>\n');
 });
 
 });});
