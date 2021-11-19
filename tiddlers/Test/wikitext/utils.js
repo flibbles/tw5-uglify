@@ -16,12 +16,12 @@ exports.uglify = function(text) {
 	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test', {wiki: $tw.wiki});
 };
 
-exports.test = function(text, expected) {
+exports.test = function(text, expected, options) {
 	var out = exports.uglify(text);
 	if (expected) {
 		expect(out).toBe(expected);
 	}
-	var options = {variables: {currentTiddler: 'test'}};
+	var options = options || {variables: {currentTiddler: 'test'}};
 	var prettyHtml = $tw.wiki.renderText("text/html", wikitextType, text, options);
 	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out, options);
 	expect(uglyHtml).toBe(prettyHtml);
