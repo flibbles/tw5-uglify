@@ -146,6 +146,8 @@ it('inline widgets with a newline after them', function() {
 		"<div><span/>\n\n<$reveal/>\n</div>");
 	test("<div><span/>\r\n\r\n<$reveal />\r\n</div>",
 		"<div><span/>\n\n<$reveal/>\n</div>");
+	test(t+"<div><span/>\r\n\r\n<$reveal />\r\n</div>",
+		"<div><span/><$reveal/>");
 	// ...but whitespace trimming makes it better
 	test(t+"<div><span/>\n\n<$reveal />\n</div>", "<div><span/><$reveal/>");
 	test("\\whitespace trim\r\n<div><span/>\r\n\r\n<$reveal />\r\n</div>",

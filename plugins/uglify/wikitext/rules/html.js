@@ -63,14 +63,14 @@ exports.uglify = function(text) {
 		} else if (utils.newlineAt(this.parser.source, tag.end)
 		&& (startOfBlock(this.parser.source, tag.start) || startOfBody)) {
 			// to maintain inline-state, this cannot lead into \n\n
-			this.parser.cannotLeadToNewBlock = true;
-			if (this.parser.configTrimWhiteSpace) {
-				// Let's eat that newline
-				this.parser.pos++;
-			} else {
+			this.cannotLeadToNewBlock = true;
+			// Let's eat that newline
+			this.parser.pos+=utils.newlineAt(this.parser.source, this.parser.pos);
+			if (!this.parser.configTrimWhiteSpace) {
 				// This is a special use case. An inline <closing-tag/> with a
 				// newline following it can only exist if it's followed by
 				// something. So we can't allow the EOF to occur here.
+				tagParts.push("\n");
 				this.cannotBeAtEnd = true;
 			}
 		}

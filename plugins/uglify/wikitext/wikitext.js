@@ -224,6 +224,8 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 		// There is new text. We have to keep any earlier trailing junk
 		this.trailingJunkLength = 0;
 		this.startOfBody = false;
+		this.cannotEndYet = false;
+		this.cannotStartBlockYet = false;
 	}
 };
 
@@ -234,6 +236,7 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	if (ruleInfo.rule.uglify) {
 		substring = ruleInfo.rule.uglify(this.source);
 		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
+		this.cannotStartBlockYet = (ruleInfo.rule.cannotLeadToNewBlock===true);
 	} else {
 		var start = this.pos,
 			wasInsideUnknownRule = this.insideUnknownRule;
@@ -250,6 +253,7 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 			// unknown rules aren't changed, so they must be okay at the EOF
 			// since they would have already been there.
 			this.cannotEndYet = false;
+			this.cannotStartBlockYet = false;
 		}
 	}
 	this.startOfBody = false;

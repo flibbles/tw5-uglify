@@ -27,7 +27,7 @@ exports.uglify = function(text) {
 			this.cannotBeAtEnd = true;
 		}
 	}
-	if (this.parser.cannotLeadToNewBlock
+	if (this.parser.cannotStartBlockYet
 	&& utils.newlineAt(source, pos + utils.newlineAt(source, pos))) {
 		return '<!---->';
 		this.parser.trailingJunkLength += 7;

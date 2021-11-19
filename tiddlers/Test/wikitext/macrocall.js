@@ -85,6 +85,8 @@ it('trailing newline or EOF and comments', function() {
 	test(t+m+'<<m "x\n\ny">><!--C-->\n\n', m+'<<m "x\n\ny">><!---->');
 	test(  m+'<<m "x\n\ny">><!--C-->\n\nX', m+'<<m "x\n\ny">><!---->\n\nX')
 	test(t+m+'<<m "x\n\ny">><!--C-->\n\nX', m+'<<m "x\n\ny">><!---->\n\nX');
+	test(  m+'<<m "x\n\ny">>X<!--C-->\n\nX', m+'<<m "x\n\ny">>X\n\nX')
+	test(t+m+'<<m "x\n\ny">>X<!--C-->\n\nX', m+'<<m "x\n\ny">>X\n\nX');
 	test(  m+'G\n<<m "x\n\ny">><!--C-->', m+'G\n<<m "x\n\ny">>');
 	test(  m+'G\n<<m "x\n\ny">><!--C-->X', m+'G\n<<m "x\n\ny">>X');
 	test(  m+'G\n<<m "x\n\ny">><!--C-->\n', m+'G\n<<m "x\n\ny">>\n');

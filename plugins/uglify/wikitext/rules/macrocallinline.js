@@ -14,7 +14,7 @@ exports.uglify = function() {
 	if (this.parser.pos !== "\n"
 	&& (startOfBlock(this.parser.source, start) || this.parser.startOfBody)) {
 		this.cannotBeAtEnd = true;
-		this.parser.cannotLeadToNewBlock = true;
+		this.cannotLeadToNewBlock = true;
 	}
 	return utils.stringifyMacro(call, this.parser);
 };
