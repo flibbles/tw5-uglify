@@ -7,6 +7,7 @@ title: $:/plugins/flibbles/uglify-wizard/save-tiddler-filter
 -[[$:/plugins/flibbles/uglify-wizard]]
 -[prefix[$:/config/flibbles/uglify/]]
 -[prefix[$:/config/flibbles/uglify-wizard/]]
+-[[$:/Import]]
 -[prefix[$:/state/popup/]]
 -[[$:/HistoryList]]
 -[[$:/boot/boot.css]]
