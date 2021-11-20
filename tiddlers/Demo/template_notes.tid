@@ -10,9 +10,9 @@ Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the ugl
 
 <$wikify name="pretty" output="html" text={{{ [all[current]!match[Demo/template/notes]get[text]] }}} >
 
-<$wikify name="ugly" output="html" text={{{ [all[current]addprefix[$:/config/flibbles/uglify-demo/]get[text]] }}} >
+<$wikify name="ugly" output="html" text={{{ [all[current]addprefix[$:/temp/flibbles/uglify-demo/]get[text]] }}} >
 
-<$list variable="status" filter="[<ugly>!match<pretty>]">
+<$list variable="status" filter="[<ugly>!match<pretty>then[failed]]">
 
 <$macrocall $name=report link={{$:/plugins/flibbles/uglify!!source}} />
 
