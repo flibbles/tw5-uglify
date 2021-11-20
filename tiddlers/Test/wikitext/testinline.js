@@ -1,5 +1,5 @@
 /*\
-title: Test/wkitext/testinline.js
+title: Test/wikitext/testinline.js
 type: application/javascript
 module-type: wikirule
 
