@@ -39,7 +39,11 @@ it('string attributes', function() {
 	test('<$text text="""Nick\'s"""/>', '<$text text="Nick\'s"/>');
 	test('<$text text="Nick\'s"/>', '<$text text="Nick\'s"/>');
 	test('<$text text="$$"/>', '<$text text=$$/>'); // null placeholder test
+	// Brackets aren't treated as quotes
+	test("<$text text=[[content]] />", "<$text text=[[content]]/>");
+	test("<$text text=[[con tent]] />'", "<$text text=[[con tent]]/>'");
 });
+
 
 it('empty attributes', function() {
 	test('<$text text=""/>', '<$text text=""/>');
