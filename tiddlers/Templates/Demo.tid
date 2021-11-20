@@ -7,8 +7,6 @@ title: Templates/Demo
 -->
 <$list variable="refreshText" filter="[{!!text}first[]]">
 
-!! <$link to=<<currentTiddler>> />
-
 <!-- Encouraging editing plugins through rawtext is a bad idea.
      Lots of exceptions will be thrown.
 -->

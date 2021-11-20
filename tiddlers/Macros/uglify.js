@@ -19,11 +19,10 @@ exports.run = function(title) {
 	if (!title) {
 		title = this.getVariable("currentTiddler");
 	}
+	var wiki = this.wiki;
 	var tiddler = this.wiki.getTiddler(title);
 	if (!tiddler) {
 		return '';
 	}
-	var ugly = this.wiki.getTiddlerUglifiedText(title);
-	$tw.wiki.addTiddler({title: "$:/temp/flibbles/uglify-demo/"+title, text: ugly}, tiddler);
-	return ugly;
+	return wiki.getTiddlerUglifiedText(title);
 };

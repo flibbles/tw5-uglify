@@ -8,12 +8,14 @@ title: Demo/contents/notes
 
 Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglified code update [[in real time|Interactive Demo]].
 
+<$vars uglifySource=<<uglify>> >
+
 <$wikify name="pretty" output="html" text={{{ [all[current]!match[Demo/template/notes]get[text]] }}} >
 
-<$wikify name="ugly" output="html" text={{{ [all[current]addprefix[$:/temp/flibbles/uglify-demo/]get[text]] }}} >
+<$wikify name="ugly" output="html" text=<<uglifySource>> >
 
 <$list variable="status" filter="[<ugly>!match<pretty>then[failed]]">
 
 <$macrocall $name=report link={{$:/plugins/flibbles/uglify!!source}} />
 
-</$list></$wikify></$wikify>
+</$list></$wikify></$wikify></$vars>
