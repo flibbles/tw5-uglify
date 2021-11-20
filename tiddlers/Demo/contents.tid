@@ -1,0 +1,62 @@
+title: Demo/contents
+caption: Wikitext
+tags: Demo
+type: text/vnd.tiddlywiki
+
+<!--
+	This tiddler creates a simplified version of the TiddlyWiki toc, except that this one makes sure to simplify listed titles by truncating redundant directory paths.
+-->
+
+<!--
+	Caption macro which which wikifies
+	the caption of the content item.
+	Barring that, it prints titles as-is.
+-->
+\define caption()
+\whitespace trim
+<$set name="tv-wikilinks" value="no">
+	<$transclude field="caption">
+		<$text text={{{ [all[current]removeprefix<path>else{!!title}] }}} />
+	</$transclude>
+</$set>
+\end
+
+<!--
+	This gets recursively called for each
+	tiddler which has the given tiddler as
+	a tag.
+-->
+\define body(tag,exclude,path)
+\whitespace trim
+<ol>
+	<$list filter="""[tag<__tag__>!has[draft.of]] -[<__tag__>] -[enlist<__exclude__>]""">
+		<li>
+			<$list
+				filter="[all[current]toc-link[no]]"
+				emptyMessage="""<$link to={{{ [<currentTiddler>get[target]else<currentTiddler>] }}}><<caption>></$link>""">
+				<<caption>>
+			</$list>
+			<!-- We set up a path to prune from all children of this item -->
+			<$set name="item" value=<<currentTiddler>>>
+			<$set name="path" value={{{ [<item>addsuffix[/]] }}}>
+			<$set name="excluded" filter="""[enlist<__exclude__>] [<__tag__>]""">
+				<$macrocall
+					$name="body"
+					tag=<<item>>
+					exclude=<<excluded>>
+					path=<<path>> />
+			</$set>
+			</$set>
+			</$set>
+		</li>
+	</$list>
+</ol>
+\end
+
+\define contents(tag)
+<$macrocall
+	$name="body"
+	tag=<<__tag__>> />
+\end
+
+<<contents Documentation>>

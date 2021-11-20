@@ -1,4 +1,4 @@
-title: Demo/template/notes
+title: Demo/contents/notes
 
 \define report(link)
 {{$:/core/images/warning}} ''Whoops! You've just found a pattern of wikitext which produces different output once uglified. This is a bug. Could you please [ext[report this bug to the project page|$link$]]?

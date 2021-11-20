@@ -3,7 +3,7 @@ list: Demo/wc.js
 
 <$macrocall
 	$name="tabs"
-	tabsList="[all[current]tagging[]]"
+	tabsList="[all[current]tagging[]!is[draft]]"
 	default={{{ [all[current]tagging[]first[]] }}}
 	template="Templates/Demo"
 />
