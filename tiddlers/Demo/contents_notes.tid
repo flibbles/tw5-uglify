@@ -4,7 +4,7 @@ title: Demo/contents/notes
 {{$:/core/images/warning}} ''Whoops! You've just found a pattern of wikitext which produces different output once uglified. This is a bug. Could you please [ext[report this bug to the project page|$link$]]?
 \end
 
-//Uglify// applies own custom engine for reducing wikitext to its bare minimum while being careful of complicated macros and 3rd party wikitext rules. It ensure the rendered output of the wikitext is //identical// to the output it would produce before uglifying.
+//Uglify// applies own custom engine for reducing wikitext to its bare minimum while being careful of complicated macros and 3rd party wikitext rules. It ensure the rendered output of the wikitext is //identical// to the output it would produce before uglifying. If you're looking to get the most of //Uglify//'s compression with your own plugins, [[here's a simple piece of advice|Trimming Whitespace]].
 
 Feel free to edit <$link to=<<currentTiddler>> >this file</$link> to see the uglified code update [[in real time|Interactive Demo]].
 

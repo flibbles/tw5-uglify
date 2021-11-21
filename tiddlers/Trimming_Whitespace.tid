@@ -1,0 +1,69 @@
+title: Trimming Whitespace
+tags: Documentation Concept
+
+\define example(text, segue)
+<$codeblock code=<<__text__>> language="html"/>
+
+$segue$
+
+<$codeblock code=<<uglify text:"""$text$""">> language="html"/>
+
+\end
+
+Use `\whitespace trim`.
+
+That's it. Use that pragma in all of your plugin's wikitext tiddlers that you can. Not only does it make your wikitext more efficient, but //Uglify// can compress it better. That's because //Uglify// is cautious to make sure that the rendered output from your tiddlers remains identical, so it preserves whitespace, even if that whitespace wouldn't be visible when rendered to html. Consider this:
+
+<<example """<ul>
+ <$list filter="[tag[Documentation]]">
+  <li>
+   <$transclude field="caption">{{!!title}}</$transclude>
+  </li>
+ </$list>
+</ul>
+""" segue: "When you compress that, you get this:">>
+
+Hardly anything. That's because there are newline characters and spaces sprinkled all between all those html elements. //Uglify// keeps those around because it can't be sure they're not important. However, now consider this slight alteration:
+
+<<example """\whitespace trim
+<ul>
+ <$list filter="[tag[Documentation]]">
+  <li>
+   <$transclude field="caption">{{!!title}}</$transclude>
+  </li>
+ </$list>
+</ul>""" segue: "This compresses into the following:">>
+
+//Much// smaller. That's because the whitespace trim would prevent those hidden characters from being in your output, and thus //Uglify// knows its safe to trim them itself, and with tighter wikitext, it can usually apply further optimizations that it couldn't before.
+
+!! \define macros
+
+Since `\define` macros have their own wikitext context, they'll require their own trim pragma, like this:
+
+<<example """\define myMacro(arg)
+\whitespace trim
+<div style="position: relative;">
+ <$myWidget arg=<<__arg__>> />
+</div>
+\end
+""" segue: "Which neatly becomes this:">>
+
+!! Necessary spaces
+
+Sometimes, you may find that `\whitespace trim` will cause your wikitext to render in undesirable ways. For instance, trimming whitespace will cause `These //emphasized// words` into render as "These//emphasized//words", with everything mushed together.
+
+!!! &amp;#32; entity
+
+In those cases, you //can// forgo whitespace trim, but if you only need a handful of spaces, consider using the `&#32;` entity, which represents a space. That way, `These&#32;//emphasized//&#32;words` will become "These //emphasized// words", even with whitespace trimming enabled.
+
+//Uglify// will optimize the entities away if it's able to, so don't worry about this bloating your uglified code. This method //still// produce more optimal code unuglified than it would without whitespace trimming.
+
+There are a couple other tricks you can try...
+
+!!! &lt;$text> widget
+
+You could also use `<$text text="These "/>//emphasized//<$text text=" words"/>`, although it's a little unwieldy at times.
+
+!!! \define macros
+
+Since macros have their own wikitext rendering context, any text inside those won't be affected by whitespace trimming. Thus you can do this. `\define text1() These //emphasized// words` and then use `<<text1>>` in your body. The words won't be mushed together.
