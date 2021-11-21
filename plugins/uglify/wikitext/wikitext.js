@@ -255,11 +255,14 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 };
 
 WikiWalker.prototype.handleRule = function(ruleInfo) {
-	var substring;
+	var node;
 	// We have a new rule. So all the old trailing material will have to stay.
 	this.trailingJunkLength = 0;
 	if (ruleInfo.rule.uglify) {
-		substring = ruleInfo.rule.uglify();
+		node = ruleInfo.rule.uglify();
+		if (typeof node === "string") {
+			node = {text: node};
+		}
 		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
 		this.cannotStartBlockYet = (ruleInfo.rule.cannotLeadToNewBlock===true);
 	} else {
@@ -269,12 +272,13 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		// We parse the rule and look to where it moved the head.
 		// Then we can copy this unknown rule without change
 		ruleInfo.rule.parse();
-		substring = this.source.substring(start, this.pos);
+		node = {};
+		node.text = this.source.substring(start, this.pos);
 		this.insideUnknownRule = wasInsideUnknownRule;
 		// We don't know if the rule had stuff on the end
 		// So we can't risk deleting stuff.
 		this.trailingJunkLength = 0;
-		if (substring) {
+		if (node.text) {
 			// unknown rules aren't changed, so they must be okay at the EOF
 			// since they would have already been there.
 			this.cannotEndYet = false;
@@ -282,8 +286,8 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		}
 	}
 	this.startOfBody = false;
-	if (substring) {
-		return [{text: substring}];
+	if (node.text) {
+		return [node];
 	} else {
 		return [];
 	}
