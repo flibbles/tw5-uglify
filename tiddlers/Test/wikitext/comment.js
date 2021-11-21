@@ -95,6 +95,7 @@ it('block', function() {
 	test(  "A\n\n<!--Comment-->\n<!--Comment-->\n\nB", "A\n\nB");
 	test(  "A\n\n<!--Comment-->\n\n<!--Comment-->\n\nB", "A\n\nB");
 	// whitespace that's not linefeeds
+	// TODO: Support these
 	//test(  "A\n\n<!--Comment--> \n\nB", "A\n\nB");
 	//test(t+"A\n\n<!--Comment--> \n\nB", "A\n\nB");
 	//test(  "A\n\n <!--Comment-->\n\nB", "A\n\nB");
@@ -106,7 +107,10 @@ it('block', function() {
 it('pragma', function() {
 	test("<!--Comment-->\n\n\\define m( ) M\n<<m>>", "\\define m()M\n<<m>>");
 	test("<!--Comment-->\r\n\\define m( ) M\r\n<<m>>", "\\define m()M\n<<m>>");
-	// TODO: spaces between comments and rules
+	test("\\define s()S\n\n<!--Comment-->\n\n\\define m( ) M\n<<m>>", "\\define s()S\n\\define m()M\n<<m>>");
+	test("\\define s()S\r\n\r\n<!--Comment-->\r\n\r\n\\define m( ) M\n<<m>>", "\\define s()S\n\\define m()M\n<<m>>");
+	// And if it's the ONLY pragma
+	test("\n\n<!--Comment-->\n\nText", "Text");
 });
 
 });});

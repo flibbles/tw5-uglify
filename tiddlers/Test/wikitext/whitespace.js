@@ -79,7 +79,12 @@ it('whitespace after pragma', function() {
 	test(t+rule+"\r\n\r\nText", rule+"Text");
 });
 
-// TODO: Whitespace before pragma
+it('whitespace before pragma', function() {
+	const rule = "\\rules except wikitext\n";
+	test("\n\n"+rule+"Text", rule+"Text");
+	test("\r\n"+rule+"Text", rule+"Text");
+	test("\r\n\r\n"+rule+"Text", rule+"Text");
+});
 
 it('cannot be trimmed for sure around placeholders', function() {
 	// notice how the \whitespace trim isn't going away?

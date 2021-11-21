@@ -77,20 +77,15 @@ WikiWalker.prototype = Object.create(WikiParser.prototype);
 WikiWalker.prototype.parsePragmas = function() {
 	var strings = this.tree;
 	var pragmaFound = false;
+	var whitespace;
 	while (true) {
 		if (this.pos > 0 && this.source[this.pos-1] !== "\n") {
 			// Some pragma aren't good about eating to the end of their line.
 			// We need to put in a newline if we accidentally ate it.
 			strings.push({text: '\n'});
 		}
-		if (pragmaFound) {
-			this.skipWhitespace();
-		} else {
-			// If we haven't found pragma, we need to be
-			// careful that this isn't actually a plaintext
-			// file, so we keep any leading whitespace.
-			this.preserveWhitespace(strings);
-		}
+		whitespace = [];
+		this.preserveWhitespace(whitespace);
 		if (this.pos >= this.sourceLength) {
 			break;
 		}
@@ -100,6 +95,12 @@ WikiWalker.prototype.parsePragmas = function() {
 		}
 		pragmaFound = true;
 		strings.push.apply(strings, this.handleRule(nextMatch));
+	}
+	if (!pragmaFound) {
+		// If we haven't found pragma, we need to be
+		// careful that this isn't actually a plaintext
+		// file, so we keep any leading whitespace.
+		strings.push.apply(strings, whitespace);
 	}
 	this.startOfBody = true;
 	return strings;
