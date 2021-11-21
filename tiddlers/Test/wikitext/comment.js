@@ -85,25 +85,28 @@ it('preceding content that cannot be at end', function() {
 });
 
 it('block', function() {
-	test("<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText\n");
-	test("\\whitespace trim\n<div>\n\n<!--C-->\nText\n</div>", "<div>\n\nText");
-	test("<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText\n");
-	test("\\whitespace trim\n<div>\n\n<!--C-->Text\n</div>", "<div>\n\nText");
-	test("A\n\n<!--Comment-->\n\nB", "A\n\nB");
-	test("A\n\n<!--Comment-->\n\n\n\nB", "A\n\nB");
-	test("A\n\n<!--Comment--><!--Comment-->\n\nB", "A\n\nB");
-	test("A\n\n<!--Comment-->\n<!--Comment-->\n\nB", "A\n\nB");
-	test("A\n\n<!--Comment-->\n\n<!--Comment-->\n\nB", "A\n\nB");
+	test(  "<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText\n");
+	test(t+"<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText");
+	test(  "<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText\n");
+	test(t+"<div>\n\n<!--Comment-->Text\n</div>", "<div>\n\nText");
+	test(  "A\n\n<!--Comment-->\n\nB", "A\n\nB");
+	test(  "A\n\n<!--Comment-->\n\n\n\nB", "A\n\nB");
+	test(  "A\n\n<!--Comment--><!--Comment-->\n\nB", "A\n\nB");
+	test(  "A\n\n<!--Comment-->\n<!--Comment-->\n\nB", "A\n\nB");
+	test(  "A\n\n<!--Comment-->\n\n<!--Comment-->\n\nB", "A\n\nB");
 	// whitespace that's not linefeeds
-	test("A\n\n<!--Comment--> \n\nB", "A\n\n \n\nB");
-	test("\\whitespace trim\nA\n\n<!--Comment--> \n\nB", "A\n\n \n\nB");
+	//test(  "A\n\n<!--Comment--> \n\nB", "A\n\nB");
+	//test(t+"A\n\n<!--Comment--> \n\nB", "A\n\nB");
+	//test(  "A\n\n <!--Comment-->\n\nB", "A\n\nB");
+	test(t+"A\n\n <!--Comment-->\n\nB", "A\n\nB");
 	// Pesky carriage-returns
-	test("A\r\n\r\n<!--Comment-->\r\n\r\nB", "A\n\nB");
+	test(  "A\r\n\r\n<!--Comment-->\r\n\r\nB", "A\n\nB");
 });
 
 it('pragma', function() {
 	test("<!--Comment-->\n\n\\define m( ) M\n<<m>>", "\\define m()M\n<<m>>");
 	test("<!--Comment-->\r\n\\define m( ) M\r\n<<m>>", "\\define m()M\n<<m>>");
+	// TODO: spaces between comments and rules
 });
 
 });});

@@ -69,12 +69,18 @@ it('can collapse into single lines', function() {
 it('whitespace between definitions', function() {
 	test("\\define A() x\n\\define B() y\n<<A>><<B>>",
 		"\\define A()x\n\\define B()y\n<<A>><<B>>");
-	/*
 	test("\\define A() x\n\n\n\\define B() y\n<<A>><<B>>",
 		"\\define A()x\n\\define B()y\n<<A>><<B>>");
 	test("\\define A() x\n\\define B() y\n\n\n<<A>><<B>>",
 		"\\define A()x\n\\define B()y\n<<A>><<B>>");
-	*/
+	// Test with other pragma
+	test("\\define A() x\n\\whitespace trim\n\n\\define B() y\n\n\n<<A>><<B>>",
+		"\\define A()x\n\\define B()y\n<<A>><<B>>");
+	test("\\define A() x\n\n\\rules except wikilink\n\n\\define B() y\n\n\n<<A>><<B>>",
+		"\\define A()x\n\\rules except wikilink\n\\define B()y\n<<A>><<B>>");
+	test("\\define A() x\n\n\\import stuff\n\n\\define B() y\n\n\n<<A>><<B>>",
+		"\\define A()x\n\\import stuff\n\\define B()y\n<<A>><<B>>");
+	// \r\n
 });
 
 it('have their own quoting context inside other macrodefs', function() {

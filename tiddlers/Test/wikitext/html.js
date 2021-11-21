@@ -165,9 +165,9 @@ it('inline widgets at the start of the body', function() {
 	test(t+"\\define d()d\n<$reveal/>\n<!--C-->",
 	       "\\define d()d\n<$reveal/>");
 	test(  "\\define d()d\n\n<$reveal/>\n<!--C-->",
-	       "\\define d()d\n\n<$reveal/>\n<!---->");
+	       "\\define d()d\n<$reveal/>\n<!---->");
 	test(t+"\\define d()d\n\n<$reveal/>\n<!--C-->",
-	       "\\define d()d\n\n<$reveal/>");
+	       "\\define d()d\n<$reveal/>");
 });
 
 it('block widgets with a newline after them', function() {

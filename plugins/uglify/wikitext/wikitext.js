@@ -76,8 +76,21 @@ WikiWalker.prototype = Object.create(WikiParser.prototype);
 
 WikiWalker.prototype.parsePragmas = function() {
 	var strings = this.tree;
+	var pragmaFound = false;
 	while (true) {
-		this.preserveWhitespace(strings);
+		if (this.pos > 0 && this.source[this.pos-1] !== "\n") {
+			// Some pragma aren't good about eating to the end of their line.
+			// We need to put in a newline if we accidentally ate it.
+			strings.push({text: '\n'});
+		}
+		if (pragmaFound) {
+			this.skipWhitespace();
+		} else {
+			// If we haven't found pragma, we need to be
+			// careful that this isn't actually a plaintext
+			// file, so we keep any leading whitespace.
+			this.preserveWhitespace(strings);
+		}
 		if (this.pos >= this.sourceLength) {
 			break;
 		}
@@ -85,6 +98,7 @@ WikiWalker.prototype.parsePragmas = function() {
 		if (!nextMatch || nextMatch.matchIndex !== this.pos) {
 			break;
 		}
+		pragmaFound = true;
 		strings.push.apply(strings, this.handleRule(nextMatch));
 	}
 	this.startOfBody = true;
@@ -176,20 +190,19 @@ WikiWalker.prototype.parseInlineRunTerminated = function(terminatorRegExp,option
 WikiWalker.prototype.parseBlock = function(terminatorRegExpString) {
 	var terminatorRegExp = terminatorRegExpString ? new RegExp("(" + terminatorRegExpString + "|\\r?\\n\\r?\\n)","mg") : /(\r?\n\r?\n)/mg;
 	var strings = [];
-	this.preserveWhitespace(strings);
-	if (this.pos >= this.sourceLength) {
-		return strings;
-	}
-	var nextMatch = this.findNextMatch(this.blockRules, this.pos);
-	if(nextMatch && nextMatch.matchIndex === this.pos) {
-		strings.push.apply(strings, this.handleRule(nextMatch));
-	} else {
-		strings.push.apply(strings, this.parseInlineRun(terminatorRegExp));
+	this.preserveWhitespace(strings, "\n\n");
+	if (this.pos < this.sourceLength) {
+		var nextMatch = this.findNextMatch(this.blockRules, this.pos);
+		if(nextMatch && nextMatch.matchIndex === this.pos) {
+			strings.push.apply(strings, this.handleRule(nextMatch));
+		} else {
+			strings.push.apply(strings, this.parseInlineRun(terminatorRegExp));
+		}
 	}
 	return strings;
 };
 
-WikiWalker.prototype.preserveWhitespace = function(tree, options) {
+WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	options = options || {};
 	var output = '';
 	var whitespaceRegExp = options.treatNewlinesAsNonWhitespace ? /([^\S\n]+)/mg : /(\s+)/mg;
@@ -201,8 +214,13 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 	}
 	output = output.replace(/\r/mg,"");
 	if (output) {
-		this.trailingJunkLength += output.length;
-		tree.push({text: output});
+		if (!this.configTrimWhiteSpace) {
+			this.trailingJunkLength += output.length;
+			tree.push({text: output});
+		} else if (minimum) {
+			this.trailingJunkLength += minimum.length;
+			tree.push({text: minimum});
+		}
 	}
 };
 
