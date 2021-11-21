@@ -8,7 +8,7 @@ var utils = require("../utils.js");
 
 exports.name = "commentinline";
 
-exports.uglify = function(text) {
+exports.uglify = function() {
 	var source = this.parser.source,
 		startsLine = source[this.parser.pos-1] === "\n";
 	do {

@@ -234,7 +234,7 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	// We have a new rule. So all the old trailing material will have to stay.
 	this.trailingJunkLength = 0;
 	if (ruleInfo.rule.uglify) {
-		substring = ruleInfo.rule.uglify(this.source);
+		substring = ruleInfo.rule.uglify();
 		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
 		this.cannotStartBlockYet = (ruleInfo.rule.cannotLeadToNewBlock===true);
 	} else {

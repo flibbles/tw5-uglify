@@ -10,7 +10,7 @@ Uglify rule for
 
 exports.name = "commentblock";
 
-exports.uglify = function(text) {
+exports.uglify = function() {
 	this.parse();
 	while (newlineAt(this.parser.source, this.parser.pos)) {
 		this.parser.pos++;

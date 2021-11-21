@@ -9,7 +9,7 @@ var htmlModifiers = $tw.modules.applyMethods('uglifyhtmlwikitextrule');
 
 exports.name = "html";
 
-exports.uglify = function(text) {
+exports.uglify = function() {
 	var startOfBody = this.parser.startOfBody;
 	this.parser.startOfBody = false;
 	var tag = this.parse()[0];
