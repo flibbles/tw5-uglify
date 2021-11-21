@@ -146,4 +146,11 @@ it('placeholders that end up at EOF', function() {
 		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>">>');
 });
 
+it('placeholders trim surrounding whitespace', function() {
+	test('\\define A(m)\nA\n$m$\nB\n\\end\n<<A  "\nX\n">>',
+	     '\\define A(m)\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
+	test('\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A  "\nX\n">>',
+	     '\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
+});
+
 });});
