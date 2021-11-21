@@ -210,8 +210,16 @@ WikiWalker.prototype.preserveWhitespace = function(tree, options) {
 // a parseTreeNode-like objects containing text.
 WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var original = text;
+	// Reset these
+	this.cannotEndYet = false;
+	this.cannotStartBlockYet = false;
 	if (this.containsPlaceholder(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
+		// We turn these on, because we can't be sure how this
+		// placeholder will be effected if the content that
+		// comes after this text is removed.
+		this.cannotEndYet = true;
+		this.cannotStartBlockYet = true;
 	} else if(this.configTrimWhiteSpace) {
 		text = $tw.utils.trim(text);
 	}
@@ -224,8 +232,6 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 		// There is new text. We have to keep any earlier trailing junk
 		this.trailingJunkLength = 0;
 		this.startOfBody = false;
-		this.cannotEndYet = false;
-		this.cannotStartBlockYet = false;
 	}
 };
 

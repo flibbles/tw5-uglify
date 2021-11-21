@@ -135,4 +135,15 @@ it('handles macrodef with quoted global substitutions', function() {
 		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>>');
 });
 
+it('placeholders that end up at EOF', function() {
+	test('\\define A(m)\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>" >>',
+		'\\define A(m)\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>">>');
+	test('\\define A(m)\n\\whitespace trim\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>" >>',
+		'\\define A(m)\n\\whitespace trim\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>">>');
+	test('\\define T()\nx\n\ny\n\\end\n\\define A(m)\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>" >>',
+		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>">>');
+	test('\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>" >>',
+		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>">>');
+});
+
 });});

@@ -26,9 +26,9 @@ it('trims', function() {
 it('cannot be trimmed for sure around placeholders', function() {
 	// notice how the \whitespace trim isn't going away?
 	test("\\define m(v)\n\\whitespace trim\n<div>\n\t<span>$v$</span>\n</div>\n\\end\n<<m [[''fancy'' content]]>>",
-		"\\define m(v)\n\\whitespace trim\n<div><span>$v$\n\\end\n<<m [[''fancy'' content]]>>");
+		"\\define m(v)\n\\whitespace trim\n<div><span>$v$</span>\n\\end\n<<m [[''fancy'' content]]>>");
 	test("\\define m(v)\n\\whitespace trim\n<div>\n\n\t<span>\n\n$v$\n</span></div>\n\\end\n<<m [[* ''fancy'' content]]>>",
-		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n\n\\end\n<<m [[* ''fancy'' content]]>>");
+		"\\define m(v)\n\\whitespace trim\n<div>\n\n<span>\n\n$v$\n</span>\n\\end\n<<m [[* ''fancy'' content]]>>");
 });
 
 it('multiple pragma', function() {
