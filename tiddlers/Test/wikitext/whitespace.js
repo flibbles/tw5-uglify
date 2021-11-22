@@ -34,13 +34,13 @@ it('weird arguments', function() {
 });
 
 it('trims around blocks', function() {
-	test(  "A\n\n\nB", "A\n\n\nB");
+	test(  "A\n\n\nB", "A\n\nB");
 	test(t+"A\n\n\nB", "A\n\nB");
-	test(  "A\r\n\r\n\r\nB", "A\n\n\nB");
+	test(  "A\r\n\r\n\r\nB", "A\n\nB");
 	test(t+"A\r\n\r\n\r\nB", "A\n\nB");
-	test(  "A\n\n \n\nB", "A\n\n \n\nB");
+	test(  "A\n\n \n\nB", "A\n\nB");
 	test(t+"A\n\n \n\nB", "A\n\nB");
-	test(  " A\n\n\nB", " A\n\n\nB");
+	test(  " A\n\n\nB", " A\n\nB");
 	test(t+" A\n\n\nB", "A\n\nB");
 });
 

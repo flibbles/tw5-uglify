@@ -206,10 +206,10 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	}
 	output = output.replace(/\r/mg,"");
 	if (output) {
-		if (!this.configTrimWhiteSpace) {
-			tree.push({text: output, tail: true});
-		} else if (minimum) {
+		if (output.indexOf(minimum) >= 0) {
 			tree.push({text: minimum, tail: true});
+		} else {
+			tree.push({text: output, tail: true});
 		}
 	}
 };

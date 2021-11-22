@@ -83,7 +83,7 @@ it('contents', function() {
 	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>\nA");
 	test("B<$vars  a='X'  />After", "B<$vars a=X/>After");
 	test("B\n\n<$vars  a='X'  />\n\nAfter", "B\n\n<$vars a=X/>\n\nAfter");
-	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n\n<$vars a=X/>\n\n\nA");
+	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
 });
 
 it('void elements', function() {
@@ -114,7 +114,7 @@ it('purges unnecessary closing tags', function() {
 	test("<div><span>Content</div>", "<div><span>Content</div>");
 	// many trailing newline characters
 	test("B\n\n<$reveal/>\n\n\n\nAfter", "B\n\n<$reveal/>\n\n\n\nAfter");
-	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n\n<$vars a=X/>\n\n\nA");
+	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
 });
 
 it('inline widgets with a newline after them', function() {

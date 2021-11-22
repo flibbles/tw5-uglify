@@ -11,12 +11,14 @@ describe('wikitext uglifier', function() {
 describe('comment', function() {
 
 const test = $tw.utils.test.wikitext.test;
-
+const t = "\\whitespace trim\n";
 const cmp = $tw.utils.test.wikitext.cmp;
 
 it('language string', function() {
-	test("```\nContent\n```\nAfter", "```\nContent\n```\nAfter");
-	test("```html\nContent\n```\nAfter", "```html\nContent\n```\nAfter");
+	test(  "```\nContent\n```\nAfter", "```\nContent\n```\nAfter");
+	test(t+"```\nContent\n```\nAfter", "```\nContent\n```\nAfter");
+	test(  "```html\nContent\n```\nAfter", "```html\nContent\n```\nAfter");
+	test(t+"```html\nContent\n```\nAfter", "```html\nContent\n```\nAfter");
 });
 
 it('carriage returns', function() {

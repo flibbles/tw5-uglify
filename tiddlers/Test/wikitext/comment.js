@@ -100,10 +100,9 @@ it('block', function() {
 	test(  "A\n\n<!--Comment-->\n<!--Comment-->\n\nB", "A\n\nB");
 	test(  "A\n\n<!--Comment-->\n\n<!--Comment-->\n\nB", "A\n\nB");
 	// whitespace that's not linefeeds
-	// TODO: Support these
-	//test(  "A\n\n<!--Comment--> \n\nB", "A\n\nB");
-	//test(t+"A\n\n<!--Comment--> \n\nB", "A\n\nB");
-	//test(  "A\n\n <!--Comment-->\n\nB", "A\n\nB");
+	test(  "A\n\n<!--Comment--> \n\nB", "A\n\nB");
+	test(t+"A\n\n<!--Comment--> \n\nB", "A\n\nB");
+	test(  "A\n\n <!--Comment-->\n\nB", "A\n\nB");
 	test(t+"A\n\n <!--Comment-->\n\nB", "A\n\nB");
 	// Pesky carriage-returns
 	test(  "A\r\n\r\n<!--Comment-->\r\n\r\nB", "A\n\nB");
