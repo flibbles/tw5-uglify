@@ -62,8 +62,6 @@ exports.uglify = function() {
 			}
 		} else if (utils.newlineAt(this.parser.source, tag.end)
 		&& (startOfBlock(this.parser.source, tag.start) || startOfBody)) {
-			// to maintain inline-state, this cannot lead into \n\n
-			this.cannotLeadToNewBlock = true;
 			// Let's eat that newline
 			this.parser.pos+=utils.newlineAt(this.parser.source, this.parser.pos);
 			if (!this.parser.configTrimWhiteSpace) {
@@ -71,18 +69,24 @@ exports.uglify = function() {
 				// newline following it can only exist if it's followed by
 				// something. So we can't allow the EOF to occur here.
 				tagParts.push("\n");
-				this.cannotBeAtEnd = true;
+				tree[0].cannotBeAtEnd = true;
 			}
+			tree[0].cannotEndBlock = true;
 		}
 	} else {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
+		} else {
 		}
 		var tail = {text: "</" + tag.tag + ">"}
-		if (!this.parser.cannotEndYet && (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n")) {
+		if (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n") {
 			// That closing tag is potentially trailing junk. Add its length.
 			tail.junk = true;
+		}
+		if (tag.children.length >= 1 && tag.children[0].text === "\n") {
+			// This is "<$tag>\n...</$tag>". That newline can't become the end.
+			tag.children[0].cannotBeAtEnd = true;
 		}
 		tree = tree.concat(tag.children, tail);
 	}

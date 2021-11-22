@@ -218,16 +218,16 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 // a parseTreeNode-like objects containing text.
 WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var original = text;
+	var cannotEndYet = false,
+		cannotEndBlock = false;
 	// Reset these
-	this.cannotEndYet = false;
-	this.cannotStartBlockYet = false;
 	if (this.containsPlaceholder(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 		// We turn these on, because we can't be sure how this
 		// placeholder will be effected if the content that
 		// comes after this text is removed.
-		this.cannotEndYet = true;
-		this.cannotStartBlockYet = true;
+		cannotEndYet = true;
+		cannotEndBlock = true;
 	} else if(this.configTrimWhiteSpace) {
 		text = $tw.utils.trim(text);
 	}
@@ -236,7 +236,11 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	}
 	text = text.replace(/\r/mg,"");
 	if (text) {
-		array.push({type: "text", text: text, start: start, end: end});
+		array.push({
+			type: "text",
+			text: text,
+			start: start, end: end,
+			cannotBeAtEnd: cannotEndYet, cannotEndBlock: cannotEndBlock});
 		// There is new text. We have to keep any earlier trailing junk
 		this.startOfBody = false;
 	}
@@ -249,8 +253,6 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		if (typeof tree === "string") {
 			tree = tree ? [{text: tree}] : [];
 		}
-		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
-		this.cannotStartBlockYet = (ruleInfo.rule.cannotLeadToNewBlock===true);
 	} else {
 		var start = this.pos,
 			wasInsideUnknownRule = this.insideUnknownRule;
@@ -263,8 +265,6 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		if (substring) {
 			// unknown rules aren't changed, so they must be okay at the EOF
 			// since they would have already been there.
-			this.cannotEndYet = false;
-			this.cannotStartBlockYet = false;
 			tree = [{text: substring}];
 		}
 	}
@@ -286,10 +286,11 @@ WikiWalker.prototype.containsPlaceholder = function(text) {
 
 function postProcess() {
 	// First, we use longform for anything if we have to keep trim around
+	var i;
 	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
 		// Looks like we still need to specify a pragma to be sure
 		this.tree.unshift({text: "\\whitespace trim\n"});
-		for (var i = 0; i < this.tree.length; i++) {
+		for (i = 0; i < this.tree.length; i++) {
 			var node = this.tree[i];
 			if (node.textWithTrim) {
 				// We also need to use all the longform nodes that otherwise
@@ -299,12 +300,30 @@ function postProcess() {
 		}
 	}
 	// Now let's slice off all the trailing junk
-	for (var i = this.tree.length-1; i >= 0; i--) {
-		if (this.tree[i].junk) {
-			// It's junk. Lose it.
-			this.tree.pop();
-		} else {
+	for (i = this.tree.length-1; i >= 0; i--) {
+		if (!this.tree[i].junk && !this.tree[i].drop) {
 			break;
 		}
+		if (this.tree[i-1].cannotBeAtEnd) {
+			i--;
+			break;
+		}
+		this.tree.pop();
 	}
+	// Now we get rid of all the junk in the middle
+	for (; i >= 0; i--) {
+		if (this.tree[i].drop) {
+			if (!this.tree[i-1].cannotEndBlock || !newlineFollows(this.tree, i)) {
+				this.tree.splice(i, 1);
+			}
+		}
+	}
+};
+
+function newlineFollows(tree, i) {
+	i++;
+	if (i >= tree.length) {
+		return false;
+	}
+	return tree[i].text[0] === "\n";
 };

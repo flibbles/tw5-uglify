@@ -174,7 +174,7 @@ it('block widgets with a newline after them', function() {
 	// This is like the tests above, only much more rare. It involves
 	// the user making weird widgets, but we'll handle it.
 	test("<$reveal >\n</$reveal>", "<$reveal>\n</$reveal>");
-	test("<$reveal >\n<!-- Comment --></$reveal>", "<$reveal>\n</$reveal>");
+	test("<$reveal >\n<!-- Comment --></$reveal>", "<$reveal>\n<!---->");
 	test("<div><$reveal >\n</$reveal>", "<div><$reveal>\n</$reveal>");
 	test("<div>\n\n<$reveal >\n</$reveal>", "<div>\n\n<$reveal>\n</$reveal>");
 	// but whitespace trimming removes this need again

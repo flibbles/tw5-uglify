@@ -11,12 +11,13 @@ exports.name = "macrocallinline";
 exports.uglify = function() {
 	var start = this.parser.pos;
 	var call = this.parse()[0];
+	var node = {text: utils.stringifyMacro(call, this.parser)};
 	if (this.parser.pos !== "\n"
 	&& (startOfBlock(this.parser.source, start) || this.parser.startOfBody)) {
-		this.cannotBeAtEnd = true;
-		this.cannotLeadToNewBlock = true;
+		node.cannotBeAtEnd = true;
+		node.cannotEndBlock = true;
 	}
-	return utils.stringifyMacro(call, this.parser);
+	return [node];
 };
 
 function startOfBlock(source, pos) {
