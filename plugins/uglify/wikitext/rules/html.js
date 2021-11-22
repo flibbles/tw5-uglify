@@ -18,7 +18,6 @@ exports.uglify = function() {
 		// the custom rules to make modifications to it.
 		htmlModifiers[tag.tag](tag, this.parser);
 	}
-	var strings = utils.joinNodeArray(tag.children);
 	var tagParts = ["<", tag.tag];
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
@@ -45,6 +44,7 @@ exports.uglify = function() {
 	});
 	if ($tw.config.htmlVoidElements.indexOf(tag.tag) >= 0) {
 		tagParts.push(">");
+		return [{text: tagParts.join('')}];
 	} else if (tag.isSelfClosing) {
 		tagParts.push("/>");
 		if (tag.isBlock) {
@@ -74,18 +74,21 @@ exports.uglify = function() {
 				this.cannotBeAtEnd = true;
 			}
 		}
+		return [{text: tagParts.join('')}];
 	} else {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
 		}
-		tagParts = tagParts.concat(strings, ["</", tag.tag, ">"]);
-		if (!this.parser.cannotEndYet && (tag.isBlock || strings !== "\n")) {
+		if (!this.parser.cannotEndYet && (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n")) {
 			// That closing tag is potentially trailing junk. Add its length.
 			this.parser.trailingJunkLength += 3 + tag.tag.length;
 		}
+		return [].concat(
+			{text: tagParts.join('')},
+			tag.children,
+			{text: "</" + tag.tag + ">"});
 	}
-	return tagParts.join('');
 };
 
 function bestQuoteFor(attr, parser) {

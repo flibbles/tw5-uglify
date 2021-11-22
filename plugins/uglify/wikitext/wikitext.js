@@ -49,8 +49,7 @@ function WikiWalker(type, text, options) {
 			for (var name in classList) {
 				if (rules[name]) {
 					delete rules[name].name;
-					$tw.utils.extend(classList[name].prototype, rules[name]);
-				}
+					$tw.utils.extend(classList[name].prototype, rules[name]); }
 			}
 		});
 		WikiWalker.prototype.uglifyMethodsInjected = true;
@@ -69,6 +68,14 @@ function WikiWalker(type, text, options) {
 	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
 		// Looks like we still need to specify a pragma to be sure
 		this.tree.unshift({text: "\\whitespace trim\n"});
+		for (var i = 0; i < this.tree.length; i++) {
+			var node = this.tree[i];
+			if (node.textWithTrim) {
+				// We also need to use all the longform nodes that otherwise
+				// could have collapsed if we trimmed the whitespace ourselves.
+				node.text = node.textWithTrim;
+			}
+		}
 	}
 };
 
@@ -255,13 +262,13 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 };
 
 WikiWalker.prototype.handleRule = function(ruleInfo) {
-	var node;
+	var tree;
 	// We have a new rule. So all the old trailing material will have to stay.
 	this.trailingJunkLength = 0;
 	if (ruleInfo.rule.uglify) {
-		node = ruleInfo.rule.uglify();
-		if (typeof node === "string") {
-			node = {text: node};
+		tree = ruleInfo.rule.uglify();
+		if (typeof tree === "string") {
+			tree = tree ? [{text: tree}] : [];
 		}
 		this.cannotEndYet = (ruleInfo.rule.cannotBeAtEnd === true);
 		this.cannotStartBlockYet = (ruleInfo.rule.cannotLeadToNewBlock===true);
@@ -272,25 +279,21 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		// We parse the rule and look to where it moved the head.
 		// Then we can copy this unknown rule without change
 		ruleInfo.rule.parse();
-		node = {};
-		node.text = this.source.substring(start, this.pos);
+		var substring = this.source.substring(start, this.pos);
 		this.insideUnknownRule = wasInsideUnknownRule;
 		// We don't know if the rule had stuff on the end
 		// So we can't risk deleting stuff.
 		this.trailingJunkLength = 0;
-		if (node.text) {
+		if (substring) {
 			// unknown rules aren't changed, so they must be okay at the EOF
 			// since they would have already been there.
 			this.cannotEndYet = false;
 			this.cannotStartBlockYet = false;
+			tree = [{text: substring}];
 		}
 	}
 	this.startOfBody = false;
-	if (node.text) {
-		return [node];
-	} else {
-		return [];
-	}
+	return tree;
 };
 
 WikiWalker.prototype.containsPlaceholder = function(text) {
