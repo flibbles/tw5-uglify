@@ -73,7 +73,7 @@ WikiWalker.prototype.parsePragmas = function() {
 		if (this.pos > 0 && this.source[this.pos-1] !== "\n") {
 			// Some pragma aren't good about eating to the end of their line.
 			// We need to put in a newline if we accidentally ate it.
-			strings.push({text: '\n'});
+			strings.push({text: '\n', tail: true});
 		}
 		whitespace = [];
 		this.preserveWhitespace(whitespace);

@@ -77,6 +77,9 @@ it('whitespace after pragma', function() {
 	test(t+rule+"\r\nText", rule+"Text");
 	test(  rule+"\r\n\r\nText", rule+"Text");
 	test(t+rule+"\r\n\r\nText", rule+"Text");
+	// And if there is no body?
+	test(  "\\define M()M\n\n\n", "\\define M()M");
+	test(  "\\define M()\nM\n\nN\n\\end\n\n", "\\define M()\nM\n\nN\n\\end");
 });
 
 it('whitespace before pragma', function() {
