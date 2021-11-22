@@ -46,4 +46,8 @@ it('cuts tail from inside widgets', function() {
 	test("<div>\n```\nText\n```\n</div>\n", "<div>\n```\nText\n```\n</div>\n");
 });
 
+it('does not expand entities within it', function() {
+	test("A&#32;B\n\n```\nText&#32;This\n```", "A B\n\n```\nText&#32;This");
+});
+
 });});
