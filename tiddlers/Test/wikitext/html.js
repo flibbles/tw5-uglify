@@ -86,6 +86,13 @@ it('contents', function() {
 	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
 });
 
+it('no contents', function() {
+	test("<$reveal></$reveal>", "<$reveal>");
+	test("<$reveal><!-- Content --></$reveal>", "<$reveal>");
+	test("<$reveal>\n\n</$reveal>", "<$reveal>\n\n");
+	test("<$reveal>\n\n<!-- Content --></$reveal>", "<$reveal>\n\n");
+});
+
 it('void elements', function() {
 	test("top<br>bottom", "top<br>bottom");
 	test("top<br/>bottom", "top<br>bottom");

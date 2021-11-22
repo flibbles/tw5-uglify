@@ -19,6 +19,13 @@ it('inline sharing line with content can always go', function() {
 	test("\\whitespace trim\nFirst <!--comment-->\nText", "FirstText");
 });
 
+it('only comments', function() {
+	test("<!-- Comment -->", "");
+	test("<!-- Comment -->\n\n", "");
+	test("\n\n<!-- Comment -->", "");
+	test("<!-- Comment -->", "");
+});
+
 it('inline filling a line might have to stay', function() {
 	test("<div>\n\tText\n\t<!--Comment-->\n</div>", "<div>\n\tText\n\t\n");
 	test("\\whitespace trim\n<div>\n\tText\n\t<!--C-->\n</div>", "<div>Text");

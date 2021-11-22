@@ -304,7 +304,7 @@ function postProcess() {
 		if (!this.tree[i].tail && !this.tree[i].junk) {
 			break;
 		}
-		if (this.tree[i-1].cannotBeAtEnd) {
+		if (this.tree[i-1] && this.tree[i-1].cannotBeAtEnd) {
 			i--;
 			break;
 		}
