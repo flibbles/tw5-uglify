@@ -14,11 +14,11 @@ exports.uglify = function() {
 	// We loop this to slurp up all sequential comment blocks
 		this.parse();
 	} while (this.findNextMatch(this.parser.pos) == this.parser.pos);
-	var node = {text: '<!---->', junk: true};
+	var node = {text: '<!---->', tail: true};
 	if (!startsLine
 	|| !utils.newlineAt(this.parser.source, this.parser.pos)
 	|| this.parser.configTrimWhiteSpace) {
-		node.drop = true;
+		node.junk = true;
 	}
 	return [node];
 };

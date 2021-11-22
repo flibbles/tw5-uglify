@@ -53,7 +53,7 @@ exports.uglify = function() {
 			// two newlines, but we set the trailing junk to 1, because if
 			// this ends up at EOF, we want to chomp one of those newlines.
 			tagParts.push("\n");
-			tree.push({text: "\n", junk: true});
+			tree.push({text: "\n", tail: true});
 			// No matter the situation, we need to preserve that newline
 			this.parser.pos+=2;
 			if (this.parser.pos > this.parser.sourceLength) {
@@ -82,7 +82,7 @@ exports.uglify = function() {
 		var tail = {text: "</" + tag.tag + ">"}
 		if (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n") {
 			// That closing tag is potentially trailing junk. Add its length.
-			tail.junk = true;
+			tail.tail = true;
 		}
 		if (tag.children.length >= 1 && tag.children[0].text === "\n") {
 			// This is "<$tag>\n...</$tag>". That newline can't become the end.

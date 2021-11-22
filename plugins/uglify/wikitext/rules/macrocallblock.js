@@ -14,7 +14,7 @@ exports.uglify = function() {
 	if (this.parser.pos === "\n") {
 		this.parser.pos++;
 		// This newline doesn't have to be there if the macro is at EOF
-		output.push({text: "\n", junk: true});
+		output.push({text: "\n", tail: true});
 	}
 	return output;
 };

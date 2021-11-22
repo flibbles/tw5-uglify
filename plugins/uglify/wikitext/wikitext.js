@@ -207,9 +207,9 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	output = output.replace(/\r/mg,"");
 	if (output) {
 		if (!this.configTrimWhiteSpace) {
-			tree.push({text: output, junk: true});
+			tree.push({text: output, tail: true});
 		} else if (minimum) {
-			tree.push({text: minimum, junk: true});
+			tree.push({text: minimum, tail: true});
 		}
 	}
 };
@@ -301,7 +301,7 @@ function postProcess() {
 	}
 	// Now let's slice off all the trailing junk
 	for (i = this.tree.length-1; i >= 0; i--) {
-		if (!this.tree[i].junk && !this.tree[i].drop) {
+		if (!this.tree[i].tail && !this.tree[i].junk) {
 			break;
 		}
 		if (this.tree[i-1].cannotBeAtEnd) {
@@ -312,7 +312,7 @@ function postProcess() {
 	}
 	// Now we get rid of all the junk in the middle
 	for (; i >= 0; i--) {
-		if (this.tree[i].drop
+		if (this.tree[i].junk
 		&& (!this.tree[i+1] || !this.tree[i+1].dangerous)) {
 			if (!this.tree[i-1].cannotEndBlock || !newlineFollows(this.tree, i)) {
 				this.tree.splice(i, 1);
