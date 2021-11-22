@@ -8,7 +8,7 @@ title: Uglify
 |!Build date |<$view field="created" format="date" template="MMM DDth, YYYY" /> |
 |!TW5 compatibility |{{!!core-version}} |
 
-//Uglify// is a TiddlyWiki5 plugin which handles all of your TiddlyWiki compression needs. What can it do for you?
+//Uglify// is a TiddlyWiki5 plugin which handles all of your TiddlyWiki compression needs, reducing your filesizes or internet bandwith ''without touching your own tiddlers''. What can it do for you?
 
 <p class="uglify-solutions">
 <<wizard "Compress my TiddlyWiki file">>
