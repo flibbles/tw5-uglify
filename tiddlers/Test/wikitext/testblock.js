@@ -23,7 +23,7 @@ exports.init = function(parser) {
 };
 
 exports.parse = function() {
-	var reEndString = "^\\?test\\?(?:\\r?\\n)?";
+	var reEndString = "^\\?test\\?(?:$|\\r?\\n)";
 	var theClass = this.match[1];
 	this.parser.pos = this.matchRegExp.lastIndex;
 	// Parse the body

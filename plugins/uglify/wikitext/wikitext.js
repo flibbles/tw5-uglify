@@ -110,7 +110,7 @@ WikiWalker.prototype.parseBlocksTerminated = function(terminatorRegExpString) {
 		var blocks = this.parseBlock(terminatorRegExpString);
 		strings.push.apply(strings,blocks);
 		// Skip any whitespace
-		this.preserveWhitespace(strings);
+		this.preserveWhitespace(strings, "\n\n");
 		//  Check if we've got the end marker
 		terminatorRegExp.lastIndex = this.pos;
 		match = terminatorRegExp.exec(this.source);

@@ -14,13 +14,21 @@ describe('wikitext uglifier', function() {
 describe('unknown', function() {
 
 const test = $tw.utils.test.wikitext.test;
+const t = "\\whitespace trim\n";
 
 it('keeps whitespace inside context', function() {
-	test("\\whitespace trim\n?test?stuff?\n<div>\n\tContent\n</div>\n?test?",
-		"\\whitespace trim\n?test?stuff?\n<div>\n\tContent\n</div>\n?test?");
+	test(t+"?test?stuff?\n<div>\n\tContent\n</div>\n?test?",
+	     t+"?test?stuff?\n<div>\n\tContent\n</div>\n?test?");
 	// Unknowns within unknowns can cause safety mode to turn off prematurely
-	test("\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?",
-		"\\whitespace trim\n?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?");
+	test(t+"?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?",
+	     t+"?test?stuff?\n<div>?test?inner?Content?test?</div>\n<div>\n\tLater\n</div>\n?test?");
+});
+
+it('does not collapse blocks', function() {
+	test(t+"<div>\n\n!title spaces\n\n<$reveal/>\n</div>",
+	       "<div>\n\n!title spaces\n\n<$reveal/>");
+	test(t+"<div>\n\n?test?t?\ntest spaces\n?test?\n\n<$reveal/>\n</div>",
+	     t+"<div>\n\n?test?t?\ntest spaces\n?test?\n\n<$reveal/>");
 });
 
 });
