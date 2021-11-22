@@ -1,7 +1,7 @@
 title: Documentation
 tags: Uglify
 
-//Uglify// is already set up to automatically begin compressing plugins, but it can be used in various ways.
+//Uglify// is already set up to automatically begin compressing plugins, but it can be used in various ways. Also, the github page for the project is <<source "available here">>.
 
 !! Using Uglify
 

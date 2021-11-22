@@ -1,6 +1,0 @@
-title: Macros/wizard
-tags: $:/tags/Macro
-
-\define wizard(caption) <a class="tc-tiddlylink tc-tiddlylink-resolves" target="_blank" href="./uglified.html">$caption$</a>
-
-Link to the uglify wizard.
