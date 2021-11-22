@@ -1,4 +1,8 @@
+created: 20211122052552140
 
 ''Introducing wikitext uglifying!''
 
 * All wikitext inside a plugin will be reduced as small as possible while still maintaining identical output when rendered to html or text.
+* All unnecessary whitespace is removed!
+* All quotation is optimized!
+* All unnecessary tags are removed!
