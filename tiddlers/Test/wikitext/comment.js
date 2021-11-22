@@ -84,6 +84,11 @@ it('preceding content that cannot be at end', function() {
 	test(t+"<div>\n\n<$reveal/>\n<!--c--></div>","<div>\n\n<$reveal/>");
 });
 
+it('separating widgets from placeholders', function() {
+	test("\\define M(x)\n<$reveal/><!--c-->\n$x$\n\\end\n<<M '\nph'>>",
+	     "\\define M(x)\n<$reveal/><!---->\n$x$\n\\end\n<<M '\nph'>>");
+});
+
 it('block', function() {
 	test(  "<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText\n");
 	test(t+"<div>\n\n<!--Comment-->\nText\n</div>", "<div>\n\nText");

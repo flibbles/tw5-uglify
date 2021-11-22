@@ -218,16 +218,19 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 // a parseTreeNode-like objects containing text.
 WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var original = text;
+	var node = {type: "text", start: start, end: end};
 	var cannotEndYet = false,
 		cannotEndBlock = false;
 	// Reset these
 	if (this.containsPlaceholder(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
+		// Dangerous, meaning be careful about altering surrounding content.
+		node.dangerous = true;
 		// We turn these on, because we can't be sure how this
 		// placeholder will be effected if the content that
 		// comes after this text is removed.
-		cannotEndYet = true;
-		cannotEndBlock = true;
+		node.cannotBeAtEnd = true;
+		node.cannotEndBlock = true;
 	} else if(this.configTrimWhiteSpace) {
 		text = $tw.utils.trim(text);
 	}
@@ -236,11 +239,8 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	}
 	text = text.replace(/\r/mg,"");
 	if (text) {
-		array.push({
-			type: "text",
-			text: text,
-			start: start, end: end,
-			cannotBeAtEnd: cannotEndYet, cannotEndBlock: cannotEndBlock});
+		node.text = text;
+		array.push(node);
 		// There is new text. We have to keep any earlier trailing junk
 		this.startOfBody = false;
 	}
@@ -312,7 +312,8 @@ function postProcess() {
 	}
 	// Now we get rid of all the junk in the middle
 	for (; i >= 0; i--) {
-		if (this.tree[i].drop) {
+		if (this.tree[i].drop
+		&& (!this.tree[i+1] || !this.tree[i+1].dangerous)) {
 			if (!this.tree[i-1].cannotEndBlock || !newlineFollows(this.tree, i)) {
 				this.tree.splice(i, 1);
 			}
