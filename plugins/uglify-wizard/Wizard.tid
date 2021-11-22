@@ -102,7 +102,7 @@ Close this browser window to prevent others from being able to access your data.
 
 </div>
 
-//This uglifier works with TiddlyWiki versions 5.2.0 or later.//
+//This uglifier works with TiddlyWiki versions&#32;{{$:/core!!version}}&#32;or later.//
 
 //If your file's version is older, the uglifier will update it for you.//
 
