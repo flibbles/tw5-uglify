@@ -16,9 +16,6 @@ exports.uglify = function(text, title, options) {
 	try {
 		var parser = new WikiWalker(undefined, text, options);
 		var string = parseutils.joinNodeArray(parser.tree);
-		if (parser.trailingJunkLength > 0) {
-			string = string.slice(0, -parser.trailingJunkLength);
-		}
 		return string;
 	} catch (e) {
 		logger.warn('Failed to compress', title + "\n\n    * message:", e);
@@ -61,22 +58,9 @@ function WikiWalker(type, text, options) {
 		this.bracketsAllowed = true;
 	}
 	this.placeholders = options.placeholders || Object.create(null);
-	this.trailingJunkLength = 0;
 	this.startOfBody = true;
 	WikiParser.call(this, type, text, options);
-	// Now for some post processing
-	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
-		// Looks like we still need to specify a pragma to be sure
-		this.tree.unshift({text: "\\whitespace trim\n"});
-		for (var i = 0; i < this.tree.length; i++) {
-			var node = this.tree[i];
-			if (node.textWithTrim) {
-				// We also need to use all the longform nodes that otherwise
-				// could have collapsed if we trimmed the whitespace ourselves.
-				node.text = node.textWithTrim;
-			}
-		}
-	}
+	postProcess.call(this);
 };
 
 WikiWalker.prototype = Object.create(WikiParser.prototype);
@@ -223,11 +207,9 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	output = output.replace(/\r/mg,"");
 	if (output) {
 		if (!this.configTrimWhiteSpace) {
-			this.trailingJunkLength += output.length;
-			tree.push({text: output});
+			tree.push({text: output, junk: true});
 		} else if (minimum) {
-			this.trailingJunkLength += minimum.length;
-			tree.push({text: minimum});
+			tree.push({text: minimum, junk: true});
 		}
 	}
 };
@@ -256,15 +238,12 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	if (text) {
 		array.push({type: "text", text: text, start: start, end: end});
 		// There is new text. We have to keep any earlier trailing junk
-		this.trailingJunkLength = 0;
 		this.startOfBody = false;
 	}
 };
 
 WikiWalker.prototype.handleRule = function(ruleInfo) {
 	var tree;
-	// We have a new rule. So all the old trailing material will have to stay.
-	this.trailingJunkLength = 0;
 	if (ruleInfo.rule.uglify) {
 		tree = ruleInfo.rule.uglify();
 		if (typeof tree === "string") {
@@ -281,9 +260,6 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 		ruleInfo.rule.parse();
 		var substring = this.source.substring(start, this.pos);
 		this.insideUnknownRule = wasInsideUnknownRule;
-		// We don't know if the rule had stuff on the end
-		// So we can't risk deleting stuff.
-		this.trailingJunkLength = 0;
 		if (substring) {
 			// unknown rules aren't changed, so they must be okay at the EOF
 			// since they would have already been there.
@@ -306,4 +282,29 @@ WikiWalker.prototype.containsPlaceholder = function(text) {
 		this.placeholderRegExp = new RegExp("\\$(?:" + placeholderArray.join('|') + ")\\$");
 	}
 	return text.search(this.placeholderRegExp) >= 0;
+};
+
+function postProcess() {
+	// First, we use longform for anything if we have to keep trim around
+	if (this.configTrimWhiteSpace && this.cannotEnsureNoWhiteSpace) {
+		// Looks like we still need to specify a pragma to be sure
+		this.tree.unshift({text: "\\whitespace trim\n"});
+		for (var i = 0; i < this.tree.length; i++) {
+			var node = this.tree[i];
+			if (node.textWithTrim) {
+				// We also need to use all the longform nodes that otherwise
+				// could have collapsed if we trimmed the whitespace ourselves.
+				node.text = node.textWithTrim;
+			}
+		}
+	}
+	// Now let's slice off all the trailing junk
+	for (var i = this.tree.length-1; i >= 0; i--) {
+		if (this.tree[i].junk) {
+			// It's junk. Lose it.
+			this.tree.pop();
+		} else {
+			break;
+		}
+	}
 };

@@ -21,6 +21,7 @@ exports.uglify = function() {
 	var tagParts = ["<", tag.tag];
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
+	var tree = [{}];
 	$tw.utils.each(attributes, function(attr) {
 		tagParts.push(" ", attr.newName || attr.name);
 		switch(attr.type) {
@@ -44,16 +45,15 @@ exports.uglify = function() {
 	});
 	if ($tw.config.htmlVoidElements.indexOf(tag.tag) >= 0) {
 		tagParts.push(">");
-		return [{text: tagParts.join('')}];
 	} else if (tag.isSelfClosing) {
 		tagParts.push("/>");
 		if (tag.isBlock) {
-			tagParts.push("\n\n");
-			// This is tricky. if it's a block, it either has two newlines,
-			// or it has a single newline at EOF. We want to claim those two
-			// newlines, but we set the trailing junk to 1, because if this
-			// ends up at EOF, we want to chomp one of those newlines.
-			this.parser.trailingJunkLength++;
+			// This is tricky. if it's a block, its end is either two
+			// newlines, or a single newline at EOF. We want to claim those
+			// two newlines, but we set the trailing junk to 1, because if
+			// this ends up at EOF, we want to chomp one of those newlines.
+			tagParts.push("\n");
+			tree.push({text: "\n", junk: true});
 			// No matter the situation, we need to preserve that newline
 			this.parser.pos+=2;
 			if (this.parser.pos > this.parser.sourceLength) {
@@ -74,21 +74,20 @@ exports.uglify = function() {
 				this.cannotBeAtEnd = true;
 			}
 		}
-		return [{text: tagParts.join('')}];
 	} else {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
 		}
+		var tail = {text: "</" + tag.tag + ">"}
 		if (!this.parser.cannotEndYet && (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n")) {
 			// That closing tag is potentially trailing junk. Add its length.
-			this.parser.trailingJunkLength += 3 + tag.tag.length;
+			tail.junk = true;
 		}
-		return [].concat(
-			{text: tagParts.join('')},
-			tag.children,
-			{text: "</" + tag.tag + ">"});
+		tree = tree.concat(tag.children, tail);
 	}
+	tree[0].text = tagParts.join('');
+	return tree;
 };
 
 function bestQuoteFor(attr, parser) {

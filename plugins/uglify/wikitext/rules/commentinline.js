@@ -30,7 +30,7 @@ exports.uglify = function() {
 	if (this.parser.cannotStartBlockYet
 	&& utils.newlineAt(source, pos + utils.newlineAt(source, pos))) {
 		if (!this.cannotBeAtEnd) {
-			this.parser.trailingJunkLength += 7;
+			return [{text: '<!---->', junk: true}];
 		}
 		return '<!---->';
 	}
