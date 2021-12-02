@@ -77,7 +77,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 	class="tc-uglify-customize">
 	<$list
 		variable="type"
-		filter="[all[uglifiers]]">
+		filter="[[uglifier]modules[]moduleproperty[type]sort[]]">
 	<$checkbox
 		tiddler={{{ [[$:/config/flibbles/uglify/]addsuffix<type>] }}}
 		checked="yes"
