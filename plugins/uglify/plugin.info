@@ -9,5 +9,6 @@
 	"demo": "http://flibbles.github.io/tw5-relink/",
 	"list": "readme license",
 	"dependents": "",
+	"plugin-priority": -1,
 	"plugin-type": "plugin"
 }

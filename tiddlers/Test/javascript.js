@@ -46,6 +46,17 @@ it('minifies variables at top level scope', function() {
 	expect(exports.count()).toBe(2);
 });
 
+function sourceMap(input, title) {
+	title = title || 'test';
+	return $tw.wiki.getUglifier('application/javascript').map(input, title);
+};
+
+it('generates source map', function() {
+	var text = sourceMap("exports.add = function(first, second) {return first + second; }", "directory/test.js");
+	console.log(text);
+	expect(true).toBe(true);
+});
+
 /*
 it('can handle backticks?', function() {
 	try {

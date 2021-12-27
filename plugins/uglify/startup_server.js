@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/startup.js
+title: $:/plugins/flibbles/uglify/startup_server.js
 module-type: startup
 type: application/javascript
 

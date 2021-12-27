@@ -14,6 +14,17 @@ var logger = require('./logger.js');
 var utils = require('./utils.js');
 var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
+exports.getTiddlerSourceMap = function(title, options) {
+	var wiki = this,
+		uglifier,
+		tiddler = wiki.getTiddler(title);
+	if (tiddler && tiddler.fields.type === "application/javascript") {
+		uglifier = wiki.getUglifier(tiddler.fields.type);
+		return uglifier.map(tiddler.fields.text, title, {wiki:wiki});
+	}
+	return null;
+};
+
 /**This returns the compressed tiddlers regardless of whether it would be
  * compressed during saving or serving.
  */
