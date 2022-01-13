@@ -237,6 +237,25 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	if (original !== text && this.insideUnknownRule) {
 		this.cannotEnsureNoWhiteSpace = true;
 	}
+	// This block below is for the special edge case where a block of
+	// wikitext might be wrapped with """. We can't let those end with ".
+	if (text[text.length-1] === '"') {
+		if (end === this.sourceLength) {
+			if (original[original.length-1] !== '"') {
+				if (this.cannotEnsureNoWhiteSpace) {
+					// Whitespace won't fully trim anyway, so we can add
+					// a space back in. This'll resolve """" conflicts.
+					text = text + " ";
+				} else {
+					// We can ensure whitespace trimming so far, so let's
+					// just use an entity.
+					text = text.substr(0, text.length-1) + "&quot;";
+				}
+			}
+		} else {
+			node.cannotBeAtEnd = true;
+		}
+	}
 	text = text.replace(/\r/mg,"");
 	if (text) {
 		node.text = text;
