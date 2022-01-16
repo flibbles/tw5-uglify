@@ -88,6 +88,14 @@ exports.uglify = function() {
 			// This is "<$tag>\n...</$tag>". That newline can't become the end.
 			tag.children[0].cannotBeAtEnd = true;
 		}
+		// Funny thing about widgets is that block eval starts right after
+		// them. No newlines needed.
+		if (startOfBlock(this.parser.source, tag.start) && tag.isBlock) {
+			var length;
+			while (length = utils.newlineAt(this.parser.source, this.parser.pos)) {
+				this.parser.pos += length;
+			}
+		}
 		tree = tree.concat(tag.children, tail);
 	}
 	tree[0].text = tagParts.join('');

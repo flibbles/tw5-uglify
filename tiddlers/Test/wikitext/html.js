@@ -80,7 +80,7 @@ it('contents', function() {
 	test("<div>\n\n!aardvark\n\n</div>", "<div>\n\n!aardvark");
 	test("<$vars>\n\n\nIn</$vars>\n", "<$vars>\n\nIn");
 	test("<$vars>\n\nIn</$vars>\n\n", "<$vars>\n\nIn");
-	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>\nA");
+	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>A");
 	test("B<$vars  a='X'  />After", "B<$vars a=X/>After");
 	test("B\n\n<$vars  a='X'  />\n\nAfter", "B\n\n<$vars a=X/>\n\nAfter");
 	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
@@ -187,6 +187,21 @@ it('block widgets with a newline after them', function() {
 	// but whitespace trimming removes this need again
 	test("\\whitespace trim\n<$reveal >\n</$reveal>", "<$reveal>");
 	test("\\whitespace trim\n<div>\n\n<$reveal >\n</$reveal>", "<div>\n\n<$reveal>");
+});
+
+it('block widgets with newlines after closing tag', function() {
+	test("<$reveal >\n\nA\n</$reveal>\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\n\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\n<$reveal />",
+	     "<$reveal>\n\nA\n</$reveal><$reveal/>");
+	test("<$reveal >\n\nA\n</$reveal>\n\n\nB", "<$reveal>\n\nA\n</$reveal>B");
+	// Inline?
+	test("<$reveal >\nA\n</$reveal>\nB", "<$reveal>\nA\n</$reveal>\nB");
+	test("X\n<$reveal >\n\nA\n</$reveal>\nB", "X\n<$reveal>\nA\n</$reveal>\nB");
+	// Test those \r's
+	test("<$reveal >\n\nA\n</$reveal>\r\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\r\n\r\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\r\n\nB", "<$reveal>\n\nA\n</$reveal>B");
 });
 
 });});
