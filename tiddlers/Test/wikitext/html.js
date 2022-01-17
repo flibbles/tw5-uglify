@@ -189,19 +189,35 @@ it('block widgets with a newline after them', function() {
 	test("\\whitespace trim\n<div>\n\n<$reveal >\n</$reveal>", "<div>\n\n<$reveal>");
 });
 
-it('block widgets with newlines after closing tag', function() {
+it('block widgets with newlines after close ', function() {
 	test("<$reveal >\n\nA\n</$reveal>\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\n\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\n \nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\n\n \n\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\n<$reveal />",
 	     "<$reveal>\n\nA\n</$reveal><$reveal/>");
 	test("<$reveal >\n\nA\n</$reveal>\n\n\nB", "<$reveal>\n\nA\n</$reveal>B");
 	// Inline?
 	test("<$reveal >\nA\n</$reveal>\nB", "<$reveal>\nA\n</$reveal>\nB");
-	test("X\n<$reveal >\n\nA\n</$reveal>\nB", "X\n<$reveal>\nA\n</$reveal>\nB");
+	test("X\n<$reveal >\n\nA\n</$reveal>\nB", "X\n<$reveal>\n\nA\n</$reveal>\nB");
 	// Test those \r's
 	test("<$reveal >\n\nA\n</$reveal>\r\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\r\n\r\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\r\n\nB", "<$reveal>\n\nA\n</$reveal>B");
+	// Nested widgets
+	test("<$reveal>\n\n<$reveal>\n\nA\n</$reveal>\n\n</$reveal>\n\nB",
+	     "<$reveal>\n\n<$reveal>\n\nA\n</$reveal></$reveal>B");
+});
+
+it('block widgets with newlines after close w/ placeholders', function() {
+	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
+	test("\\define X(a)\n<$reveal>\n\nA\n</$reveal>\n$a$\n\\end\n<<X '"+dump+"'>>",
+	     "\\define X(a)\n<$reveal>\n\nA\n</$reveal>$a$\n\\end\n<<X '"+dump+"'>>");
+});
+
+it('block widgets with newlines after close w/ blockquote', function() {
+	test("<$reveal >\n\nA\n</$reveal>\n\n```\nContent",
+	     "<$reveal>\n\nA\n</$reveal>```\nContent");
 });
 
 });});

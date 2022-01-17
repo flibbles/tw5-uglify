@@ -91,10 +91,7 @@ exports.uglify = function() {
 		// Funny thing about widgets is that block eval starts right after
 		// them. No newlines needed.
 		if (startOfBlock(this.parser.source, tag.start) && tag.isBlock) {
-			var length;
-			while (length = utils.newlineAt(this.parser.source, this.parser.pos)) {
-				this.parser.pos += length;
-			}
+			this.parser.skipWhitespace();
 		}
 		tree = tree.concat(tag.children, tail);
 	}
