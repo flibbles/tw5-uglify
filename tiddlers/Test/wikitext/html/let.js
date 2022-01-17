@@ -130,4 +130,30 @@ ifLetIt('does not care if closing tags are missing', function() {
 	     '<$let x=X y=Y z=Z>'+d);
 });
 
+ifLetIt('no fold if text between opening tags', function() {
+	test(  '<$let x=X>\n\nT\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\n</$let>',
+	       '<$let x=X y=Y>\n\nT\n\n<$reveal/>\n');
+	test(t+'<$let x=X>\n\nT\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\n</$let>',
+	       '<$let x=X y=Y>\n\nT\n\n<$reveal/>\n');
+	// inline inside block. Can't handle this when other blocks are there
+	test(  '<$let x=X>\n\nT\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\n</$let>',
+	       '<$let x=X>\n\nT\n\n<$let y=Y>\n<$reveal/>\n');
+	test(t+'<$let x=X>\n\nT\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\n</$let>',
+	       '<$let x=X>\n\nT\n\n<$let y=Y><$reveal/>');
+});
+
+ifLetIt('no fold if text between closing tags', function() {
+	// TODO: We can support these. It just has to do the same thing that the
+	//       test above is doing with text between opening tags.
+	test(  '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
+	       '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>Text');
+	test(t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
+	       '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>Text');
+	// inline inside block
+	test(  '<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText</$let>',
+	       '<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText');
+	test(t+'<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText</$let>',
+	       '<$let x=X>\n\n<$let y=Y><$reveal/></$let>\n\nText');
+});
+
 });});});
