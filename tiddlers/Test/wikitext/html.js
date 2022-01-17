@@ -193,7 +193,7 @@ it('block widgets with newlines after close ', function() {
 	test("<$reveal >\n\nA\n</$reveal>\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\n\nB", "<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\n \nB", "<$reveal>\n\nA\n</$reveal>B");
-	test("<$reveal >\n\nA\n</$reveal>\n\n \n\nB", "<$reveal>\n\nA\n</$reveal>B");
+	test("<$reveal >\n\nA\n</$reveal>\n\n \n\nB","<$reveal>\n\nA\n</$reveal>B");
 	test("<$reveal >\n\nA\n</$reveal>\n<$reveal />",
 	     "<$reveal>\n\nA\n</$reveal><$reveal/>");
 	test("<$reveal >\n\nA\n</$reveal>\n\n\nB", "<$reveal>\n\nA\n</$reveal>B");
@@ -207,6 +207,11 @@ it('block widgets with newlines after close ', function() {
 	// Nested widgets
 	test("<$reveal>\n\n<$reveal>\n\nA\n</$reveal>\n\n</$reveal>\n\nB",
 	     "<$reveal>\n\n<$reveal>\n\nA\n</$reveal></$reveal>B");
+});
+
+it('block widgets with newlines after close ', function() {
+	test(t+"<$reveal >\n\nA\n</$reveal>\n\nB", "<$reveal>\n\nA</$reveal>B");
+	test(t+"<$reveal >\n\nA\n</$reveal>\n\n \n\nB","<$reveal>\n\nA</$reveal>B");
 });
 
 it('block widgets with newlines after close w/ placeholders', function() {

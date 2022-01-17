@@ -207,9 +207,9 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	output = output.replace(/\r/mg,"");
 	if (output) {
 		if (output.indexOf(minimum) >= 0) {
-			tree.push({text: minimum, tail: true});
+			tree.push({text: minimum, type: 'text', tail: true});
 		} else {
-			tree.push({text: output, tail: true});
+			tree.push({text: output, type: 'text', tail: true});
 		}
 	}
 };

@@ -12,8 +12,11 @@ exports.name = "html";
 exports.uglify = function() {
 	var startOfBody = this.parser.startOfBody;
 	this.parser.startOfBody = false;
-	var tag = this.parse()[0];
-	if (htmlModifiers[tag.tag]) {
+	var tag = this.parse()[0],
+		oldTag;
+	while (oldTag !== tag.tag && htmlModifiers[tag.tag]) {
+		// We keep running these htmlModifiers until the tag stops changing
+		oldTag = tag.tag;
 		// Before we get started,  we give a chance for all
 		// the custom rules to make modifications to it.
 		htmlModifiers[tag.tag](tag, this.parser);
@@ -61,7 +64,7 @@ exports.uglify = function() {
 				this.parser.pos = this.parser.sourceLength;
 			}
 		} else if (utils.newlineAt(this.parser.source, tag.end)
-		&& (startOfBlock(this.parser.source, tag.start) || startOfBody)) {
+		&& startOfBlock(this.parser.source, tag.start, startOfBody)) {
 			// Let's eat that newline
 			this.parser.pos+=utils.newlineAt(this.parser.source, this.parser.pos);
 			if (!this.parser.configTrimWhiteSpace) {
@@ -90,12 +93,17 @@ exports.uglify = function() {
 		}
 		// Funny thing about widgets is that block eval starts right after
 		// them. No newlines needed.
-		if (startOfBlock(this.parser.source, tag.start) && tag.isBlock) {
+		if (startOfBlock(this.parser.source, tag.start, startOfBody)
+		&& tag.isBlock) {
 			this.parser.skipWhitespace();
 		}
+		// We record the start of the tag in the tail so that enclosing
+		// widgets can match this tail with the correct head.
+		tail.start = tag.start;
 		tree = tree.concat(tag.children, tail);
 	}
 	tree[0].text = tagParts.join('');
+	tree[0].tag = tag;
 	return tree;
 };
 
@@ -133,8 +141,8 @@ function bestQuoteFor(attr, parser) {
 	return '"""' + string + '"""';
 };
 
-function startOfBlock(source, pos) {
-	if (pos === 0 ) {
+function startOfBlock(source, pos, startOfBody) {
+	if (startOfBody || pos === 0 ) {
 		return true; //start of stream
 	}
 	if (source[pos-1] !== "\n") {
