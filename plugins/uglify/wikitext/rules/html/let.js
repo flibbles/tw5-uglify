@@ -11,33 +11,23 @@ exports["$let"] = function(tag, parser) {
 	if (children.length > 0) {
 		var firstIndex = 0,
 			lastIndex = children.length-1,
-			nonSpaceBetween = false;
+			startTagGap = "",
+			endTagGap = "";
 		// We can back up from
 		while (firstIndex < children.length && children[firstIndex].type == 'text') {
-			var text = children[firstIndex].text;
-			// Track if there's non whitespace between the tags
-			nonSpaceBetween = nonSpaceBetween || !/^\s+$/.test(text);
-			if (parser.containsPlaceholder(text)) {
-				// Oops. Placeholders present. Don't touch.
-				return;
-			}
+			startTagGap = startTagGap + children[firstIndex].text;
 			firstIndex++;
 		}
 		while(lastIndex >= 0 && children[lastIndex].type == 'text') {
-			var text = children[lastIndex].text;
-			nonSpaceBetween = nonSpaceBetween || ~/^\s+$/.test(text);
-			if (parser.containsPlaceholder(text)) {
-				// Oops. Placeholders present. Don't touch.
-				return;
-			}
+			endTagGap = children[lastIndex].text + endTagGap;
 			lastIndex--;
 		}
 		var first = children[firstIndex],
 			last = children[lastIndex];
 		if (first && first.tag && first.tag.tag == "$let"
 		&& last.text == "</$let>"
-		&& canFold(tag.isBlock, first.tag.isBlock, nonSpaceBetween)
-		&& last.start == first.tag.start) {
+		&& last.start == first.tag.start // Ensure open and close tags match
+		&& canFold(tag.isBlock, first.tag.isBlock, startTagGap, endTagGap, children[firstIndex+1], parser)) {
 			tag.orderedAttributes.push.apply(tag.orderedAttributes, first.tag.orderedAttributes);
 			// Remove that inner closing tag
 			children.splice(lastIndex, 1);
@@ -54,12 +44,33 @@ exports["$let"] = function(tag, parser) {
 	};
 };
 
-function canFold(outerIsBlock, innerIsBlock, nonWhitespaceBetween) {
-	if (outerIsBlock) {
-		return !nonWhitespaceBetween || innerIsBlock;
-	} else {
-		return !innerIsBlock;
+function containsNoPlaceholders(childNode, parser) {
+	return childNode.type !== 'text'
+		|| !parser.containsPlaceholder(childNode.text);
+};
+
+function canFold(outerIsBlock, innerIsBlock, startTagGap, endTagGap, innerNode, parser) {
+	if (parser.containsPlaceholder(startTagGap)
+	|| parser.containsPlaceholder(endTagGap)) {
+		// Merging $lets will move placeholders around. No good.
+		return false;
 	}
+	var regexp = /\S/,
+		anyNonSpaces = regexp.test(startTagGap) || regexp.test(endTagGap);
+	if (outerIsBlock) {
+		if (anyNonSpaces && !innerIsBlock) {
+			return false;
+		}
+	} else if (innerIsBlock) {
+		return false;
+	}
+	if (innerNode.type == 'text' && parser.containsPlaceholder(innerNode.text)) {
+		// There's a placeholder just inside the inner $let. Be careful.
+		if (!outerIsBlock || anyNonSpaces) {
+			return false;
+		}
+	}
+	return true;
 };
 
 function removalWillCauseBlock(children, index) {

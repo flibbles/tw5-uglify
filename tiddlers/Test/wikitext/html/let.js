@@ -183,4 +183,25 @@ ifLetIt('does not fold if placeholders are present', function() {
 	     '\\define M(a)\n'+t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>$a$\n\n\n\\end\n<<M "'+d+'">>');
 });
 
+ifLetIt('manages placeholders inside inner let', function() {
+	// Simple test
+	test('\\define M(a)<$let x=X><$let y=Y>$a$</$let></$let>\n<<M "<$reveal/>">>',
+	     '\\define M(a)<$let x=X><$let y=Y>$a$</$let>\n<<M "<$reveal/>">>');
+	// Inline inside inline with newlines between
+	test('\\define M(a)\n<$let x=X>\n<$let y=Y>$a$</$let>\n</$let>\n\\end\n<<M "<$reveal/>">>',
+	     '\\define M(a)\n<$let x=X>\n<$let y=Y>$a$</$let>\n\n\\end\n<<M "<$reveal/>">>');
+	test('\\define M(a)\n<$let x=X>\n<$let y=Y>$a$</$let>\n</$let>\n\\end\n<<M "\n\n<$reveal/>\n\n">>',
+	     '\\define M(a)\n<$let x=X>\n<$let y=Y>$a$</$let>\n\n\\end\n<<M "\n\n<$reveal/>\n\n">>');
+	test('\\define M(a)\n'+t+'<$let x=X>\n<$let y=Y>$a$</$let>\n</$let>\n\\end\n<<M "\n\n<$reveal/>\n\n">>',
+	     '\\define M(a)\n'+t+'<$let x=X><$let y=Y>$a$</$let>\n\\end\n<<M "\n\n<$reveal/>\n\n">>');
+	// Inline inside block (but placeholder can make it block inside block)
+	test('\\define M(a)\n<$let x=X>\n\n<$let y=Y>$a$</$let></$let>\n\\end\n<<M "<$reveal/>">>',
+	     '\\define M(a)<$let x=X y=Y>$a$</$let>\n<<M "<$reveal/>">>');
+	test('\\define M(a)\n<$let x=X>\n\n<$let y=Y>$a$</$let></$let>\n\\end\n<<M "\n\n<$reveal/>\n\n">>',
+	     '\\define M(a)<$let x=X y=Y>$a$</$let>\n<<M "\n\n<$reveal/>\n\n">>');
+	//Inline inside inline but at the end of inner text
+	test('\\define M(a)\n<$let x=X>\n<$let y=Y><$text text=d/>\n\n$a$</$let>\n</$let>\n\\end\n<<M "<$reveal/>">>',
+	     '\\define M(a)\n<$let x=X y=Y>\n<$text text=d/>\n\n$a$\n\n\\end\n<<M "<$reveal/>">>');
+});
+
 });});});
