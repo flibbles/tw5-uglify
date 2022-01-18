@@ -40,17 +40,6 @@ function collectRules() {
 }
 
 function WikiWalker(type, text, options) {
-	if (!this.uglifyMethodsInjected) {
-		var rules = collectRules();
-		$tw.utils.each([this.pragmaRuleClasses, this.blockRuleClasses, this.inlineRuleClasses], function(classList) {
-			for (var name in classList) {
-				if (rules[name]) {
-					delete rules[name].name;
-					$tw.utils.extend(classList[name].prototype, rules[name]); }
-			}
-		});
-		WikiWalker.prototype.uglifyMethodsInjected = true;
-	}
 	if (text.indexOf("'") >= 0) {
 		this.apostrophesAllowed = true;
 	}
@@ -65,10 +54,32 @@ function WikiWalker(type, text, options) {
 
 WikiWalker.prototype = Object.create(WikiParser.prototype);
 
+WikiWalker.prototype.setupUglifyRules = function() {
+	if (!this.uglifyMethodsInjected) {
+		var rules = collectRules();
+		$tw.utils.each([this.pragmaRuleClasses, this.blockRuleClasses, this.inlineRuleClasses], function(classList) {
+			for (var name in classList) {
+				if (rules[name]) {
+					delete rules[name].name;
+					$tw.utils.extend(classList[name].prototype, rules[name]); }
+			}
+		});
+		WikiWalker.prototype.uglifyMethodsInjected = true;
+	}
+};
+
 WikiWalker.prototype.parsePragmas = function() {
 	var strings = this.tree;
 	var pragmaFound = false;
 	var whitespace;
+	// The reason we set up rules here instead of in the constructor where it
+	// would make sense: We have to set up uglify rules AFTER the WikiParser
+	// constructor finishes setting up ITS rules, but BEFORE it starts
+	// doing any parsing.
+	// This ugliness would go away if the WikiParser broke its rule setup
+	// into its own method, or... you know... DIDN'T DO ITS ENTIRE JOB IN
+	// ITS OWN CONSTRUCTOR.
+	this.setupUglifyRules();
 	while (true) {
 		if (this.pos > 0 && this.source[this.pos-1] !== "\n") {
 			// Some pragma aren't good about eating to the end of their line.
