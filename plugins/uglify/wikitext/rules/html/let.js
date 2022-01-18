@@ -8,7 +8,7 @@ var utils = require("../../utils.js");
 
 exports["$let"] = function(tag, parser) {
 	var children = tag.children;
-	if (children.length > 0) {
+	if (children && children.length > 0) {
 		var firstIndex = 0,
 			lastIndex = children.length-1,
 			startTagGap = "",

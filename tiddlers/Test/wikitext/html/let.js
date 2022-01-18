@@ -27,6 +27,11 @@ ifLetIt('can fold converted let together', function() {
 	     '<$let x=X y=Y>'+d);
 });
 
+it('is not thrown by self-contained let', function() {
+	// TODO: Make $let eliminate itself if it's self-closing
+	test('<$let x=X><$let y=Y/></$let>', '<$let x=X><$let y=Y/>');
+});
+
 ifLetIt('folds simple inline together', function() {
 	test('<$let x=X><$let y=Y z="Z">'+d+'</$let></$let>X',
 	     '<$let x=X y=Y z=Z>'+d+'</$let>X');
