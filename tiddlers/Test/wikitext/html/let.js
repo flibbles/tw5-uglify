@@ -74,6 +74,21 @@ ifLetIt("inline string inside other widgets", function() {
 	       '<div>\n<$let x=X y=Y>\n<!---->\n'+d+'\n');
 	test(t+'<div>\n<$let x=X>\n<$let y=Y>\n'+d+'\n</$let></$let></div>',
 	       '<div><$let x=X y=Y>'+d);
+	// Closing tags on individual lines
+	test(  '<div>\n<$let x=X>\n<$let y=Y>\n<$reveal/>\n</$let>\n</$let>\n</div>',
+	       '<div>\n<$let x=X y=Y>\n<!---->\n<$reveal/>\n\n</$let>\n');
+	test(t+'<div>\n<$let x=X>\n<$let y=Y>\n'+d+'\n</$let>\n</$let>\n</div>',
+	       '<div><$let x=X y=Y>'+d);
+	// Double outside <div>
+	test(  '<div>\n<div>\n<$let x=X>\n<$let y=Y>\n<$reveal/>\n</$let>\n</$let>\n</div>\n</div>',
+	       '<div>\n<div>\n<$let x=X y=Y>\n<!---->\n<$reveal/>\n\n</$let>\n</div>\n');
+	test(t+'<div>\n<div>\n<$let x=X>\n<$let y=Y>\n'+d+'\n</$let>\n</$let>\n</div>\n</div>',
+	       '<div><div><$let x=X y=Y>'+d);
+	// Trailing text prevents tail cutting
+	test(  '<div>\n<$let x=X>\n<$let y=Y>\n<$reveal/>\n</$let>\n</$let>\n</div>X',
+	       '<div>\n<$let x=X y=Y>\n<!---->\n<$reveal/>\n\n</$let>\n</div>X');
+	test(t+'<div>\n<$let x=X>\n<$let y=Y>\n<$reveal/>\n</$let>\n</$let>\n</div>X',
+	       '<div><$let x=X y=Y><$reveal/></$let></div>X');
 });
 
 ifLetIt("folds inline inside block", function() {
@@ -146,9 +161,9 @@ ifLetIt('no fold if text between closing tags', function() {
 	// TODO: We can support these. It just has to do the same thing that the
 	//       test above is doing with text between opening tags.
 	test(  '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
-	       '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>Text');
+	       '<$let x=X y=Y>\n\n<$reveal/>\n\nText');
 	test(t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
-	       '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>Text');
+	       '<$let x=X y=Y>\n\n<$reveal/>\n\nText');
 	// inline inside block
 	test(  '<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText</$let>',
 	       '<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText');
