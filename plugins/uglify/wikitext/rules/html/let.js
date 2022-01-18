@@ -14,12 +14,22 @@ exports["$let"] = function(tag, parser) {
 			nonSpaceBetween = false;
 		// We can back up from
 		while (firstIndex < children.length && children[firstIndex].type == 'text') {
+			var text = children[firstIndex].text;
 			// Track if there's non whitespace between the tags
-			nonSpaceBetween = nonSpaceBetween || !/^\s+$/.test(children[firstIndex].text);
+			nonSpaceBetween = nonSpaceBetween || !/^\s+$/.test(text);
+			if (parser.containsPlaceholder(text)) {
+				// Oops. Placeholders present. Don't touch.
+				return;
+			}
 			firstIndex++;
 		}
 		while(lastIndex >= 0 && children[lastIndex].type == 'text') {
-			nonSpaceBetween = nonSpaceBetween || ~/^\s+$/.test(children[lastIndex].text);
+			var text = children[lastIndex].text;
+			nonSpaceBetween = nonSpaceBetween || ~/^\s+$/.test(text);
+			if (parser.containsPlaceholder(text)) {
+				// Oops. Placeholders present. Don't touch.
+				return;
+			}
 			lastIndex--;
 		}
 		var first = children[firstIndex],

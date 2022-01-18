@@ -158,8 +158,6 @@ ifLetIt('no fold if text between opening tags', function() {
 });
 
 ifLetIt('no fold if text between closing tags', function() {
-	// TODO: We can support these. It just has to do the same thing that the
-	//       test above is doing with text between opening tags.
 	test(  '<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
 	       '<$let x=X y=Y>\n\n<$reveal/>\n\nText');
 	test(t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\nText</$let>',
@@ -169,6 +167,20 @@ ifLetIt('no fold if text between closing tags', function() {
 	       '<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText');
 	test(t+'<$let x=X>\n\n<$let y=Y>\n<$reveal/>\n</$let>\n\nText</$let>',
 	       '<$let x=X>\n\n<$let y=Y><$reveal/></$let>\n\nText');
+});
+
+ifLetIt('does not fold if placeholders are present', function() {
+	test('\\define M(a)<$let x=X>$a$<$let y=Y><$reveal/></$let></$let>\n<<M "'+d+'">>',
+	     '\\define M(a)<$let x=X>$a$<$let y=Y><$reveal/>\n<<M "'+d+'">>');
+	test('\\define M(a)\n<$let x=X>\n\n$a$\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let></$let>\n\\end\n<<M "'+d+'">>',
+	     '\\define M(a)\n<$let x=X>\n\n$a$\n\n<$let y=Y>\n\n<$reveal/>\n\n\\end\n<<M "'+d+'">>');
+	// placeholder between end tags
+	test('\\define M(a) <$let x=X><$let y=Y><$reveal/></$let>$a$</$let>\n<<M "'+d+'">>',
+	     '\\define M(a)<$let x=X><$let y=Y><$reveal/></$let>$a$</$let>\n<<M "'+d+'">>');
+	test('\\define M(a)\n<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\n$a$\n\n</$let>\n\\end\n<<M "'+d+'">>',
+	     '\\define M(a)\n<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>$a$\n\n\n\\end\n<<M "'+d+'">>');
+	test('\\define M(a)\n'+t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>\n\n$a$\n\n</$let>\n\\end\n<<M "'+d+'">>',
+	     '\\define M(a)\n'+t+'<$let x=X>\n\n<$let y=Y>\n\n<$reveal/>\n\n</$let>$a$\n\n\n\\end\n<<M "'+d+'">>');
 });
 
 });});});
