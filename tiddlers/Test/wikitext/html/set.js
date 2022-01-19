@@ -15,24 +15,26 @@ const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const test = $tw.utils.test.wikitext.test;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 const dump = "<$text text={{{[variables[]join[,]]}}}/>";
+const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
+const close = parseUtils.letAvailable() ? "</$let>" : "</$vars>";
 
-ifLetIt('value types', function() {
-	test('<$set name="v" value="var">'+dump, '<$let v=var>'+dump);
-	test('<$set name="v" value={{!!title}}>'+dump, '<$let v={{!!title}}>'+dump);
+it('value types', function() {
+	test('<$set name="v" value="var">'+dump, vars+' v=var>'+dump);
+	test('<$set name="v" value={{!!title}}>'+dump, vars+' v={{!!title}}>'+dump);
 	test('<$set name="v" value={{{ [[title]] }}}>'+dump,
-		'<$let v={{{[[title]]}}}>'+dump);
+		vars+' v={{{[[title]]}}}>'+dump);
 	test('\\define mac()stuff\n<$set name="v" value=<<mac>>>'+dump,
-		'\\define mac()stuff\n<$let v=<<mac>>>'+dump);
+		'\\define mac()stuff\n'+vars+' v=<<mac>>>'+dump);
 	test('<$set name="v" value=<<currentTiddler>>>'+dump,
-		'<$let v=<<currentTiddler>>>'+dump);
+		vars+' v=<<currentTiddler>>>'+dump);
 	// arguments can be switched around
-	test('<$set value="var" name="v">'+dump, '<$let v=var>'+dump);
+	test('<$set value="var" name="v">'+dump, vars+' v=var>'+dump);
 	// Make sure the closing tag is different too.
 	test('<$set name="v" value="va">'+dump+'</$set>X',
-		'<$let v=va>'+dump+'</$let>X');
+		vars+' v=va>'+dump+close+'X');
 });
 
-ifLetIt('other attributes prevent', function() {
+it('other attributes prevent', function() {
 	// Technically, we could actually do something with this, but
 	// it's too complicated for me to bother with right now.
 	// and with too little returns.
@@ -40,14 +42,14 @@ ifLetIt('other attributes prevent', function() {
 		'<$set name=v value=var emptyValue=empty>'+dump);
 });
 
-ifLetIt('placeholders in value', function() {
+it('placeholders in value', function() {
 	test('\\define m(a)<$set name="v" value="""$a$""">'+dump+'\n<<m B>>',
-		'\\define m(a)<$let v="""$a$""">'+dump+'\n<<m B>>');
+		'\\define m(a)'+vars+' v="""$a$""">'+dump+'\n<<m B>>');
 	test('\\define m(a)<$set name="v" value="$a$">'+dump+'\n<<m B>>',
-		'\\define m(a)<$let v="$a$">'+dump+'\n<<m B>>');
+		'\\define m(a)'+vars+' v="$a$">'+dump+'\n<<m B>>');
 });
 
-ifLetIt('legal names', function() {
+it('legal names', function() {
 	// illegal
 	test('<$set  name="" value=v>'+dump, '<$set name="" value=v>'+dump);
 	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s" value=v>'+dump);
@@ -57,7 +59,7 @@ ifLetIt('legal names', function() {
 	test("<$set  name='q\"t' value=v>"+dump, "<$set name='q\"t' value=v>"+dump);
 	test('<$set  name="a\'p" value=v>'+dump, '<$set name="a\'p" value=v>'+dump);
 	// legal
-	test('<$set  name="\\()$@:#!" value=v>'+dump, '<$let \\()$@:#!=v>'+dump);
+	test('<$set  name="\\()$@:#!" value=v>'+dump, vars+' \\()$@:#!=v>'+dump);
 });
 
 it('goes to $vars if $let is not available', function() {

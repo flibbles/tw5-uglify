@@ -26,7 +26,7 @@ exports.uglify = function() {
 	var parser = this.parser;
 	var tree = [{}];
 	$tw.utils.each(attributes, function(attr) {
-		tagParts.push(" ", attr.newName || attr.name);
+		tagParts.push(" ", attr.name);
 		switch(attr.type) {
 		case "string":
 			if (attr.value !== "true") {
@@ -114,7 +114,9 @@ function bestQuoteFor(attr, parser) {
 		// Figure out what the quoting used to be.
 		var text = parser.source,
 			pos = $tw.utils.skipWhiteSpace(text, attr.start);
-		pos += attr.name.length;
+		// There may have been a name change, so we
+		// use an old name if it's present.
+		pos += (attr.oldName || attr.name).length;
 		pos = $tw.utils.skipWhiteSpace(text, pos);
 		pos++; // Skip right over that "="
 		pos = $tw.utils.skipWhiteSpace(text, pos);
