@@ -11,7 +11,7 @@ exports.name = "macrocallinline";
 exports.uglify = function() {
 	var start = this.parser.pos;
 	var call = this.parse()[0];
-	var node = {text: utils.stringifyMacro(call, this.parser)};
+	var node = {text: "<<"+utils.stringifyMacro(call, this.parser)+">>"};
 	if (this.parser.pos !== "\n"
 	&& (startOfBlock(this.parser.source, start) || this.parser.startOfBody)) {
 		node.cannotBeAtEnd = true;

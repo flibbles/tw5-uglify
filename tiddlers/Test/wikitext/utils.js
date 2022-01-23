@@ -21,18 +21,24 @@ exports.test = function(text, expected, options) {
 	if (expected) {
 		expect(out).toBe(expected);
 	}
-	var options = options || {variables: {currentTiddler: 'test'}};
-	var prettyHtml = $tw.wiki.renderText("text/html", wikitextType, text, options);
-	var uglyHtml = $tw.wiki.renderText("text/html", wikitextType, out, options);
+	var options = options || {};
+	options.variables = {currentTiddler: 'test'};
+	const wiki = options.wiki || $tw.wiki;
+	var prettyHtml = wiki.renderText("text/html", wikitextType, text, options);
+	var uglyHtml = wiki.renderText("text/html", wikitextType, out, options);
 	expect(uglyHtml).toBe(prettyHtml);
 
 	return uglyHtml === prettyHtml;
 };
 
-exports.cmp = function(a, b) {
-	var options = {variables: {currentTiddler: 'test'}};
-	var aHtml = $tw.wiki.renderText("text/html", wikitextType, a, options);
-	var bHtml = $tw.wiki.renderText("text/html", wikitextType, b, options);
+exports.cmp = function(a, b, options) {
+	var options = options || {};
+	options.variables = {currentTiddler: 'test'};
+	const wiki = options.wiki || $tw.wiki;
+	var aHtml = wiki.renderText("text/html", wikitextType, a, options);
+	var bHtml = wiki.renderText("text/html", wikitextType, b, options);
+	console.log(aHtml)
+	console.log(bHtml)
 	expect(aHtml).toBe(bHtml);
 };
 

@@ -2,6 +2,9 @@
 
 Uglify html rule for improving $set whenever possible.
 
+TODO: Make sure when I make the filter uglifying that I have it apply to
+      the cases here.
+
 \*/
 
 var utils = require("../../utils.js");
@@ -26,6 +29,15 @@ exports["$set"] = function(tag, parser) {
 		// quoting in bestQuoteFor.
 		newAttr.oldName = newAttr.name;
 	} else if (argCount == 4 && attrs.filter && attrs.value && attrs.emptyValue) {
+		var value = legalFilterValue(attrs.value, parser),
+			empty = legalFilterValue(attrs.emptyValue, parser),
+			filter = legalFilterRun(attrs.filter, parser);
+		if (value && empty && filter) {
+			newAttr = {
+				type: 'filtered',
+				filter: filter + ' +[then' + value + 'else' + empty+ ']'
+			};
+		}
 	}
 	if (newAttr) {
 		// We've managed some kind of conversion, Let's prep the new
@@ -49,4 +61,42 @@ exports["$set"] = function(tag, parser) {
 
 function isLegalAttrName(value) {
 	return value.length > 0 && value.search(/[\/\s>"'=]/) < 0;
+};
+
+function legalFilterValue(attribute, parser) {
+	switch (attribute.type) {
+		case "string":
+			if (attribute.value.indexOf('}}}') < 0 && attribute.value.indexOf(']') < 0) {
+				return "[" + attribute.value + "]";
+			}
+			break;
+		case "indirect":
+			return "{" + attribute.textReference + "}";
+			break;
+		//case "macro":
+		// There are subtle differences in the way value=<<>> and
+		// varName={{{[<>]}}} work, so for now I'm disabling this
+		// minification.
+	}
+	return null;
+};
+
+function legalFilterRun(attribute, parser) {
+	switch (attribute.type) {
+		case "string":
+			if (attribute.value.indexOf('}}}') < 0 && attribute.value.indexOf(']') < 0) {
+				return attribute.value;
+			}
+			break;
+		case "macro":
+			var parserForFilter = Object.create(parser);
+			parserForFilter.bracketsAllowed = false;
+			var macroString = utils.stringifyMacro(attribute.value, parserForFilter);
+			if (macroString.indexOf('}}}') < 0
+			&& macroString.indexOf('>') < 0) {
+				return "[subfilter<" + macroString + ">]";
+			}
+			break;
+	}
+	return null;
 };

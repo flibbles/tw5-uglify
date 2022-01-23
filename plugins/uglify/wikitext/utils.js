@@ -18,7 +18,7 @@ exports.joinNodeArray = function(array) {
 };
 
 exports.stringifyMacro = function(macro, parser) {
-	var strings = ["<<", macro.name];
+	var strings = [macro.name];
 	$tw.utils.each(macro.params, function(param) {
 		strings.push(" ");
 		if (param.name) {
@@ -30,7 +30,6 @@ exports.stringifyMacro = function(macro, parser) {
 			strings.push(exports.quotifyParam(param.value, parser));
 		}
 	});
-	strings.push(">>");
 	return strings.join("");
 };
 
