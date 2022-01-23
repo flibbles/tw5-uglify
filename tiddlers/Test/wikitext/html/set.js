@@ -78,6 +78,9 @@ it('emptyValue & value to $let', function() {
 	     vars+' v={{{A B +[then[yes]else[no]]}}}>'+dump);
 	test('<$set name=v filter="A -A" value=yes emptyValue=no>'+dump,
 	     vars+' v={{{A -A +[then[yes]else[no]]}}}>'+dump);
+	// The filter string is allowed to have brackets
+	test('<$set name=v filter="[tag[A]]" value=yes emptyValue=no>'+dump,
+	     vars+' v={{{[tag[A]] +[then[yes]else[no]]}}}>'+dump);
 	// If we don't have a "value", we can't do anything. Value is needed
 	// or else we can't set the variable correctly if emptyValue isn't used.
 	test('<$set name=v filter="A [[B C]]"  emptyValue=no>'+dump,
@@ -177,6 +180,17 @@ it('emptyValue & value with bad values', function() {
 	// on "emptyValue".
 	test('<$set name=v filter="A B" value="y}}}es" emptyValue=no>'+dump,
 	     '<$set name=v filter="A B" value=y}}}es emptyValue=no>'+dump);
+});
+
+it('emptyValue & value with placeholders', function() {
+	// If there are any placeholders, the whole thing is too dangerous to
+	// touch
+	test('\\define M(x)<$set name=v filter="$x$" value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>',
+	     '\\define M(x)<$set name=v filter="$x$" value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>');
+	test('\\define M(x)<$set name=v filter="A B" value="$x$" emptyValue=no>'+dump+'\n<<M y}}}es>>',
+	     '\\define M(x)<$set name=v filter="A B" value="$x$" emptyValue=no>'+dump+'\n<<M y}}}es>>');
+	test('\\define M(x)<$set name=v filter="A -A" value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>',
+	     '\\define M(x)<$set name=v filter="A -A" value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>');
 });
 
 });});});

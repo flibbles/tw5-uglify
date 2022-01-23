@@ -64,28 +64,33 @@ function isLegalAttrName(value) {
 };
 
 function legalFilterValue(attribute, parser) {
+	var val;
 	switch (attribute.type) {
 		case "string":
 			if (attribute.value.indexOf('}}}') < 0 && attribute.value.indexOf(']') < 0) {
-				return "[" + attribute.value + "]";
+				val = "[" + attribute.value + "]";
 			}
 			break;
 		case "indirect":
-			return "{" + attribute.textReference + "}";
+			val = "{" + attribute.textReference + "}";
 			break;
 		//case "macro":
 		// There are subtle differences in the way value=<<>> and
 		// varName={{{[<>]}}} work, so for now I'm disabling this
 		// minification.
 	}
+	if (val && !parser.containsPlaceholder(val)) {
+		return val;
+	}
 	return null;
 };
 
 function legalFilterRun(attribute, parser) {
+	var run;
 	switch (attribute.type) {
 		case "string":
-			if (attribute.value.indexOf('}}}') < 0 && attribute.value.indexOf(']') < 0) {
-				return attribute.value;
+			if (attribute.value.indexOf('}}}') < 0) {
+				run = attribute.value;
 			}
 			break;
 		case "macro":
@@ -94,9 +99,12 @@ function legalFilterRun(attribute, parser) {
 			var macroString = utils.stringifyMacro(attribute.value, parserForFilter);
 			if (macroString.indexOf('}}}') < 0
 			&& macroString.indexOf('>') < 0) {
-				return "[subfilter<" + macroString + ">]";
+				run = "[subfilter<" + macroString + ">]";
 			}
 			break;
+	}
+	if (run && !parser.containsPlaceholder(run)) {
+		return run;
 	}
 	return null;
 };
