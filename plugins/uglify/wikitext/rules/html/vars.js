@@ -6,12 +6,14 @@ Uglify html rule for converting $vars to $let when possible
 
 var utils = require("../../utils.js");
 
-if (utils.letAvailable()) {
-
 exports["$vars"] = function(tag, parser) {
 	var attrs = tag.orderedAttributes,
 		indexOfDependent,
 		currentTiddler = tag.attributes.currentTiddler;
+	if (!utils.letAvailable()) {
+		// We don't do anything if there is no $let to work with.
+		return;
+	}
 	if (attrs === undefined) {
 		// This is a version of TiddlyWiki which doesn't
 		// support ordered attributes. So how would $let
@@ -62,5 +64,3 @@ function independentIndirect(attr, parser, currentTiddler) {
 	}
 	return false;
 };
-
-}

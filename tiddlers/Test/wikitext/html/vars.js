@@ -9,7 +9,7 @@ Tests the wikitext uglifier's ability to convert $vars to $let
 
 describe('wikitext uglifier', function() {
 describe('html', function() {
-fdescribe('$vars', function() {
+describe('$vars', function() {
 
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const test = $tw.utils.test.wikitext.test;

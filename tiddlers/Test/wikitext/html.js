@@ -10,29 +10,31 @@ Tests the wikitext uglifier with html and widgets.
 describe('wikitext uglifier', function() {
 describe('html', function() {
 
+const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const test = $tw.utils.test.wikitext.test;
 const cmp = $tw.utils.test.wikitext.cmp;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 const t = "\\whitespace trim\n";
+const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 
 it('whitespace among attributes', function() {
 	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
-	test('Z<$vars  a="X"  >'+dump, "Z<$vars a=X>"+dump);
-	test('Z<$vars\n\ta  =  "X"\n>'+dump, "Z<$vars a=X>"+dump);
-	test("<$vars  a='X'  >\n\n"+dump, "<$vars a=X>\n\n"+dump);
+	test('Z<$vars  a="X"  >'+dump, "Z"+vars+" a=X>"+dump);
+	test('Z<$vars\n\ta  =  "X"\n>'+dump, "Z"+vars+" a=X>"+dump);
+	test("<$vars  a='X'  >\n\n"+dump, vars+" a=X>\n\n"+dump);
 });
 
 it('string attributes', function() {
 	const dump = "<<dumpvariables>>";
-	test('<$vars a="""X""">'+dump, "<$vars a=X>"+dump);
-	test('<$vars a="""file/path""">'+dump, '<$vars a="file/path">'+dump);
-	test('<$vars a="""bad>char""">'+dump, '<$vars a="bad>char">'+dump);
-	test('<$vars a="""bad=char""">'+dump, '<$vars a="bad=char">'+dump);
-	test('<$vars a="""attr space""">'+dump, '<$vars a="attr space">'+dump);
-	test('Bob\'s<$vars a="""f/p""">'+dump, "Bob's<$vars a='f/p'>"+dump);
-	test('<$vars a="""$love#@<()\\""">'+dump, "<$vars a=$love#@<()\\>"+dump);
+	test('<$vars a="""X""">'+dump, vars+" a=X>"+dump);
+	test('<$vars a="""file/path""">'+dump, vars+' a="file/path">'+dump);
+	test('<$vars a="""bad>char""">'+dump, vars+' a="bad>char">'+dump);
+	test('<$vars a="""bad=char""">'+dump, vars+' a="bad=char">'+dump);
+	test('<$vars a="""attr space""">'+dump, vars+' a="attr space">'+dump);
+	test('Bob\'s<$vars a="""f/p""">'+dump, "Bob's"+vars+" a='f/p'>"+dump);
+	test('<$vars a="""$love#@<()\\""">'+dump, vars+" a=$love#@<()\\>"+dump);
 	// Prefers single quotes to double brackets
-	test('[[Bob\'s]]<$vars a="""f/p""">'+dump, "[[Bob's]]<$vars a='f/p'>"+dump);
+	test('[[Bob\'s]]<$vars a="""f/p""">'+dump, "[[Bob's]]"+vars+" a='f/p'>"+dump);
 	// Quotes in attribute
 	test('<$text text="""f\"p"""/>', '<$text text="""f\"p"""/>');
 	test('Bob\'s<$text text="""f\"p"""/>', "Bob's<$text text='f\"p'/>");
@@ -59,7 +61,6 @@ it('indirect attributes', function() {
 it('macro attributes', function() {
 	const m = "\\define m(val t f)Output:$val$,$t$,$f$\n";
 	test('<$text text=<<m>> />', '<$text text=<<m>>/>');
-	test('<$vars a={{tiddler}} />', '<$vars a={{tiddler}}/>');
 	test(m+'<$text text=<<m   >> />', m+'<$text text=<<m>>/>');
 	test(m+'<$text text=<<m val:t >> />', m+'<$text text=<<m val:t>>/>');
 });
@@ -74,16 +75,16 @@ it('valueless attributes', function() {
 });
 
 it('contents', function() {
-	test("B<$vars  a='X'  >In</$vars>A", "B<$vars a=X>In</$vars>A");
-	test("<$vars  a='X'  >\n\nIn</$vars>", "<$vars a=X>\n\nIn");
-	test("<$vars  a='X'  >\n\nIn</$vars>\n", "<$vars a=X>\n\nIn");
+	test("B<$let  a='X'  >In</$let>A", "B<$let a=X>In</$let>A");
+	test("<$let  a='X'  >\n\nIn</$let>", "<$let a=X>\n\nIn");
+	test("<$let  a='X'  >\n\nIn</$let>\n", "<$let a=X>\n\nIn");
 	test("<div>\n\n!aardvark\n\n</div>", "<div>\n\n!aardvark");
-	test("<$vars>\n\n\nIn</$vars>\n", "<$vars>\n\nIn");
-	test("<$vars>\n\nIn</$vars>\n\n", "<$vars>\n\nIn");
-	test("<$vars>\n\nIn</$vars>\nA", "<$vars>\n\nIn</$vars>A");
-	test("B<$vars  a='X'  />After", "B<$vars a=X/>After");
-	test("B\n\n<$vars  a='X'  />\n\nAfter", "B\n\n<$vars a=X/>\n\nAfter");
-	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
+	test("<$reveal>\n\n\nIn</$reveal>\n", "<$reveal>\n\nIn");
+	test("<$reveal>\n\nIn</$reveal>\n\n", "<$reveal>\n\nIn");
+	test("<$reveal>\n\nIn</$reveal>\nA", "<$reveal>\n\nIn</$reveal>A");
+	test("B<$text  text='X'  />After", "B<$text text=X/>After");
+	test("B\n\n<$text  text='X'  />\n\nAfter", "B\n\n<$text text=X/>\n\nAfter");
+	test("B\n\n\n<$text  text='X'  />\n\n\nA", "B\n\n<$text text=X/>\n\n\nA");
 });
 
 it('no contents', function() {
@@ -121,7 +122,7 @@ it('purges unnecessary closing tags', function() {
 	test("<div><span>Content</div>", "<div><span>Content</div>");
 	// many trailing newline characters
 	test("B\n\n<$reveal/>\n\n\n\nAfter", "B\n\n<$reveal/>\n\n\n\nAfter");
-	test("B\n\n\n<$vars  a='X'  />\n\n\nA", "B\n\n<$vars a=X/>\n\n\nA");
+	test("B\n\n\n<$text  text='X'  />\n\n\nA", "B\n\n<$text text=X/>\n\n\nA");
 });
 
 it('inline widgets with a newline after them', function() {
