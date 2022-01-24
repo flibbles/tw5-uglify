@@ -101,3 +101,56 @@ function getOriginalQuoting(param, parser) {
 	return string;
 };
 
+exports.bestQuoteForAttribute = function(attr, parser) {
+	var string = attr.value;
+	if (parser.containsPlaceholder(string)) {
+		// This string contains a placeholder. We can't change the quoting
+		// Figure out what the quoting used to be.
+		var text = parser.source,
+			pos = $tw.utils.skipWhiteSpace(text, attr.start);
+		// There may have been a name change, so we
+		// use an old name if it's present.
+		pos += (attr.oldName || attr.name).length;
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos++; // Skip right over that "="
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		if (text.substr(pos,3) === '"""') {
+			return '"""' + string + '"""';
+		}
+		if (text[pos] === '"') {
+			return '"' + string + '"';
+		}
+		if (text[pos] === "'") {
+			return "'" + string + "'";
+		}
+		return string;
+	}
+	if (string.search(/[\/\s>"'=]/) < 0 && string.length > 0) {
+		return string;
+	}
+	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {
+		return "'" + string + "'";
+	}
+	if (string.indexOf('"') < 0) {
+		return '"' + string + '"';
+	}
+	return '"""' + string + '"""';
+};
+
+// This optimization puts an attribute that does not need quotes at the end
+// That way we don't have to put a space after it.
+// This optimization will save exactly 1 byte. Fuck yeah...
+exports.optimizeAttributeOrdering = function(orderedAttrs, parser) {
+	if (orderedAttrs) {
+		for (var i = orderedAttrs.length-1; i >= 0; i--) {
+			var attr = orderedAttrs[i];
+			if (attr.type === "string"
+			&& exports.bestQuoteForAttribute(attr, parser) === attr.value) {
+				// Fuck yeah. Save that byte.
+				orderedAttrs.splice(i, 1);
+				orderedAttrs.push(attr);
+				break;
+			}
+		}
+	}
+}

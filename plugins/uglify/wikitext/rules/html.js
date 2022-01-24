@@ -30,7 +30,7 @@ exports.uglify = function() {
 		switch(attr.type) {
 		case "string":
 			if (attr.value !== "true") {
-				tagParts.push("=", bestQuoteFor(attr, parser));
+				tagParts.push("=", utils.bestQuoteForAttribute(attr, parser));
 			}
 			break;
 		case "indirect":
@@ -105,42 +105,6 @@ exports.uglify = function() {
 	tree[0].text = tagParts.join('');
 	tree[0].tag = tag;
 	return tree;
-};
-
-function bestQuoteFor(attr, parser) {
-	var string = attr.value;
-	if (parser.containsPlaceholder(string)) {
-		// This string contains a placeholder. We can't change the quoting
-		// Figure out what the quoting used to be.
-		var text = parser.source,
-			pos = $tw.utils.skipWhiteSpace(text, attr.start);
-		// There may have been a name change, so we
-		// use an old name if it's present.
-		pos += (attr.oldName || attr.name).length;
-		pos = $tw.utils.skipWhiteSpace(text, pos);
-		pos++; // Skip right over that "="
-		pos = $tw.utils.skipWhiteSpace(text, pos);
-		if (text.substr(pos,3) === '"""') {
-			return '"""' + string + '"""';
-		}
-		if (text[pos] === '"') {
-			return '"' + string + '"';
-		}
-		if (text[pos] === "'") {
-			return "'" + string + "'";
-		}
-		return string;
-	}
-	if (string.search(/[\/\s>"'=]/) < 0 && string.length > 0) {
-		return string;
-	}
-	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {
-		return "'" + string + "'";
-	}
-	if (string.indexOf('"') < 0) {
-		return '"' + string + '"';
-	}
-	return '"""' + string + '"""';
 };
 
 function startOfBlock(source, pos, startOfBody) {
