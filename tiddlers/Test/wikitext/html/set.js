@@ -97,10 +97,10 @@ it('emptyValue & value with macrocalls', function() {
 	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>] +[then[yes]else[no]]}}}>'+dump);
 	// No other arguments benefit if they are macros
 	test('\\define m(b)test $b$\n<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A -A"value=yes emptyValue=<<m no>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A -A"emptyValue=<<m no>>value=yes>'+dump);
 	// even when the macro is not defined, it should still convert
 	test('<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
-	     '<$set name=v filter="A -A"value=yes emptyValue=<<m no>>>'+dump);
+	     '<$set name=v filter="A -A"emptyValue=<<m no>>value=yes>'+dump);
 	// This does not get converted because "value" macro values can have
 	// slightly different behavior than as a combined :and filter.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=<<m  yes>> emptyValue=no>'+dump,
@@ -143,7 +143,7 @@ it('emptyValue & value with filtered attributes', function() {
 	test('<$set name=v filter="A B" value={{{ yes }}} emptyValue=no>'+dump,
 	     '<$set name=v filter="A B"value={{{yes}}}emptyValue=no>'+dump);
 	test('<$set name=v filter="A B" value=yes emptyValue={{{ no }}}>'+dump,
-	     '<$set name=v filter="A B"value=yes emptyValue={{{no}}}>'+dump);
+	     '<$set name=v filter="A B"emptyValue={{{no}}}value=yes>'+dump);
 });
 
 it('emptyValue & value and quotation in macro arguments ', function() {
@@ -151,15 +151,15 @@ it('emptyValue & value and quotation in macro arguments ', function() {
 	// to use [[brackets]] rather than "quotes", but that
 	// can't be done for macros inside filters.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m [[n o]]>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n o]]>>value=yes>'+dump);
 	// This seems very dangerous, but it's fine.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n]]o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m n]]o>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m n]]o>>value=yes>'+dump);
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n]o}}>'+dump,
 	     vars+' v={{{A -A +[then[yes]else{n]o}]}}}>'+dump);
 	// The macro attribute gets parsed differently. Not allowed, even in quotes
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m  "n>o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m [[n>o]]>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n>o]]>>value=yes>'+dump);
 });
 
 it('emptyValue & value with bad values', function() {
@@ -189,8 +189,8 @@ it('emptyValue & value with placeholders', function() {
 	     '\\define M(x)<$set name=v filter="$x$"value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>');
 	test('\\define M(x)<$set name=v filter="A B"value="$x$"emptyValue=no>'+dump+'\n<<M y}}}es>>',
 	     '\\define M(x)<$set name=v filter="A B"value="$x$"emptyValue=no>'+dump+'\n<<M y}}}es>>');
-	test('\\define M(x)<$set name=v filter="A -A"value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>',
-	     '\\define M(x)<$set name=v filter="A -A"value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>');
+	test('\\define M(x)<$set name=v filter="A -A"emptyValue="$x$"value=yes>'+dump+'\n<<M n}}}o>>',
+	     '\\define M(x)<$set name=v filter="A -A"emptyValue="$x$"value=yes>'+dump+'\n<<M n}}}o>>');
 });
 
 });});});

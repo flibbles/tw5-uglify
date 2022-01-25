@@ -76,6 +76,11 @@ it('valueless attributes', function() {
 	test("<$text text = 'true' />", "<$text text/>");
 	// The proper amount of space is put between the items.
 	test("<$let a=true b=true>"+d, "<$let a b>"+d);
+	test("<$let a=true b=true>"+d, "<$let a b>"+d);
+	test("<div id='this id' class=true>"+d, "<div id='this id'class>"+d);
+	test("<div class=true id='this id'>"+d, "<div id='this id'class>"+d);
+	test("<div id='this' class=true>"+d, "<div id=this class>"+d);
+	test("<div class=true id='this'>"+d, "<div class id=this>"+d);
 });
 
 it('contents', function() {

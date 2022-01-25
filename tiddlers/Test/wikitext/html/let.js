@@ -18,6 +18,10 @@ const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 const t = "\\whitespace trim\n";
 const d = "<$text text={{{[variables[]join[,]]}}}/>"; //d for dump
 
+ifLetIt('does not reorder its attributes', function() {
+	test('<$let x=blah  y=<<x>>>'+d, '<$let x=blah y=<<x>>>'+d);
+});
+
 ifLetIt('can fold converted let together', function() {
 	test('<$set name=x value=X><$let y=Y>'+d+'</$let></$set>',
 	     '<$let x=X y=Y>'+d);

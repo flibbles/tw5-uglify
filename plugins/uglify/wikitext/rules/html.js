@@ -22,6 +22,11 @@ exports.uglify = function() {
 		htmlModifiers[tag.tag](tag, this.parser);
 	}
 	var tagParts = ["<", tag.tag];
+	if (tag.tag[0] !== "$" || optimizeAttrWhitelist[tag.type]) {
+		// It it's a whitelisted widget or an html element, we can move
+		// the attributes around to optimize packing.
+		utils.optimizeAttributeOrdering(tag.orderedAttributes, this.parser);
+	}
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
 	var tree = [{}];
@@ -128,4 +133,68 @@ function startOfBlock(source, pos, startOfBody) {
 	// Ensure previous line is blank
 	return (source[pos-2] === "\n"
 		|| (source[pos-2] === "\r" && source[pos-3] === "\n"));
+};
+
+// These are the widgets which are okay to shuffle the attributes around for.
+var optimizeAttrWhitelist = {
+"action-createtiddler": true,
+"action-deletefield": true,
+"action-deletetiddler": true,
+"action-listops": true,
+"action-log": true,
+"action-navigate": true,
+"action-popup": true,
+"action-sendmessage": true,
+"action-setfield": true,
+"action-setmultiplefields": true,
+browse: true,
+button: true,
+checkbox: true,
+codeblock: true,
+count: true,
+"diff-text": true,
+draggable: true,
+droppable: true,
+dropzone: true,
+edit: true,
+"edit-binary": true,
+"edit-bitmap": true,
+"edit-shortcut": true,
+"edit-text": true,
+element: true,
+encrypt: true,
+entity: true,
+eventcatcher: true,
+fieldmangler: true,
+fields: true,
+image: true,
+importvariables: true,
+jsontiddler: true,
+keyboard: true,
+link: true,
+linkcatcher: true,
+list: true,
+listitem: true,
+macrocall: true,
+messagecatcher: true,
+navigator: true,
+password: true,
+qualify: true,
+radio: true,
+railroad: true,
+range: true,
+raw: true,
+reveal: true,
+scrollable: true,
+select: true,
+set: true,
+setmultiplevariables: true,
+setvariable: true,
+text: true,
+tiddler: true,
+transclude: true,
+vars: true,
+view: true,
+widget: true,
+wikify: true
 };

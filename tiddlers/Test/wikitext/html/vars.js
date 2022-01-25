@@ -92,7 +92,7 @@ ifLetIt('reorders possibly dependent variables appropriately', function() {
 ifLetIt('skips if more than one dependent variable', function() {
 	const m = "\\define m(W)--$(x)$--$(y)$--$(z)$--$W$--\n";
 	test(m+'<$vars x=<<m 1>> y=<<m 2>> z=A>'+d, m+'<$vars x=<<m 1>>y=<<m 2>>z=A>'+d);
-	test(m+'<$vars z=A x=<<m 1>> y=<<m 2>>>'+d, m+'<$vars z=A x=<<m 1>>y=<<m 2>>>'+d);
+	test(m+'<$vars z=A x=<<m 1>> y=<<m 2>>>'+d, m+'<$vars x=<<m 1>>y=<<m 2>>z=A>'+d);
 });
 
 ifLetIt('optimizes by moving non-quote strings to end', function() {
