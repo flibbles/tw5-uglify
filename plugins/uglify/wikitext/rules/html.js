@@ -25,12 +25,23 @@ exports.uglify = function() {
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
 	var tree = [{}];
+	var needsSpace = true;
 	$tw.utils.each(attributes, function(attr) {
-		tagParts.push(" ", attr.name);
+		if (needsSpace) {
+			tagParts.push(" ");
+			needsSpace = false;
+		}
+		tagParts.push(attr.name);
 		switch(attr.type) {
 		case "string":
 			if (attr.value !== "true") {
-				tagParts.push("=", utils.bestQuoteForAttribute(attr, parser));
+				var value = utils.bestQuoteForAttribute(attr, parser);
+				if (value === attr.value) {
+					needsSpace = true;
+				}
+				tagParts.push("=", value);
+			} else {
+				needsSpace = true;
 			}
 			break;
 		case "indirect":

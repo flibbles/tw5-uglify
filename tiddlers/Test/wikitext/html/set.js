@@ -54,13 +54,13 @@ it('placeholders in value', function() {
 
 it('legal names', function() {
 	// illegal
-	test('<$set  name="" value=v>'+dump, '<$set name="" value=v>'+dump);
-	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s" value=v>'+dump);
-	test('<$set  name="s p" value=v>'+dump, '<$set name="s p" value=v>'+dump);
-	test('<$set  name="g>t" value=v>'+dump, '<$set name="g>t" value=v>'+dump);
-	test('<$set  name="e=q" value=v>'+dump, '<$set name="e=q" value=v>'+dump);
-	test("<$set  name='q\"t' value=v>"+dump, "<$set name='q\"t' value=v>"+dump);
-	test('<$set  name="a\'p" value=v>'+dump, '<$set name="a\'p" value=v>'+dump);
+	test('<$set  name="" value=v>'+dump, '<$set name=""value=v>'+dump);
+	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s"value=v>'+dump);
+	test('<$set  name="s p" value=v>'+dump, '<$set name="s p"value=v>'+dump);
+	test('<$set  name="g>t" value=v>'+dump, '<$set name="g>t"value=v>'+dump);
+	test('<$set  name="e=q" value=v>'+dump, '<$set name="e=q"value=v>'+dump);
+	test("<$set  name='q\"t' value=v>"+dump, "<$set name='q\"t'value=v>"+dump);
+	test('<$set  name="a\'p" value=v>'+dump, '<$set name="a\'p"value=v>'+dump);
 	// legal
 	test('<$set  name="\\()$@:#!" value=v>'+dump, vars+' \\()$@:#!=v>'+dump);
 });
@@ -84,9 +84,9 @@ it('emptyValue & value to $let', function() {
 	// If we don't have a "value", we can't do anything. Value is needed
 	// or else we can't set the variable correctly if emptyValue isn't used.
 	test('<$set name=v filter="A [[B C]]"  emptyValue=no>'+dump,
-	     '<$set name=v filter="A [[B C]]" emptyValue=no>'+dump);
+	     '<$set name=v filter="A [[B C]]"emptyValue=no>'+dump);
 	test('<$set name=v filter="A -A"  emptyValue=no>'+dump,
-	     '<$set name=v filter="A -A" emptyValue=no>'+dump);
+	     '<$set name=v filter="A -A"emptyValue=no>'+dump);
 });
 
 it('emptyValue & value with macrocalls', function() {
@@ -97,38 +97,38 @@ it('emptyValue & value with macrocalls', function() {
 	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>] +[then[yes]else[no]]}}}>'+dump);
 	// No other arguments benefit if they are macros
 	test('\\define m(b)test $b$\n<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A -A" value=yes emptyValue=<<m no>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A -A"value=yes emptyValue=<<m no>>>'+dump);
 	// even when the macro is not defined, it should still convert
 	test('<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
-	     '<$set name=v filter="A -A" value=yes emptyValue=<<m no>>>'+dump);
+	     '<$set name=v filter="A -A"value=yes emptyValue=<<m no>>>'+dump);
 	// This does not get converted because "value" macro values can have
 	// slightly different behavior than as a combined :and filter.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=<<m  yes>> emptyValue=no>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B" value=<<m yes>> emptyValue=no>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=<<m yes>>emptyValue=no>'+dump);
 	// This test confirms why. The macro is undefined.
 	test('<$set name=v filter="A B" value=<<m  yes>> emptyValue=no>'+dump,
-	     '<$set name=v filter="A B" value=<<m yes>> emptyValue=no>'+dump);
+	     '<$set name=v filter="A B"value=<<m yes>>emptyValue=no>'+dump);
 });
 
 it('emptyValue & value with indirect', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'test', X: 'yes', N: 'no', filtY: 'A -B', filtN: 'A -A'});
 	test('<$set name=v filter={{!!filtY}} value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter={{!!filtY}} value=yes emptyValue=no>'+dump, {wiki: wiki});
+	     '<$set name=v filter={{!!filtY}}value=yes emptyValue=no>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A B" value={{!!Y}} emptyValue={{!!N}}>'+dump,
 	     vars+' v={{{A B +[then{!!Y}else{!!N}]}}}>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A -A" value={{!!Y}} emptyValue={{!!N}}>'+dump,
 	     vars+' v={{{A -A +[then{!!Y}else{!!N}]}}}>'+dump, {wiki: wiki});
 	// missing tiddler
 	test('<$set name=v filter={{M!!filtY}} value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter={{M!!filtY}} value=yes emptyValue=no>'+dump, {wiki: wiki});
+	     '<$set name=v filter={{M!!filtY}}value=yes emptyValue=no>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A B" value={{M!!Y}} emptyValue={{M!!N}}>'+dump,
 	     vars+' v={{{A B +[then{M!!Y}else{M!!N}]}}}>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A -A" value={{M!!Y}} emptyValue={{M!!N}}>'+dump,
 	     vars+' v={{{A -A +[then{M!!Y}else{M!!N}]}}}>'+dump, {wiki: wiki});
 	// missing field
 	test('<$set name=v filter={{!!filtZ}} value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter={{!!filtZ}} value=yes emptyValue=no>'+dump, {wiki: wiki});
+	     '<$set name=v filter={{!!filtZ}}value=yes emptyValue=no>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A B" value={{!!Z}} emptyValue={{!!W}}>'+dump,
 	     vars+' v={{{A B +[then{!!Z}else{!!W}]}}}>'+dump, {wiki: wiki});
 	test('<$set name=v filter="A -A" value={{!!Z}} emptyValue={{!!W}}>'+dump,
@@ -139,11 +139,11 @@ it('emptyValue & value with filtered attributes', function() {
 	// Or rather how we DON'T support filtered attributes.
 	// There's nothing we can do with them.
 	test('<$set name=v filter={{{ A B }}} value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter={{{A B}}} value=yes emptyValue=no>'+dump);
+	     '<$set name=v filter={{{A B}}}value=yes emptyValue=no>'+dump);
 	test('<$set name=v filter="A B" value={{{ yes }}} emptyValue=no>'+dump,
-	     '<$set name=v filter="A B" value={{{yes}}} emptyValue=no>'+dump);
+	     '<$set name=v filter="A B"value={{{yes}}}emptyValue=no>'+dump);
 	test('<$set name=v filter="A B" value=yes emptyValue={{{ no }}}>'+dump,
-	     '<$set name=v filter="A B" value=yes emptyValue={{{no}}}>'+dump);
+	     '<$set name=v filter="A B"value=yes emptyValue={{{no}}}>'+dump);
 });
 
 it('emptyValue & value and quotation in macro arguments ', function() {
@@ -151,27 +151,27 @@ it('emptyValue & value and quotation in macro arguments ', function() {
 	// to use [[brackets]] rather than "quotes", but that
 	// can't be done for macros inside filters.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m [[n o]]>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m [[n o]]>>>'+dump);
 	// This seems very dangerous, but it's fine.
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n]]o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m n]]o>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m n]]o>>>'+dump);
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n]o}}>'+dump,
 	     vars+' v={{{A -A +[then[yes]else{n]o}]}}}>'+dump);
 	// The macro attribute gets parsed differently. Not allowed, even in quotes
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m  "n>o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m [[n>o]]>>>'+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"value=yes emptyValue=<<m [[n>o]]>>>'+dump);
 });
 
 it('emptyValue & value with bad values', function() {
 	test('<$set name=v filter="A -A" value=yes emptyValue="n}}}o">'+dump,
-	     '<$set name=v filter="A -A" value=yes emptyValue=n}}}o>'+dump);
+	     '<$set name=v filter="A -A"value=yes emptyValue=n}}}o>'+dump);
 	test('<$set name=v filter="A -A" value=yes emptyValue="n]o">'+dump,
-	     '<$set name=v filter="A -A" value=yes emptyValue=n]o>'+dump);
+	     '<$set name=v filter="A -A"value=yes emptyValue=n]o>'+dump);
 	// Macros, they only work on the filter attribute
 	test('<$set name=v filter=<<m t}}}s>> value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter=<<m t}}}s>> value=yes emptyValue=no>'+dump);
+	     '<$set name=v filter=<<m t}}}s>>value=yes emptyValue=no>'+dump);
 	test('<$set name=v filter=<<m "te>st">> value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter=<<m [[te>st]]>> value=yes emptyValue=no>'+dump);
+	     '<$set name=v filter=<<m [[te>st]]>>value=yes emptyValue=no>'+dump);
 	// Indirect
 	//		This is actually legal. I wouldn't have thought so.
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n}o}}>'+dump,
@@ -179,18 +179,18 @@ it('emptyValue & value with bad values', function() {
 	// make sure "value" is tested too, but we'll do most of our testing
 	// on "emptyValue".
 	test('<$set name=v filter="A B" value="y}}}es" emptyValue=no>'+dump,
-	     '<$set name=v filter="A B" value=y}}}es emptyValue=no>'+dump);
+	     '<$set name=v filter="A B"value=y}}}es emptyValue=no>'+dump);
 });
 
 it('emptyValue & value with placeholders', function() {
 	// If there are any placeholders, the whole thing is too dangerous to
 	// touch
-	test('\\define M(x)<$set name=v filter="$x$" value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>',
-	     '\\define M(x)<$set name=v filter="$x$" value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>');
-	test('\\define M(x)<$set name=v filter="A B" value="$x$" emptyValue=no>'+dump+'\n<<M y}}}es>>',
-	     '\\define M(x)<$set name=v filter="A B" value="$x$" emptyValue=no>'+dump+'\n<<M y}}}es>>');
-	test('\\define M(x)<$set name=v filter="A -A" value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>',
-	     '\\define M(x)<$set name=v filter="A -A" value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>');
+	test('\\define M(x)<$set name=v filter="$x$"value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>',
+	     '\\define M(x)<$set name=v filter="$x$"value=yes emptyValue=no>'+dump+'\n<<M A}}}B>>');
+	test('\\define M(x)<$set name=v filter="A B"value="$x$"emptyValue=no>'+dump+'\n<<M y}}}es>>',
+	     '\\define M(x)<$set name=v filter="A B"value="$x$"emptyValue=no>'+dump+'\n<<M y}}}es>>');
+	test('\\define M(x)<$set name=v filter="A -A"value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>',
+	     '\\define M(x)<$set name=v filter="A -A"value=yes emptyValue="$x$">'+dump+'\n<<M n}}}o>>');
 });
 
 });});});

@@ -25,14 +25,15 @@ it('whitespace among attributes', function() {
 });
 
 it('string attributes', function() {
-	const dump = "<<dumpvariables>>";
+	const dump = "<$text text={{{[variables[]join[,]] =[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 	test('<$vars a="""X""">'+dump, vars+" a=X>"+dump);
 	test('<$vars a="""file/path""">'+dump, vars+' a="file/path">'+dump);
 	test('<$vars a="""bad>char""">'+dump, vars+' a="bad>char">'+dump);
 	test('<$vars a="""bad=char""">'+dump, vars+' a="bad=char">'+dump);
 	test('<$vars a="""attr space""">'+dump, vars+' a="attr space">'+dump);
 	test('Bob\'s<$vars a="""f/p""">'+dump, "Bob's"+vars+" a='f/p'>"+dump);
-	test('<$vars a="""$love#@<()\\""">'+dump, vars+" a=$love#@<()\\>"+dump);
+	test('<$vars a="""$love#@<()\\""">'+dump, vars+' a="$love#@<()\\">'+dump);
+	test('<$vars a="""$love#@()\\""">'+dump, vars+" a=$love#@()\\>"+dump);
 	// Prefers single quotes to double brackets
 	test('[[Bob\'s]]<$vars a="""f/p""">'+dump, "[[Bob's]]"+vars+" a='f/p'>"+dump);
 	// Quotes in attribute
@@ -70,8 +71,11 @@ it('filter attributes', function() {
 });
 
 it('valueless attributes', function() {
+	const d = "<$text text={{{[variables[]join[,]] =[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 	test("<$text text />", "<$text text/>");
 	test("<$text text = 'true' />", "<$text text/>");
+	// The proper amount of space is put between the items.
+	test("<$let a=true b=true>"+d, "<$let a b>"+d);
 });
 
 it('contents', function() {

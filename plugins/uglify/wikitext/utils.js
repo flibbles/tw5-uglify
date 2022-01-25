@@ -125,7 +125,7 @@ exports.bestQuoteForAttribute = function(attr, parser) {
 		}
 		return string;
 	}
-	if (string.search(/[\/\s>"'=]/) < 0 && string.length > 0) {
+	if (string.search(/[\/\s<>"'=]/) < 0 && string.length > 0) {
 		return string;
 	}
 	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {
