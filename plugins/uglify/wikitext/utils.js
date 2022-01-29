@@ -24,7 +24,7 @@ exports.stringifyMacro = function(macro, parser) {
 		if (param.name) {
 			strings.push(param.name, ":");
 		}
-		if (parser.containsPlaceholder(param.value)) {
+		if (parser.placeholders.present(param.value)) {
 			strings.push(getOriginalQuoting(param, parser));
 		} else {
 			strings.push(exports.quotifyParam(param.value, parser));
@@ -103,7 +103,7 @@ function getOriginalQuoting(param, parser) {
 
 exports.bestQuoteForAttribute = function(attr, parser) {
 	var string = attr.value;
-	if (parser.containsPlaceholder(string)) {
+	if (parser.placeholders.present(string)) {
 		// This string contains a placeholder. We can't change the quoting
 		// Figure out what the quoting used to be.
 		var text = parser.source,

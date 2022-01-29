@@ -46,12 +46,12 @@ exports["$let"] = function(tag, parser) {
 
 function containsNoPlaceholders(childNode, parser) {
 	return childNode.type !== 'text'
-		|| !parser.containsPlaceholder(childNode.text);
+		|| !parser.placeholders.present(childNode.text);
 };
 
 function canFold(outerIsBlock, innerIsBlock, startTagGap, endTagGap, innerNode, parser) {
-	if (parser.containsPlaceholder(startTagGap)
-	|| parser.containsPlaceholder(endTagGap)) {
+	if (parser.placeholders.present(startTagGap)
+	|| parser.placeholders.present(endTagGap)) {
 		// Merging $lets will move placeholders around. No good.
 		return false;
 	}
@@ -64,7 +64,7 @@ function canFold(outerIsBlock, innerIsBlock, startTagGap, endTagGap, innerNode, 
 	} else if (innerIsBlock) {
 		return false;
 	}
-	if (innerNode.type == 'text' && parser.containsPlaceholder(innerNode.text)) {
+	if (innerNode.type == 'text' && parser.placeholders.present(innerNode.text)) {
 		// There's a placeholder just inside the inner $let. Be careful.
 		if (!outerIsBlock || anyNonSpaces) {
 			return false;

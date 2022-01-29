@@ -11,6 +11,7 @@ exports.type = "text/vnd.tiddlywiki";
 var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exports.type];
 var logger = require('../logger.js');
 var parseutils = require('./utils.js');
+var PlaceholderList = require('./placeholderList.js');
 
 exports.uglify = function(text, title, options) {
 	try {
@@ -46,7 +47,7 @@ function WikiWalker(type, text, options) {
 	if (text.indexOf("]") >= 0) {
 		this.bracketsAllowed = true;
 	}
-	this.placeholders = options.placeholders || Object.create(null);
+	this.placeholders = new PlaceholderList(options.placeholders);
 	this.startOfBody = true;
 	WikiParser.call(this, type, text, options);
 	postProcess.call(this);
@@ -233,7 +234,7 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var cannotEndYet = false,
 		cannotEndBlock = false;
 	// Reset these
-	if (this.containsPlaceholder(text)) {
+	if (this.placeholders.present(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 		// Dangerous, meaning be careful about altering surrounding content.
 		node.dangerous = true;
@@ -300,18 +301,6 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	}
 	this.startOfBody = false;
 	return tree;
-};
-
-WikiWalker.prototype.containsPlaceholder = function(text) {
-	if (this.placeholderRegExp === undefined) {
-		var placeholderArray = [];
-		for (var placeholder in this.placeholders) {
-			placeholderArray.push($tw.utils.escapeRegExp(placeholder));
-		}
-		placeholderArray.push("\\([^\\)\\$]+\\)");
-		this.placeholderRegExp = new RegExp("\\$(?:" + placeholderArray.join('|') + ")\\$");
-	}
-	return text.search(this.placeholderRegExp) >= 0;
 };
 
 function postProcess() {
