@@ -11,9 +11,9 @@ exports.name = ["filteredtranscludeblock", "filteredtranscludeinline"];
 exports.uglify = function() {
 	var call = this.parse()[0],
 		original = this.match[0],
-		bits = ["{{{"];
-	// TODO: It's not the filteredtransclude rule's responsibility to trim
-	bits.push(this.match[1].trim()); //filter
+		bits = ["{{{"],
+		uglifier = this.parser.wiki.getUglifier('text/x-tiddler-filter');
+	bits.push(uglifier.uglify(this.match[1], this.parser));
 	if (this.match[2]) { // tooltip
 		// As far as I can tell, tooltips aren't used in any way, but I
 		// guess if the rule specifies one, the user must want it.

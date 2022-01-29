@@ -53,4 +53,9 @@ it('handles weird placeholders', function() {
 	     '\\define M(x){{{A B $x$}}}\n<<M ||temp>>', {wiki: wiki});
 });
 
+it('handles broken filter gracefully', function() {
+	test('{{{ [title[A }}} <$text  text="cats"/>',
+	     '{{{[title[A}}} <$text text=cats/>');
+});
+
 });});
