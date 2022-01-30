@@ -159,4 +159,9 @@ it('placeholders trim surrounding whitespace', function() {
 	     '\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
 });
 
+it('placeholders within double nested context', function() {
+	test('\\define A(m)\n\\define B(n)<<C "$l$" "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>',
+	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
+});
+
 });});

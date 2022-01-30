@@ -13,7 +13,7 @@ exports.uglify = function() {
 		original = this.match[0],
 		bits = ["{{{"],
 		uglifier = this.parser.wiki.getUglifier('text/x-tiddler-filter');
-	bits.push(uglifier.uglify(this.match[1], this.parser));
+	bits.push(uglifier.uglify(this.match[1], this.parser.title, this.parser));
 	if (this.match[2]) { // tooltip
 		// As far as I can tell, tooltips aren't used in any way, but I
 		// guess if the rule specifies one, the user must want it.

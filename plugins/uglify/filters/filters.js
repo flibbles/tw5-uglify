@@ -11,10 +11,10 @@ var utils = require('../wikitext/utils.js');
 exports.type = "text/x-tiddler-filter";
 
 // TODO: Make this take options as {wiki, placeholders}
-exports.uglify = function(text, parser) {
+exports.uglify = function(text, title, options) {
 	var parseTree;
 	try {
-		parseTree = parser.wiki.parseFilter(text);
+		parseTree = options.wiki.parseFilter(text);
 	} catch (e) {
 		// We swallow the error here. Just assume parsing the filter
 		// failed because it had weird placeholders in it or something.
@@ -24,6 +24,8 @@ exports.uglify = function(text, parser) {
 		title,
 		needsSpace = false,
 		options = {
+			wiki: options.wiki,
+			placeholders: options.placeholders,
 			apostrophesAllowed: text.indexOf("'") >= 0,
 			bracketsAllowed: text.indexOf("]]") >= 0
 		};
@@ -73,7 +75,7 @@ exports.uglify = function(text, parser) {
 					firstOperand = false;
 					if (operand.variable) {
 						var macro = $tw.utils.parseFilterVariable(operand.text);
-						bits.push('<',utils.stringifyMacro(macro, operand.text, parser), '>');
+						bits.push('<',utils.stringifyMacro(macro, operand.text, options), '>');
 					} else if (operand.indirect) {
 						bits.push('{', operand.text, '}');
 					} else {
