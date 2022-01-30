@@ -1,5 +1,5 @@
 /*\
-title: Test/wikitext/html/set.js
+title: Test/wikitext/html/setvariable.js
 type: application/javascript
 tags: $:/tags/test-spec
 
@@ -13,7 +13,7 @@ describe('$setvariable', function() {
 
 const test = $tw.utils.test.wikitext.test;
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
-const dump = "<$text text={{{[variables[]join[,]] =[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
+const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
 const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 
 it('converts to $set', function() {

@@ -17,7 +17,7 @@ const cmp = $tw.utils.test.wikitext.cmp;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 // Note that this does not print the value of "m", since that's the macro
 // name I use in tests, and it should change.
-const dump = "<$text text={{{[variables[]join[,]] =[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
+const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
 const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 const close = parseUtils.letAvailable() ? "</$let>" : "</$vars>";
 
@@ -25,7 +25,7 @@ it('value types', function() {
 	test('<$set name="v" value="var">'+dump, vars+' v=var>'+dump);
 	test('<$set name="v" value={{!!title}}>'+dump, vars+' v={{!!title}}>'+dump);
 	test('<$set name="v" value={{{ [[title]] }}}>'+dump,
-		vars+' v={{{[[title]]}}}>'+dump);
+		vars+' v={{{title}}}>'+dump);
 	test('\\define mac()stuff\n<$set name="v" value=<<mac>>>'+dump,
 		'\\define mac()stuff\n'+vars+' v=<<mac>>>'+dump);
 	test('<$set name="v" value=<<currentTiddler>>>'+dump,
@@ -77,9 +77,8 @@ it('filter attr gets trimmed up', function() {
 	     '<$set filter="A[[B C]]+[addsuffix[s]]"name=n>'+dump);
 	// If that macrocall is enterpreted as a string,
 	// it would get wrongfully altered.
-	// TODO: Shouldn't "x y" get wrapped in brackets?
 	test('\\define M(a b)$a$-$b$-C\n<$set name=n filter=<<M "x y" [title[z]]>>>'+dump,
-	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M "x y" [title[z]]>>name=n>'+dump);
+	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M [[x y]] [title[z]]>>name=n>'+dump);
 	// If this were treated as a filter, A and B would smush together.
 	test('<$set name=n filter={{A  B!!title}}>'+dump,
 	     '<$set filter={{A  B!!title}}name=n>'+dump);
@@ -95,11 +94,11 @@ it('emptyValue & value to $let', function() {
 	     vars+' v={{{A -A +[then[yes]else[no]]}}}>'+dump);
 	// The filter string is allowed to have brackets
 	test('<$set name=v filter="[tag[A]]" value=yes emptyValue=no>'+dump,
-	     vars+' v={{{[tag[A]] +[then[yes]else[no]]}}}>'+dump);
+	     vars+' v={{{[tag[A]]+[then[yes]else[no]]}}}>'+dump);
 	// If we don't have a "value", we can't do anything. Value is needed
 	// or else we can't set the variable correctly if emptyValue isn't used.
 	test('<$set name=v filter="A [[B C]]"  emptyValue=no>'+dump,
-	     '<$set name=v filter="A [[B C]]"emptyValue=no>'+dump);
+	     '<$set name=v filter="A[[B C]]"emptyValue=no>'+dump);
 	test('<$set name=v filter="A -A"  emptyValue=no>'+dump,
 	     '<$set name=v filter="A -A"emptyValue=no>'+dump);
 });
@@ -107,9 +106,9 @@ it('emptyValue & value to $let', function() {
 it('emptyValue & value with macrocalls', function() {
 	// Only the filter argument can be a macro parameter
 	test('\\define m(x) A -$x$\n<$set name=v filter=<<m B>> value=yes emptyValue=no>'+dump,
-	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m B>] +[then[yes]else[no]]}}}>'+dump);
+	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m B>]+[then[yes]else[no]]}}}>'+dump);
 	test('\\define m(x) A -$x$\n<$set name=v filter=<<m A>> value=yes emptyValue=no>'+dump,
-	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>] +[then[yes]else[no]]}}}>'+dump);
+	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>]+[then[yes]else[no]]}}}>'+dump);
 	// No other arguments benefit if they are macros
 	test('\\define m(b)test $b$\n<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
 	     '\\define m(b)test $b$\n<$set name=v filter="A -A"emptyValue=<<m no>>value=yes>'+dump);

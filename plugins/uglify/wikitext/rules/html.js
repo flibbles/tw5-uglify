@@ -56,7 +56,7 @@ exports.uglify = function() {
 			tagParts.push("=<<", utils.stringifyMacro(attr.value, parser.source, parser),">>");
 			break;
 		case "filtered":
-			tagParts.push("={{{", attr.filter.trim(), "}}}");
+			tagParts.push("={{{", utils.uglifyFilter(attr.filter,parser),"}}}");
 			break;
 		default:
 			throw "Not Implemented";

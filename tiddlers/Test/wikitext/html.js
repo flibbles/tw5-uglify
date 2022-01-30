@@ -25,7 +25,7 @@ it('whitespace among attributes', function() {
 });
 
 it('string attributes', function() {
-	const dump = "<$text text={{{[variables[]join[,]] =[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
+	const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 	test('<$vars a="""X""">'+dump, vars+" a=X>"+dump);
 	test('<$vars a="""file/path""">'+dump, vars+' a="file/path">'+dump);
 	test('<$vars a="""bad>char""">'+dump, vars+' a="bad>char">'+dump);
@@ -68,10 +68,13 @@ it('macro attributes', function() {
 
 it('filter attributes', function() {
 	test("<$text text={{{ butts }}}  />", "<$text text={{{butts}}}/>");
+	test("<$text text={{{ A  B }}}  />", "<$text text={{{A B}}}/>");
+	// Broken filters don't stop other optimizations
+	test("<$text text={{{ [tag[A }}}  />", "<$text text={{{[tag[A}}}/>");
 });
 
 it('valueless attributes', function() {
-	const d = "<$text text={{{[variables[]join[,]] =[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
+	const d = "<$text text={{{[variables[]join[,]]=[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 	test("<$text text />", "<$text text/>");
 	test("<$text text = 'true' />", "<$text text/>");
 	// The proper amount of space is put between the items.

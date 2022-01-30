@@ -15,7 +15,7 @@ const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const test = $tw.utils.test.wikitext.test;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 const t = "\\whitespace trim\n";
-const d = "<$text text={{{[variables[]join[,]] =[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
+const d = "<$text text={{{[variables[]join[,]]=[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 
 ifLetIt('handles different surrounding cases', function() {
 	// No closing tag
