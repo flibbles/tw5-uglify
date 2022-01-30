@@ -17,17 +17,17 @@ exports.joinNodeArray = function(array) {
 	return string.join('');
 };
 
-exports.stringifyMacro = function(macro, parser) {
+exports.stringifyMacro = function(macro, source, options) {
 	var strings = [macro.name];
 	$tw.utils.each(macro.params, function(param) {
 		strings.push(" ");
 		if (param.name) {
 			strings.push(param.name, ":");
 		}
-		if (parser.placeholders.present(param.value)) {
-			strings.push(getOriginalQuoting(param, parser));
+		if (options.placeholders.present(param.value)) {
+			strings.push(getOriginalQuoting(param, source));
 		} else {
-			strings.push(exports.quotifyParam(param.value, false, parser));
+			strings.push(exports.quotifyParam(param.value, false, options));
 		}
 	});
 	return strings.join("");
@@ -75,26 +75,25 @@ exports.letAvailable = function() {
 	return _letAvail;
 };
 
-function getOriginalQuoting(param, parser) {
-	var text = parser.source,
-		string = param.value,
-		pos = $tw.utils.skipWhiteSpace(text, param.start);
+function getOriginalQuoting(param, source) {
+	var string = param.value,
+		pos = $tw.utils.skipWhiteSpace(source, param.start);
 	if (param.name) {
 		pos += param.name.length;
-		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos = $tw.utils.skipWhiteSpace(source, pos);
 		pos++; // SKip over that ":"
-		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos = $tw.utils.skipWhiteSpace(source, pos);
 	}
-	if (text.substr(pos,3) === '"""') {
+	if (source.substr(pos,3) === '"""') {
 		return '"""' + string + '"""';
 	}
-	if (text[pos] === '"') {
+	if (source[pos] === '"') {
 		return '"' + string + '"';
 	}
-	if (text[pos] === "'") {
+	if (source[pos] === "'") {
 		return "'" + string + "'";
 	}
-	if (text.substr(pos,2) === "[[") {
+	if (source.substr(pos,2) === "[[") {
 		return "[[" + string + "]]";
 	}
 	return string;

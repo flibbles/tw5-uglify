@@ -94,9 +94,9 @@ function legalFilterRun(attribute, parser) {
 			}
 			break;
 		case "macro":
-			var parserForFilter = Object.create(parser);
-			parserForFilter.bracketsAllowed = false;
-			var macroString = utils.stringifyMacro(attribute.value, parserForFilter);
+			var optionsForFilter = Object.create(parser);
+			optionsForFilter.bracketsAllowed = false;
+			var macroString = utils.stringifyMacro(attribute.value, parser.source, optionsForFilter);
 			if (macroString.indexOf('}}}') < 0
 			&& macroString.indexOf('>') < 0) {
 				run = "[subfilter<" + macroString + ">]";

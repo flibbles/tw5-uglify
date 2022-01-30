@@ -10,7 +10,7 @@ exports.name = "macrocallblock";
 
 exports.uglify = function() {
 	var call = this.parse()[0];
-	var output =  [{text: "<<"+utils.stringifyMacro(call, this.parser)+">>"}];
+	var output =  [{text: "<<"+utils.stringifyMacro(call, this.parser.source, this.parser)+">>"}];
 	if (this.parser.pos === "\n") {
 		this.parser.pos++;
 		// This newline doesn't have to be there if the macro is at EOF

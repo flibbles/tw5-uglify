@@ -73,7 +73,7 @@ exports.uglify = function(text, parser) {
 					firstOperand = false;
 					if (operand.variable) {
 						var macro = $tw.utils.parseFilterVariable(operand.text);
-						bits.push('<',utils.stringifyMacro(macro, parser), '>');
+						bits.push('<',utils.stringifyMacro(macro, operand.text, parser), '>');
 					} else if (operand.indirect) {
 						bits.push('{', operand.text, '}');
 					} else {

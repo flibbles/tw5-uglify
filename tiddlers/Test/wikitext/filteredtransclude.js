@@ -58,4 +58,12 @@ it('handles broken filter gracefully', function() {
 	     '{{{[title[A}}} <$text text=cats/>');
 });
 
+it('handles quotes about macro param placeholders', function() {
+	// It's actually kinda tricky to make sure the
+	// operatand variable parameter maintains the correct quoting if it
+	// contains a placeholder.
+	test('\\define M(x){{{[<A "$x$">] }}}\n\\define A(z)--$z$--\n<<M "A B">>',
+	     '\\define M(x){{{[<A "$x$">]}}}\n\\define A(z)--$z$--\n<<M [[A B]]>>');
+});
+
 });});

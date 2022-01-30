@@ -53,7 +53,7 @@ exports.uglify = function() {
 			tagParts.push("={{", attr.textReference, "}}");
 			break;
 		case "macro":
-			tagParts.push("=<<", utils.stringifyMacro(attr.value, parser),">>");
+			tagParts.push("=<<", utils.stringifyMacro(attr.value, parser.source, parser),">>");
 			break;
 		case "filtered":
 			tagParts.push("={{{", attr.filter.trim(), "}}}");
