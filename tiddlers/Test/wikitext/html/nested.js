@@ -14,6 +14,8 @@ describe('nested', function() {
 
 const test = $tw.utils.test.wikitext.test;
 
+///// Wikitext
+
 it('works', function() {
 	test('<$list filter="" emptyMessage="""<$text text="Empty"/>"""/>',
 		'<$list filter=""emptyMessage="<$text text=Empty/>"/>');
@@ -60,6 +62,22 @@ it('handles edge case with ending quotes and tail cutting', function() {
 	     '<$wikify text="""<span>"L\'X" """name=val><<val>>');
 	test('<$wikify text="""\\whitespace trim\n<span>"L\'X" </span>""" name=val><<val>></$wikify>',
 	     '<$wikify text="""<span>"L\'X"</span>"""name=val><<val>>');
+});
+
+//// Filters
+
+it('handles filter attributes', function() {
+	test('<$count filter="A  B  C"/>', '<$count filter="A B C"/>');
+	// indirects shouldn't be touched
+	test('<$count filter={{A  B  A!!title}}/>', '<$count filter={{A  B  A!!title}}/>');
+	// variable attrs should not be touched
+	test('\\define M(a b)$a$-$b$-C\n<$count filter=<<M "x y" [title[z]]>>/>',
+	     '\\define M(a b)$a$-$b$-C\n<$count filter=<<M [[x y]] [title[z]]>>/>');
+});
+
+it('handles both filter and wikitext attributes', function() {
+	test('<$list filter="A  -A" emptyMessage="<$text  text=nope />"/>',
+	     '<$list filter="A -A"emptyMessage="<$text text=nope/>"/>');
 });
 
 });});});
