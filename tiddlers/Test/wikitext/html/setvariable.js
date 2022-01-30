@@ -17,8 +17,8 @@ const dump = "<$text text={{{[variables[]join[,]] =[variables[]!match[m]getvaria
 const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 
 it('converts to $set', function() {
-	test('<$setvariable name="v" filter="A B +[addsuffix[s]]">'+dump,
-	     '<$set filter="A B +[addsuffix[s]]"name=v>'+dump);
+	test('<$setvariable name="v" filter="A [[B C]] +[addsuffix[s]]">'+dump,
+	     '<$set filter="A[[B C]]+[addsuffix[s]]"name=v>'+dump);
 });
 
 it('converts to $let', function() {

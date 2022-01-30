@@ -56,6 +56,12 @@ exports["$set"] = function(tag, parser) {
 			tag.tag = "$vars";
 			tag.type = "vars";
 		}
+	} else {
+		// It remains a $set widget. We can at least
+		// trim up a filter attr if it's there.
+		if (attrs.filter && attrs.filter.type === "string") {
+			attrs.filter.value = utils.uglifyFilter(attrs.filter.value, parser);
+		}
 	}
 };
 

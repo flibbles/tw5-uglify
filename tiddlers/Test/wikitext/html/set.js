@@ -70,6 +70,20 @@ it('goes to $vars if $let is not available', function() {
 	test('<$set name=n value=v>'+dump, '<$vars n=v>'+dump);
 });
 
+//////// Test the simple filter $set, which can't be converted
+
+it('filter attr gets trimmed up', function() {
+	test('<$set name=n filter="A [[B C]] +[addsuffix[s]]">'+dump,
+	     '<$set filter="A[[B C]]+[addsuffix[s]]"name=n>'+dump);
+	// If that macrocall is enterpreted as a string,
+	// it would get wrongfully altered.
+	test('\\define M(a b)$a$-$b$-C\n<$set name=n filter=<<M "x y" [[z]]>>>'+dump,
+	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M "x y" [[z]]>>name=n>'+dump);
+	// If this were treated as a filter, A and B would smush together.
+	test('<$set name=n filter={{A  B!!title}}>'+dump,
+	     '<$set filter={{A  B!!title}}name=n>'+dump);
+});
+
 //////// Test of emptyValue and value used with filter
 
 it('emptyValue & value to $let', function() {

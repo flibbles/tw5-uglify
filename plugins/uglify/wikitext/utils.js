@@ -66,6 +66,17 @@ exports.newlineAt = function(source, pos) {
 	}
 };
 
+exports.uglifyFilter = function(text, options) {
+	var uglifier = options.wiki.getUglifier('text/x-tiddler-filter');
+	try {
+		return uglifier.uglify(text, options);
+	} catch (e) {
+		// We swallow the error here. Just assume parsing the filter
+		// failed because it had weird placeholders in it or something.
+		return text.trim();
+	}
+};
+
 var _letAvail;
 
 exports.letAvailable = function() {
