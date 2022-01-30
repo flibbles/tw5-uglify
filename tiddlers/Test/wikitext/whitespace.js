@@ -11,7 +11,6 @@ describe('wikitext uglifier', function() {
 describe('whitespace', function() {
 
 const test = $tw.utils.test.wikitext.test;
-const cmp = $tw.utils.test.wikitext.cmp;
 const t = "\\whitespace trim\n";
 const nt = "\\whitespace notrim\n";
 
