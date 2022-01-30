@@ -41,7 +41,7 @@ function WikiWalker(type, text, options) {
 	if (text.indexOf("]") >= 0) {
 		this.bracketsAllowed = true;
 	}
-	this.placeholders = new PlaceholderList(options.placeholders);
+	this.placeholders = options.placeholders || new PlaceholderList();
 	this.startOfBody = true;
 	WikiParser.call(this, type, text, options);
 	postProcess.call(this);

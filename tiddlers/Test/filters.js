@@ -1,5 +1,5 @@
 /*\
-title: Test/wikitext/filters.js
+title: Test/filters.js
 type: application/javascript
 tags: $:/tags/test-spec
 
@@ -20,6 +20,15 @@ const test = function(input, expected, options) {
 	var prefix = options.prefix || '';
 	$tw.utils.test.wikitext.test(prefix+'{{{'+input+'}}}', prefix+'{{{'+expected+'}}}', options);
 };
+
+it('can uglify text/x-tiddler-filter', function() {
+	const uglify = $tw.utils.test.wikitext.uglify;
+	const type = "text/x-tiddler-filter";
+	var text = uglify('"B 1" [enlist[A B C]]\n+[prefix[B]]', type);
+	expect(text).toBe('[[B 1]][enlist[A B C]]+[prefix[B]]');
+	// If given a broken filter, it will throw.
+	expect(() => uglify("[all[", type)).toThrow();
+});
 
 it('processes filter operations', function() {
 	// manages all
