@@ -10,9 +10,8 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('stylesheet uglifier', function() {
 
-function compress(input, title) {
-	title = title || 'test';
-	return $tw.wiki.getUglifier('text/css').uglify(input, title);
+function compress(input) {
+	return $tw.wiki.getUglifier('text/css').uglify(input);
 };
 
 it('handles', function() {

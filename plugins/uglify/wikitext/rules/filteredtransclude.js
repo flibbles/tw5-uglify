@@ -11,9 +11,8 @@ exports.name = ["filteredtranscludeblock", "filteredtranscludeinline"];
 exports.uglify = function() {
 	var call = this.parse()[0],
 		original = this.match[0],
-		bits = ["{{{"],
-		uglifier = this.parser.wiki.getUglifier('text/x-tiddler-filter');
-	bits.push(uglifier.uglify(this.match[1], this.parser.title, this.parser));
+		bits = ["{{{"];
+	bits.push(uglifyFilter(this.match[1], this.parser));
 	if (this.match[2]) { // tooltip
 		// As far as I can tell, tooltips aren't used in any way, but I
 		// guess if the rule specifies one, the user must want it.
@@ -37,4 +36,15 @@ exports.uglify = function() {
 		bits.push('\n');
 	}
 	return [{text: bits.join('')}];
+};
+
+function uglifyFilter(text, options) {
+	var uglifier = options.wiki.getUglifier('text/x-tiddler-filter');
+	try {
+		return uglifier.uglify(text, options);
+	} catch (e) {
+		// We swallow the error here. Just assume parsing the filter
+		// failed because it had weird placeholders in it or something.
+		return text.trim();
+	}
 };

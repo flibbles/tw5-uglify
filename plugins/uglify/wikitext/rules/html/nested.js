@@ -30,7 +30,7 @@ $tw.utils.each(widgetList, function(attributeArray, widget) {
 			if (attr && attr.type === "string") {
 				var uglifier = parser.wiki.getUglifier("text/vnd.tiddlywiki");
 				var options = {wiki: parser.wiki, placeholders: parser.placeholders};
-				attr.value = uglifier.uglify(attr.value, null, options);
+				attr.value = uglifier.uglify(attr.value, options);
 			}
 		}
 	};

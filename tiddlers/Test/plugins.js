@@ -11,7 +11,7 @@ describe('plugin uglifier', function() {
 
 function compress(input, title) {
 	title = title || 'test';
-	return $tw.wiki.getUglifier('application/javascript').uglify(input, title);
+	return $tw.wiki.getUglifier('application/javascript').uglify(input);
 };
 
 it('removes title fields and pretty print', function() {

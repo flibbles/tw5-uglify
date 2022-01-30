@@ -13,7 +13,7 @@ const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const wikitextType = "text/vnd.tiddlywiki";
 
 exports.uglify = function(text) {
-	return $tw.wiki.getUglifier(wikitextType).uglify(text, 'test', {wiki: $tw.wiki});
+	return $tw.wiki.getUglifier(wikitextType).uglify(text, {wiki: $tw.wiki});
 };
 
 exports.test = function(text, expected, options) {

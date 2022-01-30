@@ -11,16 +11,9 @@ var utils = require('../wikitext/utils.js');
 exports.type = "text/x-tiddler-filter";
 
 // TODO: Make this take options as {wiki, placeholders}
-exports.uglify = function(text, title, options) {
-	var parseTree;
-	try {
-		parseTree = options.wiki.parseFilter(text);
-	} catch (e) {
-		// We swallow the error here. Just assume parsing the filter
-		// failed because it had weird placeholders in it or something.
-		return text.trim();
-	}
-	var bits = [],
+exports.uglify = function(text, options) {
+	var parseTree = options.wiki.parseFilter(text),
+		bits = [],
 		title,
 		needsSpace = false,
 		options = {

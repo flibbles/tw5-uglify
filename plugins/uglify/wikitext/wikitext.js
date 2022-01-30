@@ -13,15 +13,9 @@ var logger = require('../logger.js');
 var parseutils = require('./utils.js');
 var PlaceholderList = require('./placeholderList.js');
 
-exports.uglify = function(text, title, options) {
-	try {
-		var parser = new WikiWalker(undefined, text, options);
-		var string = parseutils.joinNodeArray(parser.tree);
-		return string;
-	} catch (e) {
-		logger.warn('Failed to compress', title + "\n\n    * message:", e);
-		return text;
-	}
+exports.uglify = function(text, options) {
+	var parser = new WikiWalker(undefined, text, options);
+	return parseutils.joinNodeArray(parser.tree);
 };
 
 function collectRules() {
