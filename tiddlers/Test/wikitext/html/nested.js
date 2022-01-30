@@ -6,7 +6,6 @@ tags: $:/tags/test-spec
 Tests the wikitext uglifier with html attributes
 which contain more wikitext.
 
-TODO: If nested wikitext fails to parse, it doesn't abort everything
 \*/
 
 describe('wikitext uglifier', function() {

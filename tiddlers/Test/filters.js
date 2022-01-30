@@ -130,5 +130,4 @@ it('titles that are empty', function() {
 	test("A '' B", "A B");
 });
 
-// TODO: /Regexp/ operands
 });});

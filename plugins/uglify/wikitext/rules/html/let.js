@@ -50,8 +50,9 @@ function containsNoPlaceholders(childNode, parser) {
 };
 
 function canFold(outerIsBlock, innerIsBlock, startTagGap, endTagGap, innerNode, parser) {
-	if (parser.placeholders.present(startTagGap)
-	|| parser.placeholders.present(endTagGap)) {
+	var placeholders = parser.placeholders;
+	if (placeholders &&
+	(placeholders.present(startTagGap) || placeholders.present(endTagGap))) {
 		// Merging $lets will move placeholders around. No good.
 		return false;
 	}
@@ -64,7 +65,9 @@ function canFold(outerIsBlock, innerIsBlock, startTagGap, endTagGap, innerNode, 
 	} else if (innerIsBlock) {
 		return false;
 	}
-	if (innerNode.type == 'text' && parser.placeholders.present(innerNode.text)) {
+	if (innerNode.type == 'text'
+	&& placeholders
+	&& placeholders.present(innerNode.text)) {
 		// There's a placeholder just inside the inner $let. Be careful.
 		if (!outerIsBlock || anyNonSpaces) {
 			return false;

@@ -10,7 +10,6 @@ var utils = require('../wikitext/utils.js');
 
 exports.type = "text/x-tiddler-filter";
 
-// TODO: Make this take options as {wiki, placeholders}
 exports.uglify = function(text, options) {
 	var parseTree = options.wiki.parseFilter(text),
 		bits = [],

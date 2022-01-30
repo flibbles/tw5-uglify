@@ -56,7 +56,7 @@ function independentIndirect(attr, parser, currentTiddler) {
 			// then all indirects are safe.
 			return true;
 		}
-		if (ref.title && !parser.placeholders.present(ref.title)) {
+		if (ref.title && (!parser.placeholders || !parser.placeholders.present(ref.title))) {
 			// If it's a title, and one that can't change on us
 			// then it's safe.
 			return true;

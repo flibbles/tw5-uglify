@@ -11,7 +11,6 @@ exports.type = "text/vnd.tiddlywiki";
 var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exports.type];
 var logger = require('../logger.js');
 var parseutils = require('./utils.js');
-var PlaceholderList = require('./placeholderList.js');
 
 exports.uglify = function(text, options) {
 	var parser = new WikiWalker(undefined, text, options);
@@ -41,7 +40,7 @@ function WikiWalker(type, text, options) {
 	if (text.indexOf("]") >= 0) {
 		this.bracketsAllowed = true;
 	}
-	this.placeholders = options.placeholders || new PlaceholderList();
+	this.placeholders = options.placeholders;
 	this.startOfBody = true;
 	WikiParser.call(this, type, text, options);
 	postProcess.call(this);
@@ -228,7 +227,7 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var cannotEndYet = false,
 		cannotEndBlock = false;
 	// Reset these
-	if (this.placeholders.present(text)) {
+	if (this.placeholders && this.placeholders.present(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 		// Dangerous, meaning be careful about altering surrounding content.
 		node.dangerous = true;

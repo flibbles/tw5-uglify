@@ -167,4 +167,10 @@ it('placeholders within double nested context', function() {
 	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
 });
 
+it('placeholders outside of a macrodef', function() {
+	test('\\define var()A B\n\\define M()<$text  text="$(var)$"/>\n<<M>><$text text="$(var)$"/>',
+	     '\\define var()A B\n\\define M()<$text text="$(var)$"/>\n<<M>><$text text=$(var)$/>');
+
+});
+
 });});

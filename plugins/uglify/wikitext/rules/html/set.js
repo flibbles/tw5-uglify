@@ -79,7 +79,7 @@ function legalFilterValue(attribute, parser) {
 		// varName={{{[<>]}}} work, so for now I'm disabling this
 		// minification.
 	}
-	if (val && !parser.placeholders.present(val)) {
+	if (val && (!parser.placeholders || !parser.placeholders.present(val))) {
 		return val;
 	}
 	return null;
@@ -103,7 +103,7 @@ function legalFilterRun(attribute, parser) {
 			}
 			break;
 	}
-	if (run && !parser.placeholders.present(run)) {
+	if (run && (!parser.placeholders || !parser.placeholders.present(run))) {
 		return run;
 	}
 	return null;
