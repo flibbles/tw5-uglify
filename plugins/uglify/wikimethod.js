@@ -109,7 +109,7 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 		}
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
-			abridgedFields.text = compressOrNot(uglifier, title, fields.text, options);
+			abridgedFields.text = compressOrNot(uglifier, title, fields.text, wiki);
 		}
 		newTiddlers[title] = abridgedFields;
 	}

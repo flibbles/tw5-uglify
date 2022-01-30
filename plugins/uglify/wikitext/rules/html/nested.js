@@ -47,7 +47,11 @@ function uglifyAttributes(tag, attributeArray, type, parser) {
 			var attr = tag.attributes[attributeArray[i]];
 			if (attr && attr.type === "string") {
 				var uglifier = parser.wiki.getUglifier(type);
-				attr.value = uglifier.uglify(attr.value, parser);
+				try {
+					attr.value = uglifier.uglify(attr.value, parser);
+				} catch (e) {
+					// do nothing. Just move on.
+				}
 			}
 		}
 	}

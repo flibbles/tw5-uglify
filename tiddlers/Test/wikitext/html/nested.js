@@ -75,9 +75,16 @@ it('handles filter attributes', function() {
 	     '\\define M(a b)$a$-$b$-C\n<$count filter=<<M [[x y]] [title[z]]>>/>');
 });
 
+it('handles broken filters', function() {
+	test('<$count filter=" [all[ " />', '<$count filter=" [all[ "/>');
+});
+
 it('handles both filter and wikitext attributes', function() {
 	test('<$list filter="A  -A" emptyMessage="<$text  text=nope />"/>',
 	     '<$list filter="A -A"emptyMessage="<$text text=nope/>"/>');
+	// If one does not compress, does not stop the other attr from doing so
+	test('<$list filter="[all[" emptyMessage="<$text  text=nope />"/>',
+	     '<$list emptyMessage="<$text text=nope/>"filter=[all[/>');
 });
 
 });});});
