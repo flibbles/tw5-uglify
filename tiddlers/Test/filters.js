@@ -130,4 +130,25 @@ it('titles that are empty', function() {
 	test("A '' B", "A B");
 });
 
+it('<currentTiddler> becomes {!!title}', function() {
+	test('A testing +[prefix<currentTiddler>]', 'A testing +[prefix{!!title}]');
+	test('[<currentTiddler>addsuffix[XX]]', '[{!!title}addsuffix[XX]]');
+	test('[[cats]search-replace[a],<currentTiddler>]',
+	     '[[cats]search-replace[a],{!!title}]');
+	// Non-standard currentTiddler
+	test('A testing +[prefix<currentTiddler  >]', 'A testing +[prefix{!!title}]');
+	test('A testing +[prefix< currentTiddler>]', 'A testing +[prefix<>]');
+	test('A testing +[prefix<currentTiddler  a>]',
+	     'A testing +[prefix<currentTiddler a>]',
+	     {prefix: '\\define currentTiddler(x)--$x$--\n'});
+	// Only macros
+	test('A testing  +[addprefix[currentTiddler]]',
+	     'A testing +[addprefix[currentTiddler]]');
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: 'currentTiddler', text: 'currentText'});
+	test('A testing  +[addprefix{currentTiddler}]',
+	     'A testing +[addprefix{currentTiddler}]',
+	     {wiki: wiki});
+});
+
 });});

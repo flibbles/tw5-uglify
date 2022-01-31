@@ -4,4 +4,5 @@ created: 20220000000000000
 ** `$let` widgets will be folded together if possible
 ** `$set` will be converted to `$let` when possible. It's always smaller.
 ** Better packing of widget and html tag attributes
+** <currentTiddler> becomes {!!title} in nearly all cases
 * Corrected issue where servers running uglify wouldn't uglify wikitext rules.

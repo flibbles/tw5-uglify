@@ -7,6 +7,7 @@ Uglifies filters.
 \*/
 
 var utils = require('../wikitext/utils.js');
+var rules = $tw.modules.getModulesByTypeAsHashmap("uglifyfilterrule");
 
 exports.type = "text/x-tiddler-filter";
 
@@ -21,6 +22,10 @@ exports.uglify = function(text, options) {
 			apostrophesAllowed: text.indexOf("'") >= 0,
 			bracketsAllowed: text.indexOf("]]") >= 0
 		};
+	for (var name in rules) {
+		// Let every rule have a chance to apply its magic
+		rules[name].transform(parseTree);
+	}
 	for (var i = 0; i < parseTree.length; i++) {
 		var run = parseTree[i];
 		if (run.prefix) {
