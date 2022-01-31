@@ -29,7 +29,7 @@ it('value types', function() {
 	test('\\define mac()stuff\n<$set name="v" value=<<mac>>>'+dump,
 		'\\define mac()stuff\n'+vars+' v=<<mac>>>'+dump);
 	test('<$set name="v" value=<<currentTiddler>>>'+dump,
-		vars+' v=<<currentTiddler>>>'+dump);
+		vars+' v={{!!title}}>'+dump);
 	// arguments can be switched around
 	test('<$set value="var" name="v">'+dump, vars+' v=var>'+dump);
 	// Make sure the closing tag is different too.

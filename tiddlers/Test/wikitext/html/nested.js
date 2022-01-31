@@ -76,7 +76,7 @@ it('handles filter attributes', function() {
 });
 
 it('handles broken filters', function() {
-	test('<$count filter=" [all[ " />', '<$count filter=" [all[ "/>');
+	test('<$count filter=[all[ />', '<$count filter=[all[/>');
 });
 
 it('handles both filter and wikitext attributes', function() {

@@ -53,7 +53,11 @@ exports.uglify = function() {
 			tagParts.push("={{", attr.textReference, "}}");
 			break;
 		case "macro":
-			tagParts.push("=<<", utils.stringifyMacro(attr.value, parser.source, parser),">>");
+			if (isCurrentTiddlerVar(attr)) {
+				tagParts.push("={{!!title}}");
+			} else {
+				tagParts.push("=<<", utils.stringifyMacro(attr.value, parser.source, parser),">>");
+			}
 			break;
 		case "filtered":
 			tagParts.push("={{{", utils.uglifyFilter(attr.filter,parser),"}}}");
@@ -121,6 +125,12 @@ exports.uglify = function() {
 	tree[0].text = tagParts.join('');
 	tree[0].tag = tag;
 	return tree;
+};
+
+function isCurrentTiddlerVar(attr) {
+	return (attr.type === "macro"
+		&& attr.value.name === "currentTiddler"
+		&& attr.value.params.length == 0);
 };
 
 function startOfBlock(source, pos, startOfBody) {

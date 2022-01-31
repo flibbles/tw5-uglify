@@ -86,6 +86,14 @@ it('valueless attributes', function() {
 	test("<div class=true id='this'>"+d, "<div class id=this>"+d);
 });
 
+it('currentTiddler attributes', function() {
+	test('<$text text=<<currentTiddler>> />', '<$text text={{!!title}}/>');
+	test('<$text text=<<currentTiddler  >> />', '<$text text={{!!title}}/>');
+	// No idea why it would have arguments, but it might
+	test('\\define currentTiddler(x)--$x$--\n<$text text=<<currentTiddler  a>> />',
+	     '\\define currentTiddler(x)--$x$--\n<$text text=<<currentTiddler a>>/>');
+});
+
 it('contents', function() {
 	test("B<$let  a='X'  >In</$let>A", "B<$let a=X>In</$let>A");
 	test("<$let  a='X'  >\n\nIn</$let>", "<$let a=X>\n\nIn");
