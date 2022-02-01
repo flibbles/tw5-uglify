@@ -151,4 +151,27 @@ it('<currentTiddler> becomes {!!title}', function() {
 	     {wiki: wiki});
 });
 
+it('all[current] becomes {!!title}', function() {
+	test('[all[current]addprefix[test]]', '[{!!title}addprefix[test]]');
+	test('[!all[current]addprefix[test]]', '[!all[current]addprefix[test]]');
+	test('[all[ current]addprefix[test]]', '[all[ current]addprefix[test]]');
+	test('[all[current ]addprefix[test]]', '[all[current ]addprefix[test]]');
+	test('[all[current],[other]addprefix[test]]',
+	     '[all[current],[other]addprefix[test]]');
+	test('[all:suffix[current]addprefix[test]]',
+	     '[all:suffix[current]addprefix[test]]');
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: 'current', text: 'tiddlers'});
+	test('[all{current}addprefix[test]]',
+	     '[all{current}addprefix[test]]', {wiki: wiki});
+	test('[all<current>addprefix[test]]', '[all<current>addprefix[test]]');
+	spyOn(console, "log");
+	try {
+		test('[all/current/addprefix[test]]', '[all/current/addprefix[test]]');
+	} catch(e) {
+		// Do nothing. Earlier versions of TiddlyWiki
+		// would throw if all//] was ever run as a filter.
+	}
+});
+
 });});

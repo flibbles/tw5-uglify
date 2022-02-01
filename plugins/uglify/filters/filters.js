@@ -63,20 +63,21 @@ exports.uglify = function(text, options) {
 					if (op.regexp.flags) {
 						bits.push("(", op.regexp.flags, ")");
 					}
-				}
-				for (var k = 0; k < op.operands.length; k++) {
-					var operand = op.operands[k];
-					if (!firstOperand) {
-						bits.push(',');
-					}
-					firstOperand = false;
-					if (operand.variable) {
-						var macro = $tw.utils.parseFilterVariable(operand.text);
-						bits.push('<',utils.stringifyMacro(macro, operand.text, options), '>');
-					} else if (operand.indirect) {
-						bits.push('{', operand.text, '}');
-					} else {
-						bits.push('[', operand.text, ']');
+				} else {
+					for (var k = 0; k < op.operands.length; k++) {
+						var operand = op.operands[k];
+						if (!firstOperand) {
+							bits.push(',');
+						}
+						firstOperand = false;
+						if (operand.variable) {
+							var macro = $tw.utils.parseFilterVariable(operand.text);
+							bits.push('<',utils.stringifyMacro(macro, operand.text, options), '>');
+						} else if (operand.indirect) {
+							bits.push('{', operand.text, '}');
+						} else {
+							bits.push('[', operand.text, ']');
+						}
 					}
 				}
 			}
