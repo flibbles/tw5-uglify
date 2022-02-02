@@ -174,4 +174,28 @@ it('all[current] becomes {!!title}', function() {
 	}
 });
 
+it('has[draft.of] becomes is[draft]', function() {
+	const wiki = new $tw.Wiki();
+	const s = "[all[]]F +";
+	wiki.addTiddlers([
+		{title: "A"}, {title:"Draft of 'A'", 'draft.of':"A", 'draft.title':"A"},
+		{title: "B"}, {title:"Draft of 'B'", 'draft.of':"B"},
+		{title: "C"}, {title:"Draft of 'C'", 'draft.of':"C"},
+		{title: "D"}, {title:"Draft of 'D'", 'draft.of':"", 'draft.title':""},
+		{title: "E"}]);
+	test(s+'[has[draft.of]]', s+'[is[draft]]', {wiki: wiki});
+	test(s+'[has{draft.of}]', s+'[has{draft.of}]', {wiki: wiki});
+	test(s+'[has<draft.of>]', s+'[has<draft.of>]', {wiki: wiki});
+	test(s+'[has:field[draft.of]]', s+'[has:field[draft.of]]', {wiki: wiki});
+	test(s+'[has:index[draft.of]]', s+'[has:index[draft.of]]', {wiki: wiki});
+	test(s+'[has[draft.of],[other]]', s+'[has[draft.of],[other]]',{wiki: wiki});
+
+	// draft.title mst be ignored. It is not a proper field to check for draft.
+	test('[has[draft.title]]', '[has[draft.title]]', {wiki: wiki});
+	// Because of an inconsistency with earlier versions of TiddlyWiki,
+	// We can't run this test with Draft of 'D'.
+	const sButNoD = "[all[]]F -[[Draft of 'D']]+";
+	test(sButNoD+'[!has[draft.of]]', sButNoD+'[!is[draft]]', {wiki: wiki});
+});
+
 });});
