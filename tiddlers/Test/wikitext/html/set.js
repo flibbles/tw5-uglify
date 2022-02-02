@@ -94,7 +94,7 @@ it('emptyValue & value to $let', function() {
 	     vars+' v={{{A -A +[then[yes]else[no]]}}}>'+dump);
 	// The filter string is allowed to have brackets
 	test('<$set name=v filter="[tag[A]]" value=yes emptyValue=no>'+dump,
-	     vars+' v={{{[tag[A]]+[then[yes]else[no]]}}}>'+dump);
+	     vars+' v={{{[tag[A]then[yes]else[no]]}}}>'+dump);
 	// If we don't have a "value", we can't do anything. Value is needed
 	// or else we can't set the variable correctly if emptyValue isn't used.
 	test('<$set name=v filter="A [[B C]]"  emptyValue=no>'+dump,
@@ -106,9 +106,9 @@ it('emptyValue & value to $let', function() {
 it('emptyValue & value with macrocalls', function() {
 	// Only the filter argument can be a macro parameter
 	test('\\define m(x) A -$x$\n<$set name=v filter=<<m B>> value=yes emptyValue=no>'+dump,
-	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m B>]+[then[yes]else[no]]}}}>'+dump);
+	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m B>then[yes]else[no]]}}}>'+dump);
 	test('\\define m(x) A -$x$\n<$set name=v filter=<<m A>> value=yes emptyValue=no>'+dump,
-	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>]+[then[yes]else[no]]}}}>'+dump);
+	     '\\define m(x)A -$x$\n<$let v={{{[subfilter<m A>then[yes]else[no]]}}}>'+dump);
 	// No other arguments benefit if they are macros
 	test('\\define m(b)test $b$\n<$set name=v filter="A -A" value=yes emptyValue=<<m  no>>>'+dump,
 	     '\\define m(b)test $b$\n<$set name=v filter="A -A"emptyValue=<<m no>>value=yes>'+dump);

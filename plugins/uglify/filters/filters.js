@@ -24,7 +24,7 @@ exports.uglify = function(text, options) {
 		};
 	for (var name in rules) {
 		// Let every rule have a chance to apply its magic
-		rules[name].transform(parseTree);
+		rules[name].transform(parseTree, options);
 	}
 	for (var i = 0; i < parseTree.length; i++) {
 		var run = parseTree[i];
@@ -89,7 +89,7 @@ exports.uglify = function(text, options) {
 };
 
 function runIsSingleTitle(run) {
-	if (run.operators.length === 1) {
+	if (run.operators.length === 1 && !run.namedPrefix) {
 		var op = run.operators[0];
 		if (op.operator === "title"
 		&& op.operands.length === 1

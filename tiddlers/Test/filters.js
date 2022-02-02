@@ -33,9 +33,12 @@ it('can uglify text/x-tiddler-filter', function() {
 it('processes filter operations', function() {
 	// manages all
 	test('[all[]]\n[prefix[B]]', '[all[]][prefix[B]]');
-	test('[all[]] +[prefix[B]]', '[all[]]+[prefix[B]]');
+	test('[all[]] +[prefix[B]]', '[all[]prefix[B]]');
 	test('[all[]] :or[prefix[B]]', '[all[]]:or[prefix[B]]');
 	test('[all[]] :or:arg[prefix[B]]', '[all[]]:or:arg[prefix[B]]');
+	test('A D +[[A]]', 'A D +A');
+	test('ABC DEF +[[ABC]]', 'ABC DEF +ABC');
+	test('ABC DEF :and[[ABC]]', 'ABC DEF :and[[ABC]]');
 
 	// manages all operators
 	test('[all[]addsuffix[B]]', '[all[]addsuffix[B]]');
@@ -196,6 +199,44 @@ it('has[draft.of] becomes is[draft]', function() {
 	// We can't run this test with Draft of 'D'.
 	const sButNoD = "[all[]]F -[[Draft of 'D']]+";
 	test(sButNoD+'[!has[draft.of]]', sButNoD+'[!is[draft]]', {wiki: wiki});
+});
+
+it(':and filter prefixes on second runs are merged', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddlers([
+		{title: "A", author: "bob"},
+		{title: "B", author: "bill"},
+		{title: "C", author: "nick"},
+		{title: "x]y", text: "x]y content"}]);
+	test("[enlist[1 2 3]] +[prefix[2]]",
+	     "[enlist[1 2 3]prefix[2]]", {wiki, wiki});
+	test("[enlist[1 2 3]] [prefix[A]] +[addsuffix[x]]",
+	     "[enlist[1 2 3]][prefix[A]]+[addsuffix[x]]", {wiki: wiki});
+	test("[enlist[1 2 3]] +[prefix[A]] +[addsuffix[x]]",
+	     "[enlist[1 2 3]prefix[A]addsuffix[x]]", {wiki: wiki});
+	test("[enlist[1 2 3]] :and[prefix[2]]",
+	     "[enlist[1 2 3]prefix[2]]", {wiki, wiki});
+	test("[enlist[1 2 3]] +[prefix[2]]",
+	     "[enlist[1 2 3]prefix[2]]", {wiki, wiki});
+	// Might change quotes to brackets, but only if brackets allowed
+	test("'1 2' +[addprefix[x]]", "[[1 2]addprefix[x]]", {wiki: wiki});
+	test("'1 2' +'3 4'", "'1 2'+'3 4'", {wiki: wiki});
+	test("[<A]>] +[addprefix[x]]", "[<A]>addprefix[x]]",
+	     {wiki: wiki, prefix: "\\define A]()--A--\n"});
+	test("[{x]y}] +[addprefix[x]]", "[{x]y}addprefix[x]]", {wiki: wiki});
+	// These titles can't be a part of a run. Can only be quoted.
+	test("'x]y' +[addsuffix[x]]", "'x]y'+[addsuffix[x]]", {wiki: wiki});
+	test("[[1 2]] +'x]y'", "'1 2'+'x]y'", {wiki: wiki});
+	// I can't for the life of me figure out a prefix on the first
+	// run which breaks it, but I also I can't find one that does
+	// anything meaningful, so I might as well disallow it.
+	test("-[[B]] +[addprefix[x]]", "-B +[addprefix[x]]", {wiki: wiki});
+	test(":filter[[B]] +[addprefix[x]]", ":filter[[B]]+[addprefix[x]]", {wiki: wiki});
+	// Let's make sure those deprecated regexp operands are okay
+	spyOn(console, "log");
+	test("[author/b/] +[author/i/] [[1 2]]",
+	     "[author/b/author/i/][[1 2]]", {wiki, wiki});
+	// TODO: first run can't have a prefix I think. Named prefixes too
 });
 
 });});
