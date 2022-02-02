@@ -20,7 +20,7 @@ exports.uglify = function(text, options) {
 			wiki: options.wiki,
 			placeholders: options.placeholders,
 			apostrophesAllowed: text.indexOf("'") >= 0,
-			bracketsAllowed: text.indexOf("]]") >= 0
+			bracketsAllowed: text.indexOf("]") >= 0
 		};
 	for (var name in rules) {
 		// Let every rule have a chance to apply its magic

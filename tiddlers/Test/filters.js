@@ -81,7 +81,8 @@ it('titles and the spaces between them', function() {
 
 it('titles with weird and dangerous titles', function() {
 	test('"[[open]] and close"', '"[[open]] and close"');
-	test('"brac[ets" "brac]ets"', '"brac[ets""brac]ets"');
+	test('"brac[ets" "brackets"', '"brac[ets"brackets');
+	test('"brac[ets" "brac]ets"', '[[brac[ets]]"brac]ets"');
 	test('"brac[ets" "brac]ets" [[A]]', '[[brac[ets]]"brac]ets"A');
 	test('"[item"', '"[item"');
 	test('"cats \'dogs" \'A\'', '"cats \'dogs"A');
@@ -221,6 +222,7 @@ it(':and filter prefixes on second runs are merged', function() {
 	// Might change quotes to brackets, but only if brackets allowed
 	test("'1 2' +[addprefix[x]]", "[[1 2]addprefix[x]]", {wiki: wiki});
 	test("'1 2' +'3 4'", "'1 2'+'3 4'", {wiki: wiki});
+	test("[{A}] +[addsuffix{B}]", "[{A}addsuffix{B}]", {wiki: wiki});
 	test("[<A]>] +[addprefix[x]]", "[<A]>addprefix[x]]",
 	     {wiki: wiki, prefix: "\\define A]()--A--\n"});
 	test("[{x]y}] +[addprefix[x]]", "[{x]y}addprefix[x]]", {wiki: wiki});
@@ -236,7 +238,6 @@ it(':and filter prefixes on second runs are merged', function() {
 	spyOn(console, "log");
 	test("[author/b/] +[author/i/] [[1 2]]",
 	     "[author/b/author/i/][[1 2]]", {wiki, wiki});
-	// TODO: first run can't have a prefix I think. Named prefixes too
 });
 
 });});

@@ -16,7 +16,7 @@ type: text/vnd.tiddlywiki
 \whitespace trim
 <$set name="tv-wikilinks" value="no">
 	<$transclude field="caption">
-		<$text text={{{ [all[current]] +[removeprefix<path>] +[else<currentTiddler>] }}} />
+		<$text text={{{ [all[current]removeprefix<path>] +[else<currentTiddler>] }}} />
 	</$transclude>
 </$set>
 \end
