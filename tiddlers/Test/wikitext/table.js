@@ -39,11 +39,19 @@ it('cell merging', function() {
 	// Merge down after merge right
 	test("|1|<|2|3|\n|4|5|~|6|",
 	     "|1|<|2|3|\n|4|5|~|6|");
-	// Broken merges
-	/*
-	test("|1|2|>|\n|3|4|5|",
-	     "|1|2|>|\n|3|4|5|");
-	*/
+	test("|1|2|3|\n|4|5|~|",
+	     "|1|2|3|\n|4|5|~|");
+});
+
+it('broken cell merging', function() {
+	test("|1|2|>|\n|3|4|5|", "|1|2|>|\n|3|4|5|");
+	test("|1|2|3|\n|<|4|5|", "|1|2|3|\n|<|4|5|");
+	test("|1|~|2|\n|3|4|5|", "|1|2|\n|3|4|5|");
+	test("|~|~|~|\n|3|4|5|", "|>|\n|3|4|5|");
+	test("|1|2|3|\n|<|<|<|", "|1|2|3|\n|<|<|<|");
+	test("|1|2|3|\n|>|>|>|", "|1|2|3|\n|>|");
+	test("|1|2|3|\n|4|~|<|\n|5|6|7|", "|1|2|3|\n|4|~|<|\n|5|6|7|");
+	test("|1|2|3|\n|>|~|4|\n|5|6|7|8|", "|1|2|<|3|\n|4|~|\n|5|6|7|8|");
 });
 
 it('newlines after table', function() {
@@ -59,6 +67,10 @@ it('newlines after table', function() {
 	     "| A1 | <$text text=B1/> |\n| A2 | B2 |\nContent");
 	test("| A1 | <$text text='B1'/> |\r\n| A2 | B2 |\r\n\r\nContent",
 	     "| A1 | <$text text=B1/> |\n| A2 | B2 |\nContent");
+	test("| A1 | <$text text='B1'/> |\n| A2 | B2 |\n   Content",
+	     "| A1 | <$text text=B1/> |\n| A2 | B2 |\nContent");
+	test("<div>\n\n| A1 | <$text text='B1'/> |\n| A2 | B2 |\n</div>",
+	     "<div>\n\n| A1 | <$text text=B1/> |\n| A2 | B2 |");
 });
 
 });});

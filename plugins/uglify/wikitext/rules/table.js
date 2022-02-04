@@ -17,16 +17,21 @@ exports.uglify = function() {
 		var tBody = bodies[i];
 		var rows = tBody.children;
 		for (var rowCount = 0; rowCount < rows.length; rowCount++) {
-			var tr = rows[rowCount];
+			var tr = rows[rowCount],
+				colCount = 0;
 			if (rowCount > 0) {
 				delim += "\n";
 			}
 			delim += "|";
-			for (var j= 0, colCount = 0; j < tr.children.length; j++, colCount++) {
+			if (tr.children.length == 0) {
+				// Broken case where all cells in top row merge up.
+				delim = delim + ">|";
+			}
+			for (var j= 0; j < tr.children.length; j++, colCount++) {
 				var td = tr.children[j],
 					align = getAttr(td, "align"),
 					valign = getAttr(td, "valign"),
-					colspan = getAttr(td, "colspan", 1),
+					colspan = getAttr(td, "colspan", 0),
 					rowspan = getAttr(td, "rowspan", 1);
 				if (mergeDown[colCount] && mergeDown[colCount] > 1) {
 					// We need to add a row merge.
@@ -49,14 +54,33 @@ exports.uglify = function() {
 				}
 				bits.push({text: delim});
 				delim = (align === "center" || align === "left") ? " |" : "|";
+				if (colspan == 1) {
+					// This is a special case to handle a broken table where
+					// the right most cell merges right.
+					delim = delim + ">|";
+				}
 				while (colspan > 1) {
-					delim = delim + "<|";
-					colspan--;
 					// We're now a column to the right.
 					colCount++;
+					if (mergeDown[colCount] && mergeDown[colCount] > 1) {
+						// Broken case: an upper cell tried to merge down
+						// into a merged row of cells
+						delim = delim + "~|";
+						mergeDown[colCount]--;
+					} else {
+						delim = delim + "<|";
+						colspan--;
+					}
 				}
 				bits.push.apply(bits, td.children);
 			}
+			for (; colCount < mergeDown.length; colCount++) {
+				if (mergeDown[colCount] && mergeDown[colCount] > 1) {
+					delim = delim + "~|";
+					mergeDown[colCount]--;
+				}
+			}
+
 		}
 	}
 	bits.push({text: delim});
