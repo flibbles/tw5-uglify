@@ -19,7 +19,7 @@ exports.uglify = function() {
 		for (var rowCount = 0; rowCount < rows.length; rowCount++) {
 			var tr = rows[rowCount],
 				colCount = 0;
-			if (rowCount > 0) {
+			if (rowCount > 0 || i > 0) {
 				delim += "\n";
 			}
 			delim += "|";
@@ -52,6 +52,10 @@ exports.uglify = function() {
 				if (align === "center" || align === "right") {
 					delim = delim + " ";
 				}
+				// If this is a header cell, then make it so.
+				if (td.tag === "th") {
+					delim = delim + "!";
+				}
 				bits.push({text: delim});
 				delim = (align === "center" || align === "left") ? " |" : "|";
 				if (colspan == 1) {
@@ -80,7 +84,11 @@ exports.uglify = function() {
 					mergeDown[colCount]--;
 				}
 			}
-
+			if (tBody.tag === "thead") {
+				delim = delim + "h";
+			} else if (tBody.tag === "tfoot") {
+				delim = delim + "f";
+			}
 		}
 	}
 	bits.push({text: delim});
