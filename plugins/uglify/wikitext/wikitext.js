@@ -296,6 +296,26 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	return tree;
 };
 
+WikiWalker.prototype.amendRules = function(type, names) {
+	WikiParser.prototype.amendRules.call(this, type, names);
+	var list;
+	if(type === "only") {
+		list = "whitelist";
+	} else if(type === "except") {
+		list = "blacklist";
+	} else {
+		return;
+	}
+	this[list] = this[list] || Object.create(null);
+	for (var i = 0; i < names.length; i++) {
+		this[list][names[i]] = true;
+	}
+};
+
+WikiWalker.prototype.ruleAllowed = function(name) {
+	return (!this.whitelist || this.whitelist[name]) && (!this.blacklist || !this.blacklist[name]);
+};
+
 function postProcess() {
 	// First, we use longform for anything if we have to keep trim around
 	var i;

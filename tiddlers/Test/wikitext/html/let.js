@@ -78,6 +78,26 @@ ifLetIt("folds inline together", function() {
 	       '<$let x=X y=Y>'+d+'</$let>\n\nX');
 });
 
+ifLetIt("does not fold if comments not allowed", function() {
+	const lets = '\n<$let x=X>\n<$let y=Y>\n'+d+'\n';
+	test('\\rules except commentinline'+lets,
+	     '\\rules except commentinline'+lets);
+	test('\\rules only html'+lets,
+	     '\\rules only html'+lets);
+	test('\\rules except prettylink\n\\rules only html'+lets,
+	     '\\rules except prettylink\n\\rules only html'+lets);
+	test('\\rules except commentinline\n\\rules only html commentinline'+lets,
+	     '\\rules except commentinline\n\\rules only html commentinline'+lets);
+	// We can still fold with comments disabled if we're trimming whitespace
+	test(t+'\\rules except commentinline'+lets,
+	       '\\rules except commentinline\n<$let x=X y=Y>'+d);
+	// Rules disabling uses their own context
+	test('\\rules except commentinline\n\\define M()\n'+lets+'\\end'+lets+"\n<<M>>",
+	     '\\rules except commentinline\n\\define M()\n<$let x=X y=Y>\n<!---->\n'+d+'\n\\end'+lets+"\n<<M>></$let>");
+	test('\\define M()\n\\rules except commentinline'+lets+'\\end'+lets+"\n<<M>>",
+	     '\\define M()\n\\rules except commentinline'+lets+'\\end\n<$let x=X y=Y>\n<!---->\n'+d+"\n\n<<M>></$let>");
+});
+
 ifLetIt("inline string inside other widgets", function() {
 	test(  '<div>\n<$let x=X>\n<$let y=Y>\n'+d+'\n</$let></$let></div>',
 	       '<div>\n<$let x=X y=Y>\n<!---->\n'+d+'\n');

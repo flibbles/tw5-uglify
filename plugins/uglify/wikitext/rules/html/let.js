@@ -28,10 +28,17 @@ exports["$let"] = function(tag, parser) {
 		&& last.text == "</$let>"
 		&& last.start == first.tag.start // Ensure open and close tags match
 		&& canFold(tag.isBlock, first.tag.isBlock, startTagGap, endTagGap, children[firstIndex+1], parser)) {
+			var dummyRequired = !tag.isBlock && removalWillCauseBlock(children, firstIndex);
+			if (dummyRequired && !parser.ruleAllowed("commentinline")) {
+				// We'd need to put a dummy in place to maintain proper
+				// block rendering, but comments are disabled.
+				// Nothing we can do.
+				return;
+			}
 			tag.orderedAttributes.push.apply(tag.orderedAttributes, first.tag.orderedAttributes);
 			// Remove that inner closing tag
 			children.splice(lastIndex, 1);
-			if (!tag.isBlock && removalWillCauseBlock(children, firstIndex)) {
+			if (dummyRequired) {
 				// We can't remove it without risking changing rendering.
 				// We'll put in a dummy comment
 				children[firstIndex] = {text: "<!---->", tail: true};

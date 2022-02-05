@@ -116,8 +116,8 @@ it('classes', function() {
 it('placeholders', function() {
 	// Honestly, I'm so sure this will be broken, but I can't think of a
 	// test where placeholders break tables.
-	test("\\define X()X|Y\n\\define M()\n|A|B|C|D|\n|>|$(X)$|F|\n\\end\n<<M>>",
-	     "\\define X()X|Y\n\\define M()\n|A|B|C|D|\n|>|$(X)$|F|\n\\end\n<<M>>");
+	test("\\define X()X|Y\n\\define M()\nBefore\n\n|A|B|C|D|\n|>|$(X)$|F|\nAfter\n\\end\n<<M>>",
+	     "\\define X()X|Y\n\\define M()\nBefore\n\n|A|B|C|D|\n|>|$(X)$|F|\nAfter\n\\end\n<<M>>");
 });
 
 it('newlines after table', function() {
