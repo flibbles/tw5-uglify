@@ -4,6 +4,12 @@ created: 20220000000000000
 ** `$let` widgets will be folded together if possible
 ** `$set` will be converted to `$let` when possible. It's always smaller.
 ** Better packing of widget and html tag attributes
-** <currentTiddler> becomes {!!title} in nearly all cases
+** <currentTiddler> attributes becomes {!!title} in nearly all cases
+** filters will now uglify! Besides compressing whitespace, they'll...
+*** convert has[draft.of] to is[draft] in all cases
+*** convert all[current] and <currentTiddler> to {!!title} in all cases.
+*** Merges runs in some cases (e.g. `[all[tags]] +[!has[field]]` -> `[all[tags]!has[field]]`)
+** All content emphasis wikitext will now compress
+** All content in tables will now compress
 * Corrected issue where servers running uglify wouldn't uglify wikitext rules.
 * Changed server caching directory from ".cache" to ".cache/uglify" since other plugins may be using the ".cache" directory too. This will cause some junk to be left over, which you can get rid of by deleting your ".cache" directory after upgrading.
