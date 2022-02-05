@@ -81,6 +81,45 @@ it('footer rows', function() {
 	test("|1|2|3|f\n|4|5|6|\n|7|8|9|f", "|1|2|3|f\n|4|5|6|\n|7|8|9|f");
 });
 
+it('caption', function() {
+	test("|1|2|3|\n| <$text text='Caption' /> |c",
+	     "| <$text text=Caption/> |c\n|1|2|3|");
+	test("|1|2|3|\n| cap | tion |c",
+	     "| cap | tion |c\n|1|2|3|");
+	test(t+"| 1 |  2|3  |\n| <$text text='Caption' /> |c",
+	     "|<$text text=Caption/>|c\n| 1 | 2|3 |");
+	test("| A |c\n| B |c\n|1|2|<$text text='3'/>|",
+	     "| B |c\n|1|2|<$text text=3/>|");
+	test("Cats\n\n|1|2|3|\n| A |c\n| B |c\n|4|5|6|\nLove",
+	     "Cats\n\n|1|2|3|\n| A |c\n| B |c\n|4|5|6|\nLove");
+	// This souldn't be changed because it has wonky captions.
+	// If captions in TW are ever fixed to handle mutliple captions,
+	// we can come back and change this test.
+	test("X\n\n| A |c\n|1|2|<$text text='3'/>|\n| B |c",
+	     "X\n\n| A |c\n|1|2|<$text text='3'/>|\n| B |c");
+	// Only captions
+	test("| <$text text='Caption' /> |c",
+	     "| <$text text=Caption/> |c");
+	test("| <$text text='Caption' /> |c\n\nContent",
+	     "| <$text text=Caption/> |c\nContent");
+});
+
+it('classes', function() {
+	test("| myclass |k\n|1|2|3|", "|1|2|3|\n| myclass |k");
+	test("|1|2|3|\n| myclass |k", "|1|2|3|\n| myclass |k");
+	test("|1|2|3|\n| myclass |k\n| second |k", "|1|2|3|\n|myclass  second |k");
+	test("| myclass |k", "| myclass |k");
+	test("| myclass |k\n", "| myclass |k");
+	test("| myclass |k\nContent", "| myclass |k\nContent");
+});
+
+it('placeholders', function() {
+	// Honestly, I'm so sure this will be broken, but I can't think of a
+	// test where placeholders break tables.
+	test("\\define X()X|Y\n\\define M()\n|A|B|C|D|\n|>|$(X)$|F|\n\\end\n<<M>>",
+	     "\\define X()X|Y\n\\define M()\n|A|B|C|D|\n|>|$(X)$|F|\n\\end\n<<M>>");
+});
+
 it('newlines after table', function() {
 	test("| A1 | <$text text='B1'/> |\n| A2 | B2 |",
 	     "| A1 | <$text text=B1/> |\n| A2 | B2 |");

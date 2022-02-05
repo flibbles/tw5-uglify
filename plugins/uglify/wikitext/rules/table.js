@@ -9,13 +9,35 @@ var utils = require("../utils.js");
 exports.name = "table";
 
 exports.uglify = function() {
-	var bodies = this.parse()[0].children;
-	var bits = [],
+	var start = this.parser.pos,
+		table = this.parse()[0],
+		bodies = table.children,
+		bits = [],
 		delim = "",
-		mergeDown = [];
+		mergeDown = [],
+		tBody;
+	if (this.parser.placeholders) {
+		// I'm not sure I'm ready to handle placeholders inside the table.
+		// Skip.
+		return this.parser.source.substring(start, this.parser.pos);
+	}
 	for (var i = 0; i < bodies.length; i++) {
-		var tBody = bodies[i];
+		tBody = bodies[i];
 		var rows = tBody.children;
+		if (tBody.tag === "caption") {
+			if (i > 0) {
+				// This caption wasn't the first element, which is illegal.
+				// This table is doing some broken caption stuff, and we
+				// won't support it.
+				// Return the table unchanged.
+				return this.parser.source.substring(start, this.parser.pos);
+			}
+			delim += "|";
+			bits.push({text: delim});
+			bits.push.apply(bits, tBody.children);
+			delim = "|c";
+			continue;
+		}
 		for (var rowCount = 0; rowCount < rows.length; rowCount++) {
 			var tr = rows[rowCount],
 				colCount = 0;
@@ -92,6 +114,14 @@ exports.uglify = function() {
 		}
 	}
 	bits.push({text: delim});
+	if (table.attributes && table.attributes.class) {
+		if (i > 0) {
+			bits.push({text: "\n"});
+		}
+		bits.push({text: "|"});
+		bits.push({text: table.attributes.class.value});
+		bits.push({text: "|k"});
+	}
 	bits.push({text: "\n", tail: true});
 	// Tables are always blocks, so we can be sure that the whitespace after
 	// them will always be trimmed regardless of whitespace status
