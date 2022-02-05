@@ -6,3 +6,4 @@ created: 20220000000000000
 ** Better packing of widget and html tag attributes
 ** <currentTiddler> becomes {!!title} in nearly all cases
 * Corrected issue where servers running uglify wouldn't uglify wikitext rules.
+* Changed server caching directory from ".cache" to ".cache/uglify" since other plugins may be using the ".cache" directory too. This will cause some junk to be left over, which you can get rid of by deleting your ".cache" directory after upgrading.

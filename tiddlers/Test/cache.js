@@ -101,7 +101,7 @@ if ($tw.node) {
 		var wiki = new $tw.Wiki();
 		// defaults to .cache
 		var name = $tw.utils.test.uniqName();
-		var path = './.cache/'+name+'.tid';
+		var path = './.cache/uglify/'+name+'.tid';
 		var info = await cache(wiki, name, 'textContent', () => 'output');
 		expect(info.saved).toBe(true);
 		await fs.access(path); // ensure it exists
@@ -208,7 +208,7 @@ if ($tw.node) {
 		const wiki = new $tw.Wiki();
 		function test(input, expected) {
 			const output = library.generateCacheFilepath(wiki, input);
-			const cacheDir = '/.cache/';
+			const cacheDir = '/.cache/uglify/';
 			const start = output.indexOf(cacheDir) + cacheDir.length;
 			expect(output.substr(start)).toBe(expected);
 		};
