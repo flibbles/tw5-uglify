@@ -14,7 +14,7 @@ var parseutils = require('./utils.js');
 
 exports.uglify = function(text, options) {
 	var parser = new WikiWalker(undefined, text, options);
-	return parseutils.joinNodeArray(parser.tree);
+	return {text: parseutils.joinNodeArray(parser.tree)};
 };
 
 function collectRules() {

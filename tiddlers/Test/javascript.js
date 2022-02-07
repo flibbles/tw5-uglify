@@ -12,7 +12,7 @@ describe('javascript uglifier', function() {
 
 function compress(input, title) {
 	title = title || 'test';
-	return $tw.wiki.getUglifier('application/javascript').uglify(input);
+	return $tw.wiki.getUglifier('application/javascript').uglify(input).text;
 };
 
 function exec(text) {
@@ -48,7 +48,7 @@ it('minifies variables at top level scope', function() {
 
 function sourceMap(input, title) {
 	title = title || 'test';
-	return $tw.wiki.getUglifier('application/javascript').map(input, title);
+	return $tw.wiki.getUglifier('application/javascript').uglify(input, title).map;
 };
 
 it('generates source map', function() {

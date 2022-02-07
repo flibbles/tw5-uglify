@@ -25,7 +25,8 @@ exports.before = ['commands'];
 var old = $tw.utils.appendSourceURL;
 
 $tw.utils.appendSourceURL = function(code, filename) {
-	if (filename.startsWith("$:/plugins/flibbles/filters/js/w")) {
+	const tempPrefix = "$:/plugins/flibbles/filters/js/w";
+	if (filename.substr(0,tempPrefix.length) === tempPrefix) {
 		return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
 	} else {
 		return old(code, filename);

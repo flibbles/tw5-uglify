@@ -24,7 +24,7 @@ it("supports IE11", function() {
 				if (tiddler.type !== "application/javascript") {
 					continue;
 				}
-				expect(tiddler.text.search(regExp)).toBe(-1);
+				expect(tiddler.text.search(regExp)).toBe(-1, "Found non-IE11 functions in " + title);
 			}
 		}
 	});

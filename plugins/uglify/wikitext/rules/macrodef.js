@@ -39,7 +39,7 @@ exports.uglify = function() {
 	};
 	strings.push(")");
 	var options = {wiki: this.parser.wiki, placeholders: placeholders};
-	var text = uglifier.uglify(def.attributes.value.value, options);
+	var text = uglifier.uglify(def.attributes.value.value, options).text;
 	if (text.indexOf("\n") >= 0 || $tw.utils.skipWhiteSpace(text,0) > 0) {
 		strings.push("\n", text, "\n\\end");
 	} else if(text.length == 0) {

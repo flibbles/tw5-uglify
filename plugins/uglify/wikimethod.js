@@ -51,7 +51,7 @@ exports.getTiddlerUglifiedText = function(title, options) {
 			uglifier = {uglify: function(text, title) {
 				var newInfo = $tw.utils.extend({}, pluginInfo);
 				newInfo.tiddlers = compressSubtiddlers(wiki, title, pluginInfo);
-				return JSON.stringify(newInfo, null);
+				return {text: JSON.stringify(newInfo, null)};
 			}};
 		} else {
 			uglifier = wiki.getUglifier(tiddler.fields.type);
@@ -129,7 +129,7 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 
 function compressOrNot(uglifier, title, text, wiki) {
 	try {
-		return uglifier.uglify(text, {wiki: wiki});
+		return uglifier.uglify(text, {wiki: wiki}).text;
 	} catch (e) {
 		logger.warn(compileFailureWarning(title, e));
 		// Return the uncompressed text as a backup

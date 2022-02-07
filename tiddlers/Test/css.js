@@ -11,7 +11,7 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 describe('stylesheet uglifier', function() {
 
 function compress(input) {
-	return $tw.wiki.getUglifier('text/css').uglify(input);
+	return $tw.wiki.getUglifier('text/css').uglify(input).text;
 };
 
 it('handles', function() {

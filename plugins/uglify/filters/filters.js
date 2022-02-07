@@ -85,7 +85,7 @@ exports.uglify = function(text, options) {
 			needsSpace = false;
 		}
 	}
-	return bits.join('');
+	return {text: bits.join('')};
 };
 
 function runIsSingleTitle(run) {
