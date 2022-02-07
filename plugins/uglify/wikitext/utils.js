@@ -17,32 +17,30 @@ exports.joinNodeArray = function(array) {
 	return string.join('');
 };
 
-exports.stringifyMacro = function(macro, parser) {
-	var strings = ["<<", macro.name];
+exports.stringifyMacro = function(macro, source, options) {
+	var strings = [macro.name];
 	$tw.utils.each(macro.params, function(param) {
 		strings.push(" ");
 		if (param.name) {
 			strings.push(param.name, ":");
 		}
-		if (parser.containsPlaceholder(param.value)) {
-			strings.push(getOriginalQuoting(param, parser));
+		if (options.placeholders && options.placeholders.present(param.value)) {
+			strings.push(getOriginalQuoting(param, source));
 		} else {
-			strings.push(exports.quotifyParam(param.value, parser));
+			strings.push(exports.quotifyParam(param.value, false, options));
 		}
 	});
-	strings.push(">>");
 	return strings.join("");
 };
 
-exports.quotifyParam = function(param, parser, options) {
-	var allowBrackets = options && options.allowBrackets;
+exports.quotifyParam = function(param, allowBrackets, options) {
 	if (param.search(/[\s"']/) < 0 && param.length > 0 && (allowBrackets || param.indexOf(">") < 0)) {
 		return param;
 	}
-	if (parser.apostrophesAllowed && param.indexOf("'") < 0) {
+	if (options.apostrophesAllowed && param.indexOf("'") < 0) {
 		return "'" + param + "'";
 	}
-	if (parser.bracketsAllowed && param.indexOf("]") < 0) {
+	if (options.bracketsAllowed && param.indexOf("]") < 0) {
 		return "[[" + param + "]]";
 	}
 	if (param.indexOf('"') < 0) {
@@ -68,6 +66,17 @@ exports.newlineAt = function(source, pos) {
 	}
 };
 
+exports.uglifyFilter = function(text, options) {
+	var uglifier = options.wiki.getUglifier('text/x-tiddler-filter');
+	try {
+		return uglifier.uglify(text, options);
+	} catch (e) {
+		// We swallow the error here. Just assume parsing the filter
+		// failed because it had weird placeholders in it or something.
+		return text.trim();
+	}
+};
+
 var _letAvail;
 
 exports.letAvailable = function() {
@@ -77,28 +86,80 @@ exports.letAvailable = function() {
 	return _letAvail;
 };
 
-function getOriginalQuoting(param, parser) {
-	var text = parser.source,
-		string = param.value,
-		pos = $tw.utils.skipWhiteSpace(text, param.start);
+function getOriginalQuoting(param, source) {
+	var string = param.value,
+		pos = $tw.utils.skipWhiteSpace(source, param.start);
 	if (param.name) {
 		pos += param.name.length;
-		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos = $tw.utils.skipWhiteSpace(source, pos);
 		pos++; // SKip over that ":"
-		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos = $tw.utils.skipWhiteSpace(source, pos);
 	}
-	if (text.substr(pos,3) === '"""') {
+	if (source.substr(pos,3) === '"""') {
 		return '"""' + string + '"""';
 	}
-	if (text[pos] === '"') {
+	if (source[pos] === '"') {
 		return '"' + string + '"';
 	}
-	if (text[pos] === "'") {
+	if (source[pos] === "'") {
 		return "'" + string + "'";
 	}
-	if (text.substr(pos,2) === "[[") {
+	if (source.substr(pos,2) === "[[") {
 		return "[[" + string + "]]";
 	}
 	return string;
 };
 
+exports.bestQuoteForAttribute = function(attr, parser) {
+	var string = attr.value;
+	if (parser.placeholders && parser.placeholders.present(string)) {
+		// This string contains a placeholder. We can't change the quoting
+		// Figure out what the quoting used to be.
+		var text = parser.source,
+			pos = $tw.utils.skipWhiteSpace(text, attr.start);
+		// There may have been a name change, so we
+		// use an old name if it's present.
+		pos += (attr.oldName || attr.name).length;
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		pos++; // Skip right over that "="
+		pos = $tw.utils.skipWhiteSpace(text, pos);
+		if (text.substr(pos,3) === '"""') {
+			return '"""' + string + '"""';
+		}
+		if (text[pos] === '"') {
+			return '"' + string + '"';
+		}
+		if (text[pos] === "'") {
+			return "'" + string + "'";
+		}
+		return string;
+	}
+	if (string.search(/[\/\s<>"'=]/) < 0 && string.length > 0) {
+		return string;
+	}
+	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {
+		return "'" + string + "'";
+	}
+	if (string.indexOf('"') < 0) {
+		return '"' + string + '"';
+	}
+	return '"""' + string + '"""';
+};
+
+// This optimization puts an attribute that does not need quotes at the end
+// That way we don't have to put a space after it.
+// This optimization will save exactly 1 byte. Fuck yeah...
+exports.optimizeAttributeOrdering = function(orderedAttrs, parser) {
+	if (orderedAttrs) {
+		for (var i = orderedAttrs.length-1; i >= 0; i--) {
+			var attr = orderedAttrs[i];
+			if (attr.type === "string"
+			&& exports.bestQuoteForAttribute(attr, parser) === attr.value) {
+				// Fuck yeah. Save that byte.
+				orderedAttrs.splice(i, 1);
+				orderedAttrs.push(attr);
+				break;
+			}
+		}
+	}
+}

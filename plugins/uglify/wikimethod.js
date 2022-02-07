@@ -59,7 +59,7 @@ exports.getTiddlerUglifiedText = function(title, options) {
 		if (uglifier) {
 			cache.text = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 				logger.log('Compressing:', title);
-				return uglifier.uglify(tiddler.fields.text, title, {wiki:wiki});
+				return compressOrNot(uglifier, title, tiddler.fields.text,wiki);
 			}, options.onComplete);
 		} else {
 			cache.text = tiddler.fields.text || '';
@@ -120,9 +120,30 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 		}
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
-			abridgedFields.text = uglifier.uglify(fields.text, title, options);
+			abridgedFields.text = compressOrNot(uglifier, title, fields.text, wiki);
 		}
 		newTiddlers[title] = abridgedFields;
 	}
 	return newTiddlers;
+};
+
+function compressOrNot(uglifier, title, text, wiki) {
+	try {
+		return uglifier.uglify(text, {wiki: wiki});
+	} catch (e) {
+		logger.warn(compileFailureWarning(title, e));
+		// Return the uncompressed text as a backup
+		return text;
+	}
+};
+
+function compileFailureWarning(title, error) {
+	var reportFields = ['message', 'line', 'col', 'pos'];
+	var dataString = 'Failed to compress ' + title + '\n';
+	$tw.utils.each(reportFields, function(field) {
+		if (error[field]) {
+			dataString += "\n    * " + field + ": " + error[field];
+		}
+	});
+	return dataString;
 };

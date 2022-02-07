@@ -16,7 +16,7 @@ type: text/vnd.tiddlywiki
 \whitespace trim
 <$set name="tv-wikilinks" value="no">
 	<$transclude field="caption">
-		<$text text={{{ [all[current]removeprefix<path>else{!!title}] }}} />
+		<$text text={{{ [all[current]removeprefix<path>] +[else<currentTiddler>] }}} />
 	</$transclude>
 </$set>
 \end
@@ -33,7 +33,7 @@ type: text/vnd.tiddlywiki
 		<li>
 			<$list
 				filter="[all[current]toc-link[no]]"
-				emptyMessage="""<$link to={{{ [<currentTiddler>get[target]else<currentTiddler>] }}}><<caption>></$link>""">
+				emptyMessage="""<$link to=<<currentTiddler>> ><<caption>></$link>""">
 				<<caption>>
 			</$list>
 			<!-- We set up a path to prune from all children of this item -->

@@ -5,6 +5,7 @@ Uglify rule for <<macros and:params>>
 \*/
 
 var utils = require("../utils.js");
+var PlaceholderList = require("../placeholderList.js");
 
 exports.name = "macrodef";
 
@@ -12,7 +13,7 @@ exports.uglify = function() {
 	var def = this.parseWithMarkers()[0];
 	var uglifier = this.parser.wiki.getUglifier("text/vnd.tiddlywiki");
 	var strings = ['\\define ', def.attributes.name.value, "("];
-	var placeholders = Object.create(this.parser.placeholders);
+	var placeholders = new PlaceholderList(this.parser.placeholders);
 	for (var index = 0; index < def.params.length; index++) {
 		var param = def.params[index];
 		if (index > 0) {
@@ -28,17 +29,17 @@ exports.uglify = function() {
 		strings.push(param.name);
 		if (param.default) {
 			strings.push(":");
-			if (this.parser.containsPlaceholder(param.default)) {
+			if (this.parser.placeholders && this.parser.placeholders.present(param.default)) {
 				strings.push(getOriginalQuoting(param, this.parser));
 			} else {
-				strings.push(utils.quotifyParam(param.default, this.parser, {allowBrackets: true}));
+				strings.push(utils.quotifyParam(param.default, true, this.parser));
 			}
 		}
-		placeholders[param.name] = true;
+		placeholders.add(param.name);
 	};
 	strings.push(")");
 	var options = {wiki: this.parser.wiki, placeholders: placeholders};
-	var text = uglifier.uglify(def.attributes.value.value, null, options);
+	var text = uglifier.uglify(def.attributes.value.value, options);
 	if (text.indexOf("\n") >= 0 || $tw.utils.skipWhiteSpace(text,0) > 0) {
 		strings.push("\n", text, "\n\\end");
 	} else if(text.length == 0) {

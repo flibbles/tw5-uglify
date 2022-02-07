@@ -4,7 +4,17 @@ Uglify html rule for uglifying wikitext attributes of various widgets.
 
 \*/
 
-var widgetList = {
+var filterList = {
+	"$count": ["filter"],
+	"$draggable": ["filter"],
+	"$encrypt": ["filter"],
+	"$importvariables": ["filter"],
+	"$list": ["filter"]
+	//"$setvariable": ["filter"], // handled in its own module
+	//"$set": ["filter"] // handled in its own module
+};
+
+var wikitextList = {
 	"$button": ["actions"],
 	"$checkbox": ["actions", "uncheckactions", "checkactions"],
 	"$droppable": ["actions"],
@@ -22,16 +32,27 @@ var widgetList = {
 
 //eventcatcher: "all attributes that start with $, or something like that
 
-$tw.utils.each(widgetList, function(attributeArray, widget) {
+var masterList = $tw.utils.extend({}, filterList, wikitextList);
+
+$tw.utils.each(Object.keys(masterList), function(widget) {
 	exports[widget] = function(tag, parser) {
-		for (var i = 0; i < attributeArray.length; i++) {
-			var attrName = attributeArray[i];
-			var attr = tag.attributes[attrName];
-			if (attr && attr.type === "string") {
-				var uglifier = parser.wiki.getUglifier("text/vnd.tiddlywiki");
-				var options = {wiki: parser.wiki, placeholders: parser.placeholders};
-				attr.value = uglifier.uglify(attr.value, null, options);
-			}
-		}
+		uglifyAttributes(tag, wikitextList[widget], "text/vnd.tiddlywiki", parser);
+		uglifyAttributes(tag, filterList[widget], "text/x-tiddler-filter", parser);
 	};
 });
+
+function uglifyAttributes(tag, attributeArray, type, parser) {
+	if (attributeArray) {
+		for (var i = 0; i < attributeArray.length; i++) {
+			var attr = tag.attributes[attributeArray[i]];
+			if (attr && attr.type === "string") {
+				var uglifier = parser.wiki.getUglifier(type);
+				try {
+					attr.value = uglifier.uglify(attr.value, parser);
+				} catch (e) {
+					// do nothing. Just move on.
+				}
+			}
+		}
+	}
+};

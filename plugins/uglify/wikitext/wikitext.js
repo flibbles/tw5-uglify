@@ -12,15 +12,9 @@ var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exp
 var logger = require('../logger.js');
 var parseutils = require('./utils.js');
 
-exports.uglify = function(text, title, options) {
-	try {
-		var parser = new WikiWalker(undefined, text, options);
-		var string = parseutils.joinNodeArray(parser.tree);
-		return string;
-	} catch (e) {
-		logger.warn('Failed to compress', title + "\n\n    * message:", e);
-		return text;
-	}
+exports.uglify = function(text, options) {
+	var parser = new WikiWalker(undefined, text, options);
+	return parseutils.joinNodeArray(parser.tree);
 };
 
 function collectRules() {
@@ -40,6 +34,21 @@ function collectRules() {
 }
 
 function WikiWalker(type, text, options) {
+	if (text.indexOf("'") >= 0) {
+		this.apostrophesAllowed = true;
+	}
+	if (text.indexOf("]") >= 0) {
+		this.bracketsAllowed = true;
+	}
+	this.placeholders = options.placeholders;
+	this.startOfBody = true;
+	WikiParser.call(this, type, text, options);
+	postProcess.call(this);
+};
+
+WikiWalker.prototype = Object.create(WikiParser.prototype);
+
+WikiWalker.prototype.setupUglifyRules = function() {
 	if (!this.uglifyMethodsInjected) {
 		var rules = collectRules();
 		$tw.utils.each([this.pragmaRuleClasses, this.blockRuleClasses, this.inlineRuleClasses], function(classList) {
@@ -51,24 +60,20 @@ function WikiWalker(type, text, options) {
 		});
 		WikiWalker.prototype.uglifyMethodsInjected = true;
 	}
-	if (text.indexOf("'") >= 0) {
-		this.apostrophesAllowed = true;
-	}
-	if (text.indexOf("]") >= 0) {
-		this.bracketsAllowed = true;
-	}
-	this.placeholders = options.placeholders || Object.create(null);
-	this.startOfBody = true;
-	WikiParser.call(this, type, text, options);
-	postProcess.call(this);
 };
-
-WikiWalker.prototype = Object.create(WikiParser.prototype);
 
 WikiWalker.prototype.parsePragmas = function() {
 	var strings = this.tree;
 	var pragmaFound = false;
 	var whitespace;
+	// The reason we set up rules here instead of in the constructor where it
+	// would make sense: We have to set up uglify rules AFTER the WikiParser
+	// constructor finishes setting up ITS rules, but BEFORE it starts
+	// doing any parsing.
+	// This ugliness would go away if the WikiParser broke its rule setup
+	// into its own method, or... you know... DIDN'T DO ITS ENTIRE JOB IN
+	// ITS OWN CONSTRUCTOR.
+	this.setupUglifyRules();
 	while (true) {
 		if (this.pos > 0 && this.source[this.pos-1] !== "\n") {
 			// Some pragma aren't good about eating to the end of their line.
@@ -207,9 +212,9 @@ WikiWalker.prototype.preserveWhitespace = function(tree, minimum, options) {
 	output = output.replace(/\r/mg,"");
 	if (output) {
 		if (output.indexOf(minimum) >= 0) {
-			tree.push({text: minimum, tail: true});
+			tree.push({text: minimum, type: 'text', tail: true});
 		} else {
-			tree.push({text: output, tail: true});
+			tree.push({text: output, type: 'text', tail: true});
 		}
 	}
 };
@@ -222,7 +227,7 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	var cannotEndYet = false,
 		cannotEndBlock = false;
 	// Reset these
-	if (this.containsPlaceholder(text)) {
+	if (this.placeholders && this.placeholders.present(text)) {
 		this.cannotEnsureNoWhiteSpace = true;
 		// Dangerous, meaning be careful about altering surrounding content.
 		node.dangerous = true;
@@ -236,6 +241,25 @@ WikiWalker.prototype.pushTextWidget = function(array, text, start, end) {
 	}
 	if (original !== text && this.insideUnknownRule) {
 		this.cannotEnsureNoWhiteSpace = true;
+	}
+	// This block below is for the special edge case where a block of
+	// wikitext might be wrapped with """. We can't let those end with ".
+	if (text[text.length-1] === '"') {
+		if (end === this.sourceLength) {
+			if (original[original.length-1] !== '"') {
+				if (this.cannotEnsureNoWhiteSpace) {
+					// Whitespace won't fully trim anyway, so we can add
+					// a space back in. This'll resolve """" conflicts.
+					text = text + " ";
+				} else {
+					// We can ensure whitespace trimming so far, so let's
+					// just use an entity.
+					text = text.substr(0, text.length-1) + "&quot;";
+				}
+			}
+		} else {
+			node.cannotBeAtEnd = true;
+		}
 	}
 	text = text.replace(/\r/mg,"");
 	if (text) {
@@ -272,16 +296,24 @@ WikiWalker.prototype.handleRule = function(ruleInfo) {
 	return tree;
 };
 
-WikiWalker.prototype.containsPlaceholder = function(text) {
-	if (this.placeholderRegExp === undefined) {
-		var placeholderArray = [];
-		for (var placeholder in this.placeholders) {
-			placeholderArray.push($tw.utils.escapeRegExp(placeholder));
-		}
-		placeholderArray.push("\\([^\\)\\$]+\\)");
-		this.placeholderRegExp = new RegExp("\\$(?:" + placeholderArray.join('|') + ")\\$");
+WikiWalker.prototype.amendRules = function(type, names) {
+	WikiParser.prototype.amendRules.call(this, type, names);
+	var list;
+	if(type === "only") {
+		list = "whitelist";
+	} else if(type === "except") {
+		list = "blacklist";
+	} else {
+		return;
 	}
-	return text.search(this.placeholderRegExp) >= 0;
+	this[list] = this[list] || Object.create(null);
+	for (var i = 0; i < names.length; i++) {
+		this[list][names[i]] = true;
+	}
+};
+
+WikiWalker.prototype.ruleAllowed = function(name) {
+	return (!this.whitelist || this.whitelist[name]) && (!this.blacklist || !this.blacklist[name]);
 };
 
 function postProcess() {

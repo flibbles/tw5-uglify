@@ -20,7 +20,7 @@ var config = {
 	blacklist: '',
 	stub: 'yes',
 	cache: 'yes',
-	cacheDirectory: './.cache'
+	cacheDirectory: './.cache/uglify'
 };
 
 var configType = {

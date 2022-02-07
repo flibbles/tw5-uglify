@@ -28,6 +28,11 @@ it('whitespace among parameters', function() {
 	test(m+"<<m  dad\n\tval:sis\n\tbro >>", m+"<<m dad val:sis bro>>");
 });
 
+it('brackets inside simple value', function() {
+	test(m+'<<m "bra>>ckets" >>', m+'<<m "bra>>ckets">>');
+	test(m+'<<m "bra>ckets" >>', m+'<<m "bra>ckets">>');
+});
+
 it('parameters values', function() {
 	// params quotation
 	test(m+"<<m \"cat\">>", m+"<<m cat>>");

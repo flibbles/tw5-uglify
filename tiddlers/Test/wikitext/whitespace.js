@@ -11,7 +11,6 @@ describe('wikitext uglifier', function() {
 describe('whitespace', function() {
 
 const test = $tw.utils.test.wikitext.test;
-const cmp = $tw.utils.test.wikitext.cmp;
 const t = "\\whitespace trim\n";
 const nt = "\\whitespace notrim\n";
 
@@ -21,16 +20,16 @@ it('purges carriage returns when it can', function() {
 });
 
 it('trims', function() {
-	test("\\whitespace trim\n\n\n''Content''\n\n\n", "''Content''");
-	test("\\whitespace trim\n<div>\n\t''Text''\n</div>", "<div>''Text''");
+	test("\\whitespace trim\n\n\n''Content''\n\n\n", "''Content");
+	test("\\whitespace trim\n<div>\n\t''Text''\n</div>", "<div>''Text");
 	test("\\whitespace trim\n<div>\n\nText\n</div>", "<div>\n\nText");
 });
 
 it('weird arguments', function() {
-	test("\\whitespace whatevs\nContent  //B//", "Content  //B//");
-	test("\\whitespace whatevs trim\nContent  //B//", "Content//B//");
-	test("\\whitespace trim whatevs\nContent  //B//", "Content//B//");
-	test("\\whitespace trim notrim\nContent  //B//", "Content  //B//");
+	test("\\whitespace whatevs\nContent  //B//", "Content  //B");
+	test("\\whitespace whatevs trim\nContent  //B//", "Content//B");
+	test("\\whitespace trim whatevs\nContent  //B//", "Content//B");
+	test("\\whitespace trim notrim\nContent  //B//", "Content  //B");
 });
 
 it('trims around blocks', function() {

@@ -5,6 +5,9 @@ tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with macrodefs.
 
+TODO: Test that $(variables)$ in that style don't count as placeholders
+      outside of a macrodef.
+
 \*/
 
 describe('wikitext uglifier', function() {
@@ -138,7 +141,7 @@ it('handles macrodef with quoted global substitutions', function() {
 	test('\\define A() <$text text="""$(cat)$"""/> <$text text="""cat"""/>\n\\define cat() qu "ote\n<<A>>',
 		'\\define A()<$text text="""$(cat)$"""/> <$text text=cat/>\n\\define cat()qu "ote\n<<A>>');
 	test('\\define A() <$text text="""$(\'( @)$"""/> <$text text="""cat"""/>\n<$set name="""\'( @""" value=\'set "quote\'><<A>></$set>',
-		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @" value=\'set "quote\'><<A>>');
+		'\\define A()<$text text="""$(\'( @)$"""/> <$text text=cat/>\n<$set name="\'( @"value=\'set "quote\'><<A>>');
 });
 
 it('placeholders that end up at EOF', function() {
@@ -157,6 +160,17 @@ it('placeholders trim surrounding whitespace', function() {
 	     '\\define A(m)\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
 	test('\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A  "\nX\n">>',
 	     '\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
+});
+
+it('placeholders within double nested context', function() {
+	test('\\define A(m)\n\\define B(n)<<C "$l$" "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>',
+	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
+});
+
+it('placeholders outside of a macrodef', function() {
+	test('\\define var()A B\n\\define M()<$text  text="$(var)$"/>\n<<M>><$text text="$(var)$"/>',
+	     '\\define var()A B\n\\define M()<$text text="$(var)$"/>\n<<M>><$text text=$(var)$/>');
+
 });
 
 });});

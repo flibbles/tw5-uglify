@@ -4,6 +4,7 @@ DefaultTiddlers: Uglify Demo [[Other plugins by Flibbles]]
 SiteTitle: Uglify
 SiteSubtitle: Plugin compression made easy
 themes/tiddlywiki/vanilla/options/sidebarlayout: fluid-fixed
+config/AutoSave: no
 config/WikiParserRules/Inline/wikilink: disable
 config/flibbles/uglify/blacklist: Demo/plugin
 config/flibbles/uglify/compress: no

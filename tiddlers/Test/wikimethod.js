@@ -37,7 +37,7 @@ it('passes through nonuglifiable tiddlers', function() {
 it('on failure, be graceful', async function() {
 	// We test many things in this beastly test...
 	const pluginName = 'plugin_' + $tw.utils.test.uniqName();
-	const filepath = './.cache/' + pluginName + '.tid';
+	const filepath = './.cache/uglify/' + pluginName + '.tid';
 	const goodText = 'exports.func = function(argName) {return argName;}';
 	const badText = 'function func() { content does not compile;';
 	const tiddlers = [
@@ -80,7 +80,7 @@ it('on failure, be graceful', async function() {
 
 it('can toggle particular uglifiers', async function() {
 	const pluginName = "plugin_" + $tw.utils.test.uniqName();
-	const filepath = './.cache/' + pluginName + '.tid';
+	const filepath = './.cache/uglify/' + pluginName + '.tid';
 	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
 	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
 	const tiddlers = [
