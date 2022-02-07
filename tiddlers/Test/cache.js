@@ -166,16 +166,12 @@ if ($tw.node) {
 	it('handles bad writes without callback', function(done) {
 		const wiki = new $tw.Wiki();
 		const name = $tw.utils.test.uniqName();
-		const oldAlert = logger.alert;
-		// yeah... there's no try/finally for setting the logger.alert back.
-		// Can't do it here. Just have to hope this test works as expected.
-		logger.alert = function(/* messages */) {
+		spyOn(logger, "alert").and.callFake(function(/* messages */) {
 			var message = Array.prototype.join.call(arguments, ' ');
 			expect(message).toContain('not a directory');
 			expect(message).toContain('uglify:');
-			logger.alert = oldAlert;
 			done();
-		}
+		});
 		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
 		var output = cacheSync(wiki, name, 'anything', function() { return {text: 'output'}});
 		expect(output.text).toBe('output');
