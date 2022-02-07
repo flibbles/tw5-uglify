@@ -14,8 +14,5 @@ exports.uglify = function(text) {
 	if (results.error) {
 		throw results.error;
 	}
-	// We want to store the sourceMap in case we need it.
-	options.cache = options.cache || Object.create(null);
-	options.cache.map = results.map;
 	return {text: results.code, map: results.map};
 };
