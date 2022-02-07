@@ -24,7 +24,7 @@ var utils = require('./utils.js');
  *        out and never calls onComplete
  */
 exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onComplete) {
-	var processedText;
+	var processedFields;
 	if (typeof textKey !== 'string') {
 		throw new Error('Expected string for file cache key, not ' + textKey);
 	}
@@ -36,22 +36,21 @@ exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onC
 			if(checksum === parseInt(cachedFields.checksum)
 			&& utils.getVersion() === cachedFields.version
 			&& signature === cachedFields.uglifiers) {
-				var oldText = cachedFields.text;
 				if (onComplete) {
-					onComplete(null, false, oldText);
+					onComplete(null, false, cachedFields);
 				}
-				return oldText;
+				return cachedFields;
 			}
 		}
-		processedText = initializer();
-		saveTiddlerCache(wiki, title, checksum, signature, processedText, onComplete);
+		processedFields = initializer();
+		saveTiddlerCache(wiki, title, checksum, signature, processedFields, onComplete);
 	} else {
-		processedText = initializer();
+		processedFields = initializer();
 		if (onComplete) {
-			onComplete(null, false, processedText);
+			onComplete(null, false, processedFields);
 		}
 	}
-	return processedText;
+	return processedFields;
 };
 
 function hashString(string) {
@@ -60,8 +59,8 @@ function hashString(string) {
     return h;
 };
 
-function saveTiddlerCache(wiki, title, checksum, signature, text, onComplete) {
-	var newTiddler = new $tw.Tiddler({checksum: checksum, uglifiers: signature, version: utils.getVersion(), text: text}),
+function saveTiddlerCache(wiki, title, checksum, signature, fields, onComplete) {
+	var newTiddler = new $tw.Tiddler({checksum: checksum, uglifiers: signature, version: utils.getVersion()}, fields),
 		filepath = exports.generateCacheFilepath(wiki, title),
 		fileInfo = {
 			hasMetaFile: false,
@@ -73,7 +72,7 @@ function saveTiddlerCache(wiki, title, checksum, signature, text, onComplete) {
 		}
 	};
 	$tw.utils.saveTiddlerToFile(newTiddler, fileInfo, function(err) {
-		onComplete(err, true, text);
+		onComplete(err, true, fields);
 	});
 };
 

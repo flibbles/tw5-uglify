@@ -102,7 +102,7 @@ if ($tw.node) {
 		// defaults to .cache
 		var name = $tw.utils.test.uniqName();
 		var path = './.cache/uglify/'+name+'.tid';
-		var info = await cache(wiki, name, 'textContent', () => 'output');
+		var info = await cache(wiki, name, 'textContent', function() {return {text: 'output'}});
 		expect(info.saved).toBe(true);
 		await fs.access(path); // ensure it exists
 		await fs.rm(path);
@@ -123,7 +123,7 @@ if ($tw.node) {
 		wiki.addTiddler({title: cacheTiddler, text: 'no'});
 		var name = $tw.utils.test.uniqName();
 		var path = './.cache/'+name+'.tid';
-		var info = await cache(wiki, name, 'textContent', () => 'output');
+		var info = await cache(wiki, name, 'textContent', function() { return { text: 'output'}});
 		expect(info.saved).toBe(false);
 		try {
 			await fs.access(path);
@@ -136,8 +136,8 @@ if ($tw.node) {
 	it('overwrites existing caches, not make iterative ones', async function() {
 		const wiki = testWiki();
 		var name = $tw.utils.test.uniqName();
-		await cache(wiki, name, 'first', () => 'output1');
-		await cache(wiki, name, 'second', () => 'output2');
+		await cache(wiki, name, 'first', function() { return {text: 'output1'}});
+		await cache(wiki, name, 'second', function() { return {text: 'output2'}});
 		const files = await fs.readdir(testDir);
 		var nameCount = 0;
 		$tw.utils.each(files, function(file) {
@@ -153,7 +153,7 @@ if ($tw.node) {
 		const name = $tw.utils.test.uniqName();
 		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
 		try {
-			await cache(wiki, name, 'anything', () => 'output');
+			await cache(wiki, name, 'anything', function() { return {text: 'output'}});
 			// Oddly, we can't test that 'output' was returned because of how
 			// promises work. oh well, we'll test it in the bad write test
 			// WITHOUT the callback.
@@ -177,8 +177,8 @@ if ($tw.node) {
 			done();
 		}
 		wiki.addTiddler({title: dirTiddler, text: './tiddlywiki.info'});
-		var output = cacheSync(wiki, name, 'anything', () => 'output');
-		expect(output).toBe('output');
+		var output = cacheSync(wiki, name, 'anything', function() { return {text: 'output'}});
+		expect(output.text).toBe('output');
 	});
 
 	it('works', async function() {
@@ -188,18 +188,18 @@ if ($tw.node) {
 			name = $tw.utils.test.uniqName();
 		function outputter() {
 			accessCount++;
-			return 'output ' + accessCount;
+			return {text: 'output ' + accessCount};
 		};
 		info = await cache(wiki, name, 'input1', outputter);
-		expect(info.output).toBe('output 1');
+		expect(info.output.text).toBe('output 1');
 		expect(info.saved).toBe(true);
 		expect(accessCount).toBe(1);
 		info = await cache(wiki, name, 'input1', outputter);
-		expect(info.output).toBe('output 1');
+		expect(info.output.text).toBe('output 1');
 		expect(info.saved).toBe(false);
 		expect(accessCount).toBe(1);
 		info = await cache(wiki, name, 'input2', outputter);
-		expect(info.output).toBe('output 2');
+		expect(info.output.text).toBe('output 2');
 		expect(info.saved).toBe(true);
 		expect(accessCount).toBe(2);
 	});

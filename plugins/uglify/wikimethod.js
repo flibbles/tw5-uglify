@@ -49,18 +49,29 @@ exports.getTiddlerUglifiedText = function(title, options) {
 		var uglifier = undefined;
 		if (pluginInfo) {
 			uglifier = {uglify: function(text, title) {
-				var newInfo = $tw.utils.extend({}, pluginInfo);
-				newInfo.tiddlers = compressSubtiddlers(wiki, title, pluginInfo);
-				return {text: JSON.stringify(newInfo, null)};
+				return compressPlugin(wiki, title, pluginInfo);
 			}};
 		} else {
 			uglifier = wiki.getUglifier(tiddler.fields.type);
 		}
 		if (uglifier) {
-			cache.text = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+			var onComplete = undefined;
+			if (options.onComplete) {
+				onComplete = function(err, save, fields) {
+					return options.onComplete(err, save, fields.text);
+				}
+			}
+			var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 				logger.log('Compressing:', title);
-				return compressOrNot(uglifier, title, tiddler.fields.text,wiki);
-			}, options.onComplete);
+				var compressed = compressOrNot(uglifier, title, tiddler.fields.text,wiki);
+				if (compressed.map) {
+					// The map is normally JSON, but it needs to be string
+					// before we do anything with it.
+					compressed.map = JSON.stringify(compressed.map, null);
+				}
+				return compressed;
+			}, onComplete);
+			$tw.utils.extend(cache, fields);
 		} else {
 			cache.text = tiddler.fields.text || '';
 		}
@@ -99,8 +110,11 @@ function pluginStub(wiki, title) {
 	});
 };
 
-function compressSubtiddlers(wiki, title, pluginInfo) {
-	var newTiddlers = Object.create(null), uglifier,
+function compressPlugin(wiki, title, pluginInfo) {
+	var newTiddlers = Object.create(null),
+		maps = Object.create(null),
+		newInfo = $tw.utils.extend({}, pluginInfo),
+		uglifier,
 		options = {wiki: wiki};
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
@@ -120,20 +134,25 @@ function compressSubtiddlers(wiki, title, pluginInfo) {
 		}
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
-			abridgedFields.text = compressOrNot(uglifier, title, fields.text, wiki);
+			var results = compressOrNot(uglifier, title, fields.text, wiki);
+			abridgedFields.text = results.text;
+			if (results.map) {
+				maps[title] = results.map;
+			}
 		}
 		newTiddlers[title] = abridgedFields;
 	}
-	return newTiddlers;
+	newInfo.tiddlers = newTiddlers;
+	return { map: maps, text: JSON.stringify(newInfo, null) };
 };
 
 function compressOrNot(uglifier, title, text, wiki) {
 	try {
-		return uglifier.uglify(text, {wiki: wiki}).text;
+		return uglifier.uglify(text, {wiki: wiki});
 	} catch (e) {
 		logger.warn(compileFailureWarning(title, e));
 		// Return the uncompressed text as a backup
-		return text;
+		return {text: text};
 	}
 };
 

@@ -9,11 +9,6 @@ Tests the uglify compressor and what it does to plugins.
 
 describe('plugin uglifier', function() {
 
-function compress(input, title) {
-	title = title || 'test';
-	return $tw.wiki.getUglifier('application/javascript').uglify(input);
-};
-
 it('removes title fields and pretty print', function() {
 	const wiki = new $tw.Wiki();
 	const input = `{
