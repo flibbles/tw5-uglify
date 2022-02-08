@@ -41,6 +41,8 @@ it('can fetch a shadow tiddler map', function() {
 });
 
 //TODO: Test for 404
+//TODO: Test for blacklisted
+//TODO: test for boot files
 
 });
 }

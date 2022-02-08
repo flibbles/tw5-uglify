@@ -37,10 +37,8 @@ exports.handler = function(request,response,state) {
 	}
 	var map = state.wiki.getTiddlerSourceMap(title);
 	if(map) {
-		var json = JSON.parse(map);
-		json.sourceRoot = "/uglify/original/";
-		json.mappings = ";" + json.mappings;
-		map = JSON.stringify(json);
+		map.sourceRoot = "/uglify/original/";
+		map = JSON.stringify(map);
 		logger.log('Returning source map for:', title, map);
 		state.sendResponse(200,{"Content-Type": "application/json"},map,"utf8");
 	} else {

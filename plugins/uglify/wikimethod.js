@@ -17,12 +17,22 @@ var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 exports.getTiddlerSourceMap = function(title, options) {
 	var wiki = this,
 		uglifier,
-		tiddler = wiki.getTiddler(title);
-	if (tiddler && tiddler.fields.type === "application/javascript") {
-		uglifier = wiki.getUglifier(tiddler.fields.type);
-		return uglifier.map(tiddler.fields.text, title, {wiki:wiki});
+		exists = this.tiddlerExists(title),
+		source = this.getShadowSource(title);
+	if (source) {
+		var fields = compressTiddler(this, source, options);
+		if (fields.map) {
+			if (typeof fields.map === "string") {
+				fields.map = JSON.parse(fields.map);
+			}
+			if (fields.map[title]) {
+				return fields.map[title];
+			}
+		}
+	} else if (exists) {
+		var fields = compressTiddler(this, title, options);
+		return fields.map;
 	}
-	return null;
 };
 
 /**This returns the compressed tiddlers regardless of whether it would be
@@ -145,7 +155,11 @@ function compressPlugin(wiki, title, pluginInfo) {
 			var results = compressOrNot(uglifier, title, fields.text, wiki);
 			abridgedFields.text = results.text;
 			if (results.map) {
-				maps[title] = results.map;
+				var mapObj = JSON.parse(results.map);
+				// Plugin javascript need a semicolon so they skip a line
+				// Because boot.js will add this whole (function(...){ thing.
+				mapObj.mappings = ";" + mapObj.mappings;
+				maps[title] = mapObj;
 			}
 		}
 		newTiddlers[title] = abridgedFields;

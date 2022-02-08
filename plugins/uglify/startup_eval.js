@@ -22,15 +22,29 @@ exports.synchronous = true;
 // Before commands, or else the server hook may get called before this does.
 exports.before = ['commands'];
 
-var old = $tw.utils.appendSourceURL;
-
-$tw.utils.appendSourceURL = function(code, filename) {
-	const tempPrefix = "$:/plugins/flibbles/filters/js/w";
-	if (filename.substr(0,tempPrefix.length) === tempPrefix) {
-		return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
-	} else {
-		return old(code, filename);
-	}
+/*
+This is a copy of the evalGlobal in the boot.js file. The only change is
+the sourceMappingURL that's put at the end of files.
+*/
+$tw.utils.evalGlobal = function(code,context,filename) {
+    var contextCopy = $tw.utils.extend(Object.create(null),context);
+    // Get the context variables as a pair of arrays of names and values
+    var contextNames = [], contextValues = [];
+    $tw.utils.each(contextCopy,function(value,name) {
+        contextNames.push(name);
+        contextValues.push(value);
+    });
+    // Add the code prologue and epilogue
+    code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})\n";
+    // Compile the code into a function
+    var fn;
+    if($tw.browser) {
+        fn = window["eval"](code + "\n\n//# sourceMappingURL=/uglify/map/" + filename);
+    } else {
+        fn = vm.runInThisContext(code,filename);
+    }
+    // Call the function and return the exports
+    return fn.apply(null,contextValues);
 };
 
 // TODO: do I need to URL escape the filename?

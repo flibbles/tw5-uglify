@@ -132,4 +132,28 @@ it('can toggle particular uglifiers', async function() {
 	}
 });
 
+it('gets source maps for shadow tiddlers', function() {
+	const pluginName = "plugin_" + $tw.utils.test.uniqName();
+	const filepath = './.cache/uglify/' + pluginName + '.tid';
+	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
+	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
+	const tiddlers = [
+		{title: 'test.js', text: javascript, type: 'application/javascript'},
+		{title: 'test.css', text: stylesheet, type: 'text/css'}];
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	spyOn(console, "log");
+	var map = wiki.getTiddlerSourceMap('test.js');
+	// all shadow javascript must skip the first line that boot.js adds
+	expect(map.mappings[0]).toBe(";");
+	wiki.addTiddler({title: 'test.js', text: javascript, type: 'application/javascript'});
+	var newMap = wiki.getTiddlerSourceMap('test.js');
+	// Even though the tiddler is overridden, we still return the underlying
+	// shadow tiddler, because the only reason a browser would be asking for
+	// source for an overridden tiddler is because it was overridden since
+	// the last refresh, and the shadow version is still the version in use.
+	expect(newMap.mappings).toBe(map.mappings);
+});
+
 });
