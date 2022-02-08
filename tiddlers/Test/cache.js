@@ -14,21 +14,33 @@ const cacheTiddler = '$:/config/flibbles/uglify/cache';
 const dirTiddler = '$:/config/flibbles/uglify/cacheDirectory';
 const testDir = './.testcache';
 
-function cacheSync(wiki, title, textKey, method, onsave) {
-	return library.getFileCacheForTiddler(wiki, title, textKey, method, onsave);
+function cacheSync(wiki, title, textKey, method) {
+	return library.getFileCacheForTiddler(wiki, title, textKey, method);
 };
 
-function cache(wiki, title, textKey, method) {
-	var promise = new Promise((resolve, reject) => {
-		library.getFileCacheForTiddler(wiki, title, textKey, method, function(err, saved, cachedResults) {
-			if (err) {
-				reject(err);
-			} else {
-				resolve({output: cachedResults, saved: saved});
-			}
+async function cache(wiki, title, textKey, method) {
+	function cachePromises() {
+		var results, savePromise;
+		var resultsPromise = new Promise((resolveResults, rejectResults) => {
+			savePromise = new Promise((resolveSave, rejectSave) => {
+				try {
+					results = library.getFileCacheForTiddler(wiki, title, textKey, method, function(err, saved) {
+						if (err) {
+							rejectSave(err);
+						} else {
+							resolveSave(saved);
+						}
+					});
+					resolveResults(results);
+				} catch (e) {
+					rejectResults(e);
+				}
+			});
 		});
-	});
-	return promise;
+		return Promise.all([resultsPromise, savePromise]);
+	};
+	var array = await cachePromises();
+	return {output: array[0], saved: array[1]};
 };
 
 /* testWikis do their caching in a test directory, which we'll delete later */

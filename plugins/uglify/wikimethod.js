@@ -29,54 +29,62 @@ exports.getTiddlerSourceMap = function(title, options) {
  * compressed during saving or serving.
  */
 exports.getTiddlerUglifiedText = function(title, options) {
-	var wiki = this,
-		uglifier,
+	return compressTiddler(this, title, options).text;
+};
+
+function compressTiddler(wiki, title, options) {
+	var uglifier,
 		options = options || {},
 		signature = utils.getSignature(wiki);
-	// Currently we only support stubbing uglify itself.
-	// Support for stubbing other plugins may come later.
-	if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(this)) {
-		return pluginStub(wiki, title);
-	}
-	var cache = this.getCacheForTiddler(title, 'uglify', function() { return {}; });
-	if (cache.signature !== signature) {
-		cache.signature = signature;
-		var tiddler = wiki.getTiddler(title);
-		if (!tiddler) {
-			return undefined;
+	try {
+		// Currently we only support stubbing uglify itself.
+		// Support for stubbing other plugins may come later.
+		if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(wiki)) {
+			return pluginStub(wiki, title);
 		}
-		var pluginInfo = utils.getPluginInfo(wiki, title);
-		var uglifier = undefined;
-		if (pluginInfo) {
-			uglifier = {uglify: function(text, title) {
-				return compressPlugin(wiki, title, pluginInfo);
-			}};
-		} else {
-			uglifier = wiki.getUglifier(tiddler.fields.type);
-		}
-		if (uglifier) {
-			var onComplete = undefined;
-			if (options.onComplete) {
-				onComplete = function(err, save, fields) {
-					return options.onComplete(err, save, fields.text);
-				}
+		var cache = wiki.getCacheForTiddler(title, 'uglify', function() { return {}; });
+		if (cache.signature !== signature) {
+			cache.signature = signature;
+			var tiddler = wiki.getTiddler(title);
+			if (!tiddler) {
+				return undefined;
 			}
-			var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
-				logger.log('Compressing:', title);
-				var compressed = compressOrNot(uglifier, title, tiddler.fields.text,wiki);
-				if (compressed.map) {
-					// The map is normally JSON, but it needs to be string
-					// before we do anything with it.
-					compressed.map = JSON.stringify(compressed.map, null);
-				}
-				return compressed;
-			}, onComplete);
-			$tw.utils.extend(cache, fields);
-		} else {
-			cache.text = tiddler.fields.text || '';
+			var pluginInfo = utils.getPluginInfo(wiki, title);
+			var uglifier = undefined;
+			if (pluginInfo) {
+				uglifier = {uglify: function(text, title) {
+					return compressPlugin(wiki, title, pluginInfo);
+				}};
+			} else {
+				uglifier = wiki.getUglifier(tiddler.fields.type);
+			}
+			if (uglifier) {
+				// it will be up to getFileCache to call the callback now
+				var onSave = options.onSave;
+				options.onSave = undefined;
+				var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
+					logger.log('Compressing:', title);
+					var compressed = compressOrNot(uglifier, title, tiddler.fields.text,wiki);
+					if (compressed.map) {
+						// The map is normally JSON, but it needs to be string
+						// before we do anything with it.
+						compressed.map = JSON.stringify(compressed.map, null);
+					}
+					return compressed;
+				}, onSave);
+				$tw.utils.extend(cache, fields);
+			} else {
+				cache.text = tiddler.fields.text || '';
+			}
 		}
-	};
-	return cache.text;
+	} finally {
+		// If we're here, it means we never saved the file.
+		// Either we're on browser, the cache was good, or an error occured.
+		if (options.onSave) {
+			options.onSave(null, false);
+		}
+	}
+	return cache;
 };
 
 exports.compressionEnabled = function() {
@@ -106,7 +114,7 @@ function pluginStub(wiki, title) {
 			}
 		});
 		newInfo.tiddlers = tiddlers;
-		return JSON.stringify(newInfo);
+		return {text: JSON.stringify(newInfo)};
 	});
 };
 

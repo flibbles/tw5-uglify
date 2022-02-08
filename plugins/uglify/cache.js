@@ -16,38 +16,39 @@ var logger = require('./logger.js');
 var utils = require('./utils.js');
 
 /**
- * @param onSave is an async callback that takes (err, saved, value)
+ * @param onSave is an async callback that takes (err)
  *    err - an error or if there was an error saving the cache
  *    saved - boolean, true if the file cache was refreshed, false otherwise
- *    value - the results of method.
- *        if the initializer throws an error, it throws
- *        out and never calls onComplete
+ *    This may be called before or after the method returns. One way or another
+      it is called though.
  */
-exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onComplete) {
+exports.getFileCacheForTiddler = function(wiki, title, textKey, initializer, onSave) {
 	var processedFields;
-	if (typeof textKey !== 'string') {
-		throw new Error('Expected string for file cache key, not ' + textKey);
-	}
-	if ($tw.node && cachingEnabled(wiki)) {
-		var cachedFields = loadTiddlerCache(wiki, title),
-			checksum = hashString(textKey),
-			signature = utils.getSignature(wiki);
-		if (cachedFields) {
-			if(checksum === parseInt(cachedFields.checksum)
-			&& utils.getVersion() === cachedFields.version
-			&& signature === cachedFields.uglifiers) {
-				if (onComplete) {
-					onComplete(null, false, cachedFields);
-				}
-				return cachedFields;
-			}
+	try {
+		if (typeof textKey !== 'string') {
+			throw new Error('Expected string for file cache key, not ' + textKey);
 		}
-		processedFields = initializer();
-		saveTiddlerCache(wiki, title, checksum, signature, processedFields, onComplete);
-	} else {
-		processedFields = initializer();
-		if (onComplete) {
-			onComplete(null, false, processedFields);
+		if ($tw.node && cachingEnabled(wiki)) {
+			var cachedFields = loadTiddlerCache(wiki, title),
+				checksum = hashString(textKey),
+				signature = utils.getSignature(wiki);
+			if (cachedFields) {
+				if(checksum === parseInt(cachedFields.checksum)
+				&& utils.getVersion() === cachedFields.version
+				&& signature === cachedFields.uglifiers) {
+					return cachedFields;
+				}
+			}
+			processedFields = initializer();
+			saveTiddlerCache(wiki, title, checksum, signature, processedFields, onSave);
+			// saveTiddlerCache will take care of the callback now.
+			onSave = null;
+		} else {
+			processedFields = initializer();
+		}
+	} finally {
+		if (onSave) {
+			onSave(null, false);
 		}
 	}
 	return processedFields;
@@ -59,6 +60,7 @@ function hashString(string) {
     return h;
 };
 
+// Promises to call onComplete
 function saveTiddlerCache(wiki, title, checksum, signature, fields, onComplete) {
 	var newTiddler = new $tw.Tiddler({checksum: checksum, uglifiers: signature, version: utils.getVersion()}, fields),
 		filepath = exports.generateCacheFilepath(wiki, title),

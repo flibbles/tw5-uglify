@@ -11,18 +11,27 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('wikimethod: getTiddlerUglifiedText', function() {
 
-function getTiddlerUglifiedTextAsync(wiki, name) {
-	return new Promise((resolve, reject) => {
-		wiki.getTiddlerUglifiedText(name, {
-			onComplete: function(err, saved, text) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(text);
+async function getTiddlerUglifiedTextAsync(wiki, name) {
+	function promises() {
+		var results, savePromise;
+		var resultsPromise = new Promise((resolveResults, rejectResults) => {
+			savePromise = new Promise((resolveSave, rejectSave) => {
+				try {
+					results = wiki.getTiddlerUglifiedText(name, {
+						onSave: function(err, saved) {
+							err ? rejectSave(err) : resolveSave(saved);
+						}
+					});
+					resolveResults(results);
+				} catch (e) {
+					rejectResults(e);
 				}
-			}
+			});
 		});
-	});
+		return Promise.all([resultsPromise, savePromise]);
+	};
+	var array = await promises();
+	return array[0];
 };
 
 it('passes through nonuglifiable tiddlers', function() {
