@@ -12,7 +12,7 @@ describe('source map', function() {
 
 var addDirectives = require("$:/plugins/flibbles/uglify/startup_eval.js").addDirectives;
 
-if ($tw.browser) {
+if (!$tw.browser) {
 
 var Server = require("$:/core/modules/server/server.js").Server;
 
@@ -28,13 +28,14 @@ it('can fetch a shadow tiddler map', function() {
 		tiddlers = [
 			{title: 'file.js', type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	const path = "http://127.0.0.1/uglify/maps/file.js";
+	const path = "http://127.0.0.1/uglify/map/file.js";
 	const server = new Server({
 			wiki: wiki,
 			variables: {}}),
 		request = {method: "GET", url: path};
 	spyOn(response, 'writeHead');
 	spyOn(response, 'end');
+	spyOn(console, 'log');
 	server.requestHandler(request, response);
 	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/json'});
 	expect(response.end).toHaveBeenCalledTimes(1);
