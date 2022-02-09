@@ -122,6 +122,10 @@ exports.getSignature = function(wiki) {
 			}
 		});
 		actives.sort();
+		if (exports.getSetting(wiki, "stub")) {
+			// Include stubbing in the signature
+			actives.push("stub");
+		}
 		return $tw.utils.stringifyList(actives);
 	});
 };

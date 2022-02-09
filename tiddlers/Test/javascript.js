@@ -53,7 +53,6 @@ function sourceMap(input, title) {
 
 it('generates source map', function() {
 	var text = sourceMap("exports.add = function(first, second) {return first + second; }", "directory/test.js");
-	console.log(text);
 	expect(true).toBe(true);
 });
 

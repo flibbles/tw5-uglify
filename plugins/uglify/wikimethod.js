@@ -51,11 +51,6 @@ function compressTiddler(wiki, title, options) {
 		options = options || {},
 		signature = utils.getSignature(wiki);
 	try {
-		// Currently we only support stubbing uglify itself.
-		// Support for stubbing other plugins may come later.
-		if (title === '$:/plugins/flibbles/uglify' && stubbingEnabled(wiki)) {
-			return pluginStub(wiki, title);
-		}
 		var cache = wiki.getCacheForTiddler(title, 'uglify', function() { return {}; });
 		if (cache.signature !== signature) {
 			cache.signature = signature;
@@ -110,44 +105,21 @@ function stubbingEnabled(wiki) {
 	return !$tw.browser && utils.getSetting(wiki, 'stub');
 };
 
-function pluginStub(wiki, title) {
-	return wiki.getCacheForTiddler(title, 'uglifystub', function() {
-		var pluginInfo = wiki.getPluginInfo(title);
-		var newInfo = $tw.utils.extend({}, pluginInfo);
-		var tiddlers = Object.create(null);
-		$tw.utils.each(pluginInfo.tiddlers, function(fields, title) {
-			var tags = $tw.utils.parseStringArray(fields.tags);
-			if (tags && tags.indexOf('$:/tags/flibbles/uglify/Stub') >= 0) {
-				tiddlers[title] = fields;
-			}
-		});
-		newInfo.tiddlers = tiddlers;
-		return {text: JSON.stringify(newInfo)};
-	});
-};
-
 function compressPlugin(wiki, title, pluginInfo) {
 	var newTiddlers = Object.create(null),
 		maps = Object.create(null),
 		newInfo = $tw.utils.extend({}, pluginInfo),
 		uglifier,
+		containsStubbing = stubbingEnabled(wiki) && pluginContainsStubbing(wiki, pluginInfo),
 		options = {wiki: wiki};
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
-		var abridgedFields = Object.create(null);
-		for (var field in fields) {
-			// We don't need to copy the title field. It's redundant
-			// since the key to this object is the title.
-			if (field === 'title') {
-				continue;
-			}
-			// Also, empty tags fields are pointless, but easy for
-			// plugin writers to accidentally make. Drop em.
-			if (field === 'tags' && !fields.tags) {
-				continue;
-			}
-			abridgedFields[field] = fields[field];
+		if (containsStubbing && !removeStubTag(fields)) {
+			// This plugin is stubbed, and this tiddler has no stub.
+			// We ignore it.
+			continue;
 		}
+		var abridgedFields = cleanShadowFields(fields);
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
 			var results = compressOrNot(uglifier, title, fields.text, wiki);
@@ -167,6 +139,48 @@ function compressPlugin(wiki, title, pluginInfo) {
 	return {
 		map: JSON.stringify(maps, null),
 		text: JSON.stringify(newInfo, null) };
+};
+
+function pluginContainsStubbing(wiki, pluginInfo) {
+	var tagged = wiki.getTiddlersWithTag("$:/tags/flibbles/uglify/Stub");
+	if (tagged) {
+		for (var i = 0; i < tagged.length; i++) {
+			if (pluginInfo.tiddlers[tagged[i]]) {
+				return true;
+			}
+		}
+	}
+	return false;
+};
+
+// returns true if the stub was there, and was removed.
+function removeStubTag(fields) {
+	var tags = $tw.utils.parseStringArray(fields.tags) || [],
+		index = tags.indexOf("$:/tags/flibbles/uglify/Stub");
+	if (index >= 0) {
+		// Remove the Stub tag from the list.
+		tags.splice(index, 1);
+		return true;
+	}
+	return false;
+};
+
+function cleanShadowFields(fields) {
+	var cleanedFields = Object.create(null);
+	for (var field in fields) {
+		// We don't need to copy the title field. It's redundant
+		// since the key to this object is the title.
+		if (field === 'title') {
+			continue;
+		}
+		// Also, empty tags fields are pointless, but easy for
+		// plugin writers to accidentally make. Drop em.
+		if (field === 'tags' && !fields.tags) {
+			continue;
+		}
+		cleanedFields[field] = fields[field];
+	}
+	return cleanedFields;
 };
 
 function compressOrNot(uglifier, title, text, wiki) {
