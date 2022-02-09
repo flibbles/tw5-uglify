@@ -26,7 +26,7 @@ exports.before = ['commands'];
 This is a copy of the evalGlobal in the boot.js file. The only change is
 the sourceMappingURL that's put at the end of files.
 */
-$tw.utils.evalGlobal = function(code,context,filename) {
+function evalGlobal(code,context,filename) {
     var contextCopy = $tw.utils.extend(Object.create(null),context);
     // Get the context variables as a pair of arrays of names and values
     var contextNames = [], contextValues = [];
@@ -46,5 +46,9 @@ $tw.utils.evalGlobal = function(code,context,filename) {
     // Call the function and return the exports
     return fn.apply(null,contextValues);
 };
+
+if ($tw.browser) {
+	$tw.utils.evalSandboxed = evalGlobal;
+}
 
 // TODO: do I need to URL escape the filename?

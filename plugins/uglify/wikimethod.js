@@ -159,6 +159,7 @@ function compressPlugin(wiki, title, pluginInfo) {
 				// Plugin javascript need a semicolon so they skip a line
 				// Because boot.js will add this whole (function(...){ thing.
 				mapObj.mappings = ";" + mapObj.mappings;
+				mapObj.sources[0] = title;
 				maps[title] = mapObj;
 			}
 		}

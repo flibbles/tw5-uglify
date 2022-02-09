@@ -147,6 +147,7 @@ it('gets source maps for shadow tiddlers', function() {
 	var map = wiki.getTiddlerSourceMap('test.js');
 	// all shadow javascript must skip the first line that boot.js adds
 	expect(map.mappings[0]).toBe(";");
+	expect(map.sources[0]).toBe("test.js");
 	wiki.addTiddler({title: 'test.js', text: javascript, type: 'application/javascript'});
 	var newMap = wiki.getTiddlerSourceMap('test.js');
 	// Even though the tiddler is overridden, we still return the underlying
@@ -154,6 +155,23 @@ it('gets source maps for shadow tiddlers', function() {
 	// source for an overridden tiddler is because it was overridden since
 	// the last refresh, and the shadow version is still the version in use.
 	expect(newMap.mappings).toBe(map.mappings);
+	expect(newMap.sources[0]).toBe("test.js");
+});
+
+fit('gets source maps for boot.js and bootprefix.js', function() {
+	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: "$:/boot/boot.js", text: javascript, type: 'application/javascript'});
+	spyOn(console, "log");
+	var map = wiki.getTiddlerSourceMap('$:/boot/boot.js');
+	expect(map.mapping[0]).not.toBe(';');
+	expect(map.sources[0]).toBe('$:/boot/boot.js');
+	// Now for bootprefix
+	wiki.addTiddler({title: "$:/boot/bootprefix.js", text: javascript, type: 'application/javascript'});
+	map = wiki.getTiddlerSourceMap('$:/boot/bootprefix.js');
+	expect(map.mapping[0]).not.toBe(';');
+	expect(map.sources[0]).toBe('$:/boot/bootprefix.js');
 });
 
 });
