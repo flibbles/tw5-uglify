@@ -50,19 +50,31 @@ function evalGlobal(code,context,filename) {
 // We need our own here, because getTiddlerText isn't loaded yet.
 function getText(wiki, title, defaultValue) {
 	var tiddler = wiki.getTiddler(title);
-	return tiddler && tiddler.fields.text;
+	return (tiddler && tiddler.fields.text) || defaultValue;
+};
+
+function getConfig(wiki, key, defaultValue) {
+	return getText(wiki, "$:/config/flibbles/uglify/"+key, defaultValue);
 };
 
 // This is in exports so I can test it.
 exports.addDirectives = function(wiki, code, filename) {
-	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes") {
-		return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
-	} else {
-		return code + "\n\n//# sourceURL=" + filename;
+	if (getConfig(wiki, "compress", "yes") === "yes"
+	&& getConfig(wiki, "sourcemap", "yes") === "yes"
+	&& getConfig(wiki, "application/javascript", "yes") === "yes") {
+		var blacklist = $tw.utils.parseStringArray(getConfig(wiki, "blacklist", ""));
+		var source = wiki.getShadowSource(filename);
+		if (source
+		&& blacklist.indexOf(source) < 0
+		&& !wiki.tiddlerExists(filename)) {
+			return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
+		}
 	}
+	return code + "\n\n//# sourceURL=" + filename;
 };
 
-if ($tw.browser) {
+// TODO: Maybe test the state tiddler here instead of wit hevery dirrective
+if ($tw.browser && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
 	$tw.utils.evalSandboxed = evalGlobal;
 }
 
