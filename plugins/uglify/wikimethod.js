@@ -31,6 +31,10 @@ exports.getTiddlerSourceMap = function(title, options) {
 		}
 	} else if (exists) {
 		var fields = compressTiddler(this, title, options);
+		if (typeof fields.map === "string") {
+			fields.map = JSON.parse(fields.map);
+			fields.map.sources[0] = title;
+		}
 		return fields.map;
 	}
 };
@@ -74,13 +78,7 @@ function compressTiddler(wiki, title, options) {
 				options.onSave = undefined;
 				var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 					logger.log('Compressing:', title);
-					var compressed = compressOrNot(uglifier, title, tiddler.fields.text,wiki);
-					if (compressed.map) {
-						// The map is normally JSON, but it needs to be string
-						// before we do anything with it.
-						compressed.map = JSON.stringify(compressed.map, null);
-					}
-					return compressed;
+					return compressOrNot(uglifier, title, tiddler.fields.text,wiki);
 				}, onSave);
 				$tw.utils.extend(cache, fields);
 			} else {
@@ -166,7 +164,9 @@ function compressPlugin(wiki, title, pluginInfo) {
 		newTiddlers[title] = abridgedFields;
 	}
 	newInfo.tiddlers = newTiddlers;
-	return { map: maps, text: JSON.stringify(newInfo, null) };
+	return {
+		map: JSON.stringify(maps, null),
+		text: JSON.stringify(newInfo, null) };
 };
 
 function compressOrNot(uglifier, title, text, wiki) {

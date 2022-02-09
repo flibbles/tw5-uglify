@@ -27,24 +27,38 @@ This is a copy of the evalGlobal in the boot.js file. The only change is
 the sourceMappingURL that's put at the end of files.
 */
 function evalGlobal(code,context,filename) {
-    var contextCopy = $tw.utils.extend(Object.create(null),context);
-    // Get the context variables as a pair of arrays of names and values
-    var contextNames = [], contextValues = [];
-    $tw.utils.each(contextCopy,function(value,name) {
-        contextNames.push(name);
-        contextValues.push(value);
-    });
-    // Add the code prologue and epilogue
-    code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})\n";
-    // Compile the code into a function
-    var fn;
-    if($tw.browser) {
-        fn = window["eval"](code + "\n\n//# sourceMappingURL=/uglify/map/" + filename);
-    } else {
-        fn = vm.runInThisContext(code,filename);
-    }
-    // Call the function and return the exports
-    return fn.apply(null,contextValues);
+	var contextCopy = $tw.utils.extend(Object.create(null),context);
+	// Get the context variables as a pair of arrays of names and values
+	var contextNames = [], contextValues = [];
+	$tw.utils.each(contextCopy,function(value,name) {
+		contextNames.push(name);
+		contextValues.push(value);
+	});
+	// Add the code prologue and epilogue
+	code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})\n";
+	// Compile the code into a function
+	var fn;
+	if($tw.browser) {
+		fn = window["eval"](addDirectives(code, filename));
+	} else {
+		fn = vm.runInThisContext(code,filename);
+	}
+	// Call the function and return the exports
+	return fn.apply(null,contextValues);
+};
+
+// We need our own here, because getTiddlerText isn't loaded yet.
+function getText(title, defaultValue) {
+	var tiddler = $tw.wiki.getTiddler(title);
+	return tiddler && tiddler.fields.text;
+};
+
+function addDirectives(code, filename) {
+	if (getText("$:/state/flibbles/uglify/server") === "yes") {
+		return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
+	} else {
+		return code + "\n\n//# sourceURL=" + filename;
+	}
 };
 
 if ($tw.browser) {
