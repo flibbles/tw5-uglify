@@ -39,7 +39,7 @@ function evalGlobal(code,context,filename) {
 	// Compile the code into a function
 	var fn;
 	if($tw.browser) {
-		fn = window["eval"](addDirectives(code, filename));
+		fn = window["eval"](exports.addDirectives($tw.wiki, code, filename));
 	} else {
 		fn = vm.runInThisContext(code,filename);
 	}
@@ -48,13 +48,14 @@ function evalGlobal(code,context,filename) {
 };
 
 // We need our own here, because getTiddlerText isn't loaded yet.
-function getText(title, defaultValue) {
-	var tiddler = $tw.wiki.getTiddler(title);
+function getText(wiki, title, defaultValue) {
+	var tiddler = wiki.getTiddler(title);
 	return tiddler && tiddler.fields.text;
 };
 
-function addDirectives(code, filename) {
-	if (getText("$:/state/flibbles/uglify/server") === "yes") {
+// This is in exports so I can test it.
+exports.addDirectives = function(wiki, code, filename) {
+	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes") {
 		return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
 	} else {
 		return code + "\n\n//# sourceURL=" + filename;

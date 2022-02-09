@@ -174,4 +174,12 @@ it('gets source maps for boot.js and bootprefix.js', function() {
 	expect(map.sources[0]).toBe('$:/boot/bootprefix.js');
 });
 
+it('gets undefined source maps for non-javascript tiddlers', function() {
+	const wiki = new $tw.Wiki();
+	// non-existent
+	expect(wiki.getTiddlerSourceMap("nothing.js")).toBeUndefined();
+	wiki.addTiddler({title: "wikitext", text: "This is wikitext"});
+	expect(wiki.getTiddlerSourceMap("wikitext")).toBeUndefined();
+});
+
 });

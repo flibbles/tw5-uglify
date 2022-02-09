@@ -184,8 +184,7 @@ it('has[draft.of] becomes is[draft]', function() {
 	wiki.addTiddlers([
 		{title: "A"}, {title:"Draft of 'A'", 'draft.of':"A", 'draft.title':"A"},
 		{title: "B"}, {title:"Draft of 'B'", 'draft.of':"B"},
-		{title: "C"}, {title:"Draft of 'C'", 'draft.of':"C"},
-		{title: "D"}, {title:"Draft of 'D'", 'draft.of':"", 'draft.title':""},
+		{title: "C"}, {title:"Draft of 'C'", 'draft.title':"C"},
 		{title: "E"}]);
 	test(s+'[has[draft.of]]', s+'[is[draft]]', {wiki: wiki});
 	test(s+'[has{draft.of}]', s+'[has{draft.of}]', {wiki: wiki});
