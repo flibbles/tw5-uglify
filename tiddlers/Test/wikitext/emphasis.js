@@ -43,4 +43,8 @@ it('whitespace trim', function() {
 	     "\\define M(x)//x\n<<M '<$reveal/>'>>");
 });
 
+it('can handle missing close', function() {
+	test("Content\n\n//<$text text='Italics'/>", "Content\n\n//<$text text=Italics/>");
+});
+
 });});

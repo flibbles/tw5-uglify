@@ -111,6 +111,10 @@ exports.allEligibleTiddlers = function(wiki) {
 	return titles;
 };
 
+exports.isSystemTarget = function(title) {
+	return systemTargets[title] || false;
+};
+
 // The signature is a string describing which uglifiers were applied to a
 // given compression. Mismatching signatures means caches must be remade.
 exports.getSignature = function(wiki) {

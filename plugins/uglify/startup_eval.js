@@ -39,7 +39,7 @@ function evalGlobal(code,context,filename) {
 	// Compile the code into a function
 	var fn;
 	if($tw.browser) {
-		fn = window["eval"](exports.addDirectives($tw.wiki, code, filename));
+		fn = window["eval"](code + exports.getDirective($tw.wiki, filename));
 	} else {
 		fn = vm.runInThisContext(code,filename);
 	}
@@ -57,25 +57,25 @@ function getConfig(wiki, key, defaultValue) {
 	return getText(wiki, "$:/config/flibbles/uglify/"+key, defaultValue);
 };
 
-// This is in exports so I can test it.
-exports.addDirectives = function(wiki, code, filename) {
-	if (getConfig(wiki, "compress", "yes") === "yes"
+exports.getDirective = function(wiki, filename, standalone) {
+	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes"
+	&& getConfig(wiki, "compress", "yes") === "yes"
 	&& getConfig(wiki, "sourcemap", "yes") === "yes"
 	&& getConfig(wiki, "application/javascript", "yes") === "yes") {
 		var blacklist = $tw.utils.parseStringArray(getConfig(wiki, "blacklist", ""));
-		var source = wiki.getShadowSource(filename);
+		// standalone files are their own source
+		var source = standalone ? filename : wiki.getShadowSource(filename);
 		if (source
 		&& blacklist.indexOf(source) < 0
-		&& !wiki.tiddlerExists(filename)) {
-			return code + "\n\n//# sourceMappingURL=/uglify/map/" + filename;
+		&& wiki.tiddlerExists(filename) == !!standalone) {
+			return "\n\n//# sourceMappingURL=/uglify/map/" + filename;
 		}
 	}
-	return code + "\n\n//# sourceURL=" + filename;
+	return "\n\n//# sourceURL=" + filename;
 };
 
-// TODO: Maybe test the state tiddler here instead of wit hevery dirrective
 if ($tw.browser && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
 	$tw.utils.evalSandboxed = evalGlobal;
 }
 
-// TODO: do I need to URL escape the filename?
+//# sourceMappingURL=/uglify/map/$:/plugins/flibbles/uglify/startup_eval.js

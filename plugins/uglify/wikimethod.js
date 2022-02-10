@@ -12,6 +12,7 @@ type: application/javascript
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
+var getDirective = require('./startup_eval.js').getDirective;
 var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
 exports.getTiddlerSourceMap = function(title, options) {
@@ -80,6 +81,8 @@ function compressTiddler(wiki, title, options) {
 				cache.text = tiddler.fields.text || '';
 			}
 		}
+		// We put on directives now, so their independent of the cache
+		cache = addDirectiveToBootFiles(wiki, cache, title);
 	} finally {
 		// If we're here, it means we never saved the file.
 		// Either we're on browser, the cache was good, or an error occured.
@@ -185,12 +188,29 @@ function cleanShadowFields(fields) {
 
 function compressOrNot(uglifier, title, text, wiki) {
 	try {
-		return uglifier.uglify(text, {wiki: wiki});
+		var fields = uglifier.uglify(text, {wiki: wiki});
+		return fields;
 	} catch (e) {
 		logger.warn(compileFailureWarning(title, e));
 		// Return the uncompressed text as a backup
 		return {text: text};
 	}
+};
+
+// If this is a system target, we give a chance to add
+// directives in case this is a server which needs to tweak
+// boot.js and such.
+// This occurs INDEPENDENTLY of file writing. We don't want
+// these directives in the file cache.
+function addDirectiveToBootFiles(wiki, fields, title) {
+	if (utils.isSystemTarget(title)) {
+		var tiddler = wiki.getTiddler(title);
+		if (tiddler && tiddler.fields.type === "application/javascript") {
+			fields = Object.create(fields);
+			fields.text = fields.text + getDirective(wiki, title, true);
+		}
+	}
+	return fields;
 };
 
 function compileFailureWarning(title, error) {

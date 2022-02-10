@@ -132,6 +132,63 @@ it('can toggle particular uglifiers', async function() {
 	}
 });
 
+it('adds directives to boot files', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName) {return argName;}';
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	spyOn(console, 'log');
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+	// Without sourcemapping can be controlled through configuration
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+	// If compression is disabled, so is sourcemapping
+	wiki.addTiddler($tw.utils.test.noCompress());
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	wiki.addTiddler($tw.utils.test.yesCompress());
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+	// If javascript in particular is disabled, then so is sourcemapping
+	wiki.addTiddler($tw.utils.test.setting("application/javascript", "no"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	wiki.addTiddler($tw.utils.test.setting("application/javascript", "yes"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+	// blacklisting a plugin disables for all containing javascript
+	wiki.addTiddler($tw.utils.test.setting("blacklist", boot + " cats"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	wiki.addTiddler($tw.utils.test.setting("blacklist", "cats"));
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+});
+
+it('adds directives to boot file that already has directives', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName) {return argName;}\n\n//# sourceURL='+boot;
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	spyOn(console, 'log');
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceMappingURL=");
+	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
+	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceURL=");
+});
+
+it('does not add directives to css boot file', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.css',
+		text = '.class {color: black;}';
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "text/css"});
+	spyOn(console, 'log');
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceURL=");
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceMappingURL=");
+});
+
 it('gets source maps for shadow tiddlers', function() {
 	const pluginName = "plugin_" + $tw.utils.test.uniqName();
 	const filepath = './.cache/uglify/' + pluginName + '.tid';
