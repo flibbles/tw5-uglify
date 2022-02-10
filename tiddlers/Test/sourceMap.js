@@ -72,9 +72,6 @@ it('can fetch system tiddlers with illegal URI characters', function() {
 
 }
 
-//TODO: Test for 404
-//TODO: test for boot files
-
 it('clients add directive only when appropriate', function() {
 	const wiki = new $tw.Wiki(),
 		pluginName = 'plugin_' + $tw.utils.test.uniqName(),

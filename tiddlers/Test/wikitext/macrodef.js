@@ -5,9 +5,6 @@ tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with macrodefs.
 
-TODO: Test that $(variables)$ in that style don't count as placeholders
-      outside of a macrodef.
-
 \*/
 
 describe('wikitext uglifier', function() {
