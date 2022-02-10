@@ -28,7 +28,6 @@ exports.handler = function(request,response,state) {
 	}
 	var tiddler = state.wiki.getTiddler(title);
 	if (tiddler) {
-		logger.log('Returning original source for:', title);
 		var text = tiddler.fields.text;
 		//text = "(function(module,exports,console,setInterval,clearInterval,setTimeout,clearTimeout,Buffer,$tw,require) {(function(){\n" + text + "\n;})();\nreturn exports;\n})\n";
 		state.sendResponse(200,{"Content-Type": "application/javascript"},text,"utf8");
