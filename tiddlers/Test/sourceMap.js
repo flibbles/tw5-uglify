@@ -21,27 +21,50 @@ var response = {
 	end: function() {}
 };
 
-it('can fetch a shadow tiddler map', function() {
+// This gets the compressed file, takes the sourceMapURL, gets the
+// sourcemap, and then gets the underlying original source.
+function fetch(title) {
 	const wiki = new $tw.Wiki(),
 		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
 		text = 'exports.func = function(argName) {return argName;}',
 		tiddlers = [
-			{title: 'file.js', type: 'application/javascript', text: text}];
+			{title: title, type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	const path = "http://127.0.0.1/uglify/map/file.js";
+	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	const server = new Server({
 			wiki: wiki,
-			variables: {}}),
-		request = {method: "GET", url: path};
+			variables: {}});
 	spyOn(response, 'writeHead');
 	spyOn(response, 'end');
 	spyOn(console, 'log');
-	server.requestHandler(request, response);
+	// First we get the directive.
+	var directive = getDirective(wiki, title);
+	expect(directive.indexOf("sourceMappingURL=")).not.toBeLessThan(0);
+	var mapPath = "http://127.0.0.1"+directive.substr(directive.indexOf('=')+1);
+	server.requestHandler({method: "GET", url: mapPath}, response);
 	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/json'});
 	expect(response.end).toHaveBeenCalledTimes(1);
 	var calls = response.end.calls.first();
 	expect(calls.args[1]).toBe('utf8');
-	expect(JSON.parse(calls.args[0]).sources).toEqual(['file.js']);
+	var map = JSON.parse(calls.args[0]);
+	expect(map.sources).toEqual([title]);
+	var sourcePath = "http://127.0.0.1" + map.sourceRoot + map.sources[0];
+	// Now we try to fetch the original source
+	response.end.calls.reset();
+	response.writeHead.calls.reset();
+	server.requestHandler({method: "GET", url: sourcePath}, response);
+	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/javascript'});
+	expect(response.end).toHaveBeenCalledTimes(1);
+	var calls = response.end.calls.first();
+	expect(calls.args[0]).toBe(text);
+};
+
+it('can fetch a non-system tiddler map', function() {
+	fetch('file.js');
+});
+
+it('can fetch a system tiddler map', function() {
+	fetch('$:/plugins/flibbles/uglify/file.js');
 });
 
 }
