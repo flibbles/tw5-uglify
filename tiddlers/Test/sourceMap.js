@@ -47,7 +47,6 @@ function fetch(title) {
 	var calls = response.end.calls.first();
 	expect(calls.args[1]).toBe('utf8');
 	var map = JSON.parse(calls.args[0]);
-	expect(map.sources).toEqual([title]);
 	var sourcePath = "http://127.0.0.1" + map.sourceRoot + map.sources[0];
 	// Now we try to fetch the original source
 	response.end.calls.reset();
@@ -65,6 +64,10 @@ it('can fetch a non-system tiddler map', function() {
 
 it('can fetch a system tiddler map', function() {
 	fetch('$:/plugins/flibbles/uglify/file.js');
+});
+
+it('can fetch system tiddlers with illegal URI characters', function() {
+	fetch('$:/plugins/#/?/file.js');
 });
 
 }

@@ -13,6 +13,7 @@ GET /uglify/maps/:title
 "use strict";
 
 var logger = require('./logger.js');
+var encode = require('./startup_eval.js').encode;
 
 exports.method = "GET";
 
@@ -23,6 +24,7 @@ exports.handler = function(request,response,state) {
 	var map = state.wiki.getTiddlerSourceMap(title);
 	if(map) {
 		map.sourceRoot = (title.substr(0, 3) !== "$:/")? "/uglify/source/": "/";
+		map.sources[0] = encode(map.sources[0]);
 		map = JSON.stringify(map);
 		state.sendResponse(200,{"Content-Type": "application/json"},map,"utf8");
 	} else {

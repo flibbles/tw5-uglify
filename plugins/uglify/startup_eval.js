@@ -68,10 +68,21 @@ exports.getDirective = function(wiki, filename, standalone) {
 		if (source
 		&& blacklist.indexOf(source) < 0
 		&& wiki.tiddlerExists(filename) == !!standalone) {
-			return "\n\n//# sourceMappingURL=/uglify/map/" + filename;
+			return "\n\n//# sourceMappingURL=/uglify/map/" + exports.encode(filename);
 		}
 	}
 	return "\n\n//# sourceURL=" + filename;
+};
+
+exports.encode = function(title) {
+	return encodeURIComponent(title).replace(/%(?:2|3)(?:F|4|A)/g, function(code) {
+		switch (code) {
+			case "%2F": return '/';
+			case "%24": return '$';
+			case "%3A": return ':';
+			default: return code;
+		}
+	});
 };
 
 if ($tw.browser && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
