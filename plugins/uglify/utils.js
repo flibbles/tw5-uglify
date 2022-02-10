@@ -19,6 +19,7 @@ var config = {
 	compress: 'yes',
 	blacklist: '',
 	stub: 'yes',
+	sourcemap: 'yes',
 	cache: 'yes',
 	cacheDirectory: './.cache/uglify'
 };

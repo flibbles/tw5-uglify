@@ -1,0 +1,16 @@
+title: Source Maps
+tags: Documentation Concept
+
+Uglify supports javascript Source Mapping. This is when the server supplies your browser with uglified javascript to use, but if you open your browser's web developer tools, your browser can requests original versions of the javascript from the server, along with a "source map", which maps the executing uglified code to the pretty original versions, thus allowing you to seemlessly debug using pretty code while still reaping the benefits of compressed code.
+
+Source Mapping only works when TW5-Uglify is used [[in conjunction with a Node.JS server|Uglify on Node.JS]]. A standalone Tiddlywiki cannot source map, because it has no server from which to request original files.
+
+!! Source Mapping is not perfect
+
+Uglified javascript is //heavily changed// from the original source. Stuff is reordered, renamed, or restructured in unexpected ways. Browsers do their best to map the underlying uglified code to the displayed pretty code, but it's //problematic//. If you're planning to do some in-depth debugging, you may want to go to the [[Uglify plugin's Readme page|$:/plugins/flibbles/uglify]] and [[temporarily disable compression|Toggling Compression]].
+
+"boot/boot.js" is particularly problematic. No browser maps it quite right. An alternative to disabling compression of the boot file is to tell your browser's development tools to "Ignore Source" after right clicking on the boot/boot.js source displayed in the developer pane. Your browser will restrict itself to stepping through plugin code only.
+
+!! Configuring Source Mapping
+
+Source mapping is enabled by default, but if it causes you problems, you can [[configure it|Configuration]].

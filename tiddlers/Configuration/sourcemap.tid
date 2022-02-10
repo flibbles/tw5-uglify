@@ -1,0 +1,3 @@
+default: yes
+
+Configure whether browsers will attempt to sourcemap their compressed javascript code. If yes, they will fetch sourcemaps from the server when the web developer console is opened.
