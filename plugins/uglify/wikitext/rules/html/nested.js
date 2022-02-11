@@ -20,7 +20,7 @@ var wikitextList = {
 	"$droppable": ["actions"],
 	"$dropzone": ["actions"],
 	"$keyboard": ["actions"],
-	"$link": ["tooltip"],
+	//"$link": ["tooltip"], // handled in its own module
 	"$linkcatcher": ["actions"],
 	"$list": ["emptyMessage"],
 	"$messagecatcher": ["actions"],

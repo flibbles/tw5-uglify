@@ -163,3 +163,15 @@ exports.optimizeAttributeOrdering = function(orderedAttrs, parser) {
 		}
 	}
 }
+
+exports.isCurrentTiddlerAttr = function(attr) {
+	switch (attr.type) {
+		case "macro":
+			return attr.value.name === "currentTiddler"
+				&& attr.value.params.length == 0;
+		case "indirect":
+			return attr.textReference == "!!title";
+		default:
+			return false;
+	}
+};
