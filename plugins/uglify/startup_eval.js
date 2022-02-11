@@ -88,5 +88,3 @@ exports.encode = function(title) {
 if ($tw.browser && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
 	$tw.utils.evalSandboxed = evalGlobal;
 }
-
-//# sourceMappingURL=/uglify/map/$:/plugins/flibbles/uglify/startup_eval.js
