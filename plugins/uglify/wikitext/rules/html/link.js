@@ -20,11 +20,7 @@ exports["$link"] = function(tag, parser) {
 			}
 		}
 	}
-	// TODO: If it would become a block from inline
-	if (pointsToCurrent
-	&& tag.children
-	&& tag.children.length == 1
-	&& isTitleText(tag.children[0].text)) {
+	if (canRemoveTextContent(tag, parser, pointsToCurrent)) {
 		tag.children = [];
 		if (canBecomeSelfClosing(tag, parser)) {
 			tag.isSelfClosing = true;
@@ -35,6 +31,19 @@ exports["$link"] = function(tag, parser) {
 		var uglifier = parser.wiki.getUglifier("text/vnd.tiddlywiki");
 		tooltip.value = uglifier.uglify(tooltip.value, parser).text;
 	}
+};
+
+function canRemoveTextContent(tag, parser, pointsToCurrent) {
+	if (tag.children && tag.children.length == 1) {
+		if (pointsToCurrent) {
+			// It's text is also pointing to currentTiddler
+			return (isTitleText(tag.children[0].text));
+		} else {
+			// The content is pointing to exactly what the attribute is
+			return (tag.children[0].text === "<$text text="+optimalAttribute(tag.attributes.to, parser)+"/>");
+		}
+	}
+	return false;
 };
 
 function isTitleText(text) {
@@ -54,4 +63,17 @@ function couldBeForBlock(source, pos) {
 		return utils.newlineAt(source, pos) || pos >= source.length;
 	}
 	return false;
+};
+
+function optimalAttribute(attr, parser) {
+	switch (attr.type) {
+	case "string":
+		return utils.bestQuoteForAttribute(attr, parser);
+	case "indirect":
+		return "{{" + attr.textReference + "}}";
+	case "macro":
+		return "<<" + utils.stringifyMacro(attr.value, parser.source, parser) + ">>";
+	case "filtered":
+		return "{{{" + utils.uglifyFilter(attr.filter, parser) + "}}}";
+	}
 };

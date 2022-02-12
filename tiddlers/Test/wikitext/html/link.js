@@ -71,6 +71,22 @@ it('removes inner content when it could be assumed', function() {
 	test(tid+"<$link />X", tid+"<$link/>X");
 });
 
+it('removes inner widget content when it matches "to" attribute', function() {
+	test('<$link to="""stuff"""><$text text="stuff" /></$link>X',
+	     '<$link to=stuff/>X');
+	// With placeholders
+	test('\\define M(x)<$link to="""$x$"""><$text text="""$x$""" /></$link>X\n<<M "[[MacroWiki]]">>',
+	     '\\define M(x)<$link to="""$x$"""/>X\n<<M "[[MacroWiki]]">>');
+	test('\\define N(z)--$z$--\n\\define M(x)<$link to=<<N "$x$">>><$text text=<<N "$x$">> /></$link>X\n<<M "[[MacroWiki]]">>',
+	     '\\define N(z)--$z$--\n\\define M(x)<$link to=<<N "$x$">>/>X\n<<M "[[MacroWiki]]">>');
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: "target", field: "ruff"});
+	test('\\define M(x)<$link to={{{[[target]] +[get[$x$]]}}}><$text text={{{[[target]get[$x$]] }}} /></$link>X\n<<M field>>',
+	     '\\define M(x)<$link to={{{[[target]get[$x$]]}}}/>X\n<<M field>>', {wiki: wiki});
+	test('\\define M(x)<$link to={{target!!$x$}}><$text text={{target!!$x$}} /></$link>X\n<<M field>>',
+	     '\\define M(x)<$link to={{target!!$x$}}/>X\n<<M field>>', {wiki: wiki});
+});
+
 it('maintains inline or block status', function() {
 	test("<$link><$view field=title /></$link>\n\nContent",
 	     "<$link></$link>\n\nContent");

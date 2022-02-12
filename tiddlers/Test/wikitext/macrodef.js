@@ -45,7 +45,7 @@ it('parameters do not bleed into next when without quotes', function() {
 	test("\\define m(A:'love', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:love B)$A$-$B$\n<<m B:Y>>");
 	test("\\define m(A:'hi by', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:'hi by'B)$A$-$B$\n<<m B:Y>>");
 	test("\\define m(A:\"hi by\", B)$A$-$B$\n<<m B:Y>>[[l]]", "\\define m(A:[[hi by]]B)$A$-$B$\n<<m B:Y>>[[l]]");
-	test("\\define m(A:\"[[hi\", B)$A$-$B$\n<<m B:Y>>[[l]]", "\\define m(A:[[hi B)$A$-$B$\n<<m B:Y>>[[l]]");
+	test("\\define m(A:\"[[hi\", B)$A$-$B$\n<<m B:Y>>[[l]]", "\\define m(A:[[[[hi]]B)$A$-$B$\n<<m B:Y>>[[l]]");
 	test("\\define m(A:\"[hi]]\", B)$A$-$B$\n<<m B:Y>>[[l]]", "\\define m(A:[hi]] B)$A$-$B$\n<<m B:Y>>[[l]]");
 });
 
