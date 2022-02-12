@@ -34,7 +34,10 @@ exports.stringifyMacro = function(macro, source, options) {
 };
 
 exports.quotifyParam = function(param, allowBrackets, options) {
-	if (param.search(/[\s"']/) < 0 && param.length > 0 && (allowBrackets || param.indexOf(">") < 0)) {
+	if (param.search(/[\s"']/) < 0
+	&& param.length > 0
+	&& (allowBrackets || param.indexOf(">") < 0)
+	&& (param[0] !== "[" || param[1] !== "[")) {
 		return param;
 	}
 	if (options.apostrophesAllowed && param.indexOf("'") < 0) {

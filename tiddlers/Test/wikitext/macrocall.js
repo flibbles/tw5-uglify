@@ -28,9 +28,19 @@ it('whitespace among parameters', function() {
 	test(m+"<<m  dad\n\tval:sis\n\tbro >>", m+"<<m dad val:sis bro>>");
 });
 
+it('carrots inside simple value', function() {
+	test(m+'<<m "ca>>ots" >>', m+'<<m "ca>>ots">>');
+	test(m+'<<m "ca>ots" >>', m+'<<m "ca>ots">>');
+});
+
 it('brackets inside simple value', function() {
-	test(m+'<<m "bra>>ckets" >>', m+'<<m "bra>>ckets">>');
-	test(m+'<<m "bra>ckets" >>', m+'<<m "bra>ckets">>');
+	test(m+'<<m "[[brackets]]" >>', m+'<<m "[[brackets]]">>');
+	test(m+'<<m "[[brac]]kets" >>', m+'<<m "[[brac]]kets">>');
+	test(m+'<<m "[brackets]]" >>', m+'<<m [brackets]]>>');
+	// The quotes on this one COULD be removed, but it's dangerous...
+	test(m+'<<m "[[brackets]" >>', m+'<<m "[[brackets]">>');
+	// ... because of cases like this.
+	test(m+'<<m "[[brackets" close]]>>', m+'<<m [[[[brackets]] close]]>>');
 });
 
 it('parameters values', function() {
