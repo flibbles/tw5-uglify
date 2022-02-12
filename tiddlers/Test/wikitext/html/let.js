@@ -233,4 +233,17 @@ ifLetIt('manages placeholders inside inner let', function() {
 	     '\\define M(a)\n<$let x=X y=Y>\n<$text text=d/>\n\n$a$\n\n\\end\n<<M "<$reveal/>">>');
 });
 
+ifLetIt('does not impact qualify widgets and macros', function() {
+	test('<$let transclusion="5"><$let transclusion="4"><<qualify>>',
+	     '<$let transclusion=5><$let transclusion=4><<qualify>>');
+	test('<$let transclusion="5"><$let A=X><$let transclusion="4"><<qualify>>',
+	     '<$let transclusion=5><$let A=X><$let transclusion=4><<qualify>>');
+	test('<$let transclusion="5"><$let A=X><$let B=Z><$let transclusion="4"><<qualify>>',
+	     '<$let transclusion=5><$let A=X B=Z><$let transclusion=4><<qualify>>');
+	// But like variables do merge correctly if they're not "transclusion"
+	test('<$let butts="5"><$let butts="4"><<qualify>>',
+	     '<$let butts=5 butts=4><<qualify>>');
+});
+
+
 });});});

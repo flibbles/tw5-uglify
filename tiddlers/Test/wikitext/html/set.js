@@ -207,4 +207,9 @@ it('emptyValue & value with placeholders', function() {
 	     '\\define M(x)<$set name=v filter="A -A"emptyValue="$x$"value=yes>'+dump+'\n<<M n}}}o>>');
 });
 
+it('does not impact qualify widgets and macros', function() {
+	test('<$let transclusion="5"><$set name=transclusion  value=4><<qualify>>',
+	     '<$let transclusion=5><$set name=transclusion value=4><<qualify>>');
+});
+
 });});});

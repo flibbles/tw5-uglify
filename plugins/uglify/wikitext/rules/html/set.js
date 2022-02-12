@@ -13,7 +13,10 @@ exports["$set"] = function(tag, parser) {
 	var attrs = tag.attributes;
 	if (!attrs.name
 	|| attrs.name.type !== "string"
-	|| !isLegalAttrName(attrs.name.value)) {
+	|| !isLegalAttrName(attrs.name.value)
+	// transclusion is a special variable which can't be in a $let without
+	// risking changing nested qualifys
+	|| attrs.name.value === "transclusion") {
 		// If none of the stuff above is true, then the variable value can't
 		// be an attribute and there's nothing we can do.
 		return;

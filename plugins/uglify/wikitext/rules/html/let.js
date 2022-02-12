@@ -26,6 +26,9 @@ exports["$let"] = function(tag, parser) {
 			last = children[lastIndex];
 		if (first && first.tag && first.tag.tag == "$let"
 		&& last.text == "</$let>"
+		// If lets contain transclusion as a variable, this can affect qualifying. Pass.
+		&& first.tag.attributes.transclusion === undefined
+		&& tag.attributes.transclusion === undefined
 		&& last.start == first.tag.start // Ensure open and close tags match
 		&& canFold(tag.isBlock, first.tag.isBlock, startTagGap, endTagGap, children[firstIndex+1], parser)) {
 			var dummyRequired = !tag.isBlock && removalWillCauseBlock(children, firstIndex);

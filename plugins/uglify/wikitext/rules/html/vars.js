@@ -20,6 +20,11 @@ exports["$vars"] = function(tag, parser) {
 		// even be a thing? Dunno, but let's  make sure.
 		return;
 	}
+	if (tag.attributes.transclusion !== undefined) {
+		// We can't upgrade to a $let if there's a transclusion
+		// variable. We risk changing the way inner qualifys evaluate.
+		return;
+	}
 	for (var i = 0; i < attrs.length; i++) {
 		var attr = attrs[i];
 		if (attr.type !== "string"

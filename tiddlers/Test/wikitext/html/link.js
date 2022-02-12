@@ -33,6 +33,5 @@ it('compresses nested tooltip attr', function() {
 	test('<$link tooltip=<<text  text>>>Link',
 	     '<$link tooltip=<<text text>>>Link');
 });
-//TODO: Tooltip gets wikitext worked.
 
 });});});

@@ -101,4 +101,9 @@ ifLetIt('optimizes by moving non-quote strings to end', function() {
 	test("<$vars x=A y='B C' z=<<m G>>>"+d, "<$let z=<<m G>>y='B C'x=A>"+d);
 });
 
+ifLetIt('does not impact qualify widgets and macros', function() {
+	test('<$let transclusion=5><$vars transclusion=4><<qualify>>',
+	     '<$let transclusion=5><$vars transclusion=4><<qualify>>');
+});
+
 });});});
