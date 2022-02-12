@@ -239,4 +239,27 @@ it(':and filter prefixes on second runs are merged', function() {
 	     "[author/b/author/i/][[1 2]]", {wiki, wiki});
 });
 
+it('reduces first[] nth[1] zth[0] limit[1] to nth[]', function() {
+	test("[enlist[A B C D]nth[1]]", "[enlist[A B C D]nth[]]");
+	test("[enlist[A B C D]nth[2]]", "[enlist[A B C D]nth[2]]");
+	test("[enlist[A B C D]first[]]", "[enlist[A B C D]nth[]]");
+	test("[enlist[A B C D]first[1]]", "[enlist[A B C D]nth[]]");
+	test("[enlist[A B C D]!first[]]", "[enlist[A B C D]!nth[]]");
+	test("[enlist[A B C D]limit[1]]", "[enlist[A B C D]nth[]]");
+	test("[enlist[A B C D]!limit[1]]", "[enlist[A B C D]!limit[1]]");
+	test("[enlist[A B C D]limit[]]", "[enlist[A B C D]limit[]]");
+	test("[enlist[A B C D]zth[0]]", "[enlist[A B C D]nth[]]");
+	// Don't change zth arbitrarily
+	test("[enlist[A B C D]zth[]]", "[enlist[A B C D]zth[]]");
+	test("[enlist[A B C D]zth[1]]", "[enlist[A B C D]zth[1]]");
+	// Broken ones
+	test("[enlist[A B C D]first[2]]", "[enlist[A B C D]first[2]]");
+	test("[enlist[A B C D]first:suf[]]", "[enlist[A B C D]first:suf[]]");
+	test("[enlist[A B C D]first[1],[X]]", "[enlist[A B C D]first[1],[X]]");
+	test("[enlist[A B C D]first{1}]", "[enlist[A B C D]first{1}]");
+	test("[enlist[A B C D]first<1>]", "[enlist[A B C D]first<1>]");
+	spyOn(console, "log");
+	test("[enlist[A B C D]first/1/]", "[enlist[A B C D]first/1/]");
+});
+
 });});
