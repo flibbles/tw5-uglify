@@ -74,6 +74,10 @@ it('removes inner content when it could be assumed', function() {
 it('removes inner widget content when it matches "to" attribute', function() {
 	test('<$link to="""stuff"""><$text text="stuff" /></$link>X',
 	     '<$link to=stuff/>X');
+	test('<$link to="""stuff""">\n<$text text="stuff" />\n</$link>\nX',
+	     '<$link to=stuff>\n<$text text=stuff/>\n</$link>\nX');
+	test(t+'<$link to="""stuff""">\n<$text text="stuff" />\n</$link>\nX',
+	       '<$link to=stuff/>X');
 	// With placeholders
 	test('\\define M(x)<$link to="""$x$"""><$text text="""$x$""" /></$link>X\n<<M "[[MacroWiki]]">>',
 	     '\\define M(x)<$link to="""$x$"""/>X\n<<M "[[MacroWiki]]">>');
