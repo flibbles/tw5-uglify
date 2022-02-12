@@ -8,11 +8,10 @@ Tests the wikitext uglifier with code blocks.
 \*/
 
 describe('wikitext uglifier', function() {
-describe('comment', function() {
+describe('codeblock', function() {
 
 const test = $tw.utils.test.wikitext.test;
 const t = "\\whitespace trim\n";
-const cmp = $tw.utils.test.wikitext.cmp;
 
 it('language string', function() {
 	test(  "```\nContent\n```\nAfter", "```\nContent\n```\nAfter");
