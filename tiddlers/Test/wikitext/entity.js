@@ -32,9 +32,9 @@ it('compresses spaces', function() {
 	     t+"<div>I&#32;//love//&#32;bbq</div>?test?t?a //b// c?test?");
 	// Placeholders too
 	test("\\define M(m)\nI&#32;//love//&#32; bbq $m$\n\\end\n<<M  'a b'>>",
-	     "\\define M(m)I //love//  bbq $m$\n<<M 'a b'>>");
+	     "\\define M(m)I //love//  bbq $m$\n<<M'a b'>>");
 	test("\\define M(m)\n"+t+"I&#32;//love//&#32; bbq $m$\n\\end\n<<M  'a b'>>",
-	     "\\define M(m)\n"+t+"I&#32;//love//&#32; bbq $m$\n\\end\n<<M 'a b'>>");
+	     "\\define M(m)\n"+t+"I&#32;//love//&#32; bbq $m$\n\\end\n<<M'a b'>>");
 });
 
 });});

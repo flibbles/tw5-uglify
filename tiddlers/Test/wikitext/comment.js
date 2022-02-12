@@ -93,7 +93,7 @@ it('preceding content that cannot be at end', function() {
 
 it('separating widgets from placeholders', function() {
 	test("\\define M(x)\n<$reveal/><!--c-->\n$x$\n\\end\n<<M '\nph'>>",
-	     "\\define M(x)\n<$reveal/><!---->\n$x$\n\\end\n<<M '\nph'>>");
+	     "\\define M(x)\n<$reveal/><!---->\n$x$\n\\end\n<<M'\nph'>>");
 });
 
 it('block', function() {

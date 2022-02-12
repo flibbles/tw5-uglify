@@ -63,7 +63,7 @@ it('handles quotes about macro param placeholders', function() {
 	// operatand variable parameter maintains the correct quoting if it
 	// contains a placeholder.
 	test('\\define M(x){{{[<A "$x$">] }}}\n\\define A(z)--$z$--\n<<M "A B">>',
-	     '\\define M(x){{{[<A "$x$">]}}}\n\\define A(z)--$z$--\n<<M [[A B]]>>');
+	     '\\define M(x){{{[<A"$x$">]}}}\n\\define A(z)--$z$--\n<<M [[A B]]>>');
 });
 
 });});

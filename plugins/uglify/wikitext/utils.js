@@ -22,11 +22,12 @@ exports.stringifyMacro = function(macro, source, options) {
 		needsSpace = true,
 		value;
 	$tw.utils.each(macro.params, function(param) {
-		if (needsSpace) {
-			strings.push(" ");
-			needsSpace = false;
-		}
 		if (param.name) {
+			if (needsSpace) {
+				// If param key is there, we always need preceding space
+				strings.push(" ");
+				needsSpace = false;
+			}
 			strings.push(param.name, ":");
 		}
 		if (options.placeholders && options.placeholders.present(param.value)) {
@@ -34,8 +35,15 @@ exports.stringifyMacro = function(macro, source, options) {
 		} else {
 			value = exports.quotifyParam(param.value, false, options);
 		}
-		if (value === param.value) {
-			needsSpace = true;
+		if (value === param.value || value[0] === "[") {
+			if (needsSpace) {
+				// If value is unquoted, we need preceding space
+				strings.push(" ");
+			}
+			// We won't need a following space if [[brackets]] were used.
+			needsSpace = (value === param.value);
+		} else {
+			needsSpace = false;
 		}
 		strings.push(value);
 	});

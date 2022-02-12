@@ -238,7 +238,7 @@ it('block widgets with newlines after close ', function() {
 it('block widgets with newlines after close w/ placeholders', function() {
 	const dump = "<$text text={{{[variables[]join[,]]}}}/>";
 	test("\\define X(a)\n<$reveal>\n\nA\n</$reveal>\n$a$\n\\end\n<<X '"+dump+"'>>",
-	     "\\define X(a)\n<$reveal>\n\nA\n</$reveal>$a$\n\\end\n<<X '"+dump+"'>>");
+	     "\\define X(a)\n<$reveal>\n\nA\n</$reveal>$a$\n\\end\n<<X'"+dump+"'>>");
 });
 
 it('block widgets with newlines after close w/ blockquote', function() {

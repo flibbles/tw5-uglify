@@ -32,7 +32,7 @@ it('maintains its own quotation context', function() {
 
 it('handles placeholders', function() {
 	test('\\define m(f)<$list filter="" emptyMessage="""<$text  text=\'$f$\'/>"""/>\n<<m \'qu"ot\'>>',
-		'\\define m(f)<$list filter=\'\'emptyMessage="""<$text text=\'$f$\'/>"""/>\n<<m \'qu"ot\'>>');
+		'\\define m(f)<$list filter=\'\'emptyMessage="""<$text text=\'$f$\'/>"""/>\n<<m\'qu"ot\'>>');
 });
 
 it('handles edge case with ending quotes and whitespace trimming', function() {

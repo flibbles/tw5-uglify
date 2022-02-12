@@ -38,9 +38,9 @@ it('whitespace trim', function() {
 	test(t+"//\n\n<$text text='A'/>\n\n//\n\nContent",
 	     "//<$text text=A/>//\n\nContent");
 	test("\\define M(x)\n"+t+"//\n\n$x$\n\n//\n\\end\n<<M  '<$reveal/>'>>",
-	     "\\define M(x)\n"+t+"//\n\n$x$\n\n//\n\\end\n<<M '<$reveal/>'>>");
+	     "\\define M(x)\n"+t+"//\n\n$x$\n\n//\n\\end\n<<M'<$reveal/>'>>");
 	test("\\define M(x)\n"+t+"//\n\nx\n\n//\n\\end\n<<M  '<$reveal/>'>>",
-	     "\\define M(x)//x\n<<M '<$reveal/>'>>");
+	     "\\define M(x)//x\n<<M'<$reveal/>'>>");
 });
 
 it('can handle missing close', function() {

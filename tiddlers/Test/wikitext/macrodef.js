@@ -87,13 +87,13 @@ it('have their own quoting context inside other macrodefs', function() {
 	// that B macrocall can't go to brackets because there are no
 	// brackets inside its context with it.
 	test('\\define B(v)$v$\n\\define A() <<B "a b">>\n<<A>>[[l]]\'',
-		'\\define B(v)$v$\n\\define A()<<B "a b">>\n<<A>>[[l]]\'');
+		'\\define B(v)$v$\n\\define A()<<B"a b">>\n<<A>>[[l]]\'');
 	// bracket is in same context. Can use.
 	test('\\define B(v)$v$\n\\define A() <<B "a b">>[[l]]\n<<A>>',
 		"\\define B(v)$v$\n\\define A()<<B [[a b]]>>[[l]]\n<<A>>");
 	// single quotes is in same context. Can use.
 	test('\\define B(v)$v$\n\\define A() <<B "a b">>\'\n<<A>>',
-		"\\define B(v)$v$\n\\define A()<<B 'a b'>>'\n<<A>>");
+		"\\define B(v)$v$\n\\define A()<<B'a b'>>'\n<<A>>");
 });
 
 it('inner html respects quotation of local placeholders', function() {
@@ -104,16 +104,16 @@ it('inner html respects quotation of local placeholders', function() {
 	test('\\define A(a,b) <$text text="$a$"/> <$text text="love"/>\n<<A [[a\'b\'c]]>>',
 		'\\define A(a b)<$text text="$a$"/> <$text text=love/>\n<<A [[a\'b\'c]]>>');
 	test('\\define A(a,b) <$text text=\'$a$\'/> <$text text="love"/>\n<<A [[a "b"c]]>>',
-		'\\define A(a b)<$text text=\'$a$\'/> <$text text=love/>\n<<A \'a "b"c\'>>');
+		'\\define A(a b)<$text text=\'$a$\'/> <$text text=love/>\n<<A\'a "b"c\'>>');
 });
 
 it('inner macrocall respects quotation of local placeholders', function() {
 	test('\\define B(c)$c$\n\\define A(a,b) <<B """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
-		'\\define B(c)$c$\n\\define A(a b)<<B """b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
+		'\\define B(c)$c$\n\\define A(a b)<<B"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
 	test('\\define B(c)$c$\n\\define A(a,b) <<B  c  : """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
 		'\\define B(c)$c$\n\\define A(a b)<<B c:"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
 	test('\\define B(c)$c$\n\\define A(a,b) <<B "b$a$">>\n<$text text="love"/>\n<<A [[a\'b\'c]]>>',
-		'\\define B(c)$c$\n\\define A(a b)<<B "b$a$">>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
+		'\\define B(c)$c$\n\\define A(a b)<<B"b$a$">>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
 	test('\\define B(c)$c$\n\\define A(a,b) <<B [[b$a$]]>>\n<$text text="love"/>\n<<A "a\'b\'c">>',
 		'\\define B(c)$c$\n\\define A(a b)<<B [[b$a$]]>>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
 });
@@ -124,9 +124,9 @@ it('inner macrodef respects quotation of local placeholders', function() {
 	test('\\define A(p)\n\\define I(x: "z$p$", y: "yv")$x$ $y$\n<<I>>\n\\end\n<<A [[a \'b\'c]]>>',
 		'\\define A(p)\n\\define I(x:"z$p$"y:yv)$x$ $y$\n<<I>>\n\\end\n<<A [[a \'b\'c]]>>');
 	test('\\define A(p)\n\\define I(x: \'z$p$\', y: \'yv\')$x$ $y$\n<<I>>\n\\end\n<<A [[a "b"c]]>>',
-		'\\define A(p)\n\\define I(x:\'z$p$\'y:yv)$x$ $y$\n<<I>>\n\\end\n<<A \'a "b"c\'>>');
+		'\\define A(p)\n\\define I(x:\'z$p$\'y:yv)$x$ $y$\n<<I>>\n\\end\n<<A\'a "b"c\'>>');
 	test('\\define A(p)\n\\define I(x: [[z$p$]], y: \'yv\')$x$ $y$\n<<I>>\n\\end\n<<A [[a "b"c]]>>',
-		'\\define A(p)\n\\define I(x:[[z$p$]]y:yv)$x$ $y$\n<<I>>\n\\end\n<<A \'a "b"c\'>>');
+		'\\define A(p)\n\\define I(x:[[z$p$]]y:yv)$x$ $y$\n<<I>>\n\\end\n<<A\'a "b"c\'>>');
 });
 
 it('extra nesting still catches outer local placeholders', function() {
@@ -143,25 +143,25 @@ it('handles macrodef with quoted global substitutions', function() {
 
 it('placeholders that end up at EOF', function() {
 	test('\\define A(m)\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>" >>',
-		'\\define A(m)\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>">>');
+		'\\define A(m)\n<div>\n\n$m$\n</div>\n\\end\n<<A"<$reveal/>">>');
 	test('\\define A(m)\n\\whitespace trim\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>" >>',
-		'\\define A(m)\n\\whitespace trim\n<div>\n\n$m$\n</div>\n\\end\n<<A "<$reveal/>">>');
+		'\\define A(m)\n\\whitespace trim\n<div>\n\n$m$\n</div>\n\\end\n<<A"<$reveal/>">>');
 	test('\\define T()\nx\n\ny\n\\end\n\\define A(m)\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>" >>',
-		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>">>');
+		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n<div>\n\n$m$</div>\n\\end\n<<A"<<T>>">>');
 	test('\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>" >>',
-		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A "<<T>>">>');
+		'\\define T()\nx\n\ny\n\\end\n\\define A(m)\n\\whitespace trim\n<div>\n\n$m$</div>\n\\end\n<<A"<<T>>">>');
 });
 
 it('placeholders trim surrounding whitespace', function() {
 	test('\\define A(m)\nA\n$m$\nB\n\\end\n<<A  "\nX\n">>',
-	     '\\define A(m)\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
+	     '\\define A(m)\nA\n$m$\nB\n\\end\n<<A"\nX\n">>');
 	test('\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A  "\nX\n">>',
-	     '\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A "\nX\n">>');
+	     '\\define A(m)\n\\whitespace trim\nA\n$m$\nB\n\\end\n<<A"\nX\n">>');
 });
 
 it('placeholders within double nested context', function() {
 	test('\\define A(m)\n\\define B(n)<<C "$l$" "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>',
-	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$""$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
+	     '\\define A(m)\n\\define B(n)<<C $l$"$m$""$n$">>\n<<B"H J">>\n\\end\n<<A"K L">>');
 });
 
 it('placeholders outside of a macrodef', function() {
