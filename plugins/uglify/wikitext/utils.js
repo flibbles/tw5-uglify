@@ -164,6 +164,19 @@ exports.optimizeAttributeOrdering = function(orderedAttrs, parser) {
 	}
 }
 
+exports.tagAtStartOfBlock = function(tag, source) {
+	var pos = tag.start;
+	if (tag.startOfBody || pos === 0 ) {
+		return true; //start of stream
+	}
+	if (source[pos-1] !== "\n") {
+		return false; // Not start of line
+	}
+	// Ensure previous line is blank
+	return (source[pos-2] === "\n"
+		|| (source[pos-2] === "\r" && source[pos-3] === "\n"));
+};
+
 exports.isCurrentTiddlerAttr = function(attr) {
 	switch (attr.type) {
 		case "macro":

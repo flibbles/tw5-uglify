@@ -14,6 +14,8 @@ exports.uglify = function() {
 	this.parser.startOfBody = false;
 	var tag = this.parse()[0],
 		oldTag;
+	// Some specific widgets need to know this.
+	tag.startOfBody = startOfBody;
 	while (oldTag !== tag.tag && htmlModifiers[tag.tag]) {
 		// We keep running these htmlModifiers until the tag stops changing
 		oldTag = tag.tag;
@@ -84,7 +86,7 @@ exports.uglify = function() {
 				this.parser.pos = this.parser.sourceLength;
 			}
 		} else if (utils.newlineAt(this.parser.source, tag.end)
-		&& startOfBlock(this.parser.source, tag.start, startOfBody)) {
+		&& utils.tagAtStartOfBlock(tag, this.parser.source)) {
 			// Let's eat that newline
 			this.parser.pos+=utils.newlineAt(this.parser.source, this.parser.pos);
 			if (!this.parser.configTrimWhiteSpace) {
@@ -113,7 +115,7 @@ exports.uglify = function() {
 		}
 		// Funny thing about widgets is that block eval starts right after
 		// them. No newlines needed.
-		if (startOfBlock(this.parser.source, tag.start, startOfBody)
+		if (utils.tagAtStartOfBlock(tag, this.parser.source)
 		&& tag.isBlock) {
 			this.parser.skipWhitespace();
 		}
@@ -125,18 +127,6 @@ exports.uglify = function() {
 	tree[0].text = tagParts.join('');
 	tree[0].tag = tag;
 	return tree;
-};
-
-function startOfBlock(source, pos, startOfBody) {
-	if (startOfBody || pos === 0 ) {
-		return true; //start of stream
-	}
-	if (source[pos-1] !== "\n") {
-		return false; // Not start of line
-	}
-	// Ensure previous line is blank
-	return (source[pos-2] === "\n"
-		|| (source[pos-2] === "\r" && source[pos-3] === "\n"));
 };
 
 // These are the widgets which are okay to shuffle the attributes around for.
