@@ -18,17 +18,26 @@ exports.joinNodeArray = function(array) {
 };
 
 exports.stringifyMacro = function(macro, source, options) {
-	var strings = [macro.name];
+	var strings = [macro.name],
+		needsSpace = true,
+		value;
 	$tw.utils.each(macro.params, function(param) {
-		strings.push(" ");
+		if (needsSpace) {
+			strings.push(" ");
+			needsSpace = false;
+		}
 		if (param.name) {
 			strings.push(param.name, ":");
 		}
 		if (options.placeholders && options.placeholders.present(param.value)) {
-			strings.push(getOriginalQuoting(param, source));
+			value = getOriginalQuoting(param, source);
 		} else {
-			strings.push(exports.quotifyParam(param.value, false, options));
+			value = exports.quotifyParam(param.value, false, options);
 		}
+		if (value === param.value) {
+			needsSpace = true;
+		}
+		strings.push(value);
 	});
 	return strings.join("");
 };

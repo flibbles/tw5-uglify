@@ -161,7 +161,7 @@ it('placeholders trim surrounding whitespace', function() {
 
 it('placeholders within double nested context', function() {
 	test('\\define A(m)\n\\define B(n)<<C "$l$" "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>',
-	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$" "$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
+	     '\\define A(m)\n\\define B(n)<<C $l$ "$m$""$n$">>\n<<B "H J">>\n\\end\n<<A "K L">>');
 });
 
 it('placeholders outside of a macrodef', function() {

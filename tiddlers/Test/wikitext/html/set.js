@@ -78,7 +78,7 @@ it('filter attr gets trimmed up', function() {
 	// If that macrocall is enterpreted as a string,
 	// it would get wrongfully altered.
 	test('\\define M(a b)$a$-$b$-C\n<$set name=n filter=<<M "x y" [title[z]]>>>'+dump,
-	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M [[x y]] [title[z]]>>name=n>'+dump);
+	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M [[x y]][title[z]]>>name=n>'+dump);
 	// If this were treated as a filter, A and B would smush together.
 	test('<$set name=n filter={{A  B!!title}}>'+dump,
 	     '<$set filter={{A  B!!title}}name=n>'+dump);

@@ -72,7 +72,7 @@ it('handles filter attributes', function() {
 	test('<$count filter={{A  B  A!!title}}/>', '<$count filter={{A  B  A!!title}}/>');
 	// variable attrs should not be touched
 	test('\\define M(a b)$a$-$b$-C\n<$count filter=<<M "x y" [title[z]]>>/>',
-	     '\\define M(a b)$a$-$b$-C\n<$count filter=<<M [[x y]] [title[z]]>>/>');
+	     '\\define M(a b)$a$-$b$-C\n<$count filter=<<M [[x y]][title[z]]>>/>');
 });
 
 it('handles broken filters', function() {

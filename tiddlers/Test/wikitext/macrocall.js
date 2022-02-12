@@ -26,6 +26,9 @@ it('whitespace among parameters', function() {
 	test(m+"<<m\nparam\nstuff>>", m+"<<m param stuff>>");
 	test(m+"<<m  val  :   dad  >>", m+"<<m val:dad>>");
 	test(m+"<<m  dad\n\tval:sis\n\tbro >>", m+"<<m dad val:sis bro>>");
+	// Quotation involved
+	test(m+"<<m  'd d'  as  >>", m+"<<m 'd d'as>>");
+	test(m+"<<m  'd d'\n\tval:'s s'\n\tbro >>", m+"<<m 'd d'val:'s s'bro>>");
 });
 
 it('carrots inside simple value', function() {
@@ -40,7 +43,7 @@ it('brackets inside simple value', function() {
 	// The quotes on this one COULD be removed, but it's dangerous...
 	test(m+'<<m "[[brackets]" >>', m+'<<m "[[brackets]">>');
 	// ... because of cases like this.
-	test(m+'<<m "[[brackets" close]]>>', m+'<<m [[[[brackets]] close]]>>');
+	test(m+'<<m "[[brackets" close]]>>', m+'<<m [[[[brackets]]close]]>>');
 });
 
 it('parameters values', function() {
@@ -57,7 +60,7 @@ it('parameters values', function() {
 	test(m+"[[link]]<<m \"cat dog\">>", m+"[[link]]<<m [[cat dog]]>>");
 	test(m+"[[link]]<<m \"bra ]ket\">>", m+"[[link]]<<m \"bra ]ket\">>");
 	test(m+"[[link]]<<m \"bra [ket\">>", m+"[[link]]<<m [[bra [ket]]>>");
-	test(m+'[[l]]<<m "bra ]]ket" "a b">>', m+'[[l]]<<m "bra ]]ket" [[a b]]>>');
+	test(m+'[[l]]<<m "bra ]]ket" "a b">>', m+'[[l]]<<m "bra ]]ket"[[a b]]>>');
 });
 
 it('empty parameters', function() {
