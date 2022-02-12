@@ -262,4 +262,50 @@ it('reduces first[] nth[1] zth[0] limit[1] to nth[]', function() {
 	test("[enlist[A B C D]first/1/]", "[enlist[A B C D]first/1/]");
 });
 
+it('turns all[shadows+tiddlers]tag[X] to [X]tagging[]', function() {
+	const wiki = new $tw.Wiki();
+	const shadowTiddlers = [
+		{title: "$:/plugin/X", tags: "tag"},
+		{title: "$:/plugin/Y", tags: "tag", "list-before": "$:/plugin/X"},
+		{title: "$:/plugin/Z", tags: "tag"}];
+	$tw.utils.test.addPlugin(wiki, 'plugin', shadowTiddlers);
+	wiki.addTiddlers([
+		{title: "tag", list: "noexist"},
+		{title: "M", tags: "tag", text: "[[ZZ]] [[noexist]]"},
+		{title: "N", tags: "tag", "list-before": "$:/plugin/Z"},
+		{title: "O", tags: "tag", "list-after": "$:/plugin/X"},
+		{title: "P", tags: "tag", "list-before": "Q"},
+		{title: "Q", tags: "tag othertag"}]);
+	wiki.addTiddler({title: "ref", text: "tag", field: "tag"});
+	// with other operators
+	test("[all[shadows+tiddlers]tag[tag]addsuffix[x]]", "[[tag]tagging[]addsuffix[x]]", {wiki: wiki});
+	// all operand values
+	test("[all[shadows+tiddlers]tag[tag]]", "[[tag]tagging[]]", {wiki: wiki});
+	test("[all[ shadows + tiddlers ]tag[tag]]", "[all[ shadows + tiddlers ]tag[tag]]", {wiki: wiki});
+	test("[all[tiddlers]tag[tag]]", "[all[tiddlers]tag[tag]]", {wiki: wiki});
+	test("[all[shadows]tag[tag]]", "[all[shadows]tag[tag]]", {wiki: wiki});
+	test("[all[]tag[tag]]", "[all[]tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers+tiddlers]tag[tag]]", "[all[shadows+tiddlers+tiddlers]tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers+shadows]tag[tag]]", "[all[shadows+tiddlers+shadows]tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers+missing]tag[tag]]", "[all[shadows+tiddlers+missing]tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers+tags]tag[tag]]", "[all[shadows+tiddlers+tags]tag[tag]]", {wiki: wiki});
+	// all operand no-gos
+	test("[all{shadows+tiddlers}tag[tag]]", "[all{shadows+tiddlers}tag[tag]]", {wiki: wiki});
+	test("[all<shadows+tiddlers>tag[tag]]", "[all<shadows+tiddlers>tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers],[2]tag[tag]]", "[all[shadows+tiddlers],[2]tag[tag]]", {wiki: wiki});
+	test("[!all[shadows+tiddlers]tag[tag]]", "[!all[shadows+tiddlers]tag[tag]]", {wiki: wiki});
+	test("[all:suf[shadows+tiddlers]tag[tag]]", "[all:suf[shadows+tiddlers]tag[tag]]", {wiki: wiki});
+	// tag operand
+	test("[all[shadows+tiddlers]tag{ref}]", "[{ref}tagging[]]", {wiki: wiki});
+	test("[all[shadows+tiddlers]tag{ref!!field}]", "[{ref!!field}tagging[]]", {wiki: wiki});
+	test("[all[shadows+tiddlers]tag<T ag>]", "[<T ag>tagging[]]", {wiki: wiki, prefix: "\\define T(x)t$x$\n"});
+	//broken
+	test("[all[shadows+tiddlers]tag[tag],[2]]", "[all[shadows+tiddlers]tag[tag],[2]]", {wiki: wiki});
+	test("[all[shadows+tiddlers]!tag[tag]]", "[all[shadows+tiddlers]!tag[tag]]", {wiki: wiki});
+	test("[all[shadows+tiddlers]tag:suf[tag]]", "[all[shadows+tiddlers]tag:suf[tag]]", {wiki: wiki});
+	// deprecated regexp tests
+	spyOn(console, "log");
+	test("[all[shadows+tiddlers]tag/tag/]", "[all[shadows+tiddlers]tag/tag/]", {wiki: wiki});
+});
+
 });});

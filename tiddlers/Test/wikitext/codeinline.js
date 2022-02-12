@@ -8,7 +8,7 @@ Tests the wikitext uglifier with code blocks.
 \*/
 
 describe('wikitext uglifier', function() {
-fdescribe('codeinline', function() {
+describe('codeinline', function() {
 
 const test = $tw.utils.test.wikitext.test;
 const t = "\\whitespace trim\n";
