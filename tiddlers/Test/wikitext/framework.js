@@ -22,6 +22,7 @@ var ignores = [
 	'$:/core/save/empty',
 	'$:/core/save/lazy-all',
 	'$:/core/save/lazy-images',
+	'$:/plugins/flibbles/uglify-wizard/save-tiddler-filter',
 	'$:/core/templates/html-div-tiddler'
 ];
 
