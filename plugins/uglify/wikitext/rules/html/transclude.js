@@ -7,7 +7,7 @@ Uglify html rule for improving $transclude.
 var utils = require("../../utils.js");
 
 exports["$transclude"] = function(tag, parser) {
-	var pretty = getPrettyTransclude(tag);
+	var pretty = getPrettyTransclude(tag, parser);
 	if (pretty) {
 		var startsBlock = utils.tagAtStartOfBlock(tag, parser.source);
 		if (tag.isBlock) {
@@ -27,7 +27,7 @@ exports["$transclude"] = function(tag, parser) {
 	}
 };
 
-function getPrettyTransclude(tag) {
+function getPrettyTransclude(tag, options) {
 	if (!tag.isSelfClosing) {
 		return null;
 	}
@@ -37,7 +37,8 @@ function getPrettyTransclude(tag) {
 	if (tag.orderedAttributes.length == 1
 	&& tag.attributes.tiddler
 	&& tag.attributes.tiddler.type === "string"
-	&& !/[\|\{\}]/.test(tag.attributes.tiddler.value)) {
+	&& !/[\|\{\}]/.test(tag.attributes.tiddler.value)
+	&& (!options.placeholders || !options.placeholders.present(tag.attributes.tiddler.value))) {
 		return "{{||" + tag.attributes.tiddler.value + "}}";
 	}
 };

@@ -43,6 +43,11 @@ it('works with tiddler attribute', function() {
 	test("<$transclude tiddler='c}r'/>\n", "<$transclude tiddler=c}r/>\n", {wiki: wiki});
 });
 
+it('ignores tiddler attributes with placeholders', function() {
+	test('\\define M(x)<$transclude  tiddler="""$x$"""/>\n<<M>>',
+	     '\\define M(x)<$transclude tiddler="""$x$"""/>\n<<M>>');
+});
+
 it('maintains proper block or inline status', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'test', text: "<$reveal/>\n\n{{!!title}}"});
