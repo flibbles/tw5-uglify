@@ -18,13 +18,29 @@ const nocomment = "\\rules except commentinline\n";
 const noblock = "\\rules except transcludeblock\n";
 const noinline = "\\rules except transcludeinline\n";
 
-it('works only with simple cases', function() {
+it('works with simple cases', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'test', text: "<$reveal/>\n\n{{!!title}}"});
-	test(  "<$transclude tiddler='test'/>\n", "<$transclude tiddler=test/>\n", {wiki: wiki});
-	test(  "<$transclude field='text'/>\n", "<$transclude field=text/>\n", {wiki: wiki});
-	test(  "<$transclude index='index'/>\n", "<$transclude index=index/>\n", {wiki: wiki});
-	test(  "<$transclude mode='inline'/>\n", "<$transclude mode=inline/>\n", {wiki: wiki});
+	test("<$transclude field='text'/>\n", "<$transclude field=text/>\n", {wiki: wiki});
+	test("<$transclude index='index'/>\n", "<$transclude index=index/>\n", {wiki: wiki});
+	test("<$transclude mode='inline'/>\n", "<$transclude mode=inline/>\n", {wiki: wiki});
+	test("<$transclude>Else</$transclude>", "<$transclude>Else", {wiki: wiki});
+});
+
+it('works with tiddler attribute', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: 'test', text: "<$reveal/>\n\n{{!!title}}"});
+	test("<$transclude tiddler='test'/>\n", "{{||test}}", {wiki: wiki});
+	test("<div><$transclude tiddler='test'/></div>", "<div>{{||test}}", {wiki: wiki});
+	// only string attrs work
+	test("<$transclude  tiddler={{test!!title}}/>\n", "<$transclude tiddler={{test!!title}}/>\n", {wiki: wiki});
+	test("\\define M()test\n<$transclude  tiddler=<<M>>/>\n",
+	     "\\define M()test\n<$transclude tiddler=<<M>>/>\n", {wiki: wiki});
+	test("<$transclude  tiddler={{{[[test]]}}}/>\n", "<$transclude tiddler={{{test}}}/>\n", {wiki: wiki});
+	// Must be legal template value
+	test("<$transclude tiddler='ba|r'/>\n", "<$transclude tiddler=ba|r/>\n", {wiki: wiki});
+	test("<$transclude tiddler='c{r'/>\n", "<$transclude tiddler=c{r/>\n", {wiki: wiki});
+	test("<$transclude tiddler='c}r'/>\n", "<$transclude tiddler=c}r/>\n", {wiki: wiki});
 });
 
 it('maintains proper block or inline status', function() {
