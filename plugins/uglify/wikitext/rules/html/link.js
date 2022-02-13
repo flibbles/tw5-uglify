@@ -38,9 +38,9 @@ function canRemoveTextContent(tag, parser, pointsToCurrent) {
 		if (pointsToCurrent) {
 			// It's text is also pointing to currentTiddler
 			return (isTitleText(tag.children[0].text));
-		} else {
+		} else if (tag.attributes.to.type === "string") {
 			// The content is pointing to exactly what the attribute is
-			return (tag.children[0].text === "<$text text="+optimalAttribute(tag.attributes.to, parser)+"/>");
+			return (tag.children[0].text === "<$text text="+utils.bestQuoteForAttribute(tag.attributes.to, parser)+"/>");
 		}
 	}
 	return false;
@@ -63,17 +63,4 @@ function couldBeForBlock(source, pos) {
 		return utils.newlineAt(source, pos) || pos >= source.length;
 	}
 	return false;
-};
-
-function optimalAttribute(attr, parser) {
-	switch (attr.type) {
-	case "string":
-		return utils.bestQuoteForAttribute(attr, parser);
-	case "indirect":
-		return "{{" + attr.textReference + "}}";
-	case "macro":
-		return "<<" + utils.stringifyMacro(attr.value, parser.source, parser) + ">>";
-	case "filtered":
-		return "{{{" + utils.uglifyFilter(attr.filter, parser) + "}}}";
-	}
 };

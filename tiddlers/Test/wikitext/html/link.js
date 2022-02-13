@@ -74,6 +74,8 @@ it('removes inner content when it could be assumed', function() {
 it('removes inner widget content when it matches "to" attribute', function() {
 	test('<$link to="""stuff"""><$text text="stuff" /></$link>X',
 	     '<$link to=stuff/>X');
+	test('<$link to=<<missing>>><$text text=<<missing>> /></$link>X',
+	     '<$link to=<<missing>>><$text text=<<missing>>/></$link>X');
 	test('<$link to="""stuff""">\n<$text text="stuff" />\n</$link>\nX',
 	     '<$link to=stuff>\n<$text text=stuff/>\n</$link>\nX');
 	test(t+'<$link to="""stuff""">\n<$text text="stuff" />\n</$link>\nX',
@@ -81,6 +83,9 @@ it('removes inner widget content when it matches "to" attribute', function() {
 	// With placeholders
 	test('\\define M(x)<$link to="""$x$"""><$text text="""$x$""" /></$link>X\n<<M "[[MacroWiki]]">>',
 	     '\\define M(x)<$link to="""$x$"""/>X\n<<M"[[MacroWiki]]">>');
+	// Disabled these tests, because this is not guaranteed to work with
+	// non-string values for to
+	/*
 	test('\\define N(z)--$z$--\n\\define M(x)<$link to=<<N "$x$">>><$text text=<<N "$x$">> /></$link>X\n<<M "[[MacroWiki]]">>',
 	     '\\define N(z)--$z$--\n\\define M(x)<$link to=<<N"$x$">>/>X\n<<M"[[MacroWiki]]">>');
 	const wiki = new $tw.Wiki();
@@ -89,6 +94,7 @@ it('removes inner widget content when it matches "to" attribute', function() {
 	     '\\define M(x)<$link to={{{[[target]get[$x$]]}}}/>X\n<<M field>>', {wiki: wiki});
 	test('\\define M(x)<$link to={{target!!$x$}}><$text text={{target!!$x$}} /></$link>X\n<<M field>>',
 	     '\\define M(x)<$link to={{target!!$x$}}/>X\n<<M field>>', {wiki: wiki});
+	*/
 });
 
 it('maintains inline or block status', function() {
