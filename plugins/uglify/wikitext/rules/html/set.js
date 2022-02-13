@@ -2,9 +2,6 @@
 
 Uglify html rule for improving $set whenever possible.
 
-TODO: Make sure when I make the filter uglifying that I have it apply to
-      the cases here.
-
 \*/
 
 var utils = require("../../utils.js");

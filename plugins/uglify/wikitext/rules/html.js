@@ -21,7 +21,11 @@ exports.uglify = function() {
 		oldTag = tag.tag;
 		// Before we get started,  we give a chance for all
 		// the custom rules to make modifications to it.
-		htmlModifiers[tag.tag](tag, this.parser);
+		var results = htmlModifiers[tag.tag](tag, this.parser);
+		if (results !== undefined) {
+			// This wants to return a non-widget result, so we do that.
+			return results;
+		}
 	}
 	var tagParts = ["<", tag.tag];
 	if (tag.tag[0] !== "$" || optimizeAttrWhitelist[tag.type]) {
