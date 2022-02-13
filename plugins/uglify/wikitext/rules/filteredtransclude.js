@@ -13,8 +13,15 @@ var utils = require("../utils");
 exports.uglify = function() {
 	var call = this.parse()[0],
 		original = this.match[0],
+		filter = this.match[1],
 		bits = ["{{{"];
-	bits.push(utils.uglifyFilter(this.match[1], this.parser));
+	if (this.parser.placeholders && this.parser.placeholders.present(filter) === filter.trim()) {
+		// Special case. If the filter is just a placeholder, we can't safely
+		// trim around it.
+		bits.push(filter);
+	} else {
+		bits.push(utils.uglifyFilter(filter, this.parser));
+	}
 	if (this.match[2]) { // tooltip
 		// As far as I can tell, tooltips aren't used in any way, but I
 		// guess if the rule specifies one, the user must want it.

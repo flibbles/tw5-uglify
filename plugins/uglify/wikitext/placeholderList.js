@@ -26,5 +26,6 @@ proto.present = function(text) {
 		placeholderArray.push("\\([^\\)\\$]+\\)");
 		this.placeholderRegExp = new RegExp("\\$(?:" + placeholderArray.join('|') + ")\\$");
 	}
-	return text.search(this.placeholderRegExp) >= 0;
+	var match = text.match(this.placeholderRegExp);
+	return match? match[0] : null;
 };

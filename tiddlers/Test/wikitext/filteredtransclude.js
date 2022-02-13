@@ -20,6 +20,12 @@ it('tightens up inner filter', function() {
 	     '\\define M(x){{{Abs Bones +[prefix[A]$X$]}}}\n<<M addsuffix[T]>>');
 });
 
+it('does not trim around placeholder filter', function() {
+	// trimming around placeholders is dangerous if the placeholders turn
+	// out to be empty.
+	test('\\define M(x){{{ $x$ }}}\n<<M>>', '\\define M(x){{{ $x$ }}}\n<<M>>');
+});
+
 it('handles extra options', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: 'temp', text: '--{{!!title}}--'});
