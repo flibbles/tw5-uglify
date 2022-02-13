@@ -185,6 +185,11 @@ it('inline widgets with a newline after them', function() {
 	       "<div><span/><$reveal/>");
 });
 
+it('tricky mix of block and inline', function() {
+	test("<$dropzone>\n<$reveal></$reveal>\n\n<$reveal>\n\n</$reveal>\n</$dropzone>",
+	     "<$dropzone>\n<$reveal></$reveal>\n\n<$reveal>\n\n</$reveal>\n");
+});
+
 it('inline widgets at the start of the body', function() {
 	test(  "<$reveal/>\n<!--C-->", "<$reveal/>\n<!---->");
 	test(t+"<$reveal/>\n<!--C-->", "<$reveal/>");

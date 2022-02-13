@@ -119,8 +119,7 @@ exports.uglify = function() {
 		}
 		// Funny thing about widgets is that block eval starts right after
 		// them. No newlines needed.
-		if (utils.tagAtStartOfBlock(tag, this.parser.source)
-		&& tag.isBlock) {
+		if (!this.is.inline) {
 			this.parser.skipWhitespace();
 		}
 		// We record the start of the tag in the tail so that enclosing
