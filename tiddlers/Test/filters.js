@@ -18,7 +18,8 @@ const test = function(input, expected, options) {
 		{title: 'B', text: "Text of B"},
 		{title: 'C'}])
 	var prefix = options.prefix || '';
-	$tw.utils.test.wikitext.test(prefix+'{{{'+input+'}}}', prefix+'{{{'+expected+'}}}', options);
+	var suffix = options.suffix || '';
+	$tw.utils.test.wikitext.test(prefix+'{{{'+input+'}}}'+suffix, prefix+'{{{'+expected+'}}}'+suffix, options);
 };
 
 it('can uglify text/x-tiddler-filter', function() {
@@ -237,6 +238,10 @@ it(':and filter prefixes on second runs are merged', function() {
 	spyOn(console, "log");
 	test("[author/b/] +[author/i/] [[1 2]]",
 	     "[author/b/author/i/][[1 2]]", {wiki, wiki});
+});
+
+it(':and filter prefixes respect first run placeholders', function() {
+	test("$x$ +[addsuffix[x]]", "$x$ +[addsuffix[x]]", {prefix: "\\define M(x)", suffix: "\n<<M'[enlist[A B C]]'>>"});
 });
 
 it('reduces first[] nth[1] zth[0] limit[1] to nth[]', function() {
