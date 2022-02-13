@@ -38,6 +38,11 @@ exports["$set"] = function(tag, parser) {
 				filter: filter + ' +[then' + value + 'else' + empty+ ']'
 			};
 		}
+	} else if (argCount == 2 && attrs.tiddler && utils.isCurrentTiddlerAttr(attrs.tiddler)) {
+		newAttr = {
+			type: "indirect",
+			textReference: "!!text"
+		};
 	}
 	if (newAttr) {
 		// We've managed some kind of conversion, Let's prep the new

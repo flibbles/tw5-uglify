@@ -212,4 +212,16 @@ it('does not impact qualify widgets and macros', function() {
 	     '<$let transclusion=5><$set name=transclusion value=4><<qualify>>');
 });
 
+it('standalone tiddler={{!!title}}', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: test, text: "Test text", field: "Test field"});
+	test("<$set name=v tiddler=<<currentTiddler>>>"+dump, "<$let v={{!!text}}>"+dump);
+	test("<$set name=v tiddler={{!!title}}>"+dump, "<$let v={{!!text}}>"+dump);
+	// And when it does not work
+	test("<$set name=v tiddler=currentTiddler>"+dump, "<$set name=v tiddler=currentTiddler>"+dump);
+	test("<$set name=v tiddler=<<currentTiddler x>>>"+dump, "<$set tiddler=<<currentTiddler x>>name=v>"+dump);
+	// Only supports tiddler, not tiddler and field, for now
+	test("<$set name=v tiddler=<<currentTiddler>> field='field'>"+dump, "<$set name=v tiddler={{!!title}}field=field>"+dump);
+});
+
 });});});

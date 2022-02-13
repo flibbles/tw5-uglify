@@ -9,7 +9,7 @@ Tests the wikitext uglifier with html and widgets.
 
 describe('wikitext uglifier', function() {
 describe('html', function() {
-fdescribe('$transclude', function() {
+describe('$transclude', function() {
 
 const test = $tw.utils.test.wikitext.test;
 const cmp = $tw.utils.test.wikitext.cmp;
