@@ -1,0 +1,4 @@
+created: 20220214174623306
+
+* Fixed minor inefficiency where sourceURL directives were being added to boot files even when the user wasn't running a server. No reason to add `//# sourceURL=` to files which are already indecipherable.
+* Added `$:/library/sjcl.js` to the list of file which get compressed. It's already uglified, but it's uglifying wasn't optimized for ~TiddlyWiki, so there was another kilobyte of fluff to trim.
