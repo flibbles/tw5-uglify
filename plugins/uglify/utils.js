@@ -11,7 +11,7 @@ Utility methods for Uglify
 /*global $tw: false */
 'use strict';
 
-var systemTargets = {'$:/boot/boot.css': true, '$:/boot/boot.js': true, '$:/boot/bootprefix.js': true};
+var systemTargets = {'$:/boot/boot.css': true, '$:/boot/boot.js': true, '$:/boot/bootprefix.js': true, "$:/library/sjcl.js": true};
 
 var modulesAddedToConfig = false;
 
