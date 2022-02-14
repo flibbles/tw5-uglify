@@ -136,10 +136,13 @@ it('adds directives to boot files', function() {
 	const wiki = new $tw.Wiki(),
 		boot = '$:/boot/boot.js',
 		text = 'exports.func = function(argName) {return argName;}';
+	var out;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	spyOn(console, 'log');
-	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).not.toContain("sourceMappingURL=");
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
 	// Without sourcemapping can be controlled through configuration
@@ -168,14 +171,21 @@ it('adds directives to boot file that already has directives', function() {
 	const wiki = new $tw.Wiki(),
 		boot = '$:/boot/boot.js',
 		text = 'exports.func = function(argName) {return argName;}\n\n//# sourceURL='+boot;
+	var out;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	spyOn(console, 'log');
-	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceURL=");
-	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceMappingURL=");
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).not.toContain("sourceMappingURL=");
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
-	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
-	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceURL=");
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).toContain("sourceMappingURL=");
+	expect(out).not.toContain("sourceURL=");
+	wiki.addTiddler($tw.utils.test.noCompress());
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceMappingURL=");
+	expect(out).toContain("sourceURL=");
 });
 
 it('does not add directives to css boot file', function() {

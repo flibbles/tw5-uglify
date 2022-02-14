@@ -58,19 +58,23 @@ function getConfig(wiki, key, defaultValue) {
 };
 
 exports.getDirective = function(wiki, filename, standalone) {
-	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes"
-	&& getConfig(wiki, "compress", "yes") === "yes"
-	&& getConfig(wiki, "sourcemap", "yes") === "yes"
-	&& getConfig(wiki, "application/javascript", "yes") === "yes") {
-		var blacklist = $tw.utils.parseStringArray(getConfig(wiki, "blacklist", ""));
-		// standalone files are their own source
-		var source = standalone ? filename : wiki.getShadowSource(filename);
-		if (source
-		&& blacklist.indexOf(source) < 0
-		&& wiki.tiddlerExists(filename) == !!standalone) {
-			return "\n\n//# sourceMappingURL=/uglify/map/" + exports.encode(filename);
+	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes") {
+		if (getConfig(wiki, "compress", "yes") === "yes"
+		&& getConfig(wiki, "sourcemap", "yes") === "yes"
+		&& getConfig(wiki, "application/javascript", "yes") === "yes") {
+			var blacklist = $tw.utils.parseStringArray(getConfig(wiki, "blacklist", ""));
+			// standalone files are their own source
+			var source = standalone ? filename : wiki.getShadowSource(filename);
+			if (source
+			&& blacklist.indexOf(source) < 0
+			&& wiki.tiddlerExists(filename) == !!standalone) {
+				return "\n\n//# sourceMappingURL=/uglify/map/" + exports.encode(filename);
+			}
 		}
+	} else if (standalone) {
+		return "";
 	}
+	// Standalone files don't need directives.
 	return "\n\n//# sourceURL=" + filename;
 };
 
