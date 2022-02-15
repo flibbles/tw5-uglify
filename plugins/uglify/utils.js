@@ -30,10 +30,14 @@ var configType = {
 	cache: Boolean
 };
 
+function getDefault(key) {
+	return key.indexOf("prune/") == 0 ? "no" : getConfig()[key];
+};
+
 exports.getSetting = function(wiki, key) {
 	var title = '$:/config/flibbles/uglify/'+key;
 	return wiki.getCacheForTiddler(title, 'uglifysetting', function() {
-		var def = getConfig(wiki)[key],
+		var def = getDefault(key),
 			value = wiki.getTiddlerText(title, def);
 		switch (configType[key]) {
 			case Boolean:
@@ -49,9 +53,16 @@ exports.getSetting = function(wiki, key) {
 
 exports.getSettings = function(wiki) {
 	var settings = Object.create(null);
-	for (var key in getConfig(wiki)) {
+	for (var key in getConfig()) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
+	var prefix = "$:/plugins/flibbles/uglify/prune/";
+	wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+		if (title.substr(0, prefix.length) === prefix) {
+			var key = title.substr(prefix.length-6);
+			settings[key] = exports.getSetting(wiki, key);
+		}
+	});
 	return settings;
 };
 
@@ -146,7 +157,7 @@ exports.getVersion = function() {
 };
 
 // Create a config entry for each uglifier module.
-function getConfig(wiki) {
+function getConfig() {
 	if (!modulesAddedToConfig) {
 		$tw.utils.each(uglifierModules(), function(module, type) {
 			config[type] = 'yes';
