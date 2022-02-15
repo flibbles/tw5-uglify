@@ -244,6 +244,7 @@ it('gets source maps for boot.js and bootprefix.js', function() {
 it('gets undefined source maps for non-javascript tiddlers', function() {
 	const wiki = new $tw.Wiki();
 	// non-existent
+	spyOn(console, "log");
 	expect(wiki.getTiddlerSourceMap("nothing.js")).toBeUndefined();
 	wiki.addTiddler({title: "wikitext", text: "This is wikitext"});
 	expect(wiki.getTiddlerSourceMap("wikitext")).toBeUndefined();
