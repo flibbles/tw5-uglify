@@ -1,0 +1,16 @@
+title: $:/plugins/flibbles/uglify/prune/server
+name: Server-only modules
+
+[module-type[command]]
+[prefix[$:/language/Help/]]
+[[$:/language/Docs/ModuleTypes/command]]
+[[$:/core/modules/startup/commands.js]]
+[[$:/core/modules/filters/commands.js]]
+
+[module-type[route]]
+[[$:/language/Docs/ModuleTypes/route]]
+[[$:/core/modules/server/server.js]]
+
+[[$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js]]
+
+[[$:/plugins/flibbles/uglify]plugintiddlers[]![$:/plugins/flibbles/uglify/readme]![$:/plugins/flibbles/uglify/license]![$:/plugins/flibbles/uglify/startup_eval.js]]
