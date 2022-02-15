@@ -104,22 +104,16 @@ exports.getUglifier = function(type) {
 	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
 };
 
-function stubbingEnabled(wiki) {
-	return !$tw.browser && utils.getSetting(wiki, 'stub');
-};
-
 function compressPlugin(wiki, title, pluginInfo) {
 	var newTiddlers = Object.create(null),
 		maps = Object.create(null),
 		newInfo = $tw.utils.extend({}, pluginInfo),
 		uglifier,
-		containsStubbing = stubbingEnabled(wiki) && pluginContainsStubbing(wiki, pluginInfo),
-		options = {wiki: wiki};
+		options = {wiki: wiki},
+		pruneMap = getPruneMap(wiki);
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
-		if (containsStubbing && !removeStubTag(fields)) {
-			// This plugin is stubbed, and this tiddler has no stub.
-			// We ignore it.
+		if (pruneMap[title]) {
 			continue;
 		}
 		var abridgedFields = cleanShadowFields(fields);
@@ -144,28 +138,22 @@ function compressPlugin(wiki, title, pluginInfo) {
 		text: JSON.stringify(newInfo, null) };
 };
 
-function pluginContainsStubbing(wiki, pluginInfo) {
-	var tagged = wiki.getTiddlersWithTag("$:/tags/flibbles/uglify/Stub");
-	if (tagged) {
-		for (var i = 0; i < tagged.length; i++) {
-			if (pluginInfo.tiddlers[tagged[i]]) {
-				return true;
+function getPruneMap(wiki) {
+	return wiki.getGlobalCache('uglify-prunemap', function() {
+		var map = Object.create(null);
+		var prefix = "$:/plugins/flibbles/uglify/prune/";
+		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+			if (title.substr(0, prefix.length) === prefix
+			&& wiki.getTiddlerText("$:/config/flibbles/uglify/prune/" + title.substr(prefix.length)) === "yes") {
+				var filterString = tiddler.fields.text || "";
+				var output = wiki.filterTiddlers(filterString, null, wiki.eachShadowPlusTiddlers);
+				for (var i = 0; i < output.length; i++) {
+					map[output[i]] = true;
+				}
 			}
-		}
-	}
-	return false;
-};
-
-// returns true if the stub was there, and was removed.
-function removeStubTag(fields) {
-	var tags = $tw.utils.parseStringArray(fields.tags) || [],
-		index = tags.indexOf("$:/tags/flibbles/uglify/Stub");
-	if (index >= 0) {
-		// Remove the Stub tag from the list.
-		tags.splice(index, 1);
-		return true;
-	}
-	return false;
+		});
+		return map;
+	});
 };
 
 function cleanShadowFields(fields) {

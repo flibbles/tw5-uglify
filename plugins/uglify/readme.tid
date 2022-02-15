@@ -1,5 +1,4 @@
 title: $:/plugins/flibbles/uglify/readme
-tags: $:/tags/flibbles/uglify/Stub
 
 \rules except wikilink
 \define config() $:/config/flibbles/uglify/compress

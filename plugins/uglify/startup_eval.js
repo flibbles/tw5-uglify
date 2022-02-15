@@ -1,7 +1,6 @@
 /*\
 title: $:/plugins/flibbles/uglify/startup_eval.js
 module-type: startup
-tags: $:/tags/flibbles/uglify/Stub
 type: application/javascript
 
 Introduces the new evalGlobal to the core utilities so that sourceMapURL

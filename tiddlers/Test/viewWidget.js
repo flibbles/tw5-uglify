@@ -109,11 +109,11 @@ it('javascript settings and boot code', function() {
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });
 
-it("stub setting", function() {
+it("prune settings", function() {
 	var name = "$:/plugins/flibbles/uglify";
 	var text;
 	var tiddlers = [
-			{title: "elephant", tags: "$:/tags/flibbles/uglify/Stub"},
+			{title: "elephant", tags: "RemoveThis"},
 			{title: "zebra"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
@@ -122,8 +122,9 @@ it("stub setting", function() {
 	// Let's not worry about caching for this test
 	wiki.addTiddler($tw.utils.test.noCache());
 
-	// no should not stub on either Node or browser, but it will compress
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'no'});
+	// no should not prune on either Node or browser, but it will compress
+	//wiki.addTiddler($tw.utils.test.setting({title: '$:/config/flibbles/uglify/stub', text: 'no'});
+	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: "zebra [tag[RemoveThis]]"});
 	spyOn(console, 'log');
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('elephant');
@@ -133,24 +134,12 @@ it("stub setting", function() {
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 
 	// yes should stub on Node.JS, but still NOT stub on browser
-	wiki.addTiddler({title: '$:/config/flibbles/uglify/stub', text: 'yes'});
+	wiki.addTiddler($tw.utils.test.setting("prune/test", "yes"));
 	text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	if ($tw.node) {
-		expect(text).not.toContain('zebra');
-	} else {
-		expect(text).toContain('zebra');
-	}
-
-	// unspecified should stub on Node.js. NOT stub on browser
-	wiki.deleteTiddler('$:/config/flibbles/uglify/stub');
-	text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	if ($tw.node) {
-		expect(text).not.toContain('zebra');
-	} else {
-		expect(text).toContain('zebra');
-	}
+	expect(text).not.toContain('elephant');
+	expect(text).not.toContain('zebra');
+	expect(text).toContain('code.js');
+	expect(text).not.toContain('longArgName');
 });
 
 /** This test relied on Tiddlywiki changes which were never pushed.

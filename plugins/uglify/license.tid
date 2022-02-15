@@ -1,4 +1,3 @@
-tags: $:/tags/flibbles/uglify/Stub
 title: $:/plugins/flibbles/uglify/license
 
 <a href={{$:/plugins/flibbles/uglify!!demo}}>Uglify Plugin</a> Copyright (c) 2021-<<now YYYY>> Cameron Fischer

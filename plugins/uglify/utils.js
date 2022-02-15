@@ -18,7 +18,6 @@ var modulesAddedToConfig = false;
 var config = {
 	compress: 'yes',
 	blacklist: '',
-	stub: 'yes',
 	sourcemap: 'yes',
 	cache: 'yes',
 	cacheDirectory: './.cache/uglify'
@@ -126,11 +125,13 @@ exports.getSignature = function(wiki) {
 				actives.push(type);
 			}
 		});
+		var prefix = "$:/config/flibbles/uglify/prune/";
+		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+			if (title.substr(0, prefix.length) === prefix) {
+				actives.push(title.substr(prefix.length));
+			}
+		});
 		actives.sort();
-		if (exports.getSetting(wiki, "stub")) {
-			// Include stubbing in the signature
-			actives.push("stub");
-		}
 		return $tw.utils.stringifyList(actives);
 	});
 };
