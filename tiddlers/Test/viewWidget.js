@@ -118,7 +118,9 @@ it("prune settings", function() {
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
 	const wiki = new $tw.Wiki();
-	$tw.utils.test.addPlugin(wiki, name, tiddlers);
+	// We use newPlugin here instead of add plugin, because importing does not
+	// properly install plugins, and uglify needs to be able to deal with that.
+	wiki.addTiddler($tw.utils.test.newPlugin(name, tiddlers));
 	// Let's not worry about caching for this test
 	wiki.addTiddler($tw.utils.test.noCache());
 

@@ -143,6 +143,20 @@ function compressPlugin(wiki, pluginInfo) {
 };
 
 function getPruneMap(wiki) {
+	var state = wiki.getGlobalCache('uglify-prunemap-state', function() {
+		return {};
+	});
+	if (!state.loaded) {
+		// Let's install any plugins which might have been added since startup
+		wiki.registerPluginTiddlers();
+		wiki.readPluginInfo();
+		wiki.unpackPluginTiddlers();
+	}
+	// The cache was just cleared. Let's set it to loaded, cause we're
+	// about to load it.
+	wiki.getGlobalCache('uglify-prunemap-state', function() {
+		return {loaded: true};
+	});
 	return wiki.getGlobalCache('uglify-prunemap', function() {
 		var map = Object.create(null);
 		var prefix = "$:/plugins/flibbles/uglify/prune/";
