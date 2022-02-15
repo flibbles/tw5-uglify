@@ -67,7 +67,6 @@ it('prints out current settings with no arguments', function() {
 	exec(wiki);
 	expect(console.log).toHaveBeenCalledWith('compress:              ', 'yes');
 	expect(console.log).toHaveBeenCalledWith('blacklist:             ', 'pluginA,plugin B');
-	expect(console.log).toHaveBeenCalledWith('stub:                  ', 'yes');
 	expect(console.log).toHaveBeenCalledWith('cache:                 ', 'no');
 	expect(console.log).toHaveBeenCalledWith('cacheDirectory:        ', './.cache/uglify');
 	expect(console.log).toHaveBeenCalledWith('application/javascript:', 'yes');

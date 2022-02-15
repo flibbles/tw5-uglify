@@ -62,9 +62,13 @@ function compressTiddler(wiki, title, options) {
 			var pluginInfo = utils.getPluginInfo(wiki, title);
 			var uglifier = undefined;
 			if (pluginInfo) {
-				uglifier = {uglify: function(text, title) {
-					return compressPlugin(wiki, title, pluginInfo);
+				uglifier = {uglify: function(text) {
+					return compressPlugin(wiki, pluginInfo);
 				}};
+			} else if (utils.isSystemTarget(title) && getPruneMap(wiki)[title]) {
+				// Oh. This is a pruned system tiddler. We have no way
+				// of getting rid of it, but we can make it zero-length.
+				uglifier = {uglify: function() { return {text: ""}; }};
 			} else {
 				uglifier = wiki.getUglifier(tiddler.fields.type);
 			}
@@ -104,7 +108,7 @@ exports.getUglifier = function(type) {
 	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
 };
 
-function compressPlugin(wiki, title, pluginInfo) {
+function compressPlugin(wiki, pluginInfo) {
 	var newTiddlers = Object.create(null),
 		maps = Object.create(null),
 		newInfo = $tw.utils.extend({}, pluginInfo),
@@ -193,7 +197,9 @@ function compressOrNot(uglifier, title, text, wiki) {
 function addDirectiveToBootFiles(wiki, fields, title) {
 	if (utils.isSystemTarget(title)) {
 		var tiddler = wiki.getTiddler(title);
-		if (tiddler && tiddler.fields.type === "application/javascript") {
+		if (tiddler
+		&& tiddler.fields.type === "application/javascript"
+		&& fields.text) {
 			fields = Object.create(fields);
 			fields.text = fields.text + getDirective(wiki, title, true);
 		}

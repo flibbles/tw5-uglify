@@ -14,7 +14,7 @@ describe('widget: view', function() {
 function renderTiddler(wiki, pluginTitle, format) {
 	format = format || 'htmlencoded'
 	var renderText =  "<$view tiddler='"+pluginTitle+"' field='text' format='"+format+"' />";
-	return wiki.renderText("text/html", "text/vnd.tiddlywiki",renderText)
+	return wiki.renderText("text/plain", "text/vnd.tiddlywiki",renderText)
 };
 
 it("compress setting", function() {
@@ -140,6 +140,23 @@ it("prune settings", function() {
 	expect(text).not.toContain('zebra');
 	expect(text).toContain('code.js');
 	expect(text).not.toContain('longArgName');
+});
+
+it("prunes system tiddlers", function() {
+	const wiki = new $tw.Wiki(),
+		name = "$:/boot/boot.js";
+	wiki.addTiddler($tw.utils.test.noCache());
+
+	wiki.addTiddler({title: name, type: "application/javascript", text: "exports.func = function(longArgName) {return longArgName;}"});
+	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: name});
+	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
+	spyOn(console, 'log');
+	var text = renderTiddler(wiki, name);
+	expect(text).toContain("func");
+
+	wiki.addTiddler($tw.utils.test.setting("prune/test", "yes"));
+	text = renderTiddler(wiki, name);
+	expect(text).toBe("");
 });
 
 /** This test relied on Tiddlywiki changes which were never pushed.
