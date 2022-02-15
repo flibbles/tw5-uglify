@@ -12,6 +12,13 @@ this file in all the test suites.
 var test = exports.test = Object.create(null);
 
 test.addPlugin = function(wiki, pluginName, tiddlers, options) {
+	wiki.addTiddler(test.newPlugin(pluginName, tiddlers, options));
+	wiki.registerPluginTiddlers("plugin");
+	wiki.readPluginInfo();
+	wiki.unpackPluginTiddlers();
+};
+
+test.newPlugin = function(pluginName, tiddlers, options) {
 	options = options || {};
 	var tiddlerHash = Object.create(null);
 	$tw.utils.each(tiddlers, function(hash) {
@@ -24,16 +31,13 @@ test.addPlugin = function(wiki, pluginName, tiddlers, options) {
 		tiddlerHash[hash.title] = fieldsHash;
 	});
 	var content = { tiddlers: tiddlerHash }
-	wiki.addTiddler({
+	return new $tw.Tiddler({
 		title: pluginName,
 		type: "application/json",
 		"plugin-type": "plugin",
 		description: options.description || undefined,
 		text: JSON.stringify(content)});
-	wiki.registerPluginTiddlers("plugin");
-	wiki.readPluginInfo();
-	wiki.unpackPluginTiddlers();
-};
+}
 
 test.uniqName = function() {
 	var bit = (Date.now() % 1000000).toString();
