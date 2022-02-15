@@ -143,7 +143,11 @@ function compressPlugin(wiki, pluginInfo) {
 };
 
 function getPruneMap(wiki) {
-	var state = wiki.getGlobalCache('uglify-prunemap-state', function() {
+	// We do this strange cache juggling. If Import is changed, plugins
+	// may have been imported. We need to re-register them, but we only
+	// want to do this once. And the act of reregistering plugins will
+	// wipe $:/Import's cache, so we re-initialize the cache afterward.
+	var state = wiki.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
 		return {};
 	});
 	if (!state.loaded) {
@@ -152,9 +156,8 @@ function getPruneMap(wiki) {
 		wiki.readPluginInfo();
 		wiki.unpackPluginTiddlers();
 	}
-	// The cache was just cleared. Let's set it to loaded, cause we're
-	// about to load it.
-	wiki.getGlobalCache('uglify-prunemap-state', function() {
+	// And now we reinitialize it.
+	wiki.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
 		return {loaded: true};
 	});
 	return wiki.getGlobalCache('uglify-prunemap', function() {

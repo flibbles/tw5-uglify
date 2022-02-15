@@ -111,13 +111,15 @@ it('javascript settings and boot code', function() {
 
 it("prune settings", function() {
 	var name = "$:/plugins/flibbles/uglify";
-	var text;
 	var tiddlers = [
 			{title: "elephant", tags: "RemoveThis"},
 			{title: "zebra"},
 			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
 	const wiki = new $tw.Wiki();
+	// Do one before we start so we can set any caches
+	// We do this because we've got to be sure those caches will reset
+	var text = renderTiddler(wiki, name);
 	// We use newPlugin here instead of add plugin, because importing does not
 	// properly install plugins, and uglify needs to be able to deal with that.
 	wiki.addTiddler($tw.utils.test.newPlugin(name, tiddlers));
