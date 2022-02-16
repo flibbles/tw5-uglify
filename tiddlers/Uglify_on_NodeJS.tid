@@ -43,7 +43,7 @@ TiddlyWiki Node servers will have access to all of your plugins in their good ol
 
 Technically that means Node is doing more work and consuming more memory, but that's okay. Node servers aren't what //Uglify// are trying to optimize. Servers tend to be big strong computers with lots of memory. It's your network traffic and browser clients which we're aiming to improve. Now your users can access your server on your old Android phone, which //will// benefit from netork and performance improvements.
 
-Also, since all the compression is done on the server, there's no need for the clients to do it, which is why by default, the server will send a <$link to="Stubbing">stubbed version of //Uglify//</$link> to the clients instead.
+Also, since all the compression is done on the server, there's no need for the clients to do it, which is why by default, the server will send an <$link to="Pruning">abridged version of //Uglify//</$link> to the clients instead.
 
 !! Limitations
 

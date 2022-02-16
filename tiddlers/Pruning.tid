@@ -1,0 +1,9 @@
+title: Pruning
+
+If you're running //Uglify// on your server, then all the compression happens there so that your clients don't have to. That means it would be pointless to send //Uglify// to clients, especially since it's [[a pretty hefty plugin itself|UglifyJS]] and would cancel out much of the benefit of compression.
+
+That's why the server will send an abridged plugin to clients instead of the plugin itself. This smaller set is just the readme file, the license, and some brief code to enable javascript sourcemapping.
+
+!! Disabling Pruning
+
+You can disable pruning by setting `$:/config/flibbles/uglify/prune/uglify` to `no`. Then when you reload your browser, the server will send the entirety of the //Uglify// plugin just as it would any other.

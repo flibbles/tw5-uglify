@@ -1,9 +1,0 @@
-title: Stubbing
-
-If you're running //Uglify// on your server, then all the compression happens there so that your clients don't have to. That means it would be pointless to send //Uglify// to clients, especially since it's [[a pretty hefty plugin itself|UglifyJS]] and would cancel out much of the benefit of compression.
-
-That's why the server will send a plugin stub to clients instead of the plugin itself. This stub is mostly just the readme file, the license, and some brief configuration controls.
-
-!! Disabling Stubbing
-
-You can disable stubbing by setting `$:/config/flibbles/uglify/stub` to `no`. Then when you reload your browser, the server will send the entirety of the //Uglify// plugin just as it would any other.

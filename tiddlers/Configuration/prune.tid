@@ -1,0 +1,4 @@
+default: yes
+caption: prune/uglify
+
+Configure whether //Uglify// will created a [[gutted version of itself|Pruning]] to send to clients in lieu of sending the entire plugin. This setting has no effect when used with the <<wizard "Uglify Wizard">> since the plugin is automatically excluded from the results.
