@@ -12,5 +12,3 @@ name: Server-only modules
 [[$:/core/modules/server/server.js]]
 
 [[$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js]]
-
-[[$:/plugins/flibbles/uglify]plugintiddlers[]![$:/plugins/flibbles/uglify/readme]![$:/plugins/flibbles/uglify/license]![$:/plugins/flibbles/uglify/startup_eval.js]]

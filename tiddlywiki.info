@@ -22,7 +22,7 @@
 		],
 		"wizard": [
 			"--output", "./docs/",
-			"--uglify", "prune/server", "no",
+			"--uglify", "prune/uglify", "no",
 			"--uglify", "compress", "yes",
 			"--uglify", "blacklist", "$:/core $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
 			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"

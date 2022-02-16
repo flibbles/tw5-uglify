@@ -1,0 +1,11 @@
+title: $:/plugins/flibbles/uglify/prune/encryption
+name: Encryption functionality
+
+[[$:/library/sjcl.js]]
+
+[[$:/core/modules/widgets/encrypt.js]]
+[[$:/core/modules/startup/password.js]]
+
+[suffix[$:/core/ui/Buttons/encryption]]
+[prefix[$:/language/Buttons/Encryption/]]
+[prefix[$:/language/Encryption/]]
