@@ -139,7 +139,7 @@ exports.getSignature = function(wiki) {
 		var prefix = "$:/config/flibbles/uglify/prune/";
 		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
 			if (title.substr(0, prefix.length) === prefix) {
-				actives.push(title.substr(prefix.length));
+				actives.push(title.substr(prefix.length-6));
 			}
 		});
 		actives.sort();
