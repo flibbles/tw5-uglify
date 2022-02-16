@@ -31,6 +31,7 @@ function fetch(title) {
 			{title: title, type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
+	wiki.addTiddler($tw.utils.test.noCache());
 	const server = new Server({
 			wiki: wiki,
 			variables: {}});
