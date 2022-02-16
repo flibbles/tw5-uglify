@@ -26,7 +26,7 @@ var config = {
 var configType = {
 	compress: Boolean,
 	blacklist: Array,
-	stub: Boolean,
+	sourcemap: Boolean,
 	cache: Boolean
 };
 
