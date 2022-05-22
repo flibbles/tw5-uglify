@@ -16,15 +16,18 @@ Installing Uglify is primarily intended for use on Node.js. If you have a standa
 
 _TW5-Uglify requires Node.js 12.0.0 or greater._
 
-The contents of the `plugins` directory must be copied into the `plugins` directory in your tiddlywiki installation. This is likely in:
+The following is an abridged version of the [instructions found here](https://tiddlywiki.com/#Installing%20custom%20plugins%20on%20Node.js).
 
-`/usr/local/lib/node_modules/tiddlywiki/plugins/flibbles`
+First, check out the source code using git. Then copy the uglify directory out of the `plugins` directory into a "flibbles" directory in a path where you'd like it to be available. Then add that path to the TIDDLYWIKI_PLUGIN_PATH environment variable.
 
-You may need to make the `flibbles` directory. If you've installed it correctly, the path to the `plugin.info` file should look something like:
+For instance, copy the contents of the plugin directory to "~/.tiddlywiki/flibbles" directory. Then run `echo "TIDDLYWIKI_PLUGIN_PATH=~/.tiddlywiki" >> .profile`
 
-`/usr/local/lib/node_modules/tiddlywiki/plugins/flibbles/uglify/plugin.info`
+If you've installed it correctly, the path to the `plugin.info` file should look something like:
+
+`~/.tiddlywiki/flibbles/uglify/plugin.info`
 
 Afterward, add the plugin inside your projects' `tiddlywiki.info` file.
+The plugins section will look something like:
 The plugins section will look something like:
 ```
 {
