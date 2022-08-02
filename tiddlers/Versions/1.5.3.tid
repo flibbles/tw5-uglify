@@ -1,0 +1,3 @@
+created: 20220802165041678
+
+* Changed it so system and library tiddlers like boot.js and sjcl.js do not get top level compression. Since they're not treated as standalone modules, this can result in bugs with anyone using them.
