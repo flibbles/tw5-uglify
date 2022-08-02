@@ -12,7 +12,7 @@ describe('javascript uglifier', function() {
 
 function compress(input, title) {
 	title = title || 'test';
-	return $tw.wiki.getUglifier('application/javascript').uglify(input).text;
+	return $tw.wiki.getUglifier('application/javascript').uglify(input, {title: title}).text;
 };
 
 function exec(text) {

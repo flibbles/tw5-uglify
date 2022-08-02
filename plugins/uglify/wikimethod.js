@@ -197,7 +197,7 @@ function cleanShadowFields(fields) {
 
 function compressOrNot(uglifier, title, text, wiki) {
 	try {
-		var fields = uglifier.uglify(text, {wiki: wiki});
+		var fields = uglifier.uglify(text, {wiki: wiki, title: title});
 		return fields;
 	} catch (e) {
 		logger.warn(compileFailureWarning(title, e));
