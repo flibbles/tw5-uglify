@@ -1,0 +1,4 @@
+created: 20220925153418472
+
+* Corrected bug (#5) where colons in macro parameters could cause corruption.
+* Tests to ensure corner cases involving macrodef work.
