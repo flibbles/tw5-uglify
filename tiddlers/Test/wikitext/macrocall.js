@@ -67,6 +67,18 @@ it('parameters values', function() {
 	test(m+'[[l]]<<m "bra ]]ket" "a b">>', m+'[[l]]<<m"bra ]]ket"[[a b]]>>');
 });
 
+// Test for issue #5
+it('parameter values with colons', function() {
+	var text = m+"Text that'll allow \"all\" quotes]].\n\n";
+	// Without parameter name
+	test(text+'<<m "colon:values">>', text+"<<m'colon:values'>>");
+	test(text+'<<m "colon:val\'ues">>', text+'<<m [[colon:val\'ues]]>>');
+	test(text+'<<m "colon:val\']]ues">>', text+'<<m"colon:val\']]ues">>');
+	// With parameter name
+	test(text+'<<m val:"colon:values">>', text+"<<m val:colon:values>>");
+	test(text+'<<m val:"colon:values" o>>', text+"<<m val:colon:values o>>");
+});
+
 it('empty parameters', function() {
 	test(m+'<<m val:"">>', m+'<<m val:"">>');
 	test(m+"<<m val:''>>", m+"<<m val:''>>");

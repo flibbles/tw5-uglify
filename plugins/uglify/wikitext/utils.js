@@ -33,7 +33,9 @@ exports.stringifyMacro = function(macro, source, options) {
 		if (options.placeholders && options.placeholders.present(param.value)) {
 			value = getOriginalQuoting(param, source);
 		} else {
-			value = exports.quotifyParam(param.value, false, options);
+			var newOptions = Object.create(options);
+			newOptions.hasName = !!param.name;
+			value = exports.quotifyParam(param.value, false, newOptions);
 		}
 		if (value === param.value || value[0] === "[") {
 			if (needsSpace) {
@@ -52,6 +54,7 @@ exports.stringifyMacro = function(macro, source, options) {
 
 exports.quotifyParam = function(param, allowBrackets, options) {
 	if (param.search(/[\s"']/) < 0
+	&& (options.hasName || param.indexOf(":") < 0)
 	&& param.length > 0
 	&& (allowBrackets || param.indexOf(">") < 0)
 	&& (param[0] !== "[" || param[1] !== "[")) {
