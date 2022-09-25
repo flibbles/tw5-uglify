@@ -37,9 +37,16 @@ it('string parameters', function() {
 });
 
 it('empty default parameters', function() {
-	test('\\define m(A:"", B) <<dumpvariables>>\n<<m>>', '\\define m(A B)<<dumpvariables>>\n<<m>>');
-	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>', '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined\n<<m>>');
+	const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
+	test('\\define m(A:"", B) '+dump+'\n<<m>>',
+	     '\\define m(A B)'+dump+'\n<<m>>');
+	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>',
+	     '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined\n<<m>>');
+	// ensure that removing default params doesn't prevent setting
+	test('\\define m(X:"") '+dump+'\n<$let __X__=hidden>\n\n<<m>>',
+	     '\\define m(X)'+dump+'\n<$let __X__=hidden>\n\n<<m>>');
 });
+
 
 it('parameters do not bleed into next when without quotes', function() {
 	test("\\define m(A:'love', B)$A$-$B$\n<<m B:Y>>", "\\define m(A:love B)$A$-$B$\n<<m B:Y>>");
