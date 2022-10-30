@@ -32,5 +32,5 @@ exports.run = function(title, text) {
 };
 
 function uglify(text, wiki) {
-	return wiki.getUglifier("text/vnd.tiddlywiki").uglify(text, 'test', {wiki: wiki});
+	return wiki.getUglifier("text/vnd.tiddlywiki").uglify(text, {wiki: wiki});
 };
