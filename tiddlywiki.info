@@ -18,7 +18,8 @@
 		"test": [
 			"--output", "./docs/",
 			"--uglify", "compress", "no",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/flibbles/uglify-wizard"
+			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/flibbles/uglify-wizard",
+			"--test"
 		],
 		"wizard": [
 			"--output", "./docs/",
