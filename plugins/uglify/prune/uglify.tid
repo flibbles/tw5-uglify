@@ -1,7 +1,7 @@
 title: $:/plugins/flibbles/uglify/prune/uglify
 name: Uglify-related tiddlers
 
-[[$:/plugins/flibbles/uglify]plugintiddlers[]![$:/plugins/flibbles/uglify/readme]![$:/plugins/flibbles/uglify/license]![$:/plugins/flibbles/uglify/startup_eval.js]]
+[[$:/plugins/flibbles/uglify]plugintiddlers[]![$:/plugins/flibbles/uglify/readme]![$:/plugins/flibbles/uglify/license]![$:/plugins/flibbles/uglify/startup/eval.js]]
 
 [prefix[$:/plugins/flibbles/uglify]]
 [prefix[$:/config/flibbles/uglify]]

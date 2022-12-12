@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/startup_server.js
+title: $:/plugins/flibbles/uglify/startup/server.js
 module-type: startup
 type: application/javascript
 
@@ -12,7 +12,7 @@ Performs all necessary startup work for Uglify.
 
 'use strict';
 
-var utils = require('./utils.js');
+var utils = require('../utils.js');
 
 exports.name = 'uglify';
 exports.synchronous = true;

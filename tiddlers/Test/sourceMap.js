@@ -10,7 +10,7 @@ Currently only javascript can supply them.
 
 describe('source map', function() {
 
-var getDirective = require("$:/plugins/flibbles/uglify/startup_eval.js").getDirective;
+var getDirective = require("$:/plugins/flibbles/uglify/startup/eval.js").getDirective;
 
 if (!$tw.browser) {
 

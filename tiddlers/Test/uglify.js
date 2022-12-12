@@ -30,4 +30,17 @@ it("supports IE11", function() {
 	});
 });
 
+it("compresses when exporting offline-external-js", function() {
+	const wiki = new $tw.Wiki();
+	// This text is an excerpt from $:/core/templates/tiddlywiki5.js/tiddlers
+	const text = '<$text text=<<jsontiddlers "[[$:/core]]">>/>';
+	var tiddlers = [{title: "jsfile.js", text: "exports.mymethod = function() { var myvariable = 5; return myvariable; }", type: "application/javascript"}];
+	$tw.utils.test.addPlugin(wiki, "$:/core", tiddlers);
+	wiki.addTiddler($tw.utils.test.noCache());
+	spyOn(console, 'log');
+	var output = wiki.renderText("text/plain", "text/vnd.tiddlywiki", text);
+	expect(output).toContain("mymethod");
+	expect(output).not.toContain("myvariable");
+});
+
 });

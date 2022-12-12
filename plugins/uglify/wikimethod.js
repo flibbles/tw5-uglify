@@ -12,7 +12,7 @@ type: application/javascript
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
-var getDirective = require('./startup_eval.js').getDirective;
+var getDirective = require('./startup/eval.js').getDirective;
 var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
 exports.getTiddlerSourceMap = function(title, options) {

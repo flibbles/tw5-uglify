@@ -13,7 +13,7 @@ GET /uglify/maps/:title
 "use strict";
 
 var logger = require('./logger.js');
-var encode = require('./startup_eval.js').encode;
+var encode = require('./startup/eval.js').encode;
 
 exports.method = "GET";
 
