@@ -1,0 +1,4 @@
+created: 20221212041302366
+
+* Fixed issue where generating external-js would not compress core.
+* Fixed issues where the stub-version servers gave to clients didn't have anything at all.
