@@ -65,7 +65,7 @@ function compressTiddler(wiki, title, options) {
 				uglifier = {uglify: function(text) {
 					return compressPlugin(wiki, pluginInfo);
 				}};
-			} else if (utils.isSystemTarget(title) && getPruneMap(wiki)[title]) {
+			} else if (utils.isSystemTarget(title) && wiki.getPruneMap()[title]) {
 				// Oh. This is a pruned system tiddler. We have no way
 				// of getting rid of it, but we can make it zero-length.
 				uglifier = {uglify: function() { return {text: ""}; }};
@@ -114,7 +114,7 @@ function compressPlugin(wiki, pluginInfo) {
 		newInfo = $tw.utils.extend({}, pluginInfo),
 		uglifier,
 		options = {wiki: wiki},
-		pruneMap = getPruneMap(wiki);
+		pruneMap = wiki.getPruneMap();
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
 		if (pruneMap[title]) {
@@ -142,32 +142,33 @@ function compressPlugin(wiki, pluginInfo) {
 		text: JSON.stringify(newInfo, null) };
 };
 
-function getPruneMap(wiki) {
+exports.getPruneMap = function(wiki) {
 	// We do this strange cache juggling. If Import is changed, plugins
 	// may have been imported. We need to re-register them, but we only
 	// want to do this once. And the act of reregistering plugins will
 	// wipe $:/Import's cache, so we re-initialize the cache afterward.
-	var state = wiki.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
+	var self = this;
+	var state = this.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
 		return {};
 	});
 	if (!state.loaded) {
 		// Let's install any plugins which might have been added since startup
-		wiki.registerPluginTiddlers();
-		wiki.readPluginInfo();
-		wiki.unpackPluginTiddlers();
+		this.registerPluginTiddlers();
+		this.readPluginInfo();
+		this.unpackPluginTiddlers();
 	}
 	// And now we reinitialize it.
-	wiki.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
+	this.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
 		return {loaded: true};
 	});
-	return wiki.getGlobalCache('uglify-prunemap', function() {
+	return this.getGlobalCache('uglify-prunemap', function() {
 		var map = Object.create(null);
 		var prefix = "$:/plugins/flibbles/uglify/prune/";
-		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+		self.eachShadowPlusTiddlers(function(tiddler, title) {
 			if (title.substr(0, prefix.length) === prefix
-			&& wiki.getTiddlerText("$:/config/flibbles/uglify/prune/" + title.substr(prefix.length)) === "yes") {
+			&& self.getTiddlerText("$:/config/flibbles/uglify/prune/" + title.substr(prefix.length)) === "yes") {
 				var filterString = tiddler.fields.text || "";
-				var output = wiki.filterTiddlers(filterString, null, wiki.eachShadowPlusTiddlers);
+				var output = self.filterTiddlers(filterString, null, self.eachShadowPlusTiddlers);
 				for (var i = 0; i < output.length; i++) {
 					map[output[i]] = true;
 				}

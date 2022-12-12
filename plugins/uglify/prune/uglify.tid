@@ -3,5 +3,5 @@ name: Uglify-related tiddlers
 
 [[$:/plugins/flibbles/uglify]plugintiddlers[]![$:/plugins/flibbles/uglify/readme]![$:/plugins/flibbles/uglify/license]![$:/plugins/flibbles/uglify/startup/eval.js]]
 
-[prefix[$:/plugins/flibbles/uglify]]
+[prefix[$:/plugins/flibbles/uglify]is[tiddler]]
 [prefix[$:/config/flibbles/uglify]]
