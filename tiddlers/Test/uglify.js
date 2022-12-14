@@ -13,7 +13,7 @@ it("supports IE11", function() {
 	// Also, backticks aren't allowed, but there isn't an easy way
 	// to test for that.
 	var plugins = ["$:/plugins/flibbles/uglify", "$:/plugins/flibbles/uglify-wizard"],
-		nonos = [".startsWith", ".endsWith", ".assign.", ".assign(", ".trimStart(", ".trimEnd("],
+		nonos = [".startsWith", ".endsWith", ".assign(", ".trimStart(", ".trimEnd("],
 		str = "(?:" + nonos.map($tw.utils.escapeRegExp).join('|') + ")",
 		regExp = new RegExp(str);
 	$tw.utils.each(plugins, function(plugin) {
@@ -24,7 +24,8 @@ it("supports IE11", function() {
 				if (tiddler.type !== "application/javascript") {
 					continue;
 				}
-				expect(tiddler.text.search(regExp)).toBe(-1, "Found non-IE11 functions in " + title);
+				var results = regExp.exec(tiddler.text);
+				expect(results).toBeNull("Found non-IE11 function '" + (results||[])[0] + "' in " + title);
 			}
 		}
 	});
