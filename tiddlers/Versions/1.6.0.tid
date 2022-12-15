@@ -1,0 +1,3 @@
+created: 20221215214817744
+
+Updated to using the latest version of UglifyJS (v3.17.4). That release comes with better support for later ECMA javascript features, and supposedly less bugs.
