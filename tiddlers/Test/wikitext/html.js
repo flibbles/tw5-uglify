@@ -251,4 +251,10 @@ it('block widgets with newlines after close w/ blockquote', function() {
 	     "<$reveal>\n\nA\n</$reveal>```\nContent");
 });
 
+// Test for issue #7
+it('does not change block value with reveals', function() {
+	test('\\define t()\n<$reveal tag=span type=nomatch>\n\n<$entity entity=&#x2713;/>\n\n</$reveal>\n\\end\n<<t>>',
+	     '\\define t()\n<$reveal tag=span type=nomatch>\n\n<$entity entity=&#x2713;/>\n\n\\end\n<<t>>');
+});
+
 });});
