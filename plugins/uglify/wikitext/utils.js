@@ -18,23 +18,40 @@ exports.joinNodeArray = function(array) {
 };
 
 exports.stringifyMacro = function(macro, source, options) {
-	var strings = [macro.name],
+	var strings = [macro.name || macro.attributes["$variable"].value],
 		needsSpace = true,
-		value;
-	$tw.utils.each(macro.params, function(param) {
-		if (param.name) {
+		value,
+		hasName,
+		positionalName = 0;
+	$tw.utils.each(macro.params || macro.orderedAttributes, function(param) {
+		if (macro.params === undefined && param.name === "$variable") {
+			// This is a v5.3.0 macrocall, which is really just a transclusion
+			// We need to ignore the $variable argument
+			return;
+		}
+		if (
+			param.name === undefined
+			// >=v5.3.0, name may be present, but only as a positional
+			|| (macro.params === undefined && param.name == positionalName.toString())) {
+			// If it was an unnamed parameters, we need to increment this
+			// so it'll match with the next unnamed parameter.
+			positionalName++;
+			hasName = false;
+		} else {
 			if (needsSpace) {
 				// If param key is there, we always need preceding space
 				strings.push(" ");
 				needsSpace = false;
 			}
 			strings.push(param.name, ":");
+			hasName = true;
 		}
 		if (options.placeholders && options.placeholders.present(param.value)) {
+			// TODO: Comment what this does, because I don't remember
 			value = getOriginalQuoting(param, source);
 		} else {
 			var newOptions = Object.create(options);
-			newOptions.hasName = !!param.name;
+			newOptions.hasName = hasName;
 			value = exports.quotifyParam(param.value, false, newOptions);
 		}
 		if (value === param.value || value[0] === "[") {
