@@ -18,7 +18,7 @@ exports.joinNodeArray = function(array) {
 };
 
 exports.stringifyMacro = function(macro, source, options) {
-	var strings = [macro.name || macro.attributes["$variable"].value],
+	var strings = [macro.name !== undefined? macro.name: macro.attributes["$variable"].value],
 		needsSpace = true,
 		value,
 		hasName,
@@ -47,8 +47,9 @@ exports.stringifyMacro = function(macro, source, options) {
 			hasName = true;
 		}
 		if (options.placeholders && options.placeholders.present(param.value)) {
-			// TODO: Comment what this does, because I don't remember
-			value = getOriginalQuoting(param, source);
+			// If there is a placeholder in the value, we can't change the
+			// quotes to something else, or we might break something
+			value = getOriginalQuoting(param, source, hasName);
 		} else {
 			var newOptions = Object.create(options);
 			newOptions.hasName = hasName;
@@ -126,10 +127,10 @@ exports.letAvailable = function() {
 	return _letAvail;
 };
 
-function getOriginalQuoting(param, source) {
+function getOriginalQuoting(param, source, hasName) {
 	var string = param.value,
 		pos = $tw.utils.skipWhiteSpace(source, param.start);
-	if (param.name) {
+	if (hasName) {
 		pos += param.name.length;
 		pos = $tw.utils.skipWhiteSpace(source, pos);
 		pos++; // SKip over that ":"
