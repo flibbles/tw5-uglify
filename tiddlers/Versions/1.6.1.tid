@@ -1,0 +1,3 @@
+created: 20230710171334403
+
+Uglify didn't work with macrocalls in TiddlyWiki v5.3.0. Now it at least can handle them, but all the new content that came with v5.3.0 are still not supported.
