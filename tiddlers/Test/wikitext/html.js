@@ -45,6 +45,10 @@ it('string attributes', function() {
 	// Brackets aren't treated as quotes
 	test("<$text text=[[content]] />", "<$text text=[[content]]/>");
 	test("<$text text=[[con tent]] />'", "<$text text=[[con tent]]/>'");
+	// Backticks as of v5.3.0 are a type of acceptable quotation
+	test('<$text text="```"/>\n', '<$text text="```"/>\n');
+	test("<$text text='`'/>\n", "<$text text='`'/>\n");
+	test('<$text text="A`B"/>\n', '<$text text="A`B"/>\n');
 });
 
 
