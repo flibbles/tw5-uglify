@@ -77,6 +77,13 @@ it('filter attributes', function() {
 	test("<$text text={{{ [tag[A }}}  />", "<$text text={{{[tag[A}}}/>");
 });
 
+it('substitute attributes', function() {
+	test("<$text text=`anything goes` />", "<$text text=`anything goes`/>");
+	test("<$text text=```anything goes``` />", "<$text text=`anything goes`/>");
+	test("<$text text=```anything `goes``` />", "<$text text=```anything `goes```/>");
+	test("<$text text=`anything\ngoes` />", "<$text text=`anything\ngoes`/>");
+});
+
 it('valueless attributes', function() {
 	const d = "<$text text={{{[variables[]join[,]]=[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
 	test("<$text text />", "<$text text/>");

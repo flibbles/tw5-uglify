@@ -68,6 +68,13 @@ exports.uglify = function() {
 		case "filtered":
 			tagParts.push("={{{", utils.uglifyFilter(attr.filter,parser),"}}}");
 			break;
+		case "substituted":
+			if (attr.rawValue.indexOf("`") >= 0) {
+				tagParts.push("=```", attr.rawValue, "```");
+			} else {
+				tagParts.push("=`", attr.rawValue, "`");
+			}
+			break;
 		default:
 			throw "Not Implemented";
 		}
