@@ -174,7 +174,11 @@ it('placeholders within double nested context', function() {
 it('placeholders outside of a macrodef', function() {
 	test('\\define var()A B\n\\define M()<$text  text="$(var)$"/>\n<<M>><$text text="$(var)$"/>',
 	     '\\define var()A B\n\\define M()<$text text="$(var)$"/>\n<<M>><$text text=$(var)$/>');
+});
 
+it('handles named \\end syntax', function() {
+	test('\\define outer(B)\n\\define inner(A)\n<$reveal>\n\n$A$</$reveal>\n\n\t\\end   inner\n<<inner """$B$""">>\n\\end\n<<outer Content>>',
+	     '\\define outer(B)\n\\define inner(A)\n<$reveal>\n\n$A$</$reveal>\n\\end inner\n<<inner"""$B$""">>\n\\end\n<<outer Content>>');
 });
 
 });});

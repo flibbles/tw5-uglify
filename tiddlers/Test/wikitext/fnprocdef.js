@@ -38,6 +38,20 @@ it('string parameters', function() {
 it('function optimizes filters', function() {
 	test("\\function m(A)\n[<A>]\ndogs\n+[join[]]\n\\end\n<<m cats>>",
 	     "\\function m(A)[<A>]dogs +[join[]]\n<<m cats>>");
+	test("\\function m(A)  [<A>]  dogs  +[join[]]\n<<m cats>>",
+	     "\\function m(A)[<A>]dogs +[join[]]\n<<m cats>>");
+});
+
+it('procedure optimizes wikitext content', function() {
+	test("\\procedure m(A)\n<$text\n\ttext=<<A>> />\n\\end\n<<m cats>>",
+	     "\\procedure m(A)<$text text=<<A>>/>\n<<m cats>>");
+	test("\\procedure m(A)  <$text  text=<<A>> />\n<<m cats>>",
+	     "\\procedure m(A)<$text text=<<A>>/>\n<<m cats>>");
+});
+
+it('widgets optimize wikitext content', function() {
+	test("\\widget $w.m(A)\n<$text\ntext=<<A>> /> <$slot $name='ts-raw'/>\n\\end\n<$w.m A=cats />",
+	     "\\widget $w.m(A)<$text text=<<A>>/> <$slot $name=ts-raw/>\n<$w.m A=cats/>");
 });
 
 });});

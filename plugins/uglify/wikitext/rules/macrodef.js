@@ -42,6 +42,9 @@ exports.uglify = function() {
 	var text = uglifier.uglify(def.attributes.value.value, options).text;
 	if (text.indexOf("\n") >= 0 || $tw.utils.skipWhiteSpace(text,0) > 0) {
 		strings.push("\n", text, "\n\\end");
+		if (def.closingName) {
+			strings.push(" ", def.closingName);
+		}
 	} else if(text.length == 0) {
 		strings.push("\n");
 	} else {
@@ -90,7 +93,7 @@ exports.parseWithMarkers = function() {
 	var reEnd;
 	if(this.match[3]) {
 		// If so, the end of the body is marked with \end
-		reEnd = /(\r?\n\\end[^\S\n\r]*(?:$|\r?\n))/mg;
+		reEnd = new RegExp("\\r?\\n[^\\S\\n\\r]*\\\\end[^\\S\\n\\r]*(" + $tw.utils.escapeRegExp(this.match[1]) + ")?(?:$|\\r?\\n)","mg");
 	} else {
 		// Otherwise, the end of the definition is marked by the end of the line
 		reEnd = /($|\r?\n)/mg;
@@ -117,6 +120,7 @@ exports.parseWithMarkers = function() {
 		},
 		children: [],
 		params: params,
+		closingName: endMatch && endMatch[1],
 		isMacroDefinition: true
 	}];
 };
