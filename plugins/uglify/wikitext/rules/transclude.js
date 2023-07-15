@@ -19,6 +19,9 @@ exports.uglify = function() {
 	if (this.match[2]) {
 		bits.push("||", this.match[2].trim());
 	}
+	if (this.match[3]) {
+		bits.push("|", this.match[3]);
+	}
 	bits.push("}}");
 	var array = [{text: bits.join("")}];
 	if (this.parser.source[this.parser.pos-1] == "\n") {

@@ -69,4 +69,11 @@ it('trims tail', function() {
 	test(  '<div>\n\n{{tid}}\n\n</div>\n', '<div>\n\n{{tid}}', {wiki: wiki});
 });
 
+it('handles parameters', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: "tid", text: "\\parameters (A:none B:none C:none)\n<<A>>\n<<B>>\n<<C>>\n<$reveal/>\n"}, {wiki: wiki});
+	test(  '{{tid|cats|dogs|lizards}}', '{{tid|cats|dogs|lizards}}', {wiki: wiki});
+	test(  '{{tid|cats||lizards}}', '{{tid|cats||lizards}}', {wiki: wiki});
+});
+
 });});
