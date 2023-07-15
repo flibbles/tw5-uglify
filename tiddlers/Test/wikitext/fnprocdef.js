@@ -35,6 +35,11 @@ it('string parameters', function() {
 	test("\\function m(A:\"l[[h]]\") [<A>]\n<<m>>[[l]]", "\\function m(A:l[[h]])[<A>]\n<<m>>[[l]]");
 });
 
+it('removes spaces after multiline start', function() {
+	test("\\procedure m(X)   \nA\n<<X>>\nB\n\\end\n<<m cats>>",
+	     "\\procedure m(X)\nA\n<<X>>\nB\n\\end\n<<m cats>>");
+});
+
 it('function optimizes filters', function() {
 	test("\\function m(A)\n[<A>]\ndogs\n+[join[]]\n\\end\n<<m cats>>",
 	     "\\function m(A)[<A>]dogs +[join[]]\n<<m cats>>");
@@ -62,6 +67,13 @@ it('handles named \\end syntax', function() {
 it('newlines before \\end', function() {
 	test('\\procedure F(A)\n<$reveal>\n\n<<A>></$reveal>\n\n\\end\n<<F Content>>',
 	     '\\procedure F(A)\n<$reveal>\n\n<<A>></$reveal>\n\\end\n<<F Content>>');
+});
+
+it('respects placeholders inside the body', function() {
+	test('\\define X(A)\n\\define procedure Y() <$text text="""Front $A$ Back""" />\n<<Y>>\n\\end\n<<X """[[c\'d"]]""">>',
+	     '\\define X(A)\n\\define procedure Y() <$text text="""Front $A$ Back"""/>\n<<Y>>\n\\end\n<<X"""[[c\'d"]]""">>');
+	test('\\define X(A)\n\\define function Y() Front """$A$""" Back +[join[ ]]\n<<Y>>\n\\end\n<<X """[[c\'d"]]""">>',
+	     '\\define X(A)\n\\define function Y() Front """$A$""" Back +[join[ ]]\n<<Y>>\n\\end\n<<X"""[[c\'d"]]""">>');
 });
 
 });});
