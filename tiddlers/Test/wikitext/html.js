@@ -247,8 +247,11 @@ it('block widgets with newlines after close ', function() {
 });
 
 it('block widgets with newlines after close ', function() {
+	test(t+"<$reveal >\n\nA</$reveal>\n\nB", "<$reveal>\n\nA</$reveal>B");
 	test(t+"<$reveal >\n\nA\n</$reveal>\n\nB", "<$reveal>\n\nA</$reveal>B");
 	test(t+"<$reveal >\n\nA\n</$reveal>\n\n \n\nB","<$reveal>\n\nA</$reveal>B");
+	test(t+"<$reveal >\n\nA</$reveal>\n\n", "<$reveal>\n\nA");
+	test("<$reveal >\n\nA</$reveal>\n\n", "<$reveal>\n\nA");
 });
 
 it('block widgets with newlines after close w/ placeholders', function() {

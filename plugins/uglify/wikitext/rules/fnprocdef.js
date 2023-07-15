@@ -11,6 +11,7 @@ exports.name = "fnprocdef";
 exports.uglify = function() {
 	var pragma = this.parse()[0];
 	var uglifierType, procdefType;
+	var name = pragma.attributes.name.value;
 	if (pragma.isFunctionDefinition) {
 		uglifierType = "text/x-tiddler-filter";
 		procdefType = "function";
@@ -22,11 +23,17 @@ exports.uglify = function() {
 		procdefType = "widget";
 	}
 	var uglifier = this.parser.wiki.getUglifier(uglifierType);
-	var strings = ['\\', procdefType, ' ', pragma.attributes.name.value];
+	var strings = ['\\', procdefType, ' ', name];
 	strings.push(this.uglifyPragmaParams(pragma.params));
 	var text = uglifier.uglify(pragma.attributes.value.value, this.parser).text;
 	if (text.indexOf("\n") >= 0 || $tw.utils.skipWhiteSpace(text,0) > 0) {
 		strings.push("\n", text, "\n\\end");
+		// Now determine if this was a named pragma closer
+		var startOfEnd = this.parser.source.lastIndexOf("\\end", this.parser.pos);
+		var stringAfterEnd = this.parser.source.substring(startOfEnd+4, this.parser.pos);
+		if (stringAfterEnd.indexOf(name) >= 0) {
+			strings.push(" ", name);
+		}
 	} else if(text.length == 0) {
 		strings.push("\n");
 	} else {

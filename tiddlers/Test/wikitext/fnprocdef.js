@@ -54,4 +54,14 @@ it('widgets optimize wikitext content', function() {
 	     "\\widget $w.m(A)<$text text=<<A>>/> <$slot $name=ts-raw/>\n<$w.m A=cats/>");
 });
 
+it('handles named \\end syntax', function() {
+	test('\\procedure outer(B)\n\\procedure inner(A)\n<$reveal>\n\n<<A>></$reveal>\n\\end   inner\n<<B>> <<inner cats>>\n\\end\n<<outer Content>>',
+	     '\\procedure outer(B)\n\\procedure inner(A)\n<$reveal>\n\n<<A>></$reveal>\n\\end inner\n<<B>> <<inner cats>>\n\\end\n<<outer Content>>');
+});
+
+it('newlines before \\end', function() {
+	test('\\procedure F(A)\n<$reveal>\n\n<<A>></$reveal>\n\n\\end\n<<F Content>>',
+	     '\\procedure F(A)\n<$reveal>\n\n<<A>></$reveal>\n\\end\n<<F Content>>');
+});
+
 });});
