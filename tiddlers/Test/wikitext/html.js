@@ -77,6 +77,7 @@ it('filter attributes', function() {
 	test("<$text text={{{ [tag[A }}}  />", "<$text text={{{[tag[A}}}/>");
 });
 
+$tw.utils.test.wikitext.ifAtLeastVersion("5.3.0").
 it('substitute attributes', function() {
 	test("<$text text=`anything goes` />", "<$text text=`anything goes`/>");
 	test("<$text text=```anything goes``` />", "<$text text=`anything goes`/>");

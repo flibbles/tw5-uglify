@@ -8,6 +8,7 @@ Tests the wikitext uglifier with parameter pragma
 \*/
 
 describe('wikitext uglifier', function() {
+$tw.utils.test.wikitext.ifAtLeastVersion("5.3.0").
 describe('parameter', function() {
 
 const test = $tw.utils.test.wikitext.test;

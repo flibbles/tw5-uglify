@@ -50,6 +50,12 @@ exports.ifLetIt = function(description, fn) {
 	}
 };
 
+exports.ifAtLeastVersion = function(targetVersion) {
+	return ($tw.utils.compareVersions($tw.version, targetVersion) >= 0)?
+		{it: it, describe: describe}:
+		{it: xit, describe: xdescribe};
+};
+
 $tw.utils.test = $tw.utils.test || {};
 $tw.utils.test.wikitext = Object.create(null);
 
