@@ -1,0 +1,10 @@
+created: 20230716183729455
+
+Uglify should now be compatible with Tiddlywiki v5.3.0. This means support for:
+
+* \procedure, \function, and \widget pragma
+* \parameters pragma
+* parameterized transclusion
+* text substitution attributes
+
+Also, fixed issue where named pragma \end would be undone.
