@@ -25,7 +25,7 @@
 			"--output", "./docs/",
 			"--uglify", "prune/uglify", "no",
 			"--uglify", "compress", "yes",
-			"--uglify", "blacklist", "$:/core $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
+			"--uglify", "blacklist", "$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
 			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"
 		],
 		"empty": [
