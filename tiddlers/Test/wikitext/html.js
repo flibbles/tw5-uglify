@@ -51,6 +51,19 @@ it('string attributes', function() {
 	test('<$text text="A`B"/>\n', '<$text text="A`B"/>\n');
 });
 
+// Issues #11
+it('string attributes that might read wrong without quotes', function() {
+	test('<$text text="{" other="}"/>', '<$text text={ other=}/>');
+	test('<$text text="{{" other="}}"/>', '<$text text="{{"other=}}/>');
+	test('<$text text="a{{" other="}}"/>', '<$text text=a{{ other=}}/>');
+	// macrocall
+	test('<$text text="<<" other=">>"/>', '<$text text="<<"other=">>"/>');
+	// filtered
+	test('<$text text="{{{" other="}}}"/>', '<$text text="{{{"other=}}}/>');
+	// substituted
+	test('<$text text="`" other="`"/>', '<$text text="`"other="`"/>');
+});
+
 
 it('empty attributes', function() {
 	test('<$text text=""/>', '<$text text=""/>');
