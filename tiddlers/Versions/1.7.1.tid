@@ -1,0 +1,3 @@
+created: 20230723194010234
+
+* Fixed issue where **very specific** uses of "{{" and "}}" in widget attributes could cause uglify to produce malformed results.
