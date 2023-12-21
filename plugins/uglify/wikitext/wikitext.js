@@ -6,6 +6,8 @@ type: application/javascript
 Uglifies wikitext
 \*/
 
+'use strict';
+
 exports.type = "text/vnd.tiddlywiki";
 
 var WikiParser = require("$:/core/modules/parsers/wikiparser/wikiparser.js")[exports.type];
@@ -62,9 +64,11 @@ WikiWalker.prototype.setupUglifyRules = function() {
 	}
 };
 
+var noWhitespaceAfterPragma;
+
 WikiWalker.prototype.parsePragmas = function() {
 	var strings = this.tree;
-	var pragmaFound = false;
+	var pragmaCount = 0;
 	var whitespace;
 	// The reason we set up rules here instead of in the constructor where it
 	// would make sense: We have to set up uglify rules AFTER the WikiParser
@@ -89,14 +93,27 @@ WikiWalker.prototype.parsePragmas = function() {
 		if (!nextMatch || nextMatch.matchIndex !== this.pos) {
 			break;
 		}
-		pragmaFound = true;
+		pragmaCount++;
 		strings.push.apply(strings, this.handleRule(nextMatch));
 	}
-	if (!pragmaFound) {
+	if (pragmaCount == 0) {
 		// If we haven't found pragma, we need to be
 		// careful that this isn't actually a plaintext
 		// file, so we keep any leading whitespace.
 		strings.push.apply(strings, whitespace);
+	} else if (!noWhitespaceAfterPragma && pragmaCount > 1) {
+		// There is a version (v5.3.2) of TiddlyWiki where it erroneously
+		// includes whitespace between pragma and the body. If we are on that
+		// version, we can't purge any "\whitespace trim" pragma.
+		// If more than one pragma exists, that means more than just a "trim".
+		if (noWhitespaceAfterPragma === undefined) {
+			// First we test if we're on that broken version
+			noWhitespaceAfterPragma = $tw.wiki.renderText("text/plain", "text/vnd.tiddlywiki", "<$list filter='' emptyMessage='\\define macro() Macro\nNoLead'/>") === "NoLead";
+		}
+		if (!noWhitespaceAfterPragma) {
+			this.cannotEnsureNoWhiteSpace = true;
+		}
+
 	}
 	this.startOfBody = true;
 	return strings;

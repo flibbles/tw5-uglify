@@ -101,4 +101,12 @@ it('multiple pragma', function() {
 	test(nt+t+"<div>\n\tText\n</div>", "<div>Text");
 });
 
+it('accounts for v5.3.2 bug concerning pragma', function() {
+	var stateOutput = $tw.wiki.renderText("text/plain", "text/vnd.tiddlywiki", "<$list filter='' emptyMessage='\\define m()m\nNoLead'/>");
+	var expected = stateOutput === "NoLead"?
+	     "<$list filter=''emptyMessage='\\define m()Macro\nempty'/>":
+	     "<$list filter=''emptyMessage='\\whitespace trim\n\\define m()Macro\nempty'/>";
+	test("<$list filter=''emptyMessage=\"\\whitespace trim\n\\define m()Macro\nempty\"/>", expected);
+});
+
 });});
