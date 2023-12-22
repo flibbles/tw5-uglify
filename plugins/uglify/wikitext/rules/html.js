@@ -113,7 +113,6 @@ exports.uglify = function() {
 		tagParts.push(">");
 		if (tag.isBlock) {
 			tagParts.push('\n\n');
-		} else {
 		}
 		var tail = {text: "</" + tag.tag + ">"}
 		if (tag.isBlock || tag.children.length !== 1 || tag.children[0].text !== "\n") {
