@@ -29,11 +29,20 @@ it('inline', function() {
 
 it('block', function() {
 	test("<% if dog %>\n\n\n\nContent<% endif %>", "<%if dog%>\n\nContent");
+	test("<% if dog %>\r\n\r\nContent<% endif %>", "<%if dog%>\n\nContent");
+	test("<% if dog %>  \n\n  Content<% endif %>", "<%if dog%>\n\nContent");
 	test("<% if dog %>\n\n\n\nContent<% endif %>\n\nTail", "<%if dog%>\n\nContent<%endif%>Tail");
 	test("<% if dog %>\n\nContent<% else %>2nd<% endif %>", "<%if dog%>\n\nContent<%else%>2nd");
-	test("<% if dog %>\n\n---\n<% endif %>", "<%if dog%>\n\n---");
+	test("<% if dog %>\n\nContent<% else %>  \n\n  2nd<% endif %>", "<%if dog%>\n\nContent<%else%>\n\n2nd");
 	test("<% if [tag[x]] %>\n\n---\n<% else %>---<% endif %>", "<%if [tag[x]]%>\n\n---\n<%else%>---");
 	test("<% if [tag[x]] %>\n\n---\n<% elseif dog %>---<% else %>---<% endif %>", "<%if [tag[x]]%>\n\n---\n<%elseif dog%>---<%else%>---");
+});
+
+it('non-tail material at end', function() {
+	test(  "<% if dog %>\n\n---\n<% endif %>", "<%if dog%>\n\n---");
+	test(  "<% if dog %>\n\n---<% endif %>", "<%if dog%>\n\n---<%endif%>");
+	test(  "<% if dog %>\n\n--- <% endif %>", "<%if dog%>\n\n--- ");
+	test(t+"<% if dog %>\n\n--- <% endif %>", "<%if dog%>\n\n---<!---->");
 });
 
 it('empty filter', function() {
@@ -46,10 +55,13 @@ it('empty filter', function() {
 it('broken', function() {
 	// This one fails to parse at all. Not a legal conditional
 	test("<% if%>Content<% endif %>", "<% if%>Content<% endif %>");
+	test("<% if [tag[g]]%>Content<% elseif%>Other<% endif %>", "<%if [tag[g]]%>Content<% elseif%>Other");
 });
 
-// TODO: Could mistake actual <$list-empty> as part of itself.
-// TODO: carriage \returns
-// TODO: Match when <%endif%> is missing
+it('missing endif', function() {
+	test("<% if d %>\n\nContent", "<%if d%>\n\nContent");
+	test("<% if d %>\n\n1<% else %>\n\n2", "<%if d%>\n\n1<%else%>\n\n2");
+	test("<% if [tag[d]] %>\n\n1<% elseif c %>\n\n2", "<%if [tag[d]]%>\n\n1<%elseif c%>\n\n2");
+});
 
 });});

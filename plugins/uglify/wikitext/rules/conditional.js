@@ -35,9 +35,6 @@ exports.uglify = function() {
 				break;
 			} else if (ex.match[2] === "else") {
 				hasLineBreak = doubleLineBreakAtPos(this.parser);
-				if (hasLineBreak) {
-					array.push({text: "\n\n"});
-				}
 				var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>",
 					ex;
 				if (hasLineBreak) {
@@ -47,12 +44,17 @@ exports.uglify = function() {
 					ex = this.parser.parseInlineRunTerminatedExtended(reEnd,{eatTerminator: true});
 				}
 				array.push({text: "<%else%>"});
+				if (hasLineBreak) {
+					array.push({text: "\n\n"});
+				}
 				array = array.concat(ex.tree);
 				break;
 			} else if (ex.match[3] === "elseif") {
 				filter = ex.match[4];
 				array.push({text: "<%elseif "});
 			}
+		} else {
+			break;
 		}
 	}
 	array.push({text: "<%endif%>", tail: true});
