@@ -1,0 +1,4 @@
+created: 20231223054500244
+
+* Fixed issue for #12, where Tiddlywiki 5.3.2 introduced a bug which caused Uglify to mess up. Uglify makes an exception for that specific version.
+* Full support for conditional syntax. E.G. `<% if filter %>`

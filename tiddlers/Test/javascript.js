@@ -56,16 +56,11 @@ it('generates source map', function() {
 	expect(true).toBe(true);
 });
 
-/*
 it('can handle backticks?', function() {
-	try {
-	var text = compress('var run = function(status) { return `backticks are ${status}`; }');
+	var text = compress('exports.run = function(status) { return `backticks are ${status}`; }');
+	expect(text).not.toContain("status");
 	var exports = exec(text);
-	expect(exports.run('broken')).toBe('backticks are broken');
-	} catch (err) {
-		console.log(err);
-	}
+	expect(exports.run('working')).toBe('backticks are working');
 });
-*/
 
 });
