@@ -11,19 +11,20 @@ exports.name = "conditional";
 exports.uglify = function() {
 	var filter = this.parser.source.substring(this.match.index + this.match[0].length, this.terminateIfMatch.index),
 		array = [{text: "<%if "}],
-		isBlock = this.is.block;
+		isBlock = this.is.block,
+		ex;
 	this.parser.pos = this.terminateIfMatch.index + this.terminateIfMatch[0].length;
+	var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>|\\<\\%\\s*(else)\\s*\\%\\>|\\<\\%\\s*(elseif)\\s+([\\s\\S]+?)\\%\\>";
+	array.push({text: utils.uglifyFilter(filter, this.parser)});
 	while (true) {
-		array.push({text: [utils.uglifyFilter(filter, this.parser), "%>"].join('')});
+		array.push({text: "%>"});
 		// Check for an immediately following double linebreak
 		var hasLineBreak = doubleLineBreakAtPos(this.parser);
 		if (hasLineBreak) {
 			array.push({text: "\n\n"});
 		}
 		// Parse the body looking for else or endif
-		var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>|\\<\\%\\s*(else)\\s*\\%\\>|\\<\\%\\s*(elseif)\\s+([\\s\\S]+?)\\%\\>",
-			ex;
-		if(hasLineBreak) {
+		if (hasLineBreak) {
 			ex = this.parser.parseBlocksTerminatedExtended(reEndString);
 		} else {
 			var reEnd = new RegExp(reEndString,"mg");
@@ -31,31 +32,17 @@ exports.uglify = function() {
 		}
 		array = array.concat(ex.tree);
 		if (ex.match) {
-			if (ex.match[1] === "endif") {
-				break;
-			} else if (ex.match[2] === "else") {
-				hasLineBreak = doubleLineBreakAtPos(this.parser);
-				var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>",
-					ex;
-				if (hasLineBreak) {
-					ex = this.parser.parseBlocksTerminatedExtended(reEndString);
-				} else {
-					var reEnd = new RegExp(reEndString,"mg");
-					ex = this.parser.parseInlineRunTerminatedExtended(reEnd,{eatTerminator: true});
-				}
-				array.push({text: "<%else%>"});
-				if (hasLineBreak) {
-					array.push({text: "\n\n"});
-				}
-				array = array.concat(ex.tree);
-				break;
-			} else if (ex.match[3] === "elseif") {
-				filter = ex.match[4];
+			if (ex.match[3] === "elseif") {
 				array.push({text: "<%elseif "});
+				array.push({text: utils.uglifyFilter(ex.match[4], this.parser)});
+				continue;
+			} else if (ex.match[2] === "else") {
+				array.push({text: "<%else"});
+				reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>";
+				continue;
 			}
-		} else {
-			break;
 		}
+		break;
 	}
 	array.push({text: "<%endif%>", tail: true});
 	if (isBlock) {
