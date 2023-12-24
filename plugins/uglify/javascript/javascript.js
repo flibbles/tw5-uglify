@@ -22,17 +22,28 @@ exports.uglify = function(text, options) {
 };
 
 var fluffWrapper = "!function(){";
+var fluffClose = "}();";
 
 function stripFunctionWrap(results) {
 	if (containsFunctionWrap(results.code)) {
 		var map = JSON.parse(results.map);
 		var newMappings = removeFirstTwoEntries(map.mappings);
 		if (newMappings !== null) {
-			results.code = results.code.slice(fluffWrapper.length, -4);
+			results.code = results.code.slice(fluffWrapper.length, -fluffClose.length);
 			map.mappings = newMappings;
 			results.map = JSON.stringify(map);
 		}
 	}
+};
+
+function containsFunctionWrap(code) {
+	return (code.indexOf(fluffWrapper) === 0
+		&& code.lastIndexOf(fluffClose) === code.length-fluffClose.length);
+	// In theory, the module might not be singly-wrapped. It might have
+	// two methods, one proceeding the other, but we don't actually have
+	// to worry about those cases, because it'll still work out when
+	// TiddlyWiki puts its own wrapping around it.
+	// So no counting parentheses for us!!
 };
 
 // Snags and translates the first three entries, and creates a single entry
@@ -69,11 +80,6 @@ function removeFirstTwoEntries(mapping) {
 	var lastComma = mapping.lastIndexOf(",");
 	lastComma = mapping.lastIndexOf(",", lastComma-1);
 	return toQLT(newPtr) + mapping.substring(comma-1,lastComma);
-};
-
-function containsFunctionWrap(code) {
-	return (code.indexOf(fluffWrapper) === 0
-		&& code.lastIndexOf("}();") === code.length-4);
 };
 
 const h64map = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

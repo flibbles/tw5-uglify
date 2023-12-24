@@ -16,10 +16,9 @@ function compress(input, title) {
 };
 
 function exec(text) {
-	var wrap = "(function(module,exports) {(function(){\n"+text+"\n;})();\nreturn exports;\n})\n";
-	var method = eval(wrap);
 	var module = {exports: Object.create(null)};
-	method(module, module.exports);
+	var context = {module: module, exports: module.exports};
+	$tw.utils.evalGlobal(text, context, "test.js");
 	return module.exports;
 };
 
@@ -84,7 +83,7 @@ function removeWrapping(text, expectedNewMapping, log) {
 
 it('can remove wrapping functions', function() {
 	var pretty = '/**Function stuff\n */\n(function() {\n"use strict";\nexports.identity = function() {};\n                  })();';
-	expect(removeWrapping(pretty, "AAGA", true).exports.identity()).toBe(undefined);
+	expect(removeWrapping(pretty, "AAGA").exports.identity()).toBe(undefined);
 	// Test with some indentation
 	pretty = '/**Function stuff\n */\n       (     function() {\n   "use strict";\nexports.factorial = function(number) { return number * (number + 1) / 2; }\n})();';
 	expect(removeWrapping(pretty, "AAGG").exports.factorial(5)).toBe(15);
@@ -101,6 +100,17 @@ it('can remove wrapping from nothing', function() {
 	var results = compress(pretty);
 	expect(results.text).toBe('');
 	expect(results.map).toContain('"mappings":""');
+});
+
+// Apparently, we don't even have to consider the possibility of twin-wrapping,
+// because it still works.
+// We still test this in case TiddlyWiki's behavior ever changes.
+it('handles unwrapping twin-wrapped modules', function() {
+	var pretty = '(function() {"use strict";\nexports.a = 5;})();\n(function() {"use strict"; exports.b = 6;})();';
+	var results = compress(pretty);
+	var exports = exec(results.text);
+	expect(exports.a).toBe(5);
+	expect(exports.b).toBe(6);
 });
 
 });
