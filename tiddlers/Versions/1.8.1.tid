@@ -1,0 +1,3 @@
+created: 20231224190533217
+
+* Added Tiddlywiki-specific optimization for javascript uglifier. This removes the `(function() {...})();` from around all modules since Tiddlywiki already double-wraps every module like an over-zealous grocery bagger. This removes about 5k from the core, which isn't much, but these kind of things add up. And I had fun implementing it.

@@ -1,0 +1,10 @@
+title: Javascript Optimizations
+tags: Documentation
+
+//Uglify// not only compresses javascript, but it does so in a way that's optimized for TiddlyWiki. This is done through several tweaks.
+
+# //Uglify// can do away with preambles containing field information. This is because they're unneeded once compiled into a module. This is an optimization that other minifiers can't do, because they can only do do their work //before// the module-compiling.
+# Uglified javascript prefers single quotes. This is because TiddlyWiki modules are stored in JSON within JSON, where double quotes get escaped not once, but twice, making them much more expensive.
+# TiddlyWiki always double-wraps every module in function calls, which means any modules that //also// wrap their bodies in function calls is extra redundant. So //Uglify// will get rid of them.
+
+These are the major optimizations, but in many smaller ways, //Uglify// is tuned to do what's best for TiddlyWiki modules.
