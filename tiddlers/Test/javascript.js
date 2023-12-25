@@ -6,8 +6,6 @@ tags: $:/tags/test-spec
 Tests the uglify compressor.
 \*/
 
-const logger = require('$:/plugins/flibbles/uglify/logger.js');
-
 describe('javascript uglifier', function() {
 
 function compress(input, title) {
@@ -59,29 +57,19 @@ it('can handle backticks?', function() {
 	expect(exports.run('working')).toBe('backticks are working');
 });
 
-function removeWrapping(text, expectedNewMapping, log) {
-	var results = compress(text);
-	var ugly = results.text
-	expect(ugly).toContain('function');
-	expect(ugly).toContain('use strict');
-	// Function shouldn't show up twice.
-	expect(ugly.substr(ugly.indexOf('function')+8)).not.toContain('function');
-	expect(results.map).toContain('"' + expectedNewMapping + ',');
-	if (log) {
-		console.log("###");
-		console.log(text);
-		console.log("---");
-		console.log(ugly);
-		console.log("---");
-		console.log(results.map);
-		console.log("###");
-	}
-	//*/
-	results.exports = exec(ugly);
-	return results;
-};
-
 it('can remove wrapping functions', function() {
+	function removeWrapping(text, expectedNewMapping) {
+		var results = compress(text);
+		var ugly = results.text
+		expect(ugly).toContain('function');
+		expect(ugly).toContain('use strict');
+		// Function shouldn't show up twice.
+		expect(ugly.substr(ugly.indexOf('function')+8)).not.toContain('function');
+		expect(results.map).toContain('"' + expectedNewMapping + ',');
+		results.exports = exec(ugly);
+		return results;
+	};
+
 	var pretty = '/**Function stuff\n */\n(function() {\n"use strict";\nexports.identity = function() {};\n                  })();';
 	expect(removeWrapping(pretty, "AAGA").exports.identity()).toBe(undefined);
 	// Test with some indentation
