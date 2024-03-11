@@ -44,4 +44,22 @@ it("compresses when exporting offline-external-js", function() {
 	expect(output).not.toContain("myvariable");
 });
 
+it("compresses when exporting all-external-js", function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddlers([
+		$tw.wiki.getTiddler("$:/core/templates/tiddlywiki.js/load-tiddler"),
+		{	title: "$:/boot/bootprefix.js",
+			type: "application/javascript",
+			text: "// Comment\nexports.method = function(argument) { return argument; }"},
+		$tw.utils.test.noCache(),
+		{title: "$:/state/flibbles/uglify/server", text: "yes"}
+	]);
+	const text = '{{ $:/boot/bootprefix.js || $:/core/templates/tiddlywiki.js/load-tiddler}}';
+	spyOn(console, 'log');
+	var output = wiki.renderText("text/plain", "text/vnd.tiddlywiki", text);
+	expect(output).not.toContain("Comment");
+	expect(output).toContain("method");
+	expect(output).toContain("sourceMappingURL=");
+});
+
 });

@@ -7,8 +7,6 @@ A variation of the V5.2.* <$jsontiddler> which allows for uglifying to happen.
 
 \*/
 
-/*jslint node: true, browser: true */
-/*global $tw: false */
 'use strict';
 
 var Widget = require('$:/core/modules/widgets/widget.js').widget;
