@@ -5,16 +5,18 @@ var uglifyjs = require('./uglify.js');
 exports.type = "application/javascript";
 
 exports.uglify = function(text, options) {
-	var code = {},
+	var files = Object.create(null),
 		title = options && options.title,
 		isModule = !utils.isSystemTarget(title);
-	code.text = text;
+	// Since we treat the map file as being in the same directory as the
+	// source, we need to give the map file an adjacent path to the source
+	files[basename(title)] = text;
 	var options = {
 		toplevel: isModule, // top level can be minified. These are modules.
 		module: false,//!utils.isSystemTarget(title),
 		sourceMap: {},
 		output: {quote_style: 1}}; // single quotes. Smaller in TW.
-	var results = uglifyjs.minify(code, options);
+	var results = uglifyjs.minify(files, options);
 	if (results.error) {
 		throw results.error;
 	}
@@ -24,6 +26,10 @@ exports.uglify = function(text, options) {
 		stripFunctionWrap(results);
 	}
 	return {text: results.code, map: results.map};
+};
+
+function basename(path) {
+	return path.substr(path.lastIndexOf('/') + 1);
 };
 
 var fluffWrapper = "!function(){";

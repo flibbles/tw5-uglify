@@ -15,6 +15,7 @@ var getDirective = require("$:/plugins/flibbles/uglify/startup/eval.js").getDire
 if (!$tw.browser) {
 
 var Server = require("$:/core/modules/server/server.js").Server;
+var path = require('path');
 
 var response = {
 	writeHead: console.warn,
@@ -41,18 +42,19 @@ function fetch(title) {
 	// First we get the directive.
 	var directive = getDirective(wiki, title);
 	expect(directive.indexOf("sourceMappingURL=")).not.toBeLessThan(0);
-	var mapPath = "http://127.0.0.1"+directive.substr(directive.indexOf('=')+1);
-	server.requestHandler({method: "GET", url: mapPath}, response);
+	var domain = "http://127.0.0.1";
+	var mapPath = path.join("/", directive.substr(directive.indexOf('=')+1));
+	server.requestHandler({method: "GET", url: domain + mapPath}, response);
 	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/json'});
 	expect(response.end).toHaveBeenCalledTimes(1);
 	var calls = response.end.calls.first();
 	expect(calls.args[1]).toBe('utf8');
 	var map = JSON.parse(calls.args[0]);
-	var sourcePath = "http://127.0.0.1" + map.sourceRoot + map.sources[0];
+	var sourcePath = path.join(path.dirname(mapPath), map.sourceRoot || '', map.sources[0]);
 	// Now we try to fetch the original source
 	response.end.calls.reset();
 	response.writeHead.calls.reset();
-	server.requestHandler({method: "GET", url: sourcePath}, response);
+	server.requestHandler({method: "GET", url: domain + sourcePath}, response);
 	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/javascript'});
 	expect(response.end).toHaveBeenCalledTimes(1);
 	var calls = response.end.calls.first();
@@ -81,7 +83,8 @@ it('clients add directive only when appropriate', function() {
 			{title: 'file.js', type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	// Is dependent on the state tiddler, even dynamically
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
+	// For now, the $:/state/flibbles/uglify/server isn't needed
+	expect(getDirective(wiki, 'file.js')).not.toContain("sourceURL=");
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
 	// Without sourcemapping can be controlled through configuration

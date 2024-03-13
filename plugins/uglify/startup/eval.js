@@ -57,7 +57,7 @@ function getConfig(wiki, key, defaultValue) {
 };
 
 exports.getDirective = function(wiki, filename, standalone) {
-	if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes") {
+	//if (getText(wiki, "$:/state/flibbles/uglify/server") === "yes") {
 		if (getConfig(wiki, "compress", "yes") === "yes"
 		&& getConfig(wiki, "sourcemap", "yes") === "yes"
 		&& getConfig(wiki, "application/javascript", "yes") === "yes") {
@@ -67,12 +67,12 @@ exports.getDirective = function(wiki, filename, standalone) {
 			if (source
 			&& blacklist.indexOf(source) < 0
 			&& wiki.tiddlerExists(filename) == !!standalone) {
-				return "\n\n//# sourceMappingURL=/uglify/map/" + exports.encode(filename);
+				return "\n\n//# sourceMappingURL=source/" + exports.encode(filename) + ".map";
 			}
 		}
-	} else if (standalone) {
-		return "";
-	}
+	//} else if (standalone) {
+		//return "";
+	//}
 	// Standalone files don't need directives.
 	return "\n\n//# sourceURL=" + filename;
 };
@@ -88,6 +88,6 @@ exports.encode = function(title) {
 	});
 };
 
-if ($tw.browser && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
+if ($tw.browser) {// && getText($tw.wiki, "$:/state/flibbles/uglify/server") === "yes") {
 	$tw.utils.evalSandboxed = evalGlobal;
 }

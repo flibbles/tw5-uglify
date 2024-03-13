@@ -163,7 +163,7 @@ it('adds directives to boot files', function() {
 	spyOn(console, 'log');
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
-	expect(out).not.toContain("sourceMappingURL=");
+	expect(out).toContain("sourceMappingURL=");
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=");
 	// Without sourcemapping can be controlled through configuration
@@ -198,7 +198,7 @@ it('adds directives to boot file that already has directives', function() {
 	spyOn(console, 'log');
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
-	expect(out).not.toContain("sourceMappingURL=");
+	expect(out).toContain("sourceMappingURL=");
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).toContain("sourceMappingURL=");
@@ -254,12 +254,12 @@ it('gets source maps for boot.js and bootprefix.js', function() {
 	spyOn(console, "log");
 	var map = wiki.getTiddlerSourceMap('$:/boot/boot.js');
 	expect(map.mappings[0]).not.toBe(';');
-	expect(map.sources[0]).toBe('$:/boot/boot.js');
+	expect(map.sources[0]).toBe('boot.js');
 	// Now for bootprefix
 	wiki.addTiddler({title: "$:/boot/bootprefix.js", text: javascript, type: 'application/javascript'});
 	map = wiki.getTiddlerSourceMap('$:/boot/bootprefix.js');
 	expect(map.mappings[0]).not.toBe(';');
-	expect(map.sources[0]).toBe('$:/boot/bootprefix.js');
+	expect(map.sources[0]).toBe('bootprefix.js');
 });
 
 it('gets undefined source maps for non-javascript tiddlers', function() {

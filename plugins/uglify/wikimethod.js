@@ -34,7 +34,7 @@ exports.getTiddlerSourceMap = function(title, options) {
 		var fields = compressTiddler(this, title, options);
 		if (typeof fields.map === "string") {
 			fields.map = JSON.parse(fields.map);
-			fields.map.sources[0] = title;
+			//fields.map.sources[0] = title;
 		}
 		return fields.map;
 	}
@@ -130,7 +130,7 @@ function compressPlugin(wiki, pluginInfo) {
 				// Plugin javascript need a semicolon so they skip a line
 				// Because boot.js will add this whole (function(...){ thing.
 				mapObj.mappings = ";" + mapObj.mappings;
-				mapObj.sources[0] = title;
+				//mapObj.sources[0] = title;
 				maps[title] = mapObj;
 			}
 		}
