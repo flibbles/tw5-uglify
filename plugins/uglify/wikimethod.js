@@ -59,13 +59,8 @@ function compressTiddler(wiki, title, options) {
 			if (!tiddler) {
 				return undefined;
 			}
-			var pluginInfo = utils.getPluginInfo(wiki, title);
 			var uglifier = undefined;
-			if (pluginInfo) {
-				uglifier = {uglify: function(text) {
-					return compressPlugin(wiki, pluginInfo);
-				}};
-			} else if (utils.isSystemTarget(title) && wiki.getPruneMap()[title]) {
+			if (utils.isSystemTarget(title) && wiki.getPruneMap()[title]) {
 				// Oh. This is a pruned system tiddler. We have no way
 				// of getting rid of it, but we can make it zero-length.
 				uglifier = {uglify: function() { return {text: ""}; }};
@@ -78,7 +73,7 @@ function compressTiddler(wiki, title, options) {
 				options.onSave = undefined;
 				var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 					logger.log('Compressing:', title);
-					return compressOrNot(uglifier, title, tiddler.fields.text,wiki);
+					return utils.tryCompress(uglifier, title, tiddler.fields.text,wiki);
 				}, onSave);
 				$tw.utils.extend(cache, fields);
 			} else {
@@ -106,40 +101,6 @@ exports.compressionEnabled = function() {
 exports.getUglifier = function(type) {
 	type = type || "text/vnd.tiddlywiki";
 	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
-};
-
-function compressPlugin(wiki, pluginInfo) {
-	var newTiddlers = Object.create(null),
-		maps = Object.create(null),
-		newInfo = $tw.utils.extend({}, pluginInfo),
-		uglifier,
-		options = {wiki: wiki},
-		pruneMap = wiki.getPruneMap();
-	for (var title in pluginInfo.tiddlers) {
-		var fields = pluginInfo.tiddlers[title];
-		if (pruneMap[title]) {
-			continue;
-		}
-		var abridgedFields = cleanShadowFields(fields);
-		uglifier = wiki.getUglifier(fields.type);
-		if (fields.text && uglifier) {
-			var results = compressOrNot(uglifier, title, fields.text, wiki);
-			abridgedFields.text = results.text;
-			if (results.map) {
-				var mapObj = JSON.parse(results.map);
-				// Plugin javascript need a semicolon so they skip a line
-				// Because boot.js will add this whole (function(...){ thing.
-				mapObj.mappings = ";" + mapObj.mappings;
-				//mapObj.sources[0] = title;
-				maps[title] = mapObj;
-			}
-		}
-		newTiddlers[title] = abridgedFields;
-	}
-	newInfo.tiddlers = newTiddlers;
-	return {
-		map: JSON.stringify(maps, null),
-		text: JSON.stringify(newInfo, null) };
 };
 
 exports.getPruneMap = function(wiki) {
@@ -178,35 +139,6 @@ exports.getPruneMap = function(wiki) {
 	});
 };
 
-function cleanShadowFields(fields) {
-	var cleanedFields = Object.create(null);
-	for (var field in fields) {
-		// We don't need to copy the title field. It's redundant
-		// since the key to this object is the title.
-		if (field === 'title') {
-			continue;
-		}
-		// Also, empty tags fields are pointless, but easy for
-		// plugin writers to accidentally make. Drop em.
-		if (field === 'tags' && !fields.tags) {
-			continue;
-		}
-		cleanedFields[field] = fields[field];
-	}
-	return cleanedFields;
-};
-
-function compressOrNot(uglifier, title, text, wiki) {
-	try {
-		var fields = uglifier.uglify(text, {wiki: wiki, title: title});
-		return fields;
-	} catch (e) {
-		logger.warn(compileFailureWarning(title, e));
-		// Return the uncompressed text as a backup
-		return {text: text};
-	}
-};
-
 // If this is a system target, we give a chance to add
 // directives in case this is a server which needs to tweak
 // boot.js and such.
@@ -224,15 +156,4 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 		}
 	}
 	return fields;
-};
-
-function compileFailureWarning(title, error) {
-	var reportFields = ['message', 'line', 'col', 'pos'];
-	var dataString = 'Failed to compress ' + title + '\n';
-	$tw.utils.each(reportFields, function(field) {
-		if (error[field]) {
-			dataString += "\n    * " + field + ": " + error[field];
-		}
-	});
-	return dataString;
 };
