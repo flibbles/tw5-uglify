@@ -29,6 +29,11 @@ exports.startup = function() {
 	// get done on the next request.
 	$tw.hooks.addHook('th-server-command-post-start', precache);
 
+	if (utils.getSetting($tw.wiki, "sourcemap")) {
+		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler("$:/temp/library/flibbles/uglify.js"), {library: "yes"});
+		$tw.wiki.addTiddler(tiddler);
+	}
+
 	// Hotswaps the old ViewWidget getValue method with ours, which is
 	// unfortuantely the only way to inject uglified code into ViewWidget
 	// since we need to remain <v5.1.23 compliant.

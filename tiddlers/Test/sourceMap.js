@@ -10,7 +10,7 @@ Currently only javascript can supply them.
 
 describe('source map', function() {
 
-var getDirective = require("$:/plugins/flibbles/uglify/startup/eval.js").getDirective;
+var getDirective = require("$:/temp/library/flibbles/uglify.js").getDirective;
 
 if (!$tw.browser) {
 
@@ -69,8 +69,12 @@ it('can fetch a system tiddler map', function() {
 	fetch('$:/plugins/flibbles/uglify/file.js');
 });
 
-it('can fetch system tiddlers with illegal URI characters', function() {
+it('can fetch tiddler with illegal URI characters in dir', function() {
 	fetch('$:/plugins/#/?/file.js');
+});
+
+it('can fetch tiddler with illegal URI characters in name', function() {
+	fetch('$:/plugins/this file contains !@?#$:%^&*().js');
 });
 
 }

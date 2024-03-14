@@ -12,7 +12,7 @@ type: application/javascript
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
-var getDirective = require('./startup/eval.js').getDirective;
+var getDirective = require('$:/temp/library/flibbles/uglify.js').getDirective;
 var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
 exports.getTiddlerSourceMap = function(title, options) {
@@ -20,7 +20,7 @@ exports.getTiddlerSourceMap = function(title, options) {
 		uglifier,
 		exists = this.tiddlerExists(title),
 		source = this.getShadowSource(title);
-	if (source) {
+	if (!utils.isLibraryTarget(wiki, title) && source) {
 		var fields = compressTiddler(this, source, options);
 		if (fields.map) {
 			if (typeof fields.map === "string") {
@@ -213,7 +213,7 @@ function compressOrNot(uglifier, title, text, wiki) {
 // This occurs INDEPENDENTLY of file writing. We don't want
 // these directives in the file cache.
 function addDirectiveToBootFiles(wiki, fields, title) {
-	if (utils.isSystemTarget(title)) {
+	if (utils.isSystemTarget(title) || utils.isLibraryTarget(wiki, title)) {
 		var tiddler = wiki.getTiddler(title);
 		if (tiddler
 		&& tiddler.fields.type === "application/javascript"

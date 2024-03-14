@@ -39,8 +39,6 @@ it("keeps essential files in uglify while pruning", function() {
 	// A few things must not be pruned
 	isNotPruned("$:/plugins/flibbles/uglify/readme");
 	isNotPruned("$:/plugins/flibbles/uglify/license");
-	// It's important that the eval script exists, and that it's not pruned.
-	isNotPruned("$:/plugins/flibbles/uglify/startup/eval.js");
 });
 
 it("removes files from uglify", function() {

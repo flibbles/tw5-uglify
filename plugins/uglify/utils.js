@@ -11,7 +11,11 @@ Utility methods for Uglify
 /*global $tw: false */
 'use strict';
 
-var systemTargets = {'$:/boot/boot.css': true, '$:/boot/boot.js': true, '$:/boot/bootprefix.js': true, "$:/library/sjcl.js": true};
+var systemTargets = {
+	'$:/boot/boot.css': true,
+	'$:/boot/boot.js': true,
+	'$:/boot/bootprefix.js': true
+};
 
 var modulesAddedToConfig = false;
 
@@ -77,11 +81,19 @@ exports.shouldCompress = function(wiki,title) {
 	if (exports.getPluginInfo(wiki, title)) {
 		return true;
 	}
-	if (!systemTargets[title]) {
+	var tiddler = wiki.getTiddler(title)
+	if (!tiddler || !exports.getSetting(wiki, tiddler.fields.type || "text/vnd.tiddlywiki")) {
 		return false;
 	}
-	var tiddler = wiki.getTiddler(title)
-	return tiddler && exports.getSetting(wiki, tiddler.fields.type || "text/vnd.tiddlywiki");
+	return exports.isLibraryTarget(wiki, title) || exports.isSystemTarget(title);
+};
+
+exports.isLibraryTarget = function(wiki, title) {
+	var tiddler = wiki.getTiddler(title);
+	return tiddler
+		&& tiddler.fields.type === "application/javascript"
+		&& wiki.isSystemTiddler(title)
+		&& tiddler.fields.library === "yes";
 };
 
 exports.getPluginInfo = function(wiki, title) {
@@ -103,19 +115,17 @@ exports.getPluginInfo = function(wiki, title) {
 exports.allEligibleTiddlers = function(wiki) {
 	var titles = [];
 	if (wiki.compressionEnabled()) {
-		$tw.utils.each(systemTargets, function(v, title) {
+		function check(title) {
 			if (exports.shouldCompress(wiki, title)) {
 				titles.push(title);
 			}
-		});
+		};
+		$tw.utils.each(systemTargets, function(v, title) { check(title); });
+		$tw.utils.each(wiki.each.byField("library", "yes"), check);
 		var indexer = $tw.wiki.getIndexer('FieldIndexer');
 		$tw.utils.each(['plugin', 'theme', 'language'], function(type) {
 			var plugins = indexer.lookup('plugin-type', type);
-			$tw.utils.each(plugins, function(title) {
-				if (exports.shouldCompress(wiki, title)) {
-					titles.push(title);
-				}
-			});
+			$tw.utils.each(plugins, check);
 		});
 		titles.sort();
 	}

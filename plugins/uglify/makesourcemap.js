@@ -9,7 +9,6 @@ Command for generating the sourcemap directory that can be used by standalone wi
 
 'use strict';
 
-var encode = require('./startup/eval.js').encode;
 var utils = require('./utils.js');
 var fs, path;
 
@@ -51,7 +50,7 @@ function genSourceContent(wiki, outputPath, title) {
 	// Not all javascript files get uglified. This is because they may
 	// be pruned instead. In those cases, we don't need to do anything.
 	if (sourceMap) {
-		var dir = path.resolve(outputPath, "source", encode(title));
+		var dir = path.resolve(outputPath, "source", title);
 		$tw.utils.createFileDirectories(dir);
 		fs.writeFile(
 			dir,

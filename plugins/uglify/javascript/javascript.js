@@ -10,7 +10,7 @@ exports.uglify = function(text, options) {
 		isModule = !utils.isSystemTarget(title);
 	// Since we treat the map file as being in the same directory as the
 	// source, we need to give the map file an adjacent path to the source
-	files[basename(title)] = text;
+	files[encodeURIComponent(basename(title))] = text;
 	var options = {
 		toplevel: isModule, // top level can be minified. These are modules.
 		module: false,//!utils.isSystemTarget(title),
