@@ -18,7 +18,7 @@ logger.warn = function(/*arguments*/) {
 	if ($tw.node) {
 		// That empty string puts a space before the alert so it lines up
 		// with all the log messages. I'm neurotic like that.
-		args.push('', this.componentName + ':');
+		args.push(this.componentName + ':');
 	}
 	args.push.apply(args, arguments);
 	return this.alert.apply(this, args);
