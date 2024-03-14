@@ -31,37 +31,23 @@ function evalGlobal(code,context,filename) {
 		contextValues.push(value);
 	});
 	// Add the code prologue and epilogue
-	code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})\n";
+	code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})";
 	// Compile the code into a function
-	var fn = window["eval"](code + library.getDirective($tw.wiki, filename));
+	var fn = window["eval"](code + library.getEpilogue($tw.wiki, filename));
 	// Call the function and return the exports
 	return fn.apply(null,contextValues);
 };
 
-// We need our own here, because getTiddlerText might not exist on browser
-function getConfig(wiki, key, defaultValue) {
-	var tiddler = wiki.getTiddler("$:/config/flibbles/uglify/" + key);
-	return (tiddler && tiddler.fields.text) || defaultValue;
-};
-
-library.getDirective = function(wiki, filename, standalone) {
-	if (getConfig(wiki, "compress", yes) === yes
-	&& getConfig(wiki, "sourcemap", yes) === yes
-	&& getConfig(wiki, "application/javascript", yes) === yes) {
-		var blacklist = $tw.utils.parseStringArray(getConfig(wiki, "blacklist", ""));
-		// standalone files are their own source
-		var source = standalone ? filename : wiki.getShadowSource(filename);
-		if (source
-		&& blacklist.indexOf(source) < 0
-		&& wiki.tiddlerExists(filename) == !!standalone) {
-			return "\n\n//# sourceMappingURL=source/" + encode(filename) + ".map";
-		}
+library.getEpilogue = function(wiki, filename) {
+	var source = wiki.getShadowSource(filename);
+	if (source && !wiki.tiddlerExists(filename)) {
+		return library.getDirective(wiki, filename);
 	}
 	return "\n\n//# sourceURL=" + filename;
 };
 
-function encode(title) {
-	return encodeURIComponent(title).replace(/%(?:2|3)(?:F|4|A)/g, function(code) {
+library.getDirective = function(wiki, filename) {
+	filename = encodeURIComponent(filename).replace(/%(?:2|3)(?:F|4|A)/g, function(code) {
 		switch (code) {
 			case "%2F": return '/';
 			case "%24": return '$';
@@ -69,6 +55,7 @@ function encode(title) {
 			default: return code;
 		}
 	});
+	return "\n\n//# sourceMappingURL=source/" + filename + ".map";
 };
 
 if (typeof window !== "undefined") {

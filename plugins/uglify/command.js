@@ -44,6 +44,9 @@ Command.prototype.execute = function() {
 			logger.warn('Unrecognized configuration flag: ' + property);
 		}
 	}
+	// Now that we've changed the settings, the uglify environment may
+	// need updating.
+	utils.setEnvironment(wiki);
 };
 
 function list(wiki) {

@@ -213,7 +213,8 @@ function compressOrNot(uglifier, title, text, wiki) {
 // This occurs INDEPENDENTLY of file writing. We don't want
 // these directives in the file cache.
 function addDirectiveToBootFiles(wiki, fields, title) {
-	if (utils.isSystemTarget(title) || utils.isLibraryTarget(wiki, title)) {
+	if (utils.getSetting(wiki, "sourcemap")
+	&& (utils.isSystemTarget(title) || utils.isLibraryTarget(wiki, title))) {
 		var tiddler = wiki.getTiddler(title);
 		if (tiddler
 		&& tiddler.fields.type === "application/javascript"

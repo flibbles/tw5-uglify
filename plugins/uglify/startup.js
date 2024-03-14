@@ -12,7 +12,7 @@ Performs all necessary startup work for Uglify.
 
 'use strict';
 
-var utils = require('../utils.js');
+var utils = require('./utils.js');
 
 exports.name = 'uglify';
 exports.synchronous = true;
@@ -31,12 +31,9 @@ exports.startup = function() {
 	// get done on the next request.
 	$tw.hooks.addHook('th-server-command-post-start', precache);
 
-	// This sets up the sourcemap library to be sent to clients. This won't
-	// be here soon.
-	if (utils.getSetting($tw.wiki, "sourcemap")) {
-		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler("$:/temp/library/flibbles/uglify.js"), {library: "yes"});
-		$tw.wiki.addTiddler(tiddler);
-	}
+	// We need to make the initial set up for the Uglify environment.
+	// This might change if settings are later changed.
+	utils.setEnvironment($tw.wiki);
 
 	/** Replacements **/
 	// Hotswaps the old ViewWidget getValue method with ours, which is

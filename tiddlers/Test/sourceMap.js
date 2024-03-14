@@ -10,7 +10,7 @@ Currently only javascript can supply them.
 
 describe('source map', function() {
 
-var getDirective = require("$:/temp/library/flibbles/uglify.js").getDirective;
+var getEpilogue = require("$:/temp/library/flibbles/uglify.js").getEpilogue;
 
 if (!$tw.browser) {
 
@@ -40,7 +40,7 @@ function fetch(title) {
 	spyOn(response, 'end');
 	spyOn(console, 'log');
 	// First we get the directive.
-	var directive = getDirective(wiki, title);
+	var directive = getEpilogue(wiki, title);
 	expect(directive.indexOf("sourceMappingURL=")).not.toBeLessThan(0);
 	var domain = "http://127.0.0.1";
 	var mapPath = path.join("/", directive.substr(directive.indexOf('=')+1));
@@ -79,41 +79,112 @@ it('can fetch tiddler with illegal URI characters in name', function() {
 
 }
 
-it('clients add directive only when appropriate', function() {
+it('client adds directive to shadow modules', function() {
 	const wiki = new $tw.Wiki(),
 		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
+		tiddlerName = pluginName + "/file.js",
 		text = 'exports.func = function(argName) {return argName;}',
 		tiddlers = [
-			{title: 'file.js', type: 'application/javascript', text: text}];
+			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	// Is dependent on the state tiddler, even dynamically
-	// For now, the $:/state/flibbles/uglify/server isn't needed
-	expect(getDirective(wiki, 'file.js')).not.toContain("sourceURL=");
-	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
-	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
+	wiki.addTiddler($tw.utils.test.noCache());
+	var directive = getEpilogue(wiki, tiddlerName);
+	expect(directive).toContain("sourceMappingURL=");
+	expect(directive).not.toContain("sourceURL=");
+	// Now we override the shadow module...
+	wiki.addTiddlers(tiddlers);
+	directive = getEpilogue(wiki, tiddlerName);
+	expect(directive).not.toContain("sourceMappingURL=");
+	expect(directive).toContain("sourceURL=");
+});
+
+it('client does not add mapping directive to standalone modules', function() {
+	const wiki = new $tw.Wiki(),
+		title = "standalone.js",
+		text = 'exports.love = true';
+	wiki.addTiddler({
+		title: title,
+		text: 'exports.love = true',
+		type: 'application/javascript',
+		"module-type": "library"});
+	var directive = getEpilogue(wiki, title);
+	expect(directive).not.toContain("sourceMappingURL=");
+	expect(directive).toContain("sourceURL=");
+});
+
+it('server does not add directives to modules', function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
+		tiddlerName = pluginName + "/file.js",
+		text = 'exports.myFunc = function(argName) {return argName;}',
+		tiddlers = [
+			{title: tiddlerName, type: 'application/javascript', text: text}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	wiki.addTiddler($tw.utils.test.noCache());
+	spyOn(console, 'log');
+	var output = wiki.getTiddlerUglifiedText(tiddlerName);
+	expect(output).not.toContain("sourceMappingURL=");
+	expect(output).not.toContain("sourceURL=");
+	expect(output).not.toContain("argName");
+	expect(output).toContain("myFunc");
+	// Now we override the shadow module...
+	// It still compresses, because it's being explicitly asked for.
+	wiki.addTiddlers(tiddlers);
+	output = wiki.getTiddlerUglifiedText(tiddlerName);
+	expect(output).not.toContain("sourceMappingURL=");
+	expect(output).not.toContain("sourceURL=");
+	expect(output).not.toContain("argName");
+	expect(output).toContain("myFunc");
+});
+
+it('server adds directives to boot files', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName) {return argName;}';
+	var out;
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	spyOn(console, 'log');
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).toContain("sourceMappingURL=");
+	expect(out).not.toContain("argName");
 	// Without sourcemapping can be controlled through configuration
 	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).not.toContain("sourceMappingURL=");
+	expect(out).not.toContain("argName");
+	// Now with sourcemap explciitly enabled
 	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
-	// If compression is disabled, so is sourcemapping
-	wiki.addTiddler($tw.utils.test.noCompress());
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
-	wiki.addTiddler($tw.utils.test.yesCompress());
-	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
-	// If javascript in particular is disabled, then so is sourcemapping
-	wiki.addTiddler($tw.utils.test.setting("application/javascript", "no"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
-	wiki.addTiddler($tw.utils.test.setting("application/javascript", "yes"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
-	// blacklisting a plugin disables for all containing javascript
-	wiki.addTiddler($tw.utils.test.setting("blacklist", pluginName + " cats"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
-	wiki.addTiddler($tw.utils.test.setting("blacklist", "cats"));
-	expect(getDirective(wiki, 'file.js')).toContain("sourceMappingURL=");
-	// Overridden javascript shouldn not be sourcemapped
-	wiki.addTiddler({title: "file.js", text: text, type: "application/javascript"});
-	expect(getDirective(wiki, 'file.js')).toContain("sourceURL=");
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).toContain("sourceMappingURL=");
+	expect(out).not.toContain("argName");
 });
+
+it('server adds directives to boot that already has directives', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName) {return argName;}\n\n//# sourceURL='+boot;
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	spyOn(console, 'log');
+	var out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceURL=");
+	expect(out).toContain("sourceMappingURL=");
+});
+
+it('server does not add directives to css boot file', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.css',
+		text = '.class {color: black;}';
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "text/css"});
+	spyOn(console, 'log');
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceURL=");
+	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceMappingURL=");
+});
+
 
 });

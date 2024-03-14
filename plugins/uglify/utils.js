@@ -70,6 +70,18 @@ exports.getSettings = function(wiki) {
 	return settings;
 };
 
+exports.setEnvironment = function(wiki) {
+	var title = "$:/temp/library/flibbles/uglify.js";
+	if (exports.getSetting(wiki, "sourcemap")
+	&& exports.getSetting(wiki, "compress")
+	&& exports.getSetting(wiki, "application/javascript")) {
+		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler(title), {library: "yes"});
+		wiki.addTiddler(tiddler);
+	} else {
+		wiki.deleteTiddler(title);
+	}
+};
+
 /**
  * Returns true if the given title is something which should be compressed
  * During saving or serving.
