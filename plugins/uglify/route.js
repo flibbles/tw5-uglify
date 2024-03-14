@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/getSourceMap.js
+title: $:/plugins/flibbles/uglify/route.js
 type: application/javascript
 module-type: route
 
