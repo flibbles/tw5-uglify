@@ -54,13 +54,13 @@ library.getDirective = function(wiki, filename, standalone) {
 		if (source
 		&& blacklist.indexOf(source) < 0
 		&& wiki.tiddlerExists(filename) == !!standalone) {
-			return "\n\n//# sourceMappingURL=source/" + library.encode(filename) + ".map";
+			return "\n\n//# sourceMappingURL=source/" + encode(filename) + ".map";
 		}
 	}
 	return "\n\n//# sourceURL=" + filename;
 };
 
-library.encode = function(title) {
+function encode(title) {
 	return encodeURIComponent(title).replace(/%(?:2|3)(?:F|4|A)/g, function(code) {
 		switch (code) {
 			case "%2F": return '/';
