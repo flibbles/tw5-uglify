@@ -31,6 +31,8 @@ function evalGlobal(code,context,filename) {
 		contextValues.push(value);
 	});
 	// Add the code prologue and epilogue
+	// It's important that the prologue take up exactly one line. The map for
+	// the code is offset by one ";", or one line to account for this.
 	code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})";
 	// Compile the code into a function
 	var fn = window["eval"](code + library.getEpilogue($tw.wiki, filename));

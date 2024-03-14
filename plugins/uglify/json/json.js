@@ -14,25 +14,26 @@ exports.type = "application/json";
 
 exports.uglify = function(text, options) {
 	var wiki = options.wiki,
-		title = options.title,
-		pluginInfo = utils.getPluginInfo(wiki, title);
+		pluginInfo = utils.getPluginInfo(wiki, options.title);
 	if (pluginInfo) {
 		return compressPlugin(wiki, pluginInfo);
 	} else {
-		try {
-			return {text: JSON.stringify(JSON.parse(text), null)};
-		} catch (err) {
-			var marker = "position ";
-			var index = err.message.lastIndexOf(marker);
-			if (index >= 0) {
-				err.pos = parseInt(err.message.substr(index + marker.length));
-			}
-			throw err;
-		}
+		return compressJSON(text);
 	}
 }
 
-
+function compressJSON(text) {
+	try {
+		return {text: JSON.stringify(JSON.parse(text), null)};
+	} catch (err) {
+		var marker = "position ";
+		var index = err.message.lastIndexOf(marker);
+		if (index >= 0) {
+			err.pos = parseInt(err.message.substr(index + marker.length));
+		}
+		throw err;
+	}
+};
 
 function compressPlugin(wiki, pluginInfo) {
 	var newTiddlers = Object.create(null),
@@ -49,15 +50,20 @@ function compressPlugin(wiki, pluginInfo) {
 		var abridgedFields = cleanShadowFields(fields);
 		uglifier = wiki.getUglifier(fields.type);
 		if (fields.text && uglifier) {
-			var results = utils.tryCompress(uglifier, title, fields.text, wiki);
-			abridgedFields.text = results.text;
-			if (results.map) {
-				var mapObj = JSON.parse(results.map);
-				// Plugin javascript need a semicolon so they skip a line
-				// Because boot.js will add this whole (function(...){ thing.
-				mapObj.mappings = ";" + mapObj.mappings;
-				//mapObj.sources[0] = title;
-				maps[title] = mapObj;
+			try {
+				var results = uglifier.uglify(fields.text, {wiki: wiki, title: title});
+				if (results.map) {
+					var mapObj = JSON.parse(results.map);
+					// Plugin javascript need a semicolon so they skip a line
+					// Because boot.js will add this whole (function(...){ thing.
+					mapObj.mappings = ";" + mapObj.mappings;
+					//mapObj.sources[0] = title;
+					maps[title] = mapObj;
+				}
+				abridgedFields.text = results.text;
+			} catch (err) {
+				// Log the failure and move on to the plugin's next tiddler
+				utils.logFailure(title, err);
 			}
 		}
 		newTiddlers[title] = abridgedFields;

@@ -100,19 +100,7 @@ exports.shouldCompress = function(wiki,title) {
 	return exports.isLibraryTarget(wiki, title) || exports.isSystemTarget(title);
 };
 
-exports.tryCompress = function(uglifier, title, text, wiki) {
-	try {
-		var fields = uglifier.uglify(text, {wiki: wiki, title: title});
-		return fields;
-	} catch (e) {
-		var logger = require('./logger.js');
-		logger.warn(compileFailureWarning(title, e));
-		// Return the uncompressed text as a backup
-		return {text: text};
-	}
-};
-
-function compileFailureWarning(title, error) {
+exports.logFailure = function(title, error) {
 	var reportFields = ['message', 'line', 'col', 'pos'];
 	var dataString = 'Failed to compress ' + title + '\n';
 	$tw.utils.each(reportFields, function(field) {
@@ -120,7 +108,8 @@ function compileFailureWarning(title, error) {
 			dataString += "\n    * " + field + ": " + error[field];
 		}
 	});
-	return dataString;
+	var logger = require('./logger.js');
+	logger.warn(dataString);
 };
 
 

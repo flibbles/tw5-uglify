@@ -73,7 +73,12 @@ function compressTiddler(wiki, title, options) {
 				options.onSave = undefined;
 				var fields = cacher.getFileCacheForTiddler(wiki, title, tiddler.fields.text, function() {
 					logger.log('Compressing:', title);
-					return utils.tryCompress(uglifier, title, tiddler.fields.text,wiki);
+					try {
+						return uglifier.uglify(tiddler.fields.text, {wiki: wiki, title: title});
+					} catch (err) {
+						utils.logFailure(title, err);
+						return {text: tiddler.fields.text};
+					}
 				}, onSave);
 				$tw.utils.extend(cache, fields);
 			} else {
