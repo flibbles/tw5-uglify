@@ -1,5 +1,5 @@
 /*\
-title: Test/plugins.js
+title: Test/json.js
 type: application/javascript
 tags: $:/tags/test-spec
 
@@ -27,7 +27,7 @@ it('removes title fields and pretty print', function() {
 		description: "description",
 		text: input});
 	spyOn(console, 'log');
-	expect(wiki.getTiddlerUglifiedText('name')).toBe('{"tiddlers":{"test":{"text":"text"}}}');
+	expect(wiki.getTiddlerUglifiedText('name')).toBe('{"tiddlers":{"test":{"text":"text"}},"ugly":true}');
 	
 });
 
@@ -38,7 +38,7 @@ it('does not add text fields if not there', function() {
 	$tw.utils.test.addPlugin(wiki, 'name', tiddlers);
 	spyOn(console, 'log');
 	var output = wiki.getTiddlerUglifiedText('name');
-	expect(output).toBe('{"tiddlers":{"A":{"tags":"A"}}}');
+	expect(output).toBe('{"tiddlers":{"A":{"tags":"A"}},"ugly":true}');
 });
 
 it('removes empty tags fields', function() {

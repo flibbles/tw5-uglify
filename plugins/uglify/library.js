@@ -16,6 +16,24 @@ This is done as a library so that it can sneak in before any modules get loaded.
 var library = {};
 var yes = "yes";
 
+if (typeof window !== "undefined") {
+	var tw = window.$tw = window.$tw || Object.create(null);
+	var hooks = tw.hooks = tw.hooks || {names: {}};
+	var hook = "th-boot-tiddlers-loaded";
+
+	if (!Object.hasOwnProperty(hooks.names, hook)) {
+		hooks.names[hook] = [];
+	}
+
+	hooks.names[hook].push(function() {
+		tw.utils.evalSandboxed = evalGlobal;
+	});
+}
+
+if ((typeof module !== "undefined") && module.exports) {
+	module.exports = library;
+}
+
 /*
 This is a copy of the evalGlobal in the boot.js file. The only change is
 the sourceMappingURL that's put at the end of files.
@@ -23,27 +41,30 @@ the sourceMappingURL that's put at the end of files.
 This has been simplified because it will only ever run on the browser.
 */
 function evalGlobal(code,context,filename) {
-	var contextCopy = $tw.utils.extend(Object.create(null),context);
 	// Get the context variables as a pair of arrays of names and values
 	var contextNames = [], contextValues = [];
-	$tw.utils.each(contextCopy,function(value,name) {
+	for (var name in context) {
 		contextNames.push(name);
-		contextValues.push(value);
-	});
+		contextValues.push(contextCopy[name]);
+	}
 	// Add the code prologue and epilogue
 	// It's important that the prologue take up exactly one line. The map for
 	// the code is offset by one ";", or one line to account for this.
 	code = "(function(" + contextNames.join(",") + ") {(function(){\n" + code + "\n;})();\nreturn exports;\n})";
 	// Compile the code into a function
-	var fn = window["eval"](code + library.getEpilogue($tw.wiki, filename));
+	var fn = window["eval"](code + getEpilogue(tw.wiki, filename));
 	// Call the function and return the exports
 	return fn.apply(null,contextValues);
 };
 
-library.getEpilogue = function(wiki, filename) {
+function getEpilogue(wiki, filename) {
 	var source = wiki.getShadowSource(filename);
 	if (source && !wiki.tiddlerExists(filename)) {
-		return library.getDirective(wiki, filename);
+		var info = wiki.getPluginInfo(source);
+		// We only want to use sourceMap directives for uglified plugins
+		if (info.ugly) {
+			return library.getDirective(wiki, filename);
+		}
 	}
 	return "\n\n//# sourceURL=" + filename;
 };
@@ -60,20 +81,4 @@ library.getDirective = function(wiki, filename) {
 	return "\n\n//# sourceMappingURL=source/" + filename + ".map";
 };
 
-if (typeof window !== "undefined") {
-	window.$tw = window.$tw || Object.create(null);
-	var hooks = $tw.hooks = $tw.hooks || {names: {}};
-	var hook = "th-boot-tiddlers-loaded";
-
-	if (!Object.hasOwnProperty(hooks.names, hook)) {
-		hooks.names[hook] = [];
-	}
-
-	hooks.names[hook].push(function() {
-		$tw.utils.evalSandboxed = evalGlobal;
-	});
-}
-
-if ((typeof module !== "undefined") && module.exports) {
-	module.exports = library;
-}
+//# sourceURL=$:/temp/library/flibbles/uglify.js

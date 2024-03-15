@@ -14,7 +14,7 @@ if (!$tw.browser) {
 
 describe('route', function() {
 
-var getEpilogue = require("$:/temp/library/flibbles/uglify.js").getEpilogue;
+var getDirective = require("$:/temp/library/flibbles/uglify.js").getDirective;
 var Server = require("$:/core/modules/server/server.js").Server;
 var path = require('path');
 
@@ -31,7 +31,7 @@ function fetch(title) {
 		text = 'exports.func = function(argName) {return argName;}',
 		tiddlers = [
 			{title: title, type: 'application/javascript', text: text}];
-	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
 	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
 	wiki.addTiddler($tw.utils.test.noCache());
 	const server = new Server({
@@ -41,7 +41,7 @@ function fetch(title) {
 	spyOn(response, 'end');
 	spyOn(console, 'log');
 	// First we get the directive.
-	var directive = getEpilogue(wiki, title);
+	var directive = getDirective(wiki, title);
 	expect(directive.indexOf("sourceMappingURL=")).not.toBeLessThan(0);
 	var domain = "http://127.0.0.1";
 	var mapPath = path.join("/", directive.substr(directive.indexOf('=')+1));

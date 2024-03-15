@@ -31,6 +31,9 @@ test.newPlugin = function(pluginName, tiddlers, options) {
 		tiddlerHash[hash.title] = fieldsHash;
 	});
 	var content = { tiddlers: tiddlerHash }
+	if (options.ugly !== undefined) {
+		content.ugly = options.ugly;
+	}
 	return new $tw.Tiddler({
 		title: pluginName,
 		type: "application/json",

@@ -40,7 +40,6 @@ function compressPlugin(wiki, pluginInfo) {
 		maps = Object.create(null),
 		newInfo = $tw.utils.extend({}, pluginInfo),
 		uglifier,
-		options = {wiki: wiki},
 		pruneMap = wiki.getPruneMap();
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
@@ -69,6 +68,7 @@ function compressPlugin(wiki, pluginInfo) {
 		newTiddlers[title] = abridgedFields;
 	}
 	newInfo.tiddlers = newTiddlers;
+	newInfo.ugly = true;
 	return {
 		map: JSON.stringify(maps, null),
 		text: JSON.stringify(newInfo, null) };

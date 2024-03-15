@@ -10,7 +10,19 @@ Currently only javascript can supply them.
 
 describe('source map', function() {
 
-var getEpilogue = require("$:/temp/library/flibbles/uglify.js").getEpilogue;
+// This evaluates the uglify library in a control context
+function clientEval(wiki, tiddlerName) {
+	var libraryText = $tw.wiki.getTiddlerText("$:/temp/library/flibbles/uglify.js");
+	var container = {};
+	var method = new Function("window", libraryText);
+	method(container);
+	// It should have populated our container now with $tw-like stuff
+	container.$tw.utils = {};
+	container.$tw.wiki = wiki;
+	container.eval = function(text) { return () => text; };
+	container.$tw.hooks.names['th-boot-tiddlers-loaded'][0]();
+	return container.$tw.utils.evalSandboxed(wiki.getTiddlerText(tiddlerName), {}, tiddlerName);
+};
 
 it('client adds directive to shadow modules', function() {
 	const wiki = new $tw.Wiki(),
@@ -19,14 +31,14 @@ it('client adds directive to shadow modules', function() {
 		text = 'exports.func = function(argName) {return argName;}',
 		tiddlers = [
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
-	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
 	wiki.addTiddler($tw.utils.test.noCache());
-	var directive = getEpilogue(wiki, tiddlerName);
+	var directive = clientEval(wiki, tiddlerName);
 	expect(directive).toContain("sourceMappingURL=");
 	expect(directive).not.toContain("sourceURL=");
 	// Now we override the shadow module...
 	wiki.addTiddlers(tiddlers);
-	directive = getEpilogue(wiki, tiddlerName);
+	directive = clientEval(wiki, tiddlerName);
 	expect(directive).not.toContain("sourceMappingURL=");
 	expect(directive).toContain("sourceURL=");
 });
@@ -40,7 +52,7 @@ it('client does not add mapping directive to standalone modules', function() {
 		text: 'exports.love = true',
 		type: 'application/javascript',
 		"module-type": "library"});
-	var directive = getEpilogue(wiki, title);
+	var directive = clientEval(wiki, title);
 	expect(directive).not.toContain("sourceMappingURL=");
 	expect(directive).toContain("sourceURL=");
 });
