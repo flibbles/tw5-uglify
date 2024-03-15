@@ -90,6 +90,7 @@ it('server adds directives to boot files', function() {
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	spyOn(console, 'log');
+	var oldOrigin = $tw.boot.origin;
 	$tw.boot.origin = undefined;
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
@@ -112,6 +113,7 @@ it('server adds directives to boot files', function() {
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
+	$tw.boot.origin = oldOrigin;
 });
 
 it('server adds directives to boot that already has directives', function() {

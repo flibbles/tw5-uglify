@@ -1,6 +1,6 @@
 default: server
 
-Configure whether browsers will attempt to sourcemap their compressed javascript code. If yes, then when the web developer console is opened, browsers will attempt to fetch sourcemaps from the server or directory location. Available options are as follows:
+Configure whether browsers will [[sourcemap their compressed javascript code|Source Maps]].  Available options are as follows:
 
 ;yes
 : Source mapping is enabled, even when generating standalone TiddlyWikis.
