@@ -92,7 +92,7 @@ it('server adds directives to boot files', function() {
 	spyOn(console, 'log');
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
-	expect(out).toContain("sourceMappingURL=");
+	expect(out).not.toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
 	// Without sourcemapping can be controlled through configuration
 	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
@@ -114,6 +114,7 @@ it('server adds directives to boot that already has directives', function() {
 		text = 'exports.func = function(argName) {return argName;}\n\n//# sourceURL='+boot;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
 	spyOn(console, 'log');
 	var out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");

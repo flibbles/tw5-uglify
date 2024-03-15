@@ -30,6 +30,7 @@ it("compresses when exporting all-external-js", function() {
 			type: "application/javascript",
 			text: "// Comment\nexports.method = function(argument) { return argument; }"},
 		$tw.utils.test.noCache(),
+		$tw.utils.test.setting("sourcemap", "yes"),
 		{title: "$:/state/flibbles/uglify/server", text: "yes"}
 	]);
 	const text = '{{ $:/boot/bootprefix.js || $:/core/templates/tiddlywiki.js/load-tiddler}}';

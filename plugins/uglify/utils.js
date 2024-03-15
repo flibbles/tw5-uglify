@@ -22,7 +22,7 @@ var modulesAddedToConfig = false;
 var config = {
 	compress: 'yes',
 	blacklist: '',
-	sourcemap: 'yes',
+	sourcemap: 'no',
 	cache: 'yes',
 	cacheDirectory: './.cache/uglify'
 };
