@@ -18,9 +18,8 @@ var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 exports.getTiddlerSourceMap = function(title, options) {
 	var wiki = this,
 		uglifier,
-		exists = this.tiddlerExists(title),
 		source = this.getShadowSource(title);
-	if (!utils.isLibraryTarget(wiki, title) && source) {
+	if (source) {
 		var fields = compressTiddler(this, source, options);
 		if (fields.map) {
 			if (typeof fields.map === "string") {
@@ -30,11 +29,10 @@ exports.getTiddlerSourceMap = function(title, options) {
 				return fields.map[title];
 			}
 		}
-	} else if (exists) {
+	} else if (this.tiddlerExists(title)) {
 		var fields = compressTiddler(this, title, options);
 		if (typeof fields.map === "string") {
 			fields.map = JSON.parse(fields.map);
-			//fields.map.sources[0] = title;
 		}
 		return fields.map;
 	}
@@ -60,8 +58,8 @@ function compressTiddler(wiki, title, options) {
 				return undefined;
 			}
 			var uglifier = undefined;
-			if (utils.isSystemTarget(title) && wiki.getPruneMap()[title]) {
-				// Oh. This is a pruned system tiddler. We have no way
+			if (utils.isSystemTarget(wiki, title) && wiki.getPruneMap()[title]) {
+				// This is a pruned system tiddler. We have no way
 				// of getting rid of it, but we can make it zero-length.
 				uglifier = {uglify: function() { return {text: ""}; }};
 			} else {
@@ -150,8 +148,8 @@ exports.getPruneMap = function(wiki) {
 // This occurs INDEPENDENTLY of file writing. We don't want
 // these directives in the file cache.
 function addDirectiveToBootFiles(wiki, fields, title) {
-	if (utils.getSetting(wiki, "sourcemap")
-	&& (utils.isSystemTarget(title) || utils.isLibraryTarget(wiki, title))) {
+	if (utils.sourceMappingEnabled(wiki)
+	&& (utils.isSystemTarget(wiki, title))) {
 		var tiddler = wiki.getTiddler(title);
 		if (tiddler
 		&& tiddler.fields.type === "application/javascript"

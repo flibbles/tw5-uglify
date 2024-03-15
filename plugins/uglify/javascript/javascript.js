@@ -7,13 +7,13 @@ exports.type = "application/javascript";
 exports.uglify = function(text, options) {
 	var files = Object.create(null),
 		title = options && options.title,
-		isModule = !utils.isSystemTarget(title);
+		isModule = !utils.isSystemTarget(options.wiki, title);
 	// Since we treat the map file as being in the same directory as the
 	// source, we need to give the map file an adjacent path to the source
 	files[encodeURIComponent(basename(title))] = text;
 	var options = {
 		toplevel: isModule, // top level can be minified. These are modules.
-		module: false,//!utils.isSystemTarget(title),
+		module: false,
 		sourceMap: {},
 		output: {quote_style: 1}}; // single quotes. Smaller in TW.
 	var results = uglifyjs.minify(files, options);

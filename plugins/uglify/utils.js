@@ -22,7 +22,7 @@ var modulesAddedToConfig = false;
 var config = {
 	compress: 'yes',
 	blacklist: '',
-	sourcemap: 'no',
+	sourcemap: 'server',
 	cache: 'yes',
 	cacheDirectory: './.cache/uglify'
 };
@@ -30,7 +30,7 @@ var config = {
 var configType = {
 	compress: Boolean,
 	blacklist: Array,
-	sourcemap: Boolean,
+	sourcemap: String,
 	cache: Boolean
 };
 
@@ -70,9 +70,17 @@ exports.getSettings = function(wiki) {
 	return settings;
 };
 
+exports.sourceMappingEnabled = function(wiki) {
+	var setting = exports.getSetting(wiki, "sourcemap");
+	if (setting === "server" && $tw.boot.origin) {
+		return !!$tw.boot.origin;
+	}
+	return setting === "yes";
+};
+
 exports.setEnvironment = function(wiki) {
 	var title = "$:/temp/library/flibbles/uglify.js";
-	if (exports.getSetting(wiki, "sourcemap")
+	if (exports.sourceMappingEnabled(wiki)
 	&& exports.getSetting(wiki, "compress")
 	&& exports.getSetting(wiki, "application/javascript")) {
 		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler(title), {library: "yes"});
@@ -86,7 +94,7 @@ exports.setEnvironment = function(wiki) {
  * Returns true if the given title is something which should be compressed
  * During saving or serving.
  */
-exports.shouldCompress = function(wiki,title) {
+exports.shouldCompress = function(wiki, title) {
 	if (!wiki.compressionEnabled() || blacklisted(wiki, title)) {
 		return false;
 	}
@@ -97,7 +105,7 @@ exports.shouldCompress = function(wiki,title) {
 	if (!tiddler || !exports.getSetting(wiki, tiddler.fields.type || "text/vnd.tiddlywiki")) {
 		return false;
 	}
-	return exports.isLibraryTarget(wiki, title) || exports.isSystemTarget(title);
+	return exports.isSystemTarget(wiki, title);
 };
 
 exports.logFailure = function(title, error) {
@@ -112,14 +120,6 @@ exports.logFailure = function(title, error) {
 	logger.warn(dataString);
 };
 
-
-exports.isLibraryTarget = function(wiki, title) {
-	var tiddler = wiki.getTiddler(title);
-	return tiddler
-		&& tiddler.fields.type === "application/javascript"
-		&& wiki.isSystemTiddler(title)
-		&& tiddler.fields.library === "yes";
-};
 
 exports.getPluginInfo = function(wiki, title) {
 	var info = wiki.getPluginInfo(title);
@@ -157,8 +157,16 @@ exports.allEligibleTiddlers = function(wiki) {
 	return titles;
 };
 
-exports.isSystemTarget = function(title) {
-	return systemTargets[title] || false;
+exports.isSystemTarget = function(wiki, title) {
+	if (systemTargets[title]) {
+		return true;
+	}
+	// It might be a library=yes module, like sjcl
+	var tiddler = wiki && wiki.getTiddler(title);
+	return tiddler
+		&& tiddler.fields.type === "application/javascript"
+		&& wiki.isSystemTiddler(title)
+		&& tiddler.fields.library === "yes";
 };
 
 // The signature is a string describing which uglifiers were applied to a

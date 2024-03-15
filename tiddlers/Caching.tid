@@ -11,4 +11,4 @@ If you update your plugins, or alter them in any way, //Uglify// will automatica
 
 !! On standalone TiddlyWiki
 
-There isn't really caching if you're using //Uglify// in a TiddlyWiki file. It just replaces your existing plugins with the compressed ones. However, it does tag those plugins with <<tag $:/tags/flibbles/uglify/Compressed>> once it's done so it knows not to bother compressing them again.
+There isn't a caching mechanism on the browser, but once //Uglify// has rewritten your plugins, it won't have to do it again. //Uglify// flags your plugins so it knows not to uglify them again.
