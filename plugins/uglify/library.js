@@ -11,10 +11,14 @@ This is done as a library so that it can sneak in before any modules get loaded.
 
 \*/
 
+// We wrap this library in an anonymous function because it helps uglify
+// trim down the top-level property names
+// Also, depending on the TiddlyWiki, this module may have global scope.
+(function() {
+
 'use strict';
 
 var library = {};
-var yes = "yes";
 
 if (typeof window !== "undefined") {
 	var tw = window.$tw = window.$tw || Object.create(null);
@@ -45,7 +49,7 @@ function evalGlobal(code,context,filename) {
 	var contextNames = [], contextValues = [];
 	for (var name in context) {
 		contextNames.push(name);
-		contextValues.push(contextCopy[name]);
+		contextValues.push(context[name]);
 	}
 	// Add the code prologue and epilogue
 	// It's important that the prologue take up exactly one line. The map for
@@ -80,5 +84,7 @@ library.getDirective = function(wiki, filename) {
 	});
 	return "\n\n//# sourceMappingURL=source/" + filename + ".map";
 };
+
+})();
 
 //# sourceURL=$:/temp/library/flibbles/uglify.js

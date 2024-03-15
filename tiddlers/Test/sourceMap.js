@@ -15,13 +15,17 @@ function clientEval(wiki, tiddlerName) {
 	var libraryText = $tw.wiki.getTiddlerText("$:/temp/library/flibbles/uglify.js");
 	var container = {};
 	var method = new Function("window", libraryText);
+	var module = {exports: {}};
 	method(container);
 	// It should have populated our container now with $tw-like stuff
 	container.$tw.utils = {};
 	container.$tw.wiki = wiki;
 	container.eval = function(text) { return () => text; };
 	container.$tw.hooks.names['th-boot-tiddlers-loaded'][0]();
-	return container.$tw.utils.evalSandboxed(wiki.getTiddlerText(tiddlerName), {}, tiddlerName);
+	return container.$tw.utils.evalSandboxed(
+		wiki.getTiddlerText(tiddlerName),
+		{module: module, exports: module.exports},
+		tiddlerName);
 };
 
 it('client adds directive to shadow modules', function() {
@@ -41,6 +45,22 @@ it('client adds directive to shadow modules', function() {
 	directive = clientEval(wiki, tiddlerName);
 	expect(directive).not.toContain("sourceMappingURL=");
 	expect(directive).toContain("sourceURL=");
+});
+
+it('client properly escapes sourceMappingURL', function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = '$:/plugin_' + $tw.utils.test.uniqName(),
+		tiddlerName = pluginName + "/!@#$%^&*()[]{}\\|<>,? 语言处理.js",
+		text = 'exports.test = true;',
+		tiddlers = [
+			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
+	var output = clientEval(wiki, tiddlerName);
+	// We hard-code this expected result, because this URL gets passed
+	// to the browser. In other words, contact with an outside program.
+	// No matter what changes in Uglify, that tiddlerName should always
+	// correspond to the escape-soup below.
+	expect(output).toContain("sourceMappingURL=source/" + pluginName + "/!%40%23$%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js.map");
 });
 
 it('client does not add mapping directive to standalone modules', function() {

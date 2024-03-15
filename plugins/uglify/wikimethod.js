@@ -19,7 +19,11 @@ exports.getTiddlerSourceMap = function(title, options) {
 	var wiki = this,
 		uglifier,
 		source = this.getShadowSource(title);
-	if (source) {
+	// If it's a system target, it's either $:/boot/..., which has no source
+	// or it's a library, like sjcl, which has no source,
+	// or the uglify sourcemap lib, which needs to draw from itself, not a
+	// source, because the Uglify plugin may be heavily pruned.
+	if (!utils.isSystemTarget(wiki, title) && source) {
 		var fields = compressTiddler(this, source, options);
 		if (fields.map) {
 			if (typeof fields.map === "string") {

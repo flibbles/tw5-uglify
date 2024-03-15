@@ -35,7 +35,7 @@
 		],
 		"external": [
 			"--output", "./docs/",
-			"--uglify", "compress", "yes",
+			"--uglify", "compress", "yes", "sourcemap", "yes",
 			"--render", "$:/core/save/all-external-js", "external.html", "text/plain", "",
 				"coreURL", "tiddlywikicore.js",
 				"publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard -[prefix[Demo]]",

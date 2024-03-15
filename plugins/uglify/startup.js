@@ -79,11 +79,10 @@ function getTiddlersAsJson(filter, spaces) {
 };
 
 function precache() {
-	// The this is a server. Create this state tiddler which clients will
-	// use to realize they should enable sourceMapping.
-	// $:/state tiddlers will transfer to client, but they won't write to file
-	// ...just the way we want it.
-	$tw.wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
+	// If this is a server, we need to reset the environment because it's
+	// likely to be slightly different. For instance, the presents of the
+	// sourcemapping library might be required now.
+	utils.setEnvironment($tw.wiki);
 	// The server will precompress everything that can be
 	// compressed so that we don't stall on the first client request.
 	$tw.utils.each(utils.allEligibleTiddlers($tw.wiki), precacheTiddler);
