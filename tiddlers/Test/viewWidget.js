@@ -146,45 +146,4 @@ it("prune settings", function() {
 	expect(text).not.toContain('longArgName');
 });
 
-it("prunes system tiddlers", function() {
-	const wiki = new $tw.Wiki(),
-		name = "$:/boot/boot.js";
-	wiki.addTiddler($tw.utils.test.noCache());
-
-	wiki.addTiddler({title: name, type: "application/javascript", text: "exports.func = function(longArgName) {return longArgName;}"});
-	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: name});
-	wiki.addTiddler({title: "$:/state/flibbles/uglify/server", text: "yes"});
-	spyOn(console, 'log');
-	var text = renderTiddler(wiki, name);
-	expect(text).toContain("func");
-
-	wiki.addTiddler($tw.utils.test.setting("prune/test", "yes"));
-	text = renderTiddler(wiki, name);
-	expect(text).toBe("");
-});
-
-/** This test relied on Tiddlywiki changes which were never pushed.
-it('supports jsuglified view format', function() {
-	const wiki = new $tw.Wiki();
-	wiki.addTiddlers([
-		{title: 'myFile.js', type: 'application/javascript', text: 'exports.func = function(longArgName) {return longArgName;}'},
-		$tw.utils.test.noCache()]);
-
-	spyOn(console, 'log');
-	var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
-	expect(output).toContain('exports.func');
-	expect(output).not.toContain('longArgName');
-
-	wiki.addTiddler($tw.utils.test.noCompress());
-	// should still compress
-	var output = renderTiddler(wiki, 'myFile.js', 'jsuglified');
-	expect(output).toContain('exports.func');
-	expect(output).not.toContain('longArgName');
-
-	// It would compress once and log about it, then a tiddler cache will still
-	// have the results for the second call.
-	expect(console.log.calls.count()).toEqual(1);
-});
-*/
-
 });

@@ -61,14 +61,7 @@ function compressTiddler(wiki, title, options) {
 			if (!tiddler) {
 				return undefined;
 			}
-			var uglifier = undefined;
-			if (utils.isSystemTarget(wiki, title) && wiki.getPruneMap()[title]) {
-				// This is a pruned system tiddler. We have no way
-				// of getting rid of it, but we can make it zero-length.
-				uglifier = {uglify: function() { return {text: ""}; }};
-			} else {
-				uglifier = wiki.getUglifier(tiddler.fields.type);
-			}
+			var uglifier = wiki.getUglifier(tiddler.fields.type);
 			if (uglifier) {
 				// it will be up to getFileCache to call the callback now
 				var onSave = options.onSave;
