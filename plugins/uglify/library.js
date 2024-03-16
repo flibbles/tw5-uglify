@@ -74,7 +74,7 @@ function getEpilogue(wiki, filename) {
 };
 
 library.getDirective = function(wiki, filename) {
-	filename = encodeURIComponent(filename).replace(/%(?:2|3)(?:F|4|A)/g, function(code) {
+	filename = encodeURIComponent(filename).replaceAll(/%(?:2|3)(?:F|4|A)/g, function(code) {
 		switch (code) {
 			case "%2F": return '/';
 			case "%24": return '$';
