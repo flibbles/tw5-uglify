@@ -76,7 +76,7 @@ function fetch(title) {
 // Don't change these values. I've tested carefully that that url should
 // link to that module. Just the right amount of escaping.
 var crazyFile = '$:/plugins/!@#$:;\'"%^&*()[]{}\\|<>,? 语言处理.js';
-var crazyUrl = "http://127.0.0.1/source/$:/plugins/!%40%23$:%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
+var crazyUrl = "http://127.0.0.1/$:/plugins/!%40%23$:%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
 var crazySource = "!%40%23%24%3A%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
 
 it('can fetch source map with illegal URL characters in name', function() {

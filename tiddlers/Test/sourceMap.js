@@ -30,7 +30,7 @@ function clientEval(wiki, tiddlerName) {
 
 it('client adds directive to shadow modules', function() {
 	const wiki = new $tw.Wiki(),
-		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
+		pluginName = '$:/plugin_' + $tw.utils.test.uniqName(),
 		tiddlerName = pluginName + "/file.js",
 		text = 'exports.func = function(argName) {return argName;}',
 		tiddlers = [
@@ -60,7 +60,7 @@ it('client properly escapes sourceMappingURL', function() {
 	// to the browser. In other words, contact with an outside program.
 	// No matter what changes in Uglify, that tiddlerName should always
 	// correspond to the escape-soup below.
-	expect(output).toContain("sourceMappingURL=source/" + pluginName + "/!%40%23$%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js.map");
+	expect(output).toContain("sourceMappingURL=" + pluginName + "/!%40%23$%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js.map");
 });
 
 it('client does not add mapping directive to standalone modules', function() {

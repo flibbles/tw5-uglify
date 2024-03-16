@@ -49,8 +49,11 @@ function genSourceContent(wiki, outputPath, title) {
 	var sourceMap = wiki.getTiddlerSourceMap(title);
 	// Not all javascript files get uglified. This is because they may
 	// be pruned instead. In those cases, we don't need to do anything.
-	if (sourceMap) {
-		var dir = path.resolve(outputPath, "source", title);
+	if (sourceMap && title.indexOf('$:/') === 0) {
+		// 3 being the length of "$:/"
+		// We're cutting $:/ off and re-adding it, because soon the prefix
+		// might be different.
+		var dir = path.resolve(outputPath, "$:", title.substr(3));
 		$tw.utils.createFileDirectories(dir);
 		fs.writeFile(
 			dir,

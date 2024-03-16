@@ -63,7 +63,9 @@ function evalGlobal(code,context,filename) {
 
 function getEpilogue(wiki, filename) {
 	var source = wiki.getShadowSource(filename);
-	if (source && !wiki.tiddlerExists(filename)) {
+	if (source
+	&& !wiki.tiddlerExists(filename)
+	&& wiki.isSystemTiddler(filename)) {
 		var info = wiki.getPluginInfo(source);
 		// We only want to use sourceMap directives for uglified plugins
 		if (info.ugly) {
@@ -82,7 +84,8 @@ library.getDirective = function(wiki, filename) {
 			default: return code;
 		}
 	});
-	return "\n\n//# sourceMappingURL=source/" + filename + ".map";
+	// We cut off and re-attach the $:/ because it will soon be different.
+	return "\n\n//# sourceMappingURL=$:/" + filename.substr(3) + ".map";
 };
 
 })();

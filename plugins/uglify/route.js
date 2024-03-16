@@ -16,10 +16,12 @@ var logger = require('./logger.js');
 
 exports.method = "GET";
 
-exports.path = /^\/source\/(.+?)(.map)?$/;
+exports.path = /^\/\$:\/(.+?)(.map)?$/;
 
 exports.handler = function(request,response,state) {
-	var title = $tw.utils.decodeURIComponentSafe(state.params[0]);
+	// We can do this, because we're sure that only system tiddlers will
+	// ever be called for. It's a deliberate limitation of uglify
+	var title = "$:/" + $tw.utils.decodeURIComponentSafe(state.params[0]);
 	var contentType;
 	var content;
 	if (state.params[1]) { // ".map"
