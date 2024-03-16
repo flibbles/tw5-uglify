@@ -75,8 +75,8 @@ function fetch(title) {
 
 // Don't change these values. I've tested carefully that that url should
 // link to that module. Just the right amount of escaping.
-var crazyFile = '$:/!@#$:;\'"%^&*()[]{}\\|<>,? 语言处理.js';
-var crazyUrl = "http://127.0.0.1/source/$:/!%40%23$:%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
+var crazyFile = '$:/plugins/!@#$:;\'"%^&*()[]{}\\|<>,? 语言处理.js';
+var crazyUrl = "http://127.0.0.1/source/$:/plugins/!%40%23$:%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
 var crazySource = "!%40%23%24%3A%3B'%22%25%5E%26*()%5B%5D%7B%7D%5C%7C%3C%3E%2C%3F%20%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86.js";
 
 it('can fetch source map with illegal URL characters in name', function() {
@@ -106,16 +106,15 @@ it('can fetch source js with illegal URL characters in name', function() {
 	expect(calls.args[0]).toBe(text);
 });
 
-it('can fetch a non-system tiddler map', function() {
-	fetch('file.js');
-});
-
-it('can fetch a system tiddler map', function() {
-	fetch('$:/plugins/flibbles/uglify/file.js');
-});
-
-it('can fetch tiddler with illegal URI characters in dir', function() {
-	fetch('$:/plugins/#/?/file.js');
+it('will not fetch a non-system tiddler map', function() {
+	const wiki = new $tw.Wiki();
+	addPlugin(wiki, 'file.js', 'exports.val = 3;');
+	wiki.addTiddler($tw.utils.test.noCache());
+	const server = new Server({ wiki: wiki, variables: {} });
+	// This doesn't even hit our route, but this would be the url.
+	server.requestHandler({method: 'GET', url: 'http://127.0.0.1/file.js.map'}, response);
+	expect(response.writeHead).toHaveBeenCalledWith(404);
+	expect(response.end).toHaveBeenCalledTimes(1);
 });
 
 });

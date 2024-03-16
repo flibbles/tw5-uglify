@@ -48,7 +48,9 @@ function compressPlugin(wiki, pluginInfo) {
 		}
 		var abridgedFields = cleanShadowFields(fields);
 		uglifier = wiki.getUglifier(fields.type);
-		if (fields.text && uglifier) {
+		// Non-system tiddlers are skipped.
+		// They're probably meant to be public-facing.
+		if (fields.text && uglifier && wiki.isSystemTiddler(title)) {
 			try {
 				var results = uglifier.uglify(fields.text, {wiki: wiki, title: title});
 				if (results.map) {

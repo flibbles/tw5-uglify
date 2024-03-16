@@ -20,8 +20,8 @@ function renderTiddler(wiki, pluginTitle, format) {
 it("compress setting", function() {
 	var name = "$:/plugins/flibbles/whatever";
 	var tiddlers = [
-			{title: "readme", text: "This is the readme text"},
-			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
+			{title: "$:/readme", text: "This is the readme text"},
+			{title: "$:/code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
@@ -48,8 +48,8 @@ it("compress setting", function() {
 it('respects the blacklist', function() {
 	var name = "$:/plugins/flibbles/blacklistTest";
 	var tiddlers = [
-			{title: "readme", text: "This is the readme text"},
-			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
+			{title: "$:/readme", text: "This is the readme text"},
+			{title: "$:/code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 	const wiki = new $tw.Wiki();
 	var text;
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
@@ -112,9 +112,9 @@ it('javascript settings and boot code', function() {
 it("prune settings", function() {
 	var name = "$:/plugins/flibbles/uglify";
 	var tiddlers = [
-			{title: "elephant", tags: "RemoveThis"},
-			{title: "zebra"},
-			{title: "code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
+			{title: "$:/elephant", tags: "RemoveThis"},
+			{title: "$:/zebra"},
+			{title: "$:/code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 
 	const wiki = new $tw.Wiki();
 	// Do one before we start so we can set any caches
@@ -128,21 +128,21 @@ it("prune settings", function() {
 
 	// no should not prune on either Node or browser, but it will compress
 	//wiki.addTiddler($tw.utils.test.setting({title: '$:/config/flibbles/uglify/stub', text: 'no'});
-	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: "zebra [tag[RemoveThis]]"});
+	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: "$:/zebra [tag[RemoveThis]]"});
 	spyOn(console, 'log');
 	text = renderTiddler(wiki, name);
-	expect(text).toContain('elephant');
-	expect(text).toContain('zebra');
-	expect(text).toContain('code.js');
+	expect(text).toContain('$:/elephant');
+	expect(text).toContain('$:/zebra');
+	expect(text).toContain('$:/code.js');
 	expect(text).not.toContain('longArgName');
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 
 	// yes should stub on Node.JS, but still NOT stub on browser
 	wiki.addTiddler($tw.utils.test.setting("prune/test", "yes"));
 	text = renderTiddler(wiki, name);
-	expect(text).not.toContain('elephant');
-	expect(text).not.toContain('zebra');
-	expect(text).toContain('code.js');
+	expect(text).not.toContain('$:/elephant');
+	expect(text).not.toContain('$:/zebra');
+	expect(text).toContain('$:/code.js');
 	expect(text).not.toContain('longArgName');
 });
 

@@ -50,8 +50,8 @@ it('on failure, be graceful', async function() {
 	const goodText = 'exports.func = function(argName) {return argName;}';
 	const badText = 'function func() { content does not compile;';
 	const tiddlers = [
-		{title: 'bad.js', type: 'application/javascript', text: badText},
-		{title: 'good.js', type: 'application/javascript', text: goodText}];
+		{title: '$:/bad.js', type: 'application/javascript', text: badText},
+		{title: '$:/good.js', type: 'application/javascript', text: goodText}];
 
 	const wiki = new $tw.Wiki();
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
@@ -68,7 +68,7 @@ it('on failure, be graceful', async function() {
 	// Test: The logged error is helpful
 	expect(logger.alert.calls.count()).toEqual(1);
 	var error = logger.alert.calls.mostRecent().args.join(' ');
-	expect(error).toContain('bad.js');
+	expect(error).toContain('$:/bad.js');
 	expect(error).toContain('line: 1');
 
 	// The rest of this test concerns node.js file caching
@@ -93,8 +93,8 @@ it('can toggle particular uglifiers for plugins', async function() {
 	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
 	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
 	const tiddlers = [
-		{title: 'test.js', text: javascript, type: 'application/javascript'},
-		{title: 'test.css', text: stylesheet, type: 'text/css'}];
+		{title: '$:/test.js', text: javascript, type: 'application/javascript'},
+		{title: '$:/test.css', text: stylesheet, type: 'text/css'}];
 	const wiki = new $tw.Wiki();
 	var fs, content;
 	spyOn(console, 'log');

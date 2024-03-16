@@ -9,6 +9,10 @@ Tests the uglify compressor and what it does to json and plugins.
 
 describe('json uglifier', function() {
 
+beforeEach(function() {
+	spyOn(console, 'log');
+});
+
 it('removes title fields and pretty print', function() {
 	const wiki = new $tw.Wiki();
 	const input = `{
@@ -26,7 +30,6 @@ it('removes title fields and pretty print', function() {
 		"plugin-type": "plugin",
 		description: "description",
 		text: input});
-	spyOn(console, 'log');
 	expect(wiki.getTiddlerUglifiedText('name')).toBe('{"tiddlers":{"test":{"text":"text"}},"ugly":true}');
 	
 });
@@ -36,7 +39,6 @@ it('does not add text fields if not there', function() {
 	const tiddlers = [ {title: 'A', tags: 'A'}, ];
 	wiki.addTiddler($tw.utils.test.noCache());
 	$tw.utils.test.addPlugin(wiki, 'name', tiddlers);
-	spyOn(console, 'log');
 	var output = wiki.getTiddlerUglifiedText('name');
 	expect(output).toBe('{"tiddlers":{"A":{"tags":"A"}},"ugly":true}');
 });
@@ -49,11 +51,23 @@ it('removes empty tags fields', function() {
 		{title: 'C', tags: 'Ctag', text: 'C text'}];
 	wiki.addTiddler($tw.utils.test.noCache());
 	$tw.utils.test.addPlugin(wiki, 'name', tiddlers);
-	spyOn(console, 'log');
 	var output = JSON.parse(wiki.getTiddlerUglifiedText('name'));
 	expect(output.tiddlers.A.tags).toBeUndefined();
 	expect(output.tiddlers.B.tags).toBeUndefined();
 	expect(output.tiddlers.C.tags).toBe('Ctag');
+});
+
+it('leaves non-system tiddlers pretty', function() {
+	const wiki = new $tw.Wiki();
+	const text = 'exports.value = 5; //comment';
+	const tiddlers = [
+		{title: '$:/A', type: 'application/javascript', text: text},
+		{title: 'C', type: 'application/javascript', text: text}];
+	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.addPlugin(wiki, 'name', tiddlers);
+	var output = JSON.parse(wiki.getTiddlerUglifiedText('name'));
+	expect(output.tiddlers['$:/A'].text).not.toContain('comment');
+	expect(output.tiddlers['C'].text).toContain('comment');
 });
 
 it('does not treat vanilla json as plugins', function() {
@@ -72,13 +86,11 @@ it('does not treat vanilla json as plugins', function() {
 		type: "application/json",
 		description: "description",
 		text: input});
-	spyOn(console, 'log');
 	expect(wiki.getTiddlerUglifiedText('name')).toBe('{"tiddlers":{"test":{"title":"test","text":"text"}}}');
 });
 
 it('malformed', function() {
 	var log = $tw.utils.Logger.prototype;
-	spyOn(console, 'log');
 	spyOn(log, 'alert');
 	function test(text) {
 		const wiki = new $tw.Wiki();
