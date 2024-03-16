@@ -47,6 +47,13 @@ test.uniqName = function() {
 	return bit + Math.floor(Math.random() * 1000000);
 };
 
+test.exec = function(wiki, /* arguments */) {
+	const args = Array.prototype.slice.call(arguments, 1);
+	const command = new $tw.commands.uglify.Command(args, {wiki: wiki});
+	command.execute();
+	return wiki;
+};
+
 test.setting = function(key, value) {
 	return {title: '$:/config/flibbles/uglify/' + key, text: value};
 };

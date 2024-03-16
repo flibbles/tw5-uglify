@@ -8,15 +8,9 @@ Tests the uglify command.
 \*/
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
-const Command = $tw.commands.uglify.Command;
 const prefix = '$:/config/flibbles/uglify/';
 
-function exec(wiki, /* arguments */) {
-	const args = Array.prototype.slice.call(arguments, 1);
-	const command = new Command(args, {wiki: wiki}, () => null);
-	command.execute();
-	return wiki;
-};
+var exec = $tw.utils.test.exec;
 
 describe('command', function() {
 

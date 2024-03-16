@@ -14,7 +14,6 @@ if (!$tw.browser) {
 
 describe('route', function() {
 
-var getDirective = require("$:/temp/library/flibbles/uglify.js").getDirective;
 var Server = require("$:/core/modules/server/server.js").Server;
 var path = require('path');
 
@@ -36,41 +35,6 @@ function addPlugin(wiki, moduleName, moduleText) {
 			type: 'application/javascript',
 			text: moduleText}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-};
-
-// This gets the compressed file, takes the sourceMapURL, gets the
-// sourcemap, and then gets the underlying original source.
-function fetch(title) {
-	const wiki = new $tw.Wiki(),
-		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
-		text = 'exports.func = function(argName) {return argName;}',
-		tiddlers = [
-			{title: title, type: 'application/javascript', text: text}];
-	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	wiki.addTiddler($tw.utils.test.noCache());
-	const server = new Server({
-			wiki: wiki,
-			variables: {}});
-	// First we get the directive.
-	var directive = getDirective(wiki, title);
-	expect(directive.indexOf("sourceMappingURL=")).not.toBeLessThan(0);
-	var domain = "http://127.0.0.1";
-	var mapPath = path.join("/", directive.substr(directive.indexOf('=')+1));
-	server.requestHandler({method: "GET", url: domain + mapPath}, response);
-	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/json'});
-	expect(response.end).toHaveBeenCalledTimes(1);
-	var calls = response.end.calls.first();
-	expect(calls.args[1]).toBe('utf8');
-	var map = JSON.parse(calls.args[0]);
-	var sourcePath = path.join(path.dirname(mapPath), map.sourceRoot || '', map.sources[0]);
-	// Now we try to fetch the original source
-	response.end.calls.reset();
-	response.writeHead.calls.reset();
-	server.requestHandler({method: "GET", url: domain + sourcePath}, response);
-	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/javascript'});
-	expect(response.end).toHaveBeenCalledTimes(1);
-	var calls = response.end.calls.first();
-	expect(calls.args[0]).toBe(text);
 };
 
 // Don't change these values. I've tested carefully that that url should

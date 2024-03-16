@@ -12,7 +12,6 @@ type: application/javascript
 var cacher = require('./cache.js');
 var logger = require('./logger.js');
 var utils = require('./utils.js');
-var getDirective = require('$:/temp/library/flibbles/uglify.js').getDirective;
 var uglifiers = $tw.modules.getModulesByTypeAsHashmap("uglifier", "type");
 
 exports.getTiddlerSourceMap = function(title, options) {
@@ -150,9 +149,11 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 		var tiddler = wiki.getTiddler(title);
 		if (tiddler
 		&& tiddler.fields.type === "application/javascript"
+		&& wiki.isSystemTiddler(title)
 		&& fields.text) {
 			fields = Object.create(fields);
-			fields.text = fields.text + getDirective(wiki, title, true);
+			// 3 for the length of $:/
+			fields.text = fields.text + "\n\n//# sourceMappingURL=$:/" + title.substr(3);
 		}
 	}
 	return fields;

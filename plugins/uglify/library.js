@@ -1,6 +1,5 @@
 /*\
 title: $:/temp/library/flibbles/uglify.js
-module-type: library
 library: no
 type: application/javascript
 
@@ -8,6 +7,8 @@ Introduces the new evalGlobal to the core utilities so that sourceMapURL
 is added to the end of all javascript files.
 
 This is done as a library so that it can sneak in before any modules get loaded.
+
+This can only run on the browser.
 
 \*/
 
@@ -17,8 +18,6 @@ This is done as a library so that it can sneak in before any modules get loaded.
 (function() {
 
 'use strict';
-
-var library = {};
 
 if (typeof window !== "undefined") {
 	var tw = window.$tw = window.$tw || Object.create(null);
@@ -32,10 +31,6 @@ if (typeof window !== "undefined") {
 	hooks.names[hook].push(function() {
 		tw.utils.evalSandboxed = evalGlobal;
 	});
-}
-
-if ((typeof module !== "undefined") && module.exports) {
-	module.exports = library;
 }
 
 /*
@@ -65,27 +60,25 @@ function getEpilogue(wiki, filename) {
 	var source = wiki.getShadowSource(filename);
 	if (source
 	&& !wiki.tiddlerExists(filename)
-	&& wiki.isSystemTiddler(filename)) {
+	&& filename.indexOf('$:/') === 0) {
 		var info = wiki.getPluginInfo(source);
 		// We only want to use sourceMap directives for uglified plugins
 		if (info.ugly) {
-			return library.getDirective(wiki, filename);
+			var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
+			// We cut off that $:/ and put in our own prefix... which might be $:/
+			var sanitizedPath = encodeURIComponent(prefix + "/" + filename.substr(3)).replaceAll(/%(?:2|3)(?:F|4|A)/g, function(code) {
+				switch (code) {
+					case "%2F": return '/';
+					case "%24": return '$';
+					case "%3A": return ':';
+					default: return code;
+				}
+			});
+			// We cut off and re-attach the $:/ because it will soon be different.
+			return "\n\n//# sourceMappingURL=" + sanitizedPath + ".map";
 		}
 	}
 	return "\n\n//# sourceURL=" + filename;
-};
-
-library.getDirective = function(wiki, filename) {
-	filename = encodeURIComponent(filename).replaceAll(/%(?:2|3)(?:F|4|A)/g, function(code) {
-		switch (code) {
-			case "%2F": return '/';
-			case "%24": return '$';
-			case "%3A": return ':';
-			default: return code;
-		}
-	});
-	// We cut off and re-attach the $:/ because it will soon be different.
-	return "\n\n//# sourceMappingURL=$:/" + filename.substr(3) + ".map";
 };
 
 })();

@@ -28,6 +28,10 @@ function clientEval(wiki, tiddlerName) {
 		tiddlerName);
 };
 
+beforeEach(function() {
+	spyOn(console, 'log');
+});
+
 it('client adds directive to shadow modules', function() {
 	const wiki = new $tw.Wiki(),
 		pluginName = '$:/plugin_' + $tw.utils.test.uniqName(),
@@ -36,7 +40,7 @@ it('client adds directive to shadow modules', function() {
 		tiddlers = [
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
-	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.exec(wiki, "cache", "no", "sourcemap", "yes");
 	var directive = clientEval(wiki, tiddlerName);
 	expect(directive).toContain("sourceMappingURL=");
 	expect(directive).not.toContain("sourceURL=");
@@ -55,6 +59,7 @@ it('client properly escapes sourceMappingURL', function() {
 		tiddlers = [
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
+	$tw.utils.test.exec(wiki, "sourcemap", "yes");
 	var output = clientEval(wiki, tiddlerName);
 	// We hard-code this expected result, because this URL gets passed
 	// to the browser. In other words, contact with an outside program.
@@ -77,6 +82,20 @@ it('client does not add mapping directive to standalone modules', function() {
 	expect(directive).toContain("sourceURL=");
 });
 
+it('can customize the source directory', function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = '$:/plugin',
+		tiddlerName = pluginName + "/file.js",
+		text = 'exports.test = true; // comment',
+		tiddlers = [
+			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
+	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.exec(wiki, "sourcemap", "yes", "sourceDirectory", "source/");
+	var directive = clientEval(wiki, tiddlerName);
+	expect(directive).toContain("sourceMappingURL=source/plugin/file.js");
+});
+
 it('server does not add directives to modules', function() {
 	const wiki = new $tw.Wiki(),
 		pluginName = 'plugin_' + $tw.utils.test.uniqName(),
@@ -86,7 +105,6 @@ it('server does not add directives to modules', function() {
 			{title: tiddlerName, type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	wiki.addTiddler($tw.utils.test.noCache());
-	spyOn(console, 'log');
 	var output = wiki.getTiddlerUglifiedText(tiddlerName);
 	expect(output).not.toContain("sourceMappingURL=");
 	expect(output).not.toContain("sourceURL=");
@@ -109,7 +127,6 @@ it('server adds directives to boot files', function() {
 	var out;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
-	spyOn(console, 'log');
 	var oldOrigin = $tw.boot.origin;
 	$tw.boot.origin = undefined;
 	out = wiki.getTiddlerUglifiedText(boot);
@@ -143,7 +160,6 @@ it('server adds directives to boot that already has directives', function() {
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
-	spyOn(console, 'log');
 	var out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
@@ -155,7 +171,6 @@ it('server does not add directives to css boot file', function() {
 		text = '.class {color: black;}';
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "text/css"});
-	spyOn(console, 'log');
 	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceURL=");
 	expect(wiki.getTiddlerUglifiedText(boot)).not.toContain("sourceMappingURL=");
 });
@@ -171,7 +186,6 @@ it('gets source maps for shadow tiddlers', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler($tw.utils.test.noCache());
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
-	spyOn(console, "log");
 	var map = wiki.getTiddlerSourceMap('$:/test.js');
 	// all shadow javascript must skip the first line that boot.js adds
 	expect(map.mappings[0]).toBe(";");
@@ -191,7 +205,6 @@ it('gets source maps for boot.js and bootprefix.js', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: "$:/boot/boot.js", text: javascript, type: 'application/javascript'});
-	spyOn(console, "log");
 	var map = wiki.getTiddlerSourceMap('$:/boot/boot.js');
 	expect(map.mappings[0]).not.toBe(';');
 	expect(map.sources[0]).toBe('boot.js');
@@ -206,7 +219,6 @@ it('gets undefined source maps for non-javascript tiddlers', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler($tw.utils.test.noCache());
 	// non-existent
-	spyOn(console, "log");
 	expect(wiki.getTiddlerSourceMap("nothing.js")).toBeUndefined();
 	wiki.addTiddler({title: "wikitext", text: "This is wikitext"});
 	expect(wiki.getTiddlerSourceMap("wikitext")).toBeUndefined();

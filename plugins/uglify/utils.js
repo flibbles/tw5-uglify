@@ -23,6 +23,7 @@ var config = {
 	compress: 'yes',
 	blacklist: '',
 	sourcemap: 'server',
+	sourceDirectory: '$:/',
 	cache: 'yes',
 	cacheDirectory: './.cache/uglify'
 };
@@ -30,7 +31,6 @@ var config = {
 var configType = {
 	compress: Boolean,
 	blacklist: Array,
-	sourcemap: String,
 	cache: Boolean
 };
 
@@ -83,11 +83,22 @@ exports.setEnvironment = function(wiki) {
 	if (exports.sourceMappingEnabled(wiki)
 	&& exports.getSetting(wiki, "compress")
 	&& exports.getSetting(wiki, "application/javascript")) {
-		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler(title), {library: "yes"});
+		var tiddler = new $tw.Tiddler($tw.wiki.getTiddler(title), {
+			library: "yes",
+			directory: getSourcePrefix(wiki)
+		});
 		wiki.addTiddler(tiddler);
 	} else {
 		wiki.deleteTiddler(title);
 	}
+};
+
+function getSourcePrefix(wiki) {
+	var prefix = exports.getSetting(wiki, "sourceDirectory");
+	if (prefix.lastIndexOf('/') === prefix.length-1) {
+		prefix = prefix.substr(0, prefix.length-1);
+	}
+	return prefix;
 };
 
 /**
