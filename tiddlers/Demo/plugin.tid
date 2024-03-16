@@ -13,38 +13,38 @@ version: 1.0.0
 
 {
     "tiddlers": {
-        "$:/language/plugins/Demo/plugin/π": {
+        "$:/plugins/Demo/language/π": {
             "title": "$:/language/plugins/Demo/plugin/π",
             "text": "Pi. This is defined as the ratio of a circle's circumfrence to its diameter."
         },
-        "$:/language/plugins/Demo/plugin/e": {
+        "$:/plugins/Demo/language/e": {
             "title": "$:/language/plugins/Demo/plugin/e",
             "text": "Euler's number. It is the base of the natural logerithm."
         },
-        "$:/language/plugins/Demo/plugin/i": {
+        "$:/plugins/Demo/language/i": {
             "title": "$:/language/plugins/Demo/plugin/i",
             "text": "Represents the square root of -1. Used to represent imaginary numbers."
         },
-        "$:/language/plugins/Demo/plugin/φ": {
+        "$:/plugins/Demo/language/φ": {
             "title": "$:/language/plugins/Demo/plugin/φ",
             "text": "The golden ratio. The ratio between two quantities that have the same ratio between their sum and the larger of the two quantities."
         },
-        "$:/language/plugins/Demo/plugin/λ": {
+        "$:/plugins/Demo/language/λ": {
             "title": "$:/language/plugins/Demo/plugin/λ",
             "text": "Conway's constant. This is the geometric growth of Conway's look-and-say number sequence."
         },
-        "Demo/plugin/math.css": {
+        "$:/plugins/Demo/math.css": {
             "text": "/*\\\ntitle: Demo/plugin/math.css\ntype: text/css\n\\*/\n\n.demo-math {\n\tmargin-left: 3em;\n}\n\n.demo-math dt {\n\tmargin-top: 0em;\n\tmargin-bottom: -1.4em;\n}\n\n.demo-math dd {\n\tmargin-left: 2em;\n}\n",
             "tags": "$:/tags/Stylesheet",
             "type": "text/css"
         },
-        "Demo/plugin/shapes.js": {
+        "$:/plugins/Demo/shapes.js": {
             "text": "/*\\\ntitle: Demo/plugin/shapes.js\ntype: application/javascript\nmodule-type: library\n\\*/\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\"use strict\";\n\nvar PI = 3.14159;\n\nvar Circle = exports.circle = function(radius) {\n\tthis.radius = radius;\n};\n\nvar CirclePrototype = Circle.prototype;\n\nCirclePrototype.circumference = function() {\n\treturn PI * this.radius * 2;\n};\n\nCirclePrototype.area = function() {\n\treturn PI * this.radius * this.radius;\n};",
             "title": "Demo/plugin/shapes.js",
             "type": "application/javascript",
             "module-type": "library"
         },
-        "Demo/plugin/readme": {
+        "$:/plugins/Demo/readme": {
             "text": "\\whitespace trim\nDemonstrates Uglify's ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<dl class=\"demo-math\">\n\t<$list filter=\"[[Demo/plugin]plugintiddlers[]prefix[$:/language]]\">\n\t\t<dt>\n\t\t\t<$text text={{{ [<currentTiddler>split[/]last[]] }}} />\n\t\t</dt>\n\t\t<dd>{{}}</dd>\n\t</$list>\n</dl>",
             "tags": "",
             "title": "Demo/plugin/readme"
