@@ -30,9 +30,16 @@ Command.prototype.execute = function() {
 	if (this.params.length == 0) {
 		return list(wiki);
 	}
-	for (var i = 0; i < this.params.length; i+=2) {
-		var property = this.params[i];
-		var value = this.params[i+1];
+	for (var i = 0; i < this.params.length; i++) {
+		var value, property = this.params[i];
+		var equals = property.indexOf('=');
+		if (equals >= 0) {
+			value = property.substr(equals+1);
+			property = property.substr(0, equals);
+		} else {
+			value = this.params[i+1];
+			i++;
+		}
 		if (utils.getSetting(wiki, property) !== undefined) {
 			var title = '$:/config/flibbles/uglify/' + property;
 			if (value) {

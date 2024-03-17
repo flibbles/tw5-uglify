@@ -6,7 +6,7 @@ Manages the //Uglify// plugin settings. If the `tiddlywiki/filesystem` is instal
 Calling `--uglify` without any options will list out the available settings and their current values.
 
 ```
---uglify (<key> <value>)+
+--uglify (<key>=<value>)+
 ```
 
 The parameters are:

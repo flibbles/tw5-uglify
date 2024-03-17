@@ -25,6 +25,12 @@ it('can set multiple properties', function() {
 	expect(wiki.getTiddler(prefix + 'cache').fields.text).toBe('yes');
 });
 
+it('can use key=value format', function() {
+	const wiki = exec(new $tw.Wiki(), "compress=no", "cache=yes");
+	expect(wiki.compressionEnabled()).toBe(false);
+	expect(wiki.getTiddler(prefix + 'cache').fields.text).toBe('yes');
+});
+
 it('reverts to default if no or empty value given', function() {
 	const title = prefix+'cache';
 	function testWiki() {
