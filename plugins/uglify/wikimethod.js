@@ -153,7 +153,7 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 		&& fields.text) {
 			fields = Object.create(fields);
 			// 3 for the length of $:/
-			fields.text = fields.text + "\n\n//# sourceMappingURL=$:/" + title.substr(3);
+			fields.text = fields.text + "\n\n//# sourceMappingURL=$:/" + title.substr(3) + ".map";
 		}
 	}
 	return fields;

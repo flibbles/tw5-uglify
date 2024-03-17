@@ -95,8 +95,9 @@ exports.setEnvironment = function(wiki) {
 
 function getSourcePrefix(wiki) {
 	var prefix = exports.getSetting(wiki, "sourceDirectory");
-	if (prefix.lastIndexOf('/') === prefix.length-1) {
-		prefix = prefix.substr(0, prefix.length-1);
+	prefix = wiki.filterTiddlers(prefix)[0] || '';
+	if (prefix.charAt(prefix.length-1) !== '/') {
+		prefix += '/'
 	}
 	return prefix;
 };

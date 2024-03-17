@@ -1,6 +1,7 @@
 /*\
 title: $:/temp/library/flibbles/uglify.js
 library: no
+directory: $:/
 type: application/javascript
 
 Introduces the new evalGlobal to the core utilities so that sourceMapURL
@@ -66,7 +67,7 @@ function getEpilogue(wiki, filename) {
 		if (info.ugly) {
 			var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
 			// We cut off that $:/ and put in our own prefix... which might be $:/
-			var sanitizedPath = encodeURIComponent(prefix + "/" + filename.substr(3)).replaceAll(/%(?:2|3)(?:F|4|A)/g, function(code) {
+			var sanitizedPath = encodeURIComponent(prefix + filename.substr(3)).replaceAll(/%(?:2|3)(?:F|4|A)/g, function(code) {
 				switch (code) {
 					case "%2F": return '/';
 					case "%24": return '$';

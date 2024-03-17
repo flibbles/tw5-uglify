@@ -91,9 +91,27 @@ it('can customize the source directory', function() {
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
 	wiki.addTiddler($tw.utils.test.noCache());
-	$tw.utils.test.exec(wiki, "sourcemap", "yes", "sourceDirectory", "source/");
-	var directive = clientEval(wiki, tiddlerName);
-	expect(directive).toContain("sourceMappingURL=source/plugin/file.js");
+	$tw.utils.test.exec(wiki, "sourcemap", "yes");
+	$tw.utils.test.exec(wiki, "sourceDirectory", "my/dir");
+	expect(clientEval(wiki, tiddlerName)).toContain("=my/dir/plugin/file.js");
+	$tw.utils.test.exec(wiki, "sourceDirectory", "source/");
+	expect(clientEval(wiki, tiddlerName)).toContain("=source/plugin/file.js");
+	$tw.utils.test.exec(wiki, "sourceDirectory", ".");
+	expect(clientEval(wiki, tiddlerName)).toContain("=./plugin/file.js");
+	// This makes the path absolute, which is very tricky, but allowed.
+	$tw.utils.test.exec(wiki, "sourceDirectory", "/source");
+	expect(clientEval(wiki, tiddlerName)).toContain("=/source/plugin/file.js");
+	$tw.utils.test.exec(wiki, "sourceDirectory", "/");
+	expect(clientEval(wiki, tiddlerName)).toContain("=/plugin/file.js");
+	// Local paths work too
+	$tw.utils.test.exec(wiki, "sourceDirectory", "..");
+	expect(clientEval(wiki, tiddlerName)).toContain("=../plugin/file.js");
+	// Filter
+	$tw.utils.test.exec(wiki, "sourceDirectory", "[[x-]addsuffix<version>]");
+	expect(clientEval(wiki, tiddlerName)).toContain("=x-"+$tw.version+"/plugin/file.js");
+	// Illegal characters
+	$tw.utils.test.exec(wiki, "sourceDirectory", "x?#$:");
+	expect(clientEval(wiki, tiddlerName)).toContain("=x%3F%23$:/plugin/file.js");
 });
 
 it('server does not add directives to modules', function() {
