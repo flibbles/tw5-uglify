@@ -148,7 +148,7 @@ it('server adds directives to boot files', function() {
 	var oldOrigin = $tw.boot.origin;
 	$tw.boot.origin = undefined;
 	out = wiki.getTiddlerUglifiedText(boot);
-	expect(out).not.toContain("sourceURL=");
+	expect(out).toContain("sourceURL=");
 	expect(out).not.toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
 	$tw.boot.origin = 'anything';
@@ -159,7 +159,7 @@ it('server adds directives to boot files', function() {
 	// Without sourcemapping can be controlled through configuration
 	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
 	out = wiki.getTiddlerUglifiedText(boot);
-	expect(out).not.toContain("sourceURL=");
+	expect(out).toContain("sourceURL=");
 	expect(out).not.toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
 	// Now with sourcemap explciitly enabled
@@ -181,7 +181,43 @@ it('server adds directives to boot that already has directives', function() {
 	var out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceMappingURL=");
+	// There should only be one directive
+	expect(count(out,"sourceURL=")).toBe(1);
 });
+
+it("server won't muck directives to boots it failed to compress", function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName, ...) {return argName;}\n\n//# sourceURL='+boot;
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
+	var warn = spyOn(console, "error");
+	var out = wiki.getTiddlerUglifiedText(boot);
+	// It failed to compress. No sourceMapping wanted
+	expect(out).toContain("sourceURL=");
+	expect(out).not.toContain("sourceMappingURL=");
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "no"));
+	expect(warn).toHaveBeenCalledTimes(1);
+	warn.calls.reset();
+	out = wiki.getTiddlerUglifiedText(boot);
+	expect(out).not.toContain("sourceMappingURL=");
+	// There should only be one directive
+	expect(count(out,"sourceURL=")).toBe(1);
+	// It won't be called again because the uglify attempt was cached
+	expect(warn).not.toHaveBeenCalled();
+});
+
+function count(string, match) {
+	var count = 0, i = -1;
+	while ((i = string.indexOf(match, i+1)) >= 0) {
+		count++;
+	}
+	return count;
+};
 
 it('server does not add directives to css boot file', function() {
 	const wiki = new $tw.Wiki(),

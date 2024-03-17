@@ -144,16 +144,22 @@ exports.getPruneMap = function(wiki) {
 // This occurs INDEPENDENTLY of file writing. We don't want
 // these directives in the file cache.
 function addDirectiveToBootFiles(wiki, fields, title) {
-	if (utils.sourceMappingEnabled(wiki)
-	&& (utils.isSystemTarget(wiki, title))) {
-		var tiddler = wiki.getTiddler(title);
-		if (tiddler
-		&& tiddler.fields.type === "application/javascript"
-		&& wiki.isSystemTiddler(title)
-		&& fields.text) {
-			fields = Object.create(fields);
+	var tiddler = wiki.getTiddler(title);
+	if (utils.isSystemTarget(wiki, title)
+	&& tiddler
+	&& tiddler.fields.type === "application/javascript"
+	&& fields.text
+	// If it already has a directive, that means it wasn't compressed
+	// Probably due to an error
+	&& !fields.text.match(/\/\/# *sourceURL=[^\n]+\s*$/)) {
+		fields = Object.create(fields);
+		if (utils.sourceMappingEnabled(wiki)) {
 			// 3 for the length of $:/
 			fields.text = fields.text + "\n\n//# sourceMappingURL=$:/" + title.substr(3) + ".map";
+		} else {
+			// We put simple directives back into boot files, even though
+			// it will only show uglified code. Why not?
+			fields.text = fields.text + "\n\n//# sourceURL=" + title;
 		}
 	}
 	return fields;
