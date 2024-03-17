@@ -24,6 +24,14 @@ exports.uglify = function(text, options) {
 		// It's too dangerous to strip wraps from system javascript,
 		// but we can do it to all the modules.
 		stripFunctionWrap(results);
+	} else {
+		// We introduce two semicolons because the external-js file (and
+		// subsequently my viewWidget modification to be consistent) will
+		// introduce two new lines to the start of boot files. I can't
+		// prevent this, but I can add two semicolons here to adjust the map.
+		var mapObj = JSON.parse(results.map);
+		mapObj.mappings = ";;" + mapObj.mappings;
+		results.map = JSON.stringify(mapObj);
 	}
 	return {text: results.code, map: results.map};
 };

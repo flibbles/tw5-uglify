@@ -188,6 +188,18 @@ it('server adds directives to boot that already has directives', function() {
 	expect(count(out,"sourceURL=")).toBe(1);
 });
 
+it('server adds directives to boots that have directive-like code', function() {
+	const wiki = new $tw.Wiki(),
+		boot = '$:/boot/boot.js',
+		text = 'exports.func = function(argName) {return "//# sourceURL="+argName;}';
+	wiki.addTiddler($tw.utils.test.noCache());
+	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
+	wiki.addTiddler($tw.utils.test.setting("sourcemap", "yes"));
+	var out = wiki.getTiddlerUglifiedText(boot);
+	expect(count(out,"sourceURL=")).toBe(1);
+	expect(out).toContain("sourceMappingURL=");
+});
+
 it("server won't muck directives to boots it failed to compress", function() {
 	const wiki = new $tw.Wiki(),
 		boot = '$:/boot/boot.js',
@@ -260,12 +272,14 @@ it('gets source maps for boot.js and bootprefix.js', function() {
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: "$:/boot/boot.js", text: javascript, type: 'application/javascript'});
 	var map = wiki.getTiddlerSourceMap('$:/boot/boot.js');
-	expect(map.mappings[0]).not.toBe(';');
+	// We have to introduce 2 semicolons into boot files to adjust for how
+	// Tiddlywiki processes the files
+	expect(map.mappings.substr(0, 2)).toBe(';;');
 	expect(map.sources[0]).toBe('boot.js');
 	// Now for bootprefix
 	wiki.addTiddler({title: "$:/boot/bootprefix.js", text: javascript, type: 'application/javascript'});
 	map = wiki.getTiddlerSourceMap('$:/boot/bootprefix.js');
-	expect(map.mappings[0]).not.toBe(';');
+	expect(map.mappings.substr(0, 2)).toBe(';;');
 	expect(map.sources[0]).toBe('bootprefix.js');
 });
 
