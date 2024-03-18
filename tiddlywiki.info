@@ -40,7 +40,7 @@
 				"coreURL", "tiddlywikicore.js",
 				"publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard -[prefix[Demo]]",
 			"--render", "$:/core/templates/tiddlywiki5.js", "tiddlywikicore.js", "text/plain",
-			"--makesourcemap"
+			"--savesourcemaps"
 
 		]
 	}

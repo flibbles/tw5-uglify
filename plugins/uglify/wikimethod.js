@@ -151,7 +151,7 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 	&& fields.text
 	// If it already has a directive, that means it wasn't compressed
 	// Probably due to an error
-	&& !fields.text.match(/\/\/# *sourceURL=[^\n})]+\s*$/)) {
+	&& !fields.text.match(/\n\/\/# *sourceURL=[^\n]+\s*$/)) {
 		fields = Object.create(fields);
 		if (utils.sourceMappingEnabled(wiki)) {
 			var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
