@@ -11,6 +11,10 @@ const logger = require('$:/plugins/flibbles/uglify/logger.js');
 
 describe('widget: view', function() {
 
+beforeEach(function() {
+	spyOn(console, 'log');
+});
+
 function renderTiddler(wiki, pluginTitle, format) {
 	format = format || 'htmlencoded'
 	var renderText =  "<$view tiddler='"+pluginTitle+"' field='text' format='"+format+"' />";
@@ -26,7 +30,6 @@ it("compress setting", function() {
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
 	wiki.addTiddler($tw.utils.test.noCache());
-	spyOn(console, 'log');
 	var text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
 	expect(text).not.toContain('longArgName');
@@ -56,7 +59,6 @@ it('respects the blacklist', function() {
 
 	// Let's not worry about caching for this test.
 	wiki.addTiddler($tw.utils.test.noCache());
-	spyOn(console, 'log');
 	// Test without a blacklist
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme text');
@@ -84,10 +86,8 @@ it('javascript settings and boot code', function() {
 		 text: "exports.func = function(longArgName) {return longArgName;}"},
 		{title: "$:/boot/bootprefix.js",
 		 type: "application/javascript",
-		 text: "exports.func = function(longPrefixName) {return longPrefixName;}"},
-		$tw.utils.test.noCache()]);
-
-	spyOn(console, 'log');
+		 text: "exports.func = function(longPrefixName) {return longPrefixName;}"}]);
+	$tw.utils.test.exec(wiki, 'cache=no sourcemap=yes');
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('function');
@@ -129,7 +129,6 @@ it("prune settings", function() {
 	// no should not prune on either Node or browser, but it will compress
 	//wiki.addTiddler($tw.utils.test.setting({title: '$:/config/flibbles/uglify/stub', text: 'no'});
 	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: "$:/zebra [tag[RemoveThis]]"});
-	spyOn(console, 'log');
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('$:/elephant');
 	expect(text).toContain('$:/zebra');

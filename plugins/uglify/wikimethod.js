@@ -154,8 +154,8 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 	&& !fields.text.match(/\/\/# *sourceURL=[^\n})]+\s*$/)) {
 		fields = Object.create(fields);
 		if (utils.sourceMappingEnabled(wiki)) {
-			// 3 for the length of $:/
-			fields.text = fields.text + "\n\n//# sourceMappingURL=$:/" + title.substr(3) + ".map";
+			var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
+			fields.text = fields.text + "\n\n//# sourceMappingURL=" + mapDirectory(wiki, title);
 		} else {
 			// We put simple directives back into boot files, even though
 			// it will only show uglified code. Why not?
@@ -163,4 +163,16 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 		}
 	}
 	return fields;
+};
+
+function mapDirectory(wiki, title) {
+	var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
+	// 3 for the length of $:/
+	var exceptions = {'%2F': '/', '%24': '$', '%3A': ':'};
+
+	var sanitizedPath = encodeURIComponent(prefix + title.substr(3));
+	for (var code in exceptions) {
+		sanitizedPath = sanitizedPath.split(code).join(exceptions[code]);
+	};
+	return sanitizedPath + '.map';
 };
