@@ -1,0 +1,9 @@
+title: What does Uglify Compress
+
+//Uglify// compresses plugins only. It does //not// compress tiddlers which are not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
+
+Also, if a shadow tiddler is overridden, the override will not be touched. This means you can [[disable compression|Toggling Compression]], override a shadow tiddler, and then reenable compression. That tiddler will remain pretty and easy to manipulate.
+
+Finally, //Uglify// will not compress any shadow tiddlers which are not also system tiddlers (i.e. tiddlers that begin with `$:/`). It assume that any non-system plugin tiddlers are intended to be end-user facing to some extent, like the core's `GettingStarted` tiddler. Thus they shouldn't be ugly.
+
+If there are particular tiddlers you need to compress that wouldn't ordinarily be compressed, you can do use the [[Uglify wikimethods|Wikimethods]].

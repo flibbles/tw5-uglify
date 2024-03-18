@@ -1,5 +1,7 @@
 title: Publishing
-caption: I want to compress plugins that I write and publish.
+caption: I want to compress the content I write and publish.
+
+!! Generating Plugins
 
 //Uglify// precludes the need for plugin developers to ever generate uglified javascript using npm-gulp (or anything like that). However, before you do this, ask yourself if you //should//. This plugin makes it easy for end users to compress the plugins they import on their own. It's up to //them// whether they want compact code, or easy-to-work-with code. If you publish your plugins pre-compressed, you're taking that choice away from them.
 
@@ -15,11 +17,11 @@ Use build targets and the [[uglify command|Command]]. Let's take a look at what 
 	...
 	"build": {
 		"dist": [
-			"--uglify", "compress", "yes",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/flibbles/uglify"
+			"--uglify", "compress=yes",
+			"--rendertiddler","$:/core/save/all","test.html","text/plain"
 		],
 		"test": [
-			"--uglify", "compress", "no",
+			"--uglify", "compress=no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain"
 		]
 	}
@@ -30,13 +32,3 @@ Calling `tiddlywiki --build dist` creates the distribution build, first by enabl
 Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project.
 
 If you want a real-life example of build tasks, check out the `tiddlywiki.info` file in [[Uglify's very own project|https://github.com/flibbles/tw5-uglify]].
-
-!! Standalone TiddlyWiki Project
-
-[[The TiddlyWiki development website outlines how to make plugins in TiddlyWiki itself.|https://tiddlywiki.com/dev/static/How%2520to%2520create%2520plugins%2520in%2520the%2520browser.html]] but trying to compress them there is problematic.
-
-First, it involves <$link to="Uglify on TiddlyWiki">installing //Uglify// into your TiddlyWiki file</$link>. Then every single time you repack your plugin, TiddlyWiki will refresh //all// plugins, which will force //Uglify// to recompress them all. So at the very least, you need to [[disable compression|Toggling Compression]] while you work.
-
-But even then, TiddlyWiki will merge your javascript modules into your plugin, and once you finally do compress, you'll lose the originals, because `$tw.utils.repackPlugin` deletes the your javascript tiddlers, leaving only the shadows, which are compressed and uneditable.
-
-Frankly, I don't recommend doing this. If you want to generate compressed plugins, use git and Node.JS as outlined above.

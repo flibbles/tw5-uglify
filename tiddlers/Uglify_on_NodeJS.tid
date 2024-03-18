@@ -38,7 +38,7 @@ Add the plugin to your Node.JS project's `tiddlywiki.info` file. The plugin sect
 ```
 </li><li>
 
-And that's it. After you restart your server, it will compress all your plugins. (This will take a while the first time, [[but it will be faster in subsequent reboots|Caching]]). And it will automatically send out compressed and optimized plugins to client browsers.
+And that's it. After you restart your server, it will compress all your plugins and [[most of their internal tiddlers|What does Uglify compress]]. (This will take a while the first time, [[but it will be faster in subsequent reboots|Caching]]). And it will automatically send out compressed and optimized plugins to client browsers.
 </li></ol>
 
 !! How it works
@@ -48,12 +48,6 @@ TiddlyWiki Node servers will have access to all of your plugins in their good ol
 Technically that means Node is doing more work and consuming more memory, but that's okay. Node servers aren't what //Uglify// are trying to optimize. Servers tend to be big strong computers with lots of memory. It's your network traffic and browser clients which we're aiming to improve. Now your users can access your server on your old Android phone, which //will// benefit from netork and performance improvements.
 
 Also, since all the compression is done on the server, there's no need for the clients to do it, which is why by default, the server will send an <$link to="Pruning">abridged version of //Uglify//</$link> to the clients instead.
-
-!! Limitations
-
-//Uglify// does //not// compress javascript which is not a subtiddler of a plugin. This is because such tiddlers would have been created and edited by the user, and they probably wouldn't appreciate their code turning into incomprehensible mush.
-
-If a javascript shadow tiddler is overridden, the override will not be touched. This means you can [[disable compression|Toggling Compression]], override a shadow tiddler, and then reenable compression. That tiddler will remain pretty and easy to manipulate.
 
 !! Disabling Compression temporarily
 
