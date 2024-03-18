@@ -1,0 +1,9 @@
+default: $:
+
+Configure which directory //Uglify// will create when `--savesourcemaps` is called, and also what directory generated Tiddlywikis and tiddlywikicore files will look for to source map their javascript.
+
+This value is a filter, which allows you to make the directory name dynamic based on certain circumstances, such as your Tiddlywiki version.
+
+For instance `sourceDirectory=[[source-]addsuffix<version>]` will create <code><$text text=`source-$(version)$`/></code>.
+
+The directory can be absolute if it begins with `/`, and it can step out of your output directory with `..`. These are advanced tricks though, that will depend on your particular directory setup, and may require moving generated files around.

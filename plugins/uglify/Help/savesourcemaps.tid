@@ -1,0 +1,16 @@
+title: $:/language/Help/savesourcemaps
+description: Generates a folder of javascript sources and sourcemaps
+
+This command triggers the generation of a folder in your output directory which will contain all the necessary source maps and sources to enable sourcemapping on your browser.
+
+```
+--savesourcemaps
+```
+
+It takes no parameters, but the generated directory is influenced by the following other preceding commands:
+
+* `--output <folder>` - This specifies the output directory of all generated content of your tiddlywiki project, not just the sourcemaps. By default, it's "output".
+* `--uglify sourceDirectory=<folder>` - This specifies the name of the generated source folder within the output directory. By default, it's "$:".
+
+Make sure that these settings are the same for any generated Tiddlywikis or tiddlywikicore.js files you create, because they will need to exist in the same output directory, and will be generated to point to the same source directory as specified. Preferably, you'll call `--savesourcemaps` in the same build task that you call the `--render` commands that make those files.
+

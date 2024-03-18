@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/makesourcemap.js
+title: $:/plugins/flibbles/uglify/savesourcemaps.js
 module-type: command
 type: application/javascript
 
@@ -13,7 +13,7 @@ var utils = require('./utils.js');
 var fs, path;
 
 exports.info = {
-	name: 'makesourcemap',
+	name: 'savesourcemaps',
 	synchronous: true
 };
 
