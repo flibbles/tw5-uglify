@@ -1,0 +1,15 @@
+title: Commands
+caption: //Uglify// Commands
+tags: API Documentation
+
+\procedure prefix() $:/language/Help/
+Uglify ships with some tools which can be used on the command line to help you generate build targets.
+
+<$list filter="[[$:/plugins/flibbles/uglify]plugintiddlers[]prefix<prefix>]">
+
+!! <$text text={{{ [{!!title}removeprefix<prefix>] }}} />
+
+{{}}
+</$list>
+
+[[Click here for a list and description of the available settings.|Configuration]]
