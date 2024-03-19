@@ -40,8 +40,11 @@
 				"compress=yes",
 				"sourcemap=yes",
 				"sourceDirectory=[[source-]addsuffix<version>]",
-			"--render", "$:/core/save/all-external-js", "external.html", "text/plain", "",
-				"coreURL", "tiddlywikicore.js",
+			"--render",
+				"$:/core/save/offline-external-js",
+				"external.html",
+				"text/plain",
+				"",
 				"publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard -[prefix[Demo]]",
 			"--render", "$:/core/templates/tiddlywiki5.js", "[[tiddlywikicore-]addsuffix<version>addsuffix[.js]]", "text/plain",
 			"--savesourcemaps"

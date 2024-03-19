@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/command.js
+title: $:/plugins/flibbles/uglify/commands/uglify.js
 module-type: command
 type: application/javascript
 
@@ -11,8 +11,8 @@ Commands for configuring uglify during build tasks.
 /*global $tw: false */
 'use strict';
 
-var logger = require('./logger.js');
-var utils = require('./utils.js');
+var logger = require('../logger.js');
+var utils = require('../utils.js');
 
 exports.info = {
 	name: 'uglify',

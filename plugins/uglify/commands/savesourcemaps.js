@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/uglify/savesourcemaps.js
+title: $:/plugins/flibbles/uglify/commands/savesourcemaps.js
 module-type: command
 type: application/javascript
 
@@ -9,7 +9,7 @@ Command for generating the sourcemap directory that can be used by standalone wi
 
 'use strict';
 
-var utils = require('./utils.js');
+var utils = require('../utils.js');
 var fs, path;
 
 exports.info = {
@@ -50,10 +50,9 @@ function genSourceContent(wiki, outputPath, title) {
 	// Not all javascript files get uglified. This is because they may
 	// be pruned instead. In those cases, we don't need to do anything.
 	if (sourceMap && title.indexOf('$:/') === 0) {
-		// 3 being the length of "$:/"
-		// We're cutting $:/ off and re-adding it, because soon the prefix
-		// might be different.
-		var dir = path.resolve(outputPath, "$:", title.substr(3));
+		var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
+		// We cut $:/ off before putting on our own prefix, which might be $:/
+		var dir = path.resolve(outputPath, prefix, title.substr(3));
 		$tw.utils.createFileDirectories(dir);
 		fs.writeFile(
 			dir,
