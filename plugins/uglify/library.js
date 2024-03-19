@@ -76,10 +76,10 @@ function getEpilogue(wiki, filename) {
 				}
 			});
 			// We cut off and re-attach the $:/ because it will soon be different.
-			return "\n\n//# sourceMappingURL=" + sanitizedPath + ".map";
+			return "\n//# sourceMappingURL=" + sanitizedPath + ".map";
 		}
 	}
-	return "\n\n//# sourceURL=" + filename;
+	return "\n//# sourceURL=" + filename;
 };
 
 })();

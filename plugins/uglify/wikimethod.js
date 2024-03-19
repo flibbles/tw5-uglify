@@ -155,11 +155,11 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 		fields = Object.create(fields);
 		if (utils.sourceMappingEnabled(wiki)) {
 			var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
-			fields.text = fields.text + "\n\n//# sourceMappingURL=" + mapDirectory(wiki, title);
+			fields.text = fields.text + "\n//# sourceMappingURL=" + mapDirectory(wiki, title);
 		} else {
 			// We put simple directives back into boot files, even though
 			// it will only show uglified code. Why not?
-			fields.text = fields.text + "\n\n//# sourceURL=" + title;
+			fields.text = fields.text + "\n//# sourceURL=" + title;
 		}
 	}
 	return fields;

@@ -14,6 +14,7 @@
 			"--uglify",
 				"prune/uglify=no",
 				"compress=yes",
+				"sourcemap=no",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
@@ -23,6 +24,7 @@
 			"--uglify",
 				"prune/uglify=no",
 				"compress=yes",
+				"sourcemap=no",
 				"blacklist=$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
 			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"
 		],
@@ -32,7 +34,7 @@
 			"--test"
 		],
 		"empty": [
-			"--uglify", "compress=yes",
+			"--uglify", "compress=yes", "sourcemap=no",
 			"--rendertiddler","editions/download-empty","empty.html","text/plain"
 		],
 		"external": [
