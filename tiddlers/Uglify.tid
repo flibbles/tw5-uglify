@@ -15,9 +15,7 @@ title: Uglify
 -or-
 [[Have NodeJS serve compressed TiddlyWikis|Uglify on Node.JS]]
 -or-
-[[Compress the core for any TiddlyWikis I publish|Publishing Wikis]]
--or-
-[[Compress the plugins I write and publish|Publishing Plugins]]
+[[Compress the Tiddlywiki content I publish and distribute|Publishing]]
 </p>
 
 For more information, see the [[Documentation]].

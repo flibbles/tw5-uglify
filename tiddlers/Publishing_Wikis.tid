@@ -1,4 +1,5 @@
 title: Publishing Wikis
+tags: Publishing
 
 \procedure tiddlywikicore() <code><$text text=`tiddlywikicore-$(version)$.js`/>
 
@@ -16,19 +17,27 @@ tiddlywiki --init
 
 This will create a new blank project complete with several build targets which will be helpful to you. Before we build any, let's first edit the `tiddlywiki.info` file. Inside, there's the line `"plugins": [],` near the top. We'll install uglify here by changing it to `"plugins": ["flibbles/uglify"],`. This assumes you've [[installed Uglify on your machine|Uglify on Node.JS]].
 
-But now you're done. Everything you generate will be uglified. Type `tiddlywiki --build empty` to get a fresh empty project.
+You're done. Everything you generate will be uglified. Typing the following command will give you a fresh and ugly wiki:
+
+```
+tiddlywiki --build empty
+```
 
 !! Generating a wiki that uses an external core
 
 Let's go farther. Tiddlywiki has the ability to create wikis that rely on an external javascript file to get the core engine rather than packaging it in the wiki. This allows browsers to cache the core rather than having to load it every time.
 
-Fortunately, `tiddlywiki --init` already made a build task for this called `emptyexternalcore`, and if you installed Uglify like described in the step above, all you have to do is run it `tiddlywiki --build emptyexternalcore`.
+Fortunately, `tiddlywiki --init` already made a build task for this called `emptyexternalcore`, and if you installed Uglify like described in the step above, all you have to do is run it:
+
+```
+tiddlywiki --build emptyexternalcore
+```
 
 This creates two files in your output directory: `empty-external-core.html` which is the file you open, and <<tiddlywikicore>>, which is the file the empty tiddler references for its code. The best part: both files are uglified. So as long as you keep both files in the same directory, they'll work.
 
 !! Now lets add source mapping
 
-Having uglified tiddlywikis is great, but if the end-user ever needs to debug their wiki for whatever reason, it becomes a pain very quickly. Fortunately, Uglify supports [[Source Maps]]. This allows your browser to find the original javascript if (and only if) they're required for debugging. Not only that, it maps the uglified javascript the wiki is using with the pretty javascript its showing, so users can even set breakpoints and step through the pretty code as though it were actually being used! Let's set that up, first by looking at the `emptyexternalcore` build task.
+Having uglified tiddlywikis is great, but if the end-user ever needs to debug their wiki for whatever reason, it becomes a pain very quickly. Fortunately, Uglify supports [[Source Maps]]. This allows your browser to find the original javascript if (and only if) they're required for debugging. Not only that, it maps the uglified javascript the wiki is using with the pretty javascript its showing, so users can set breakpoints and step through the pretty code as though it were actually being used! Let's set that up. First look at the existing `emptyexternalcore` build task in `tiddlywiki.info`.
 
 ```
         "emptyexternalcore": [
@@ -43,7 +52,7 @@ Having uglified tiddlywikis is great, but if the end-user ever needs to debug th
         ],
 ```
 
-It's performing two `render` tasks. One makes the wiki html file. The other makes the tiddlywikicore javascript file. Let's add some more:
+It's performing two `render` tasks. One makes the wiki html file. The other makes the tiddlywikicore javascript file. Let's add some lines to the beginning:
 
 ```
         "emptyexternalcore": [
@@ -59,17 +68,17 @@ It's performing two `render` tasks. One makes the wiki html file. The other make
             "text/plain"
         ],
 ```
-First, we've added `"--uglify", "sourcemap=yes",`. This tells Uglify to make the files you generate try to find source maps for its javascript when required. Sourcemapping is disabled by default, because if browsers look for source maps when you haven't generated any, they get unhappy and show you nothing at all the debugger.
+First, we've added `"--uglify", "sourcemap=yes",`. This tells Uglify to make the files you generate try to find source maps for its javascript when required. Sourcemapping is disabled by default, because if browsers look for source maps when you haven't generated any, they get unhappy and show you nothing at all in the debugger.
 
-In the next line, we've added `--savesourcemaps`. In your output directory, this will generate a //lot// of files actually, but they'll all be in a directory called `$:`. If you look through it, you'll see a directory structure that mimics the filepaths of the tiddlers, and beside every pretty javascript file is a `.map` file. These are files that allow browsers to map its ugly javascript to pretty source files.
+In the next line, we've added `--savesourcemaps`. In your output directory, this will generate a //lot// of files, but they'll all be in a directory called `$:`. If you look through it, you'll see a directory structure that mimics the filepaths of the tiddlers, and beside every pretty javascript file is a `.map` file. These are files that allow browsers to map its ugly javascript to pretty source files.
 
-Now you're done. Source mapping all happen automatically, as long as you keep that `$:` directory in the same directory as your wiki and tiddlycore file. You can open your browser's Debug tool and see for yourself that your browser now pretends you've got nice and pretty javascript under the hood.
+Now you're done. Source mapping happens automatically, as long as you keep that `$:` directory in the same directory as your wiki and tiddlycore file. You can open your browser's Debug tool and see for yourself that your browser now pretends you've got nice and pretty javascript under the hood.
 
 !! But what about supporting multiple core versions
 
-The solution we've made so far works, so long as we only work with one version of the core. But let's say we're running a public server where different clients might have different versions of Tiddlywiki running, and we need to support them all. The tiddlywikicore file we're generating already accounts for that by including the TW version in its name. Thus you can have multiple versions of the tiddlywikicore file on your server, and wikis can point to the one they need.
+The solution we've made so far works, so long as we only work with one version of the core. But let's say we're running a public server with multiple wiki files, many that are different versions, and we need to support them all. The tiddlywikicore file we're generating already accounts for this by including the TW version in its name. Thus you can have multiple versions of the tiddlywikicore file in your directory, and wikis can point to the one they need.
 
-But our generated source maps aren't doing that, and diffferent versions of the core will need different sets of source maps. Let's update our build task:
+But our generated source maps aren't doing that, and different versions of the core will need different sets of source maps. Let's update our build task:
 
 ```
         "emptyexternalcore": [
@@ -87,11 +96,11 @@ But our generated source maps aren't doing that, and diffferent versions of the 
         ],
 ```
 
-We've added another setting to Uglify. `sourceDirectory` takes a filter which describes the directory to put the source maps into instead of `$:`. (We use `$:` as the directory by default because it creates the most intuitive and clear directory structure in your browser, and it works fine if you've got a simple set up.)
+We've added another setting to Uglify. `sourceDirectory` takes a filter which describes the directory to put the source maps into instead of `$:`. (We use `$:` as the directory by default because it creates the most intuitive and clear directory structure in your browser, and it works fine for most simple setups.)
 
 Now when you build your task, your output directory will have a new directory in it called <code><$text text=`source-$(version)$` /></code> which will contain all the source maps that <<tiddlywikicore>> will use. Now if you upgrade your server to use a new version of TiddlyWiki, you can generate a new set of external files that leave the old ones alone for your legacy wikis.
 
-//Make sure you set the sourceDirectory filter ''before'' generating either the tiddlywikicore file or the source. Both of those steps need to have that set to the same thing when they're run.//
+//Make sure you set the sourceDirectory filter ''before'' generating either the tiddlywikicore file or the source. Both of those steps need to have that set to the same thing so that the generated files interconnect.//
 
 !! Standalone Tiddlywikis with source maps
 

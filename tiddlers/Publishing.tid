@@ -1,34 +1,10 @@
 title: Publishing
 caption: I want to compress the content I write and publish.
 
-!! Generating Plugins
+//Uglify// can help you trim up any of your generated content for public consumption, whether that content be plugins or Tiddlywikis you created.
 
-//Uglify// precludes the need for plugin developers to ever generate uglified javascript using npm-gulp (or anything like that). However, before you do this, ask yourself if you //should//. This plugin makes it easy for end users to compress the plugins they import on their own. It's up to //them// whether they want compact code, or easy-to-work-with code. If you publish your plugins pre-compressed, you're taking that choice away from them.
+<$list filter="[tag<currentTiddler>]">
 
-Still want to do it?
+! {{!!title}}
 
-!! Github Project
-
-If you have <$link to="Uglify on Node.JS">//Uglify// installed in your project</$link>, any tiddlywikis your server generates will automatically have all plugins compressed, including yours. The trick is getting your server to generate a tiddlywiki that's //not// compressed---most likely for testing.
-
-Use build targets and the [[uglify command|Command]]. Let's take a look at what the build section of a possible `tiddlywiki.info` file might look like.
-
-```
-	...
-	"build": {
-		"dist": [
-			"--uglify", "compress=yes",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain"
-		],
-		"test": [
-			"--uglify", "compress=no",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain"
-		]
-	}
-	...
-```
-Calling `tiddlywiki --build dist` creates the distribution build, first by enabling compression through the uglify command (it was enabled by default), then by saving the plugin. It will be compressed. The `publishFilter` part of rendering is a filter that filters out //Uglify// entirely from your distributable TiddlyWiki. You don't need it. It will all be compressed already.
-
-Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project.
-
-If you want a real-life example of build tasks, check out the `tiddlywiki.info` file in [[Uglify's very own project|https://github.com/flibbles/tw5-uglify]].
+{{}}
