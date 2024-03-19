@@ -38,7 +38,7 @@ Add the plugin to your Node.JS project's `tiddlywiki.info` file. The plugin sect
 ```
 </li><li>
 
-And that's it. After you restart your server, it will compress all your plugins and [[most of their internal tiddlers|What does Uglify compress]]. (This will take a while the first time, [[but it will be faster in subsequent reboots|Caching]]). And it will automatically send out compressed and optimized plugins to client browsers.
+And that's it. After you restart your server, it will compress all your plugins and [[most of their internal tiddlers|What does Uglify Compress]]. (This will take a while the first time, [[but it will be faster in subsequent reboots|Caching]]). And it will automatically send out compressed and optimized plugins to client browsers.
 </li></ol>
 
 !! How it works

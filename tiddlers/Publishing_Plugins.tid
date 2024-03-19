@@ -10,7 +10,7 @@ Still want to do it?
 
 If you have <$link to="Uglify on Node.JS">//Uglify// installed in your project</$link>, any tiddlywikis your server generates will automatically have all plugins compressed, including yours. The trick is getting your server to generate a tiddlywiki that's //not// compressed---most likely for testing.
 
-Use build targets and the [[uglify command|Command]]. Let's take a look at what the build section of a possible `tiddlywiki.info` file might look like.
+Use build targets and the [[uglify command|Commands]]. Let's take a look at what the build section of a possible `tiddlywiki.info` file might look like.
 
 ```
 	...
