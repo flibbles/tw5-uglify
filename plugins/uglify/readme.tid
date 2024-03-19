@@ -2,33 +2,35 @@ title: $:/plugins/flibbles/uglify/readme
 
 \rules except wikilink
 \define config() $:/config/flibbles/uglify/compress
+\define button(set, caption)
+<$button setTitle=<<config>> setTo='$set$'>
+
+<$action-setfield $tiddler="$:/temp/flibbles/uglify/refresh" text="yes" />
+
+$caption$
+\end
 
 TW5-Uglify compressed the javascript of your Tiddlywiki on the server, and then it left only this README file behind since you don't need it on the browser anymore.
 
 For more information on TW5-Uglify, visit [[the website|https://github.com/flibbles/tw5-uglify]].
 
+<!-- This filter determines if we're on a Node.JS backed tiddlywiki which has the tiddlyweb plugin needed to write back changes. -->
+<$list filter="[{$:/info/url/protocol}prefix[http]] [[$:/plugins/tiddlywiki/tiddlyweb]is[tiddler]] +[nth[2]]">
+
 @@text-align:center;
 <$reveal type='match' state=<<config>> text='no'>
 
-<$button setTitle=<<config>> setTo='yes'>
-
-Enable Compression</$button>
+<<button yes 'Enable Compression'>>
 </$reveal><$reveal type='nomatch' state=<<config>> text='no'>
 
-<$button setTitle=<<config>> setTo='no'>
-
-Disable Compression</$button>
+<<button no 'Disable Compression'>>
 </$reveal>
 @@
-
-<!-- This filter determines if we're on a Node.JS backed tiddlywiki which has the tiddlyweb plugin needed to write back changes. -->
-<$list filter='[[$:/plugins/tiddlywiki/tiddlyweb]is[tiddler]]'>
 
 <!-- That reveal text determines the current compression state of the boot code sent to the browser. That search string only shows up in a comment, which would be culled from compressed code. -->
 <$reveal
 	type='match'
-	state=<<config>>
-	text={{{ [[$:/boot/boot.js]search::literal[type: application/javascript]then[yes]] ~no }}}>
+	state='$:/temp/flibbles/uglify/refresh'
+	text='yes'>
 
 You must refresh your browser for this setting to take effect.
-</$reveal></$list>
