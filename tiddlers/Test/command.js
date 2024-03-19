@@ -63,9 +63,7 @@ it('can work with string arrays', function() {
 
 it('prints out current settings with no arguments', function() {
 	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
-	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/on", text: "filter"});
-	wiki.addTiddler($tw.utils.test.setting('prune/on', "yes"));
-	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/off", text: "filter"});
+	$tw.utils.test.exec(wiki, 'prune/uglify=yes');
 	spyOn(console, 'log');
 	exec(wiki);
 	expect(console.log).toHaveBeenCalledWith('compress:              ', 'yes');
@@ -73,8 +71,8 @@ it('prints out current settings with no arguments', function() {
 	expect(console.log).toHaveBeenCalledWith('cache:                 ', 'no');
 	expect(console.log).toHaveBeenCalledWith('cacheDirectory:        ', './.cache/uglify');
 	expect(console.log).toHaveBeenCalledWith('application/javascript:', 'yes');
-	expect(console.log).toHaveBeenCalledWith('prune/on:              ', 'yes');
-	expect(console.log).toHaveBeenCalledWith('prune/off:             ', 'no');
+	expect(console.log).toHaveBeenCalledWith('prune/uglify:          ', 'yes');
+	expect(console.log).toHaveBeenCalledWith('prune/server:          ', 'no');
 });
 
 });

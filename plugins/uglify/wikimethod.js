@@ -105,7 +105,7 @@ exports.getUglifier = function(type) {
 	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
 };
 
-exports.getPruneMap = function(wiki) {
+exports.getPruneMap = function() {
 	// We do this strange cache juggling. If Import is changed, plugins
 	// may have been imported. We need to re-register them, but we only
 	// want to do this once. And the act of reregistering plugins will
@@ -126,17 +126,16 @@ exports.getPruneMap = function(wiki) {
 	});
 	return this.getGlobalCache('uglify-prunemap', function() {
 		var map = Object.create(null);
-		var prefix = "$:/plugins/flibbles/uglify/prune/";
-		self.eachShadowPlusTiddlers(function(tiddler, title) {
-			if (title.substr(0, prefix.length) === prefix
-			&& self.getTiddlerText("$:/config/flibbles/uglify/prune/" + title.substr(prefix.length)) === "yes") {
-				var filterString = tiddler.fields.text || "";
+		var settings = utils.getSettings(self);
+		for (var setting in settings) {
+			if (setting.indexOf('prune/') === 0 && settings[setting]) {
+				var filterString = self.getTiddlerText("$:/plugins/flibbles/uglify/" + setting);
 				var output = self.filterTiddlers(filterString, null, self.eachShadowPlusTiddlers);
 				for (var i = 0; i < output.length; i++) {
 					map[output[i]] = true;
 				}
 			}
-		});
+		}
 		return map;
 	});
 };

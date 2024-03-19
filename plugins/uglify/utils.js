@@ -17,6 +17,7 @@ var systemTargets = {
 	'$:/boot/bootprefix.js': true
 };
 
+var prunePrefix = '$:/plugins/flibbles/uglify/prune/';
 var modulesAddedToConfig = false;
 
 var config = {
@@ -34,14 +35,18 @@ var configType = {
 	cache: Boolean
 };
 
-function getDefault(key) {
-	return key.indexOf("prune/") == 0 ? "no" : getConfig()[key];
-};
+$tw.wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+	if (title.indexOf(prunePrefix) === 0) {
+		var key = 'prune/' + title.substr(prunePrefix.length);
+		config[key] = 'no';
+		configType[key] = Boolean;
+	}
+});
 
 exports.getSetting = function(wiki, key) {
 	var title = '$:/config/flibbles/uglify/'+key;
 	return wiki.getCacheForTiddler(title, 'uglifysetting', function() {
-		var def = getDefault(key),
+		var def = getConfig()[key],
 			value = wiki.getTiddlerText(title, def);
 		switch (configType[key]) {
 			case Boolean:
@@ -60,13 +65,6 @@ exports.getSettings = function(wiki) {
 	for (var key in getConfig()) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
-	var prefix = "$:/plugins/flibbles/uglify/prune/";
-	wiki.eachShadowPlusTiddlers(function(tiddler, title) {
-		if (title.substr(0, prefix.length) === prefix) {
-			var key = title.substr(prefix.length-6);
-			settings[key] = exports.getSetting(wiki, key);
-		}
-	});
 	return settings;
 };
 
@@ -191,12 +189,12 @@ exports.getSignature = function(wiki) {
 				actives.push(type);
 			}
 		});
-		var prefix = "$:/config/flibbles/uglify/prune/";
-		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
-			if (title.substr(0, prefix.length) === prefix) {
-				actives.push(title.substr(prefix.length-6));
+		var settings = exports.getSettings(wiki);
+		for (var setting in settings) {
+			if (setting.indexOf('prune/') === 0 && settings[setting]) {
+				actives.push(setting);
 			}
-		});
+		}
 		actives.sort();
 		return $tw.utils.stringifyList(actives);
 	});

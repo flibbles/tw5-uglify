@@ -30,6 +30,10 @@ afterAll(function() {
 	}
 });
 
+beforeEach(function() {
+	spyOn(console, 'log');
+});
+
 it("keeps essential files in uglify while pruning", function() {
 	function isNotPruned(title) {
 		expect(map[title]).toBeUndefined("should not be pruning " + title);
@@ -42,9 +46,29 @@ it("keeps essential files in uglify while pruning", function() {
 });
 
 it("removes files from uglify", function() {
-	var map = $tw.wiki.getPruneMap();
+	var wiki = new $tw.Wiki();
+	wiki.addTiddler($tw.wiki.getTiddler("$:/plugins/flibbles/uglify"));
+	var map = wiki.getPruneMap();
 	// These things are definitely pruned
 	expect(map["$:/plugins/flibbles/uglify/utils.js"]).toBe(true);
+});
+
+it("can have pruning disabled", function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = '$:/plugins/flibbles/uglify',
+		tiddlerName = '$:/anything',
+		text = 'exports.myFunc = function(argName) {return argName;}',
+		tiddlers = [
+			{title: tiddlerName, type: 'application/javascript', text: text}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	wiki.addTiddler($tw.wiki.getTiddler("$:/plugins/flibbles/uglify/prune/uglify"));
+	$tw.utils.test.exec(wiki, 'cache=no', 'prune/uglify=yes');
+	var output = wiki.getTiddlerUglifiedText("$:/plugins/flibbles/uglify");
+	expect(output).not.toContain("$:/anything");
+	// Now we disable pruning
+	$tw.utils.test.exec(wiki, 'prune/uglify=no');
+	output = wiki.getTiddlerUglifiedText("$:/plugins/flibbles/uglify");
+	expect(output).toContain("$:/anything");
 });
 
 });

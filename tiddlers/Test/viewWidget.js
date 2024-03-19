@@ -128,7 +128,8 @@ it("prune settings", function() {
 
 	// no should not prune on either Node or browser, but it will compress
 	//wiki.addTiddler($tw.utils.test.setting({title: '$:/config/flibbles/uglify/stub', text: 'no'});
-	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/test", text: "$:/zebra [tag[RemoveThis]]"});
+	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/uglify", text: "$:/zebra [tag[RemoveThis]]"});
+	$tw.utils.test.exec(wiki, 'prune/uglify=no');
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('$:/elephant');
 	expect(text).toContain('$:/zebra');
@@ -137,7 +138,7 @@ it("prune settings", function() {
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 
 	// yes should stub on Node.JS, but still NOT stub on browser
-	wiki.addTiddler($tw.utils.test.setting("prune/test", "yes"));
+	$tw.utils.test.exec(wiki, 'prune/uglify=yes');
 	text = renderTiddler(wiki, name);
 	expect(text).not.toContain('$:/elephant');
 	expect(text).not.toContain('$:/zebra');
