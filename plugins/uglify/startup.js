@@ -31,6 +31,13 @@ exports.startup = function() {
 	// get done on the next request.
 	$tw.hooks.addHook('th-server-command-post-start', precache);
 
+	// We set this now, which makes clear that all plugins are currently
+	// loaded, because start up will have loaded them. If Import changes,
+	// then this will clear, and wikimethods will know to do their refresh.
+	$tw.wiki.getCacheForTiddler('$:/Import', 'uglify-prunemap-state', function() {
+		return {loaded: true};
+	});
+
 	// We need to make the initial set up for the Uglify environment.
 	// This might change if settings are later changed.
 	utils.setEnvironment($tw.wiki);

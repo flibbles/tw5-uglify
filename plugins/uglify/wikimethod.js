@@ -80,6 +80,9 @@ function compressTiddler(wiki, title, options) {
 			}
 		}
 		// We put on directives now, so their independent of the cache
+		// This is because the $tw.boot.origin might change, which isn't
+		// part of the signature, and if that changes, it may mean a different
+		// directive is called for.
 		cache = addDirectiveToBootFiles(wiki, cache, title);
 	} finally {
 		// If we're here, it means we never saved the file.
