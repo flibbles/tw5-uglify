@@ -11,35 +11,39 @@
 	"build": {
 		"demo": [
 			"--output", "./docs/",
-			"--uglify", "prune/uglify", "no", "compress", "yes", "blacklist", "$:/plugins/flibbles/uglify Demo/plugin",
+			"--uglify",
+				"prune/uglify=no",
+				"compress=yes",
+				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
 		],
-		"test": [
+		"wizard": [
 			"--output", "./docs/",
-			"--uglify", "compress", "no",
+			"--uglify",
+				"prune/uglify=no",
+				"compress=yes",
+				"blacklist=$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
+			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"
+		],
+		"test": [
+			"--uglify", "compress=no",
 			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/flibbles/uglify-wizard",
 			"--test"
 		],
-		"wizard": [
-			"--output", "./docs/",
-			"--uglify", "prune/uglify", "no",
-			"--uglify", "compress", "yes",
-			"--uglify", "blacklist", "$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
-			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"
-		],
 		"empty": [
-			"--output", "./docs/",
-			"--uglify", "compress", "yes",
+			"--uglify", "compress=yes",
 			"--rendertiddler","editions/download-empty","empty.html","text/plain"
 		],
 		"external": [
-			"--output", "./docs/",
-			"--uglify", "compress", "yes", "sourcemap", "yes",
+			"--uglify",
+				"compress=yes",
+				"sourcemap=yes",
+				"sourceDirectory=[[source-]addsuffix<version>]",
 			"--render", "$:/core/save/all-external-js", "external.html", "text/plain", "",
 				"coreURL", "tiddlywikicore.js",
 				"publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard -[prefix[Demo]]",
-			"--render", "$:/core/templates/tiddlywiki5.js", "tiddlywikicore.js", "text/plain",
+			"--render", "$:/core/templates/tiddlywiki5.js", "[[tiddlywikicore-]addsuffix<version>addsuffix[.js]]", "text/plain",
 			"--savesourcemaps"
 
 		]
