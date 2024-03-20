@@ -132,25 +132,4 @@ it('can toggle particular uglifiers for plugins', async function() {
 	}
 });
 
-it('can toggle particular uglifiers for system files', async function() {
-	const tiddler = '$:/boot/boot.css';
-	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
-	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
-	const wiki = new $tw.Wiki();
-	wiki.addTiddler({title: tiddler, text: stylesheet, type: "text/css"});
-	// We don't cache for this test, because this file actually exists,
-	// and we'd constantly be blasting the REAL cache with this test.
-	wiki.addTiddler($tw.utils.test.noCache());
-	spyOn(console, 'log');
-	var output = await getTiddlerUglifiedTextAsync(wiki, tiddler);
-	var fs, content;
-	expect(output).toContain('cssPresent');
-	expect(output).not.toContain('comment');
-	// But now we disable css
-	wiki.addTiddler($tw.utils.test.setting('text/css', 'no'));
-	var output = await getTiddlerUglifiedTextAsync(wiki, tiddler);
-	expect(output).toContain('cssPresent');
-	expect(output).toContain('comment');
-});
-
 });

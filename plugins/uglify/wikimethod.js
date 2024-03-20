@@ -102,7 +102,7 @@ exports.compressionEnabled = function() {
 // undefined otherwise.
 exports.getUglifier = function(type) {
 	type = type || "text/vnd.tiddlywiki";
-	return (utils.getSetting(this, type) || undefined) && uglifiers[type];
+	return uglifiers[type];
 };
 
 exports.getPruneMap = function() {

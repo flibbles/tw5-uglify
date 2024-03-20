@@ -50,7 +50,12 @@ function compressPlugin(wiki, pluginInfo) {
 		uglifier = wiki.getUglifier(fields.type);
 		// Non-system tiddlers are skipped.
 		// They're probably meant to be public-facing.
-		if (fields.text && uglifier && wiki.isSystemTiddler(title)) {
+		if (fields.text
+		&& uglifier
+		&& wiki.isSystemTiddler(title)
+		// We don't use utils.shouldCompress because it uses the type that
+		// wiki.getTiddler returns, which might be overridden and incorrect.
+		&& utils.getSetting(wiki, fields.type || 'text/vnd.tiddlywiki')) {
 			try {
 				var results = uglifier.uglify(fields.text, {wiki: wiki, title: title});
 				if (results.map) {

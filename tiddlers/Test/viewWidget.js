@@ -109,6 +109,25 @@ it('javascript settings and boot code', function() {
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 });
 
+it('can toggle particular uglifiers for system files', function() {
+	const tiddler = '$:/boot/boot.css';
+	const stylesheet = '/* comment */\n.class { cssPresent: red; }';
+	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: tiddler, text: stylesheet, type: "text/css"});
+	// We don't cache for this test, because this file actually exists,
+	// and we'd constantly be blasting the REAL cache with this test.
+	$tw.utils.test.exec(wiki, 'cache=no');
+	var output = renderTiddler(wiki, tiddler);
+	expect(output).toContain('cssPresent');
+	expect(output).not.toContain('comment');
+	// But now we disable css
+	$tw.utils.test.exec(wiki, 'text/css=no');
+	var output = renderTiddler(wiki, tiddler);
+	expect(output).toContain('cssPresent');
+	expect(output).toContain('comment');
+});
+
 it("prune settings", function() {
 	var name = "$:/plugins/flibbles/uglify";
 	var tiddlers = [

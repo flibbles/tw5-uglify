@@ -57,6 +57,57 @@ it('removes empty tags fields', function() {
 	expect(output.tiddlers.C.tags).toBe('Ctag');
 });
 
+it('does not pick up overridden types', function() {
+	const wiki = new $tw.Wiki();
+	const text = 'exports.value = 5; //comment';
+	const tiddlers = [
+		{title: '$:/name/js.js', type: 'application/javascript', text: text}];
+	// We turn off wikitext compression to ensure that doesn't stop it either.
+	$tw.utils.test.exec(wiki, 'cache=no', 'text/vnd.tiddlywiki=no');
+	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
+	wiki.addTiddler({title: "$:/name/js.js", type: 'text/vnd.tiddlywiki', text: text});
+	var output = JSON.parse(wiki.getTiddlerUglifiedText('$:/name'));
+	expect(output.tiddlers['$:/name/js.js'].text).toBe('exports.value=5;');
+	expect(output.tiddlers['$:/name/js.js'].type).toBe('application/javascript');
+});
+
+it('does not pick up overridden text', function() {
+	const wiki = new $tw.Wiki();
+	const title = '$:/name/js.js';
+	const text = 'exports.value = 5; //comment';
+	const tiddlers = [
+		{title: title, type: 'application/javascript', text: text}];
+	// We turn off wikitext compression to ensure that doesn't stop it either.
+	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
+	wiki.addTiddler({title: title, type: 'application/javascript', text: 'exports.value = 3; //comment'});
+	var output = JSON.parse(wiki.getTiddlerUglifiedText('$:/name'));
+	expect(output.tiddlers[title].text).toBe('exports.value=5;');
+});
+
+it('json within plugins', function() {
+	const wiki = new $tw.Wiki();
+	const text = '{\n\t"A": "value",\n\t"B": "other"\n}';
+	const tiddlers = [
+		{title: '$:/name/json', type: 'application/json', text: text}];
+	// We compress the plugin through this macro instead of just calling
+	// the wikimethod, because we want to make sure uglify still compresses
+	// plugins despite the settings, and the wikimethod always compresses.
+	const macro = Object.create($tw.macros.jsontiddler);
+	macro.wiki = wiki;
+	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
+	var output = JSON.parse(JSON.parse(macro.run('$:/name')).text);
+	expect(output.tiddlers['$:/name/json'].text).toBe(JSON.stringify(JSON.parse(text)));
+	expect(output.ugly).toBe(true);
+	// Now we confirm that if we turn off json compression, that pluglins
+	// still compress, but the json inside of them does not.
+	$tw.utils.test.exec(wiki, 'application/json=no');
+	output = JSON.parse(JSON.parse(macro.run('$:/name')).text);
+	expect(output.tiddlers['$:/name/json'].text).toBe(text);
+	expect(output.ugly).toBe(true);
+});
+
 it('leaves non-system tiddlers pretty', function() {
 	const wiki = new $tw.Wiki();
 	const text = 'exports.value = 5; //comment';
