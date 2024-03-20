@@ -21,12 +21,12 @@ var prunePrefix = '$:/plugins/flibbles/uglify/prune/';
 var modulesAddedToConfig = false;
 
 var config = {
-	compress: 'yes',
 	blacklist: '',
-	sourcemap: 'server',
-	sourceDirectory: '$:/',
 	cache: 'yes',
-	cacheDirectory: './.cache/uglify'
+	cacheDirectory: './.cache/uglify',
+	compress: 'yes',
+	sourcemap: 'server',
+	sourceDirectory: '$:/'
 };
 
 var configType = {
@@ -224,7 +224,11 @@ exports.sanitizePath = function(path) {
 // Create a config entry for each uglifier module.
 function getConfig() {
 	if (!modulesAddedToConfig) {
-		$tw.utils.each(uglifierModules(), function(module, type) {
+		var modules = Object.keys(uglifierModules());
+		// Lets sort these before we add them so the type section of the
+		// settings will have this alphabetized.
+		modules.sort();
+		$tw.utils.each(modules, function(type) {
 			config[type] = 'yes';
 			configType[type] = Boolean;
 		});
