@@ -18,7 +18,7 @@
 				"prune/server=yes",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
-			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
+			"--render","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
 		],
 		"wizard": [
 			"--output", "./docs/",
@@ -27,16 +27,29 @@
 				"compress=yes",
 				"sourcemap=no",
 				"blacklist=$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
-			"--rendertiddler","editions/uglify-wizard","uglified.html","text/plain"
+			"--render","editions/uglify-wizard","uglified.html","text/plain"
+		],
+		"bundle": [
+			"--uglify", "prune/uglify=no", "compress=yes",
+			"--output", "./docs/",
+			"--render",
+				"$:/plugins/flibbles/uglify",
+				"[[uglify-]addsuffix{$:/plugins/flibbles/uglify!!version}addsuffix[.json]]",
+				"text/plain",
+				"$:/core/templates/json-tiddler"
 		],
 		"test": [
 			"--uglify", "compress=no",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain", "", "publishFilter", "-$:/plugins/flibbles/uglify-wizard",
+			"--render",
+				"$:/core/save/all",
+				"test.html",
+				"text/plain", "",
+				"publishFilter", "-$:/plugins/flibbles/uglify-wizard",
 			"--test"
 		],
 		"empty": [
 			"--uglify", "compress=yes", "sourcemap=no",
-			"--rendertiddler","editions/download-empty","empty.html","text/plain"
+			"--render","editions/download-empty","empty.html","text/plain"
 		],
 		"external": [
 			"--uglify",

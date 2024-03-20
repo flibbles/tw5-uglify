@@ -69,7 +69,7 @@ function getPluginCompressedText(options) {
 		if (this.wiki.getTiddler(this.viewTitle).fields.type === "application/javascript") {
 			output = '\n\n' + output;
 		}
-		return output
+		return output;
 	}
 	return oldGetValue.call(this, options);
 };

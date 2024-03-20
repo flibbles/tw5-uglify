@@ -17,17 +17,39 @@ Use build targets and the [[uglify command|Commands]]. Let's take a look at what
 	"build": {
 		"dist": [
 			"--uglify", "compress=yes",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain"
+			"--render",
+				"$:/core/save/all","test.html","text/plain", "",
+				"publishFilter", "$:/plugins/flibbles/uglify $:/plugins/tiddlywiki/jasmine"
 		],
 		"test": [
 			"--uglify", "compress=no",
-			"--rendertiddler","$:/core/save/all","test.html","text/plain"
+			"--render",
+				"$:/core/save/all","test.html","text/plain",
+			"--test"
+		],
+		"bundle": [
+			"--uglify", "compress=yes",
+			"--render",
+				"$:/plugins/myname/myplugin", "[[myplugin-$1$.json]substitute{$:/plugins/myname/myplugin!!version}]", "text/plain", "$:/core/templates/json-tiddler"
 		]
 	}
 	...
 ```
+
+!!! dist
+
 Calling `tiddlywiki --build dist` creates the distribution build, first by enabling compression through the uglify command (it was enabled by default), then by saving the plugin. It will be compressed. The `publishFilter` part of rendering is a filter that filters out //Uglify// entirely from your distributable TiddlyWiki. You don't need it. It will all be compressed already.
 
-Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project.
+Setting the "publishFilter" to `$:/plugins/flibbles/uglify` will cause //Uglify// to be omitted from the build, since it's no longer needed after it's done its job. You could even remove it from the "test" build too, but it's not necessary. //Uglify// can't remove itself, but it will strip itself down to a bare minimum of inert files. (The `--render` also removes jasmine, because you don't want that in your production build either.)
 
-If you want a real-life example of build tasks, check out the `tiddlywiki.info` file in [[Uglify's very own project|https://github.com/flibbles/tw5-uglify]].
+!!! test
+
+Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project. The reason for disabling compression is that you don't want it in your testing framework. You want to be able to step through your code to debug it.
+
+The `--test` command comes with "$:/plugins/tiddlywiki/jasmine", which I recommend for testing your plugins. It integrates with Tiddlywiki, and since it bundles with the core code, there's no extra installation necessary.
+
+!!! bundle
+
+Instead of building a Tiddlywiki which contains and demonstrates your plugin, you may want to create a bundle of your plugin which can be downloaded or drag-and-dropped directly. This build task does that. It's not necessary to set `--uglify compress=yes` since it's enabled by default if //Uglify// is installed, but if you run all your tasks at once, and this command comes after `test`, which disables, compression, it needs to be turned back on in that case.
+
+If you want a real-life example of build tasks or a testing framework, check out the `tiddlywiki.info` file in [[Uglify's very own project|https://github.com/flibbles/tw5-uglify]].
