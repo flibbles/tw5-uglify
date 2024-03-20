@@ -48,6 +48,20 @@ it("compress setting", function() {
 	expect(text).not.toContain('longArgName');
 });
 
+it('does not add extraneous newlines to non-javascript', function() {
+	// At the time I wrote this test, we're having to inject double-newlines
+	// into the start of javascript written by <$view>, this is to compensate
+	// for the two lines of injected code that the external-js file introduces.
+	// It's not great that we have to do that, but we CERTAINLY shouldn't have
+	// to do with with non-javascript files. This test makes sure of that.
+	const wiki = new $tw.Wiki(),
+		title = '$:/boot/boot.css',
+		text =  '/* comment */\n.class { cssPresent: red; }';
+	wiki.addTiddler({title: title, type: 'text/css', text: text});
+	$tw.utils.test.exec(wiki, 'cache=no');
+	expect(renderTiddler(wiki, title)).toBe('.class{cssPresent:red}');
+});
+
 it('respects the blacklist', function() {
 	var name = "$:/plugins/flibbles/blacklistTest";
 	var tiddlers = [

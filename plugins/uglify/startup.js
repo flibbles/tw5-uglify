@@ -59,13 +59,17 @@ function getPluginCompressedText(options) {
 	&& !this.viewSubtiddler
 	&& this.viewField === 'text'
 	&& utils.shouldCompress(this.wiki,this.viewTitle)) {
+		var output = this.wiki.getTiddlerUglifiedText(this.viewTitle);
 		// Those two newlines are a workaround to the fact that boot files
 		// sometimes get published with viewWidget, and sometimes with json.
 		// The json ones, in the external-js template, will be evalled using
 		// new Function, which will introduce two new lines of preamble.
 		// I don't know how to stop that, so all I can do is introduce 2
 		// newlines in all other cases, and adjust the sourcemap accordingly.
-		return "\n\n" + this.wiki.getTiddlerUglifiedText(this.viewTitle);
+		if (this.wiki.getTiddler(this.viewTitle).fields.type === "application/javascript") {
+			output = '\n\n' + output;
+		}
+		return output
 	}
 	return oldGetValue.call(this, options);
 };
