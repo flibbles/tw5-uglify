@@ -51,31 +51,36 @@ it("compress setting", function() {
 it('respects the blacklist', function() {
 	var name = "$:/plugins/flibbles/blacklistTest";
 	var tiddlers = [
-			{title: "$:/readme", text: "This is the readme text"},
+			// Those three newlines will become two if uglifying happens
+			{title: "$:/readme", text: "\\whitespace trim\nreadme\n\n\ntext"},
 			{title: "$:/code.js", type: "application/javascript", text: "function func(longArgName) {return longArgName;}"}];
 	const wiki = new $tw.Wiki();
 	var text;
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
-
 	// Let's not worry about caching for this test.
-	wiki.addTiddler($tw.utils.test.noCache());
+	$tw.utils.test.exec(wiki, 'cache=no');
 	// Test without a blacklist
 	text = renderTiddler(wiki, name);
-	expect(text).toContain('readme text');
+	expect(text).toContain('readme\\n\\ntext');
 	expect(text).not.toContain('longArgName');
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain(name);
-
 	// Now we use a filled out blacklist
+	$tw.utils.test.exec(wiki, 'blacklist=' + name);
 	wiki.addTiddler($tw.utils.test.blacklist([name]));
 	text = renderTiddler(wiki, name);
-	expect(text).toContain('readme text');
+	expect(text).toContain('readme\\n\\n\\ntext');
 	expect(text).toContain('longArgName');
-
 	// Now with a blank blacklist
-	wiki.addTiddler($tw.utils.test.blacklist());
+	$tw.utils.test.exec(wiki, 'blacklist=');
 	text = renderTiddler(wiki, name);
-	expect(text).toContain('readme text');
+	expect(text).toContain('readme\\n\\ntext');
 	expect(text).not.toContain('longArgName');
+	// Now see if we can ban specific shadow tiddlers
+	$tw.utils.test.exec(wiki, 'blacklist=$:/readme');
+	text = renderTiddler(wiki, name);
+	expect(text).toContain('readme\\n\\n\\ntext');
+	expect(text).not.toContain('longArgName');
+	expect(text).toContain('code.js');
 });
 
 it('javascript settings and boot code', function() {

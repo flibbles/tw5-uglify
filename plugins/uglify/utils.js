@@ -194,6 +194,9 @@ exports.getSignature = function(wiki) {
 			if (setting.indexOf('prune/') === 0 && settings[setting]) {
 				actives.push(setting);
 			}
+			if (setting === 'blacklist' && settings[setting].length > 0) {
+				actives.push('blacklist/' + settings[setting].map(exports.sanitizePath).join(' '));
+			}
 		}
 		actives.sort();
 		return $tw.utils.stringifyList(actives);
@@ -207,6 +210,15 @@ exports.getVersion = function() {
 		version = $tw.wiki.getTiddler('$:/plugins/flibbles/uglify').fields.version;
 	}
 	return version;
+};
+
+exports.sanitizePath = function(path) {
+	var exceptions = {'%2F': '/', '%24': '$', '%3A': ':'};
+	path = encodeURIComponent(path);
+	for (var code in exceptions) {
+		path = path.split(code).join(exceptions[code]);
+	};
+	return path;
 };
 
 // Create a config entry for each uglifier module.

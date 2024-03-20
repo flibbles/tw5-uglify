@@ -15,6 +15,7 @@
 				"prune/uglify=no",
 				"compress=yes",
 				"sourcemap=no",
+				"prune/server=yes",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
 			"--rendertiddler","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"

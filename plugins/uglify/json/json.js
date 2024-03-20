@@ -43,7 +43,8 @@ function compressPlugin(wiki, pluginInfo) {
 		pruneMap = wiki.getPruneMap();
 	for (var title in pluginInfo.tiddlers) {
 		var fields = pluginInfo.tiddlers[title];
-		if (pruneMap[title]) {
+		var blacklisted = utils.getSetting(wiki, 'blacklist').indexOf(title) >= 0;
+		if (pruneMap[title] && !blacklisted) {
 			continue;
 		}
 		var abridgedFields = cleanShadowFields(fields);
@@ -55,6 +56,7 @@ function compressPlugin(wiki, pluginInfo) {
 		&& wiki.isSystemTiddler(title)
 		// We don't use utils.shouldCompress because it uses the type that
 		// wiki.getTiddler returns, which might be overridden and incorrect.
+		&& !blacklisted
 		&& utils.getSetting(wiki, fields.type || 'text/vnd.tiddlywiki')) {
 			try {
 				var results = uglifier.uglify(fields.text, {wiki: wiki, title: title});

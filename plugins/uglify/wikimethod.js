@@ -170,11 +170,6 @@ function addDirectiveToBootFiles(wiki, fields, title) {
 function mapDirectory(wiki, title) {
 	var prefix = wiki.getTiddler("$:/temp/library/flibbles/uglify.js").fields.directory;
 	// 3 for the length of $:/
-	var exceptions = {'%2F': '/', '%24': '$', '%3A': ':'};
-
-	var sanitizedPath = encodeURIComponent(prefix + title.substr(3));
-	for (var code in exceptions) {
-		sanitizedPath = sanitizedPath.split(code).join(exceptions[code]);
-	};
+	var sanitizedPath = utils.sanitizePath(prefix + title.substr(3));
 	return sanitizedPath + '.map';
 };
