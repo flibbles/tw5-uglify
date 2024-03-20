@@ -118,7 +118,7 @@ it("server won't muck directives to boots it failed to compress", function() {
 		text = 'exports.func = function(argName, ...) {return argName;}\n\n//# sourceURL='+boot;
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	$tw.utils.test.exec(wiki, 'cache=no', 'sourcemap=yes');
-	var warn = spyOn(console, "error");
+	var warn = spyOn($tw.utils.Logger.prototype, "alert");
 	var out = wiki.getTiddlerUglifiedText(boot);
 	// It failed to compress. No sourceMapping wanted
 	expect(out).toContain("sourceURL=");
