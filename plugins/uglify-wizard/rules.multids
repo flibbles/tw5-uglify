@@ -1,0 +1,6 @@
+title: $:/config/flibbles/uglify/prune/
+
+# It's safe to have the server filter on. People using the wizard will
+# only ever be creating standalone tiddlers which certainly don't need
+# server bits.
+server: yes

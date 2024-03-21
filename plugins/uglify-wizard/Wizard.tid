@@ -95,7 +95,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 </$checkbox></$list>
 
-!!!Pruning
+!!!Pruning&#32;<a class=tc-tiddlylink-external target=_blank href="https://flibbles.github.io/tw5-uglify/#Pruning">{{$:/core/images/help|12px}}</a>
 
 <$list
 	filter="[all[shadows+tiddler]prefix[$:/plugins/flibbles/uglify/prune/]sort[name]]">
@@ -107,17 +107,9 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 		field="text"
 		disabled={{{[[$:/config/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
 
-	<$text text=' '/>
-
-	<strong>
+	<$text text=' Remove '/>
 
 	<$text text={{!!name}} />
-
-	</strong>
-
-	<$text text=' - ' />
-
-	<$text text={{!!description}} />
 
 <br>
 

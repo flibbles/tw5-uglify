@@ -107,8 +107,6 @@ tags: $:/tags/Stylesheet
 .tc-uglify-customize {
 	display: inline-block;
 	text-align: left;
-	border: 1px solid lightgray;
-	width: 100%;
 	padding-left: 2em;
 	padding-right: 2em;
 }
