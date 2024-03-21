@@ -95,7 +95,9 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 </$checkbox></$list>
 
+@@padding-left:16px;
 !!!Pruning&#32;<a class=tc-tiddlylink-external target=_blank href="https://flibbles.github.io/tw5-uglify/#Pruning">{{$:/core/images/help|12px}}</a>
+@@
 
 <$list
 	filter="[all[shadows+tiddler]prefix[$:/plugins/flibbles/uglify/prune/]sort[name]]">
