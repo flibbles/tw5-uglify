@@ -264,7 +264,7 @@ if ($tw.node) {
 		expect(info.saved).toBe(false);
 
 		// Once the version is "changed", the cache should resave again.
-		spyOn(utils, 'getVersion').and.returnValue('different')
+		wiki.addTiddler({title: "$:/plugins/flibbles/uglify", version: "different"});
 		info = await cache(wiki, name, 'textKey', () => 'output');
 		expect(info.saved).toBe(true);
 		info = await cache(wiki, name, 'textKey', () => 'output');

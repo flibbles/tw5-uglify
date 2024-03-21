@@ -189,6 +189,10 @@ exports.getSignature = function(wiki) {
 				actives.push(type);
 			}
 		});
+		actives.sort();
+		// Put the version at the start of the signature
+		var plugin = wiki.getTiddler('$:/plugins/flibbles/uglify');
+		actives.unshift('v' + ((plugin && plugin.fields.version) || ''));
 		var settings = exports.getSettings(wiki);
 		for (var setting in settings) {
 			if (setting.indexOf('prune/') === 0 && settings[setting]) {
@@ -198,18 +202,8 @@ exports.getSignature = function(wiki) {
 				actives.push('blacklist/' + settings[setting].map(exports.sanitizePath).join(' '));
 			}
 		}
-		actives.sort();
 		return $tw.utils.stringifyList(actives);
 	});
-};
-
-var version;
-// Returns the version of uglify.
-exports.getVersion = function() {
-	if (version === undefined) {
-		version = $tw.wiki.getTiddler('$:/plugins/flibbles/uglify').fields.version;
-	}
-	return version;
 };
 
 exports.sanitizePath = function(path) {
