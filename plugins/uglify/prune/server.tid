@@ -1,6 +1,5 @@
 title: $:/plugins/flibbles/uglify/prune/server
-name: Server-only modules
-description: This removes all server-exclusive content.
+name: Server-only content
 
 [module-type[command]type[application/javascript]]
 [prefix[$:/language/Help/]]
