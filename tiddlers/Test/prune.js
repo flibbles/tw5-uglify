@@ -71,4 +71,23 @@ it("can have pruning disabled", function() {
 	expect(output).toContain("$:/anything");
 });
 
+it("'server' can pick up imported modules", function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = '$:/plugins/flibbles/test',
+		tiddlerName = '$:/plugin/flibbles/test/command.js',
+		helpName = '$:/language/Help/command',
+		text = 'exports.Command = function(params,commander,callback) {}',
+		tiddlers = [
+			{title: tiddlerName, type: 'application/javascript', text: text, 'module-type': 'command'},
+			{title: helpName, text: 'This should be purged'},
+			{title: '$:/readme', text: 'This is the readme file'}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	wiki.addTiddler($tw.wiki.getTiddler("$:/plugins/flibbles/uglify/prune/server"));
+	$tw.utils.test.exec(wiki, 'cache=no', 'prune/server=yes');
+	var output = JSON.parse(wiki.getTiddlerUglifiedText(pluginName));
+	expect(output.tiddlers['$:/readme'].text).toBe('This is the readme file');
+	expect(output.tiddlers[tiddlerName]).toBeUndefined();
+	expect(output.tiddlers[helpName]).toBeUndefined();
+});
+
 });
