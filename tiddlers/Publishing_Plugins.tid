@@ -2,6 +2,8 @@ title: Publishing Plugins
 tags: Publishing
 caption: I want to compress the content I write and publish.
 
+\rule except syslink
+
 //Uglify// precludes the need for plugin developers to ever generate uglified javascript using npm-gulp (or anything like that). However, before you do this, ask yourself if you //should//. This plugin makes it easy for end users to compress the plugins they import on their own. It's up to //them// whether they want compact code, or easy-to-work-with code. If you publish your plugins pre-compressed, you're taking that choice away from them.
 
 Still want to do it?

@@ -1,4 +1,13 @@
-default: yes
-caption: prune/uglify
+default: no
+caption: prune/<em>[rule]</em>
 
-Configure whether //Uglify// will created a [[gutted version of itself|Pruning]] to send to clients in lieu of sending the entire plugin. This setting has no effect when used with the <<wizard "Uglify Wizard">> since the plugin is automatically excluded from the results.
+Toggle various [[pruning rules|Pruning]]. Values for ''prune/[rule]'' include the following:
+
+<ul><$list
+	variable=rule
+	filter="[[$:/plugins/flibbles/uglify]plugintiddlers[]prefix[$:/plugins/flibbles/uglify/prune/]]">
+	<li>
+		''<$text text={{{ [<rule>split[/]last[]] }}} />''
+		<%if [<rule>removeprefix[$:/plugins]addprefix[$:/config]shadowsource[]] %>//(default: yes)//<%endif%>
+	</li>
+</$list></ul>

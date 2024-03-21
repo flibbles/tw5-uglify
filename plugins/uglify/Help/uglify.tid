@@ -3,7 +3,7 @@ description: Configures //Uglify// plugin
 
 Manages the //Uglify// plugin settings. If the `tiddlywiki/filesystem` is installed, these settings are persisted. Otherwise they'll exist only for the current Tiddlywiki session.
 
-Calling `--uglify` without any options will list out the available settings and their current values.
+Calling `--uglify` without any options will list out the available settings and their current values. Each setting key corresponds to a config tiddler with the prefix `$:/config/flibbles/uglify/`.
 
 ```
 --uglify (<key>=<value>)+

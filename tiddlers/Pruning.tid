@@ -1,9 +1,11 @@
-title: Prune
+title: Pruning
 tags: Concept
 
-//Uglify// is capable not only of compressing your plugins, but of stripping out unwanted features in order to create more lean versions of Tiddlywiki that do only what you need.
+//Uglify// is capable not only of compressing your plugins, but of stripping out unwanted features in order to create leaner versions of Tiddlywiki that do only what you need.
 
 Pruning strips not only from core, but from any other plugins which contain tiddlers matching the pruning rules.
+
+The following rules exist:
 
 <$macrocall
 	$name="tabs"
