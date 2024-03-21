@@ -1,0 +1,15 @@
+title: Prune
+tags: Concept
+
+//Uglify// is capable not only of compressing your plugins, but of stripping out unwanted features in order to create more lean versions of Tiddlywiki that do only what you need.
+
+Pruning strips not only from core, but from any other plugins which contain tiddlers matching the pruning rules.
+
+<$macrocall
+	$name="tabs"
+	tabsList="[all[current]tagging[]!is[draft]]"
+	default={{{ [all[current]tagging[]first[]] }}}
+	template="Templates/Prune"
+	class="tc-vertical"
+/>
+

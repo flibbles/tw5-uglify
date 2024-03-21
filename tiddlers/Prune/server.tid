@@ -1,0 +1,9 @@
+title: Prune/server
+caption: server
+tags: Prune
+
+This pruning rule scraps everything it can that exclusively runs on Node.JS. This includes command-line tools, server-specific utilities, and http request handlers (and all associated language tiddlers). You don't //need// any of this stuff on the browser or in your standalone tiddlywikis, and it all just takes up space.
+
+This rule should always be safe to enable when generating tiddlywikis, but if you're publishing a plugin, this rule would strip any `routes`, `commands`, or `utils-node` modules out of your plugin while uglifying it.
+
+For this reason, apart from the //Uglify// wizard webpage, this rule is disabled by default.

@@ -75,6 +75,9 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 	type="match"
 	text="open"
 	class="tc-uglify-customize">
+
+!!!Types
+
 	<$list
 		variable="type"
 		filter="[[uglifier]modules[]moduleproperty[type]!prefix[text/x-tiddler]sort[]]">
@@ -85,9 +88,38 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 		default="yes"
 		field="text"
 		disabled={{{[[$:/config/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
-		&#32;
-		<<type>>
+
+		<$text text=` $(type)$` />
+
 		<br>
+
+</$checkbox></$list>
+
+!!!Pruning
+
+<$list
+	filter="[all[shadows+tiddler]prefix[$:/plugins/flibbles/uglify/prune/]sort[name]]">
+	<$checkbox
+		tiddler={{{ [all[current]removeprefix[$:/plugins]addprefix[$:/config]] }}}
+		checked="yes"
+		unchecked="no"
+		default="no"
+		field="text"
+		disabled={{{[[$:/config/flibbles/uglify-wizard/current]is[tiddler]then[yes]]}}}>
+
+	<$text text=' '/>
+
+	<strong>
+
+	<$text text={{!!name}} />
+
+	</strong>
+
+	<$text text=' - ' />
+
+	<$text text={{!!description}} />
+
+<br>
 
 </$checkbox></$list></$reveal>
 

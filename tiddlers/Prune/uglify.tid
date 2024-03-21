@@ -1,0 +1,12 @@
+title: Prune/uglify
+caption: uglify
+tags: Prune
+
+This pruning rule is enabled by default. It does two things when uglifying occurs.
+
+* It removes all configuration files related to //Uglify//.
+* It strips //Uglify// down to a single readme file and the license.
+
+This is because you don't need //Uglify// anymore. Once it's done it's job, you don't need it to stick around anymore. In fact, when generating Tiddlywikis, I recommend using the `publishFilter` variable to prevent Uglify from being included in the build at all. See this page about [[Publishing Plugins]] for details.
+
+If you //don't// use this pruning rule, you'll get //Uglify// on your browser client, or in your standalone tiddlywikis. It's very big, and it will keep trying to compress everything when you save. Leave this rule on unless you're doing something tricky.

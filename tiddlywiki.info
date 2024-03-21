@@ -15,7 +15,6 @@
 				"prune/uglify=no",
 				"compress=yes",
 				"sourcemap=no",
-				"prune/server=yes",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
 			"--render","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
@@ -31,10 +30,9 @@
 		],
 		"bundle": [
 			"--uglify", "prune/uglify=no", "compress=yes",
-			"--output", "./docs/",
 			"--render",
 				"$:/plugins/flibbles/uglify",
-				"[[uglify-]addsuffix{$:/plugins/flibbles/uglify!!version}addsuffix[.json]]",
+				"uglify.json",
 				"text/plain",
 				"$:/core/templates/json-tiddler"
 		],

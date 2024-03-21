@@ -1,0 +1,31 @@
+title: Templates/Prune
+
+\rules except syslink
+\function pruned() [all[shadows+tiddlers]subfilter{!!text}] :filter[[$:/core]plugintiddlers[]match<currentTiddler>]
+
+<$tiddler tiddler={{{ [<currentTab>split[/]last[]addprefix[$:/plugins/flibbles/uglify/prune/]] }}}>
+
+!! <$text text={{!!name}} />
+
+<$transclude $tiddler=<<currentTab>> />
+
+//This rule prunes <$text text={{{ [function[pruned]count[]] }}} /> tiddlers from $:/core//.
+
+<div class=uglify-tiddlerlist>
+
+<$list
+	variable=list-item
+	join="<br>"
+	filter="[function[pruned]sort[]]">
+
+<$list-template>
+
+<$text text=<<list-item>> />
+
+</$list-template>
+<$list-empty>
+
+//-No $:/core tiddlers are removed. This rule targets only tiddlers in the //Uglify// plugin.-//
+
+</$list-empty>
+</$list>
