@@ -13,6 +13,7 @@
 			"--output", "./docs/",
 			"--uglify",
 				"prune/uglify=no",
+				"prune/server=no",
 				"compress=yes",
 				"sourcemap=no",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
@@ -25,7 +26,7 @@
 				"prune/uglify=no",
 				"compress=yes",
 				"sourcemap=no",
-				"blacklist=$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
+				"blacklist=$:/core $:/boot/boot.js $:/boot/boot.css $:/boot/bootprefix.js $:/library/sjcl.js $:/themes/tiddlywiki/snowwhite $:/themes/tiddlywiki/vanilla",
 			"--render","editions/uglify-wizard","uglified.html","text/plain"
 		],
 		"bundle": [

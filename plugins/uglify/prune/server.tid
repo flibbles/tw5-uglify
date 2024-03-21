@@ -13,6 +13,10 @@ description: This removes all server-exclusive content.
 
 [module-type[route]type[application/javascript]]
 [[$:/language/Docs/ModuleTypes/route]]
+
+[module-type[authenticator]type[application/javascript]]
+[[$:/language/Docs/ModuleTypes/authenticator]]
+
 [[$:/core/modules/server/server.js]]
 
 [[$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js]]
