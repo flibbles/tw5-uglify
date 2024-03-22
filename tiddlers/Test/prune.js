@@ -71,6 +71,21 @@ it("can have pruning disabled", function() {
 	expect(output).toContain("$:/anything");
 });
 
+it("custom rules can be added", function() {
+	const wiki = new $tw.Wiki(),
+		pluginName = '$:/plugins/flibbles/test',
+		tiddlerName = '$:/file',
+		tiddlers = [
+			{title: tiddlerName, text: 'excise this'},
+			{title: '$:/readme', text: 'This is the readme file'}];
+	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
+	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/added", text: tiddlerName});
+	$tw.utils.test.exec(wiki, 'cache=no', 'prune/added=yes');
+	var output = JSON.parse(wiki.getTiddlerUglifiedText(pluginName));
+	expect(output.tiddlers['$:/readme'].text).toBe('This is the readme file');
+	expect(output.tiddlers[tiddlerName]).toBeUndefined();
+});
+
 it("'server' can pick up imported modules", function() {
 	const wiki = new $tw.Wiki(),
 		pluginName = '$:/plugins/flibbles/test',

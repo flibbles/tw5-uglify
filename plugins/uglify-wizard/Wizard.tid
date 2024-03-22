@@ -100,7 +100,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 @@
 
 <$list
-	filter="[all[shadows+tiddler]prefix[$:/plugins/flibbles/uglify/prune/]sort[name]]">
+	filter="[all[shadows+tiddlers]prefix[$:/plugins/flibbles/uglify/prune/]sort[caption]]">
 	<$checkbox
 		tiddler={{{ [all[current]removeprefix[$:/plugins]addprefix[$:/config]] }}}
 		checked="yes"
@@ -111,7 +111,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 	<$text text=' Remove '/>
 
-	<$text text={{!!name}} />
+	<$text text={{!!caption}} />
 
 <br>
 

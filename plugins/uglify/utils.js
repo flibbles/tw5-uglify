@@ -18,7 +18,6 @@ var systemTargets = {
 };
 
 var prunePrefix = '$:/plugins/flibbles/uglify/prune/';
-var modulesAddedToConfig = false;
 
 var config = {
 	blacklist: '',
@@ -35,18 +34,10 @@ var configType = {
 	cache: Boolean
 };
 
-$tw.wiki.eachShadowPlusTiddlers(function(tiddler, title) {
-	if (title.indexOf(prunePrefix) === 0) {
-		var key = 'prune/' + title.substr(prunePrefix.length);
-		config[key] = 'no';
-		configType[key] = Boolean;
-	}
-});
-
 exports.getSetting = function(wiki, key) {
 	var title = '$:/config/flibbles/uglify/'+key;
 	return wiki.getCacheForTiddler(title, 'uglifysetting', function() {
-		var def = getConfig()[key],
+		var def = getConfig(wiki)[key],
 			value = wiki.getTiddlerText(title, def);
 		switch (configType[key]) {
 			case Boolean:
@@ -62,7 +53,7 @@ exports.getSetting = function(wiki, key) {
 
 exports.getSettings = function(wiki) {
 	var settings = Object.create(null);
-	for (var key in getConfig()) {
+	for (var key in getConfig(wiki)) {
 		settings[key] = exports.getSetting(wiki, key);
 	}
 	return settings;
@@ -216,8 +207,10 @@ exports.sanitizePath = function(path) {
 };
 
 // Create a config entry for each uglifier module.
-function getConfig() {
-	if (!modulesAddedToConfig) {
+function getConfig(wiki) {
+	return wiki.getGlobalCache('uglify-configmap', function() {
+		// By setting it up through the globalCache, we are able to refresh
+		// the config system in case any pruning rules were added.
 		var modules = Object.keys(uglifierModules());
 		// Lets sort these before we add them so the type section of the
 		// settings will have this alphabetized.
@@ -226,9 +219,16 @@ function getConfig() {
 			config[type] = 'yes';
 			configType[type] = Boolean;
 		});
-		modulesAddedToConfig = true;
-	}
-	return config;
+
+		wiki.eachShadowPlusTiddlers(function(tiddler, title) {
+			if (title.indexOf(prunePrefix) === 0) {
+				var key = 'prune/' + title.substr(prunePrefix.length);
+				config[key] = 'no';
+				configType[key] = Boolean;
+			}
+		});
+		return config;
+	});
 };
 
 var _modules;

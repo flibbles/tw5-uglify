@@ -5,7 +5,7 @@ tags: Concept
 
 Pruning strips not only from core, but from any other plugins which contain tiddlers matching the pruning rules.
 
-The following rules exist:
+The following rules exist. (It is also possible to [[Build Your Own Rule]].)
 
 <$macrocall
 	$name="tabs"

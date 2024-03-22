@@ -13,8 +13,17 @@ created: 20231224190533217
 ** You can now fully remove //Uglify// from your generated files and sourcemapping will still work. The boot library module is a non-shadow library which lurks in the `$:/temp` directory, unseen and unheard.
 ** When using external-js, the boot library module exists in the `tiddlywikicore.js` file, and not in your tiddlywiki, which means all sourcemapping exists neatly wrapped up and separate, just like the core code. It's very clean.
 
+''[[Pruning]] added''
+
+* Added support for removing unwanted features from generated Tiddlywikis. Current rules are:
+** ''uglify'': This rule previously existed but it wasn't part of an exclusive "pruning" feature. It guts Uglify and removes all uglify-related tiddlers.
+** ''server'': This removes all server-related modules.
+* Pruning can be configured through the command-line tools, and through the <<wizard wizard>>.
+* This is just the start. Now that the pruning infrastructure is set up, more rules can easily be added to strip all sorts of unwanted features. Open a github [IDEA] issue to discuss with me.
+
 ''What else?''
 
 * JSON files in plugins will now be uglified too. This probably won't come up often, but it allowed for a cleaner implementation of the plugin uglifier.
 * Shadow tiddlers inside of plugins that don't start with `$:/` are no longer uglified. This is because the only instance of such tiddlers that I found (like `GettingStarted`) exist to be viewed and edited by end-users, so they really shouldn't be uglified anyway.
 * Changed the way `--uglify` takes arguments. It now uses `<key>=<value>` pairs to be more like the `--listen` command and others. So instead of `--uglify cache no`, it's `--uglify cache=no`. The old way is still supported for legacy.
+* Fixed caching issue where server would uglify plugins more than once, because it wasn't finding its cached results. Thus wasting time. This can still occur, but it's far less likely.

@@ -1,5 +1,5 @@
 title: $:/plugins/flibbles/uglify/prune/server
-name: Server-only content
+caption: Server-only content
 
 [module-type[command]type[application/javascript]]
 [prefix[$:/language/Help/]]

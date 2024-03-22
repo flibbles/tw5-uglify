@@ -1,5 +1,5 @@
 title: $:/plugins/flibbles/uglify/prune/encryption
-name: Encryption functionality
+caption: Encryption functionality
 
 [[$:/library/sjcl.js]]
 
