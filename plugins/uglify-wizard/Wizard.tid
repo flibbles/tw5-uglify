@@ -80,7 +80,7 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 	<$list
 		variable="type"
-		filter="[[uglifier]modules[]moduleproperty[type]!prefix[text/x-tiddler]sort[]]">
+		filter="[[uglifier]modules[]moduleproperty[type]!prefix[application/x-tiddler]sort[]]">
 	<$checkbox
 		tiddler={{{ [[$:/config/flibbles/uglify/]addsuffix<type>] }}}
 		checked="yes"
