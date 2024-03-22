@@ -13,7 +13,7 @@ exports.uglify = function() {
 	var uglifierType, procdefType;
 	var name = pragma.attributes.name.value;
 	if (pragma.isFunctionDefinition) {
-		uglifierType = "text/x-tiddler-filter";
+		uglifierType = "application/x-tiddler-filter";
 		procdefType = "function";
 	} else if (pragma.isProcedureDefinition) {
 		uglifierType = "text/vnd.tiddlywiki";

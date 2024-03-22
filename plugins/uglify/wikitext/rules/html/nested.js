@@ -37,7 +37,7 @@ var masterList = $tw.utils.extend({}, filterList, wikitextList);
 $tw.utils.each(Object.keys(masterList), function(widget) {
 	exports[widget] = function(tag, parser) {
 		uglifyAttributes(tag, wikitextList[widget], "text/vnd.tiddlywiki", parser);
-		uglifyAttributes(tag, filterList[widget], "text/x-tiddler-filter", parser);
+		uglifyAttributes(tag, filterList[widget], "application/x-tiddler-filter", parser);
 	};
 });
 

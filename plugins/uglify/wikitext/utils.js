@@ -108,7 +108,7 @@ exports.newlineAt = function(source, pos) {
 };
 
 exports.uglifyFilter = function(text, options) {
-	var uglifier = options.wiki.getUglifier('text/x-tiddler-filter');
+	var uglifier = options.wiki.getUglifier('application/x-tiddler-filter');
 	try {
 		return uglifier.uglify(text, options).text;
 	} catch (e) {

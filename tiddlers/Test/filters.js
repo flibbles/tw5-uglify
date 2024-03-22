@@ -22,9 +22,9 @@ const test = function(input, expected, options) {
 	$tw.utils.test.wikitext.test(prefix+'{{{'+input+'}}}'+suffix, prefix+'{{{'+expected+'}}}'+suffix, options);
 };
 
-it('can uglify text/x-tiddler-filter', function() {
+it('can uglify application/x-tiddler-filter', function() {
 	const uglify = $tw.utils.test.wikitext.uglify;
-	const type = "text/x-tiddler-filter";
+	const type = "application/x-tiddler-filter";
 	var text = uglify('"B 1" [enlist[A B C]]\n+[prefix[B]]', type);
 	expect(text).toBe('[[B 1]][enlist[A B C]]+[prefix[B]]');
 	// If given a broken filter, it will throw.

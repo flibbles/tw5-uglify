@@ -9,7 +9,7 @@ Uglifies filters.
 var utils = require('../wikitext/utils.js');
 var rules = $tw.modules.getModulesByTypeAsHashmap("uglifyfilterrule");
 
-exports.type = "text/x-tiddler-filter";
+exports.type = "application/x-tiddler-filter";
 
 exports.uglify = function(text, options) {
 	var parseTree = options.wiki.parseFilter(text),

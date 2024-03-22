@@ -64,15 +64,15 @@ it('can work with string arrays', function() {
 it('prints out current settings with no arguments', function() {
 	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
 	$tw.utils.test.exec(wiki, 'prune/uglify=yes');
-	spyOn(console, 'log');
+	var log = spyOn(console, 'log');
 	exec(wiki);
-	expect(console.log).toHaveBeenCalledWith('compress:              ', 'yes');
-	expect(console.log).toHaveBeenCalledWith('blacklist:             ', 'pluginA,plugin B');
-	expect(console.log).toHaveBeenCalledWith('cache:                 ', 'no');
-	expect(console.log).toHaveBeenCalledWith('cacheDirectory:        ', './.cache/uglify');
-	expect(console.log).toHaveBeenCalledWith('application/javascript:', 'yes');
-	expect(console.log).toHaveBeenCalledWith('prune/uglify:          ', 'yes');
-	expect(console.log).toHaveBeenCalledWith('prune/server:          ', 'no');
+	expect(log).toHaveBeenCalledWith('compress:                    ', 'yes');
+	expect(log).toHaveBeenCalledWith('blacklist:                   ', 'pluginA,plugin B');
+	expect(log).toHaveBeenCalledWith('cache:                       ', 'no');
+	expect(log).toHaveBeenCalledWith('cacheDirectory:              ', './.cache/uglify');
+	expect(log).toHaveBeenCalledWith('application/javascript:      ', 'yes');
+	expect(log).toHaveBeenCalledWith('prune/uglify:                ', 'yes');
+	expect(log).toHaveBeenCalledWith('prune/server:                ', 'no');
 });
 
 });
