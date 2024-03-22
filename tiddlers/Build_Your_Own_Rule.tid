@@ -1,6 +1,6 @@
 title: Build Your Own Rule
 
-//Uglify//'s pruning feature only has a select few rules for common use-cases. You might be interested in removing content from core or plugins that is specific to your case.
+//Uglify//'s [[pruning feature|Pruning]] only has a select few rules for common use-cases. You might be interested in removing content from core or plugins that is specific to your case.
 
 In such a case, you can build your own pruning rule. This can be used on Node.JS, or even by the <<wizard "//Uglify// wizard">>. All you need to do is create a tiddler with the prefix `$:/plugins/flibbles/uglify/prune/`. It should have a unique name and a caption, and its body should be a filter describing the tiddlers you want stripped from plugins. That's it!
 
@@ -18,4 +18,10 @@ You can type `tiddlywiki --uglify` without arguments to see whether the server i
 
 Here are the built in rules for you to examine:
 
-{{{ [[$:/plugins/flibbles/uglify]plugintiddlers[]prefix[$:/plugins/flibbles/uglify/prune/]] }}}
+<$macrocall
+	$name="tabs"
+	tabsList="[[Pruning]tagging[]!is[draft]]"
+	default={{{ [[Pruning]tagging[]first[]] }}}
+	template="Templates/Prune-raw"
+	class="tc-vertical"
+/>
