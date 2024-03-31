@@ -11,7 +11,7 @@ exports.name = "dash";
 exports.uglify = function() {
 	var length = this.match[0].length,
 		rtn = [{text: length === 2? "--": "---"}],
-		element = this.parse();
+		element = this.parse()[0];
 	if (length > 2) {
 		element.start = this.match.index;
 		element.startOfBody = this.parser.startOfBody;
