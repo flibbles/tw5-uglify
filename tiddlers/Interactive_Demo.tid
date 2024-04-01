@@ -1,5 +1,7 @@
 title: Interactive Demo
 
+\rules except wikilink
+
 Obviously, interactive uglifying like you're seeing here is only for this demo. In practice, //Uglify// does all of its compression either during the Node.JS server boot process, or during a save in the case of standalone TiddlyWikis.
 
 And of course //Uglify// [[caches whenever it can|Caching]]. Compression is expensive!

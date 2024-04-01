@@ -1,3 +1,5 @@
 default: yes
 
+\rules except wikilink
+
 Configure whether //Uglify// will cache compressed plugins and tiddlers in files on the server. This has no effect in standalone TiddlyWikis.

@@ -1,5 +1,7 @@
 title: Other plugins by Flibbles
 
+\rules except wikilink
+
 Other plugins I've developed for TiddlyWiki5
 
 !! [[Relink|https://flibbles.github.io/tw5-relink/]]

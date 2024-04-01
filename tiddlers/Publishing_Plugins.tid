@@ -48,7 +48,7 @@ Setting the "publishFilter" to `$:/plugins/flibbles/uglify` will cause //Uglify/
 
 Calling `tiddlywiki --build test` first disables compression, then it renders a tiddler with all plugins and tiddlers that are a part of the node.JS project. The reason for disabling compression is that you don't want it in your testing framework. You want to be able to step through your code to debug it.
 
-The `--test` command comes with "$:/plugins/tiddlywiki/jasmine", which I recommend for testing your plugins. It integrates with Tiddlywiki, and since it bundles with the core code, there's no extra installation necessary.
+The `--test` command comes with "~$:/plugins/tiddlywiki/jasmine", which I recommend for testing your plugins. It integrates with Tiddlywiki, and since it bundles with the core code, there's no extra installation necessary.
 
 !!! bundle
 

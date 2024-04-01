@@ -1,5 +1,7 @@
 default: server
 
+\rules except wikilink
+
 Configure whether browsers will [[sourcemap their compressed javascript code|Source Maps]].  Available options are as follows:
 
 ;yes

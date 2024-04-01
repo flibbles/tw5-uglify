@@ -16,7 +16,7 @@ const t = "\\whitespace trim\n";
 
 it('inline sharing line with content can always go', function() {
 	test("First <!--comment-->\nText", "First \nText");
-	test("\\whitespace trim\nFirst <!--comment-->\nText", "FirstText");
+	test("\\whitespace trim\nFirst <!--comment-->\ntext", "Firsttext");
 });
 
 it('only comments', function() {
@@ -29,41 +29,41 @@ it('only comments', function() {
 it('inline filling a line might have to stay', function() {
 	test("<div>\n\tText\n\t<!--Comment-->\n</div>", "<div>\n\tText\n\t\n");
 	test("\\whitespace trim\n<div>\n\tText\n\t<!--C-->\n</div>", "<div>Text");
-	test("Text\n<!--Comment-->\n\nSecond", "Text\n<!---->\n\nSecond");
-	test("\\whitespace trim\nText\n<!--Comment-->\n\nSecond", "Text\n\nSecond");
-	test("Text\n<!--Comment--> \n\nSecond", "Text\n \n\nSecond");
-	test("\\whitespace trim\nText\n<!--stuff--> \n\nSecond", "Text\n\nSecond");
-	test("Text\n <!--Comment-->\n\nSecond", "Text\n \n\nSecond");
-	test("\\whitespace trim\nText\n <!--stuff-->\n\nSecond", "Text\n\nSecond");
+	test("Text\n<!--Comment-->\n\nsecond", "Text\n<!---->\n\nsecond");
+	test("\\whitespace trim\nText\n<!--Comment-->\n\nsecond", "Text\n\nsecond");
+	test("Text\n<!--Comment--> \n\nsecond", "Text\n \n\nsecond");
+	test("\\whitespace trim\nText\n<!--stuff--> \n\nsecond", "Text\n\nsecond");
+	test("Text\n <!--Comment-->\n\nsecond", "Text\n \n\nsecond");
+	test("\\whitespace trim\nText\n <!--stuff-->\n\nsecond", "Text\n\nsecond");
 });
 
 it('inline that are sequential', function() {
 	// Sequential comments can goof pruning
-	test("<div>\n\nFirst\n<!--1--><!--2-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n");
-	test("<div>\n\nFirst\n<!--1--><!--2--><!--3-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n");
-	test("<div>\n\nFirst\n<!--1--><!--2--> <!--3-->\nSecond\n</div>",
-		"<div>\n\nFirst\n \nSecond\n");
+	test("<div>\n\nFirst\n<!--1--><!--2-->\nsecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nsecond\n");
+	test("<div>\n\nFirst\n<!--1--><!--2--><!--3-->\nsecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nsecond\n");
+	test("<div>\n\nFirst\n<!--1--><!--2--> <!--3-->\nsecond\n</div>",
+		"<div>\n\nFirst\n \nsecond\n");
 });
 
 it('inline on sequential lines', function() {
 	// Lines of comments can't prune very well without whitespace trimming
-	test("First\n<!--1-->\n<!--2-->\nText", "First\n<!---->\n<!---->\nText");
-	test("\\whitespace trim\nFirst\n<!--1-->\n<!--2-->\nText", "FirstText");
+	test("First\n<!--1-->\n<!--2-->\ntext", "First\n<!---->\n<!---->\ntext");
+	test("\\whitespace trim\nFirst\n<!--1-->\n<!--2-->\ntext", "Firsttext");
 });
 
 it('inline does not splice or create blocks', function() {
-	test("<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
-		"<div>\n\nFirst\n<!---->\nSecond\n");
-	test("\\whitespace trim\n<div>\n\nFirst\n<!--Comment-->\nSecond\n</div>",
-		"<div>\n\nFirstSecond");
+	test("<div>\n\nFirst\n<!--Comment-->\nsecond\n</div>",
+		"<div>\n\nFirst\n<!---->\nsecond\n");
+	test("\\whitespace trim\n<div>\n\nFirst\n<!--Comment-->\nsecond\n</div>",
+		"<div>\n\nFirstsecond");
 	test("<div>\n<!--Comment-->\nText\n</div>", "<div>\n<!---->\nText\n");
 	test("\\whitespace trim\n<div>\n<!--Comment-->\nText\n</div>", "<div>Text");
 	test("First\n<!--1--> \nText", "First\n \nText");
-	test("\\whitespace trim\nFirst\n<!--1--> \nText", "FirstText");
-	test("First\n <!--1-->\nText", "First\n \nText");
-	test("\\whitespace trim\nFirst\n <!--1-->\nText", "FirstText");
+	test("\\whitespace trim\nFirst\n<!--1--> \ntext", "Firsttext");
+	test("First\n <!--1-->\ntext", "First\n \ntext");
+	test("\\whitespace trim\nFirst\n <!--1-->\ntext", "Firsttext");
 	// Pesky carriage-returns
 	test("<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>\n<!---->\nText\n");
 	test("\\whitespace trim\r\n<div>\r\n<!--comment-->\r\nText\r\n</div>", "<div>Text");
