@@ -244,6 +244,15 @@ it(':and filter prefixes respect first run placeholders', function() {
 	test("$x$ +[addsuffix[x]]", "$x$ +[addsuffix[x]]", {prefix: "\\define M(x)", suffix: "\n<<M'[enlist[A B C]]'>>"});
 });
 
+// Test for #13
+it('placeholders do not lose whatever quotation they have', function() {
+	test("[tag[X]] [[$ph$]]", "[tag[X]][[$ph$]]", {prefix: "\\define M(ph)", suffix: "\n<<M'A B C'>>"});
+	test("[tag[X]] '$ph$'", "[tag[X]]'$ph$'", {prefix: "\\define M(ph)", suffix: "\n<<M'A]] C'>>"});
+	test('[tag[X]] "$ph$"', '[tag[X]]"$ph$"', {prefix: "\\define M(ph)", suffix: "\n<<M'A]] C'>>"});
+	test('[tag[X]] $ph$', '[tag[X]]$ph$', {prefix: "\\define M(ph)", suffix: "\n<<M'A]] C'>>"});
+	test('$ph$ [[X]]', '$ph$ X', {prefix: "\\define M(ph)", suffix: "\n<<M ABC>>"});
+});
+
 it('reduces first[] nth[1] zth[0] limit[1] to nth[]', function() {
 	test("[enlist[A B C D]nth[1]]", "[enlist[A B C D]nth[]]");
 	test("[enlist[A B C D]nth[2]]", "[enlist[A B C D]nth[2]]");

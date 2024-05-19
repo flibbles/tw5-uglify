@@ -12,7 +12,7 @@ var rules = $tw.modules.getModulesByTypeAsHashmap("uglifyfilterrule");
 exports.type = "application/x-tiddler-filter";
 
 exports.uglify = function(text, options) {
-	var parseTree = options.wiki.parseFilter(text),
+	var parseTree = parseFilter(text, options.wiki),
 		bits = [],
 		title,
 		needsSpace = false,
@@ -37,7 +37,7 @@ exports.uglify = function(text, options) {
 		}
 		title = runIsSingleTitle(run);
 		if (title) {
-			var quotedTitle = bestQuoteFor(title, options);
+			var quotedTitle = bestQuoteFor(title, text.charAt(run.titleStart), options);
 			if (needsSpace && quotedTitle[0] !== "[") {
 				// We must have had an unquoted title before. It needs room.
 				bits.push(" ");
@@ -104,7 +104,89 @@ function runIsSingleTitle(run) {
 	return null;
 };
 
-function bestQuoteFor(title, options) {
+/**
+ * This functions the same as wiki.parseFilter, except that it gets
+ * start indices for all the titles.
+ */
+function parseFilter(text, wiki) {
+	var parseTree = wiki.parseFilter(text),
+		ptr = $tw.utils.skipWhiteSpace(text, 0);
+	for (var i = 0; i < parseTree.length; i++) {
+		ptr = $tw.utils.skipWhiteSpace(text, ptr);
+		var run = parseTree[i];
+		var title = runIsSingleTitle(run);
+		if (title) {
+			ptr += run.prefix.length;
+			// This line is the whole reason for this function.
+			// We need to set titleStart
+			run.titleStart = ptr;
+			ptr = indexOfTitleClosingQuote(text, ptr) + 1;
+		} else if (run.operators.length === 0) {
+			// Strange case of empty quotes
+			ptr += 2;
+		} else {
+			ptr = text.indexOf('[', ptr);
+			for (var j = 0; j < run.operators.length; j++) {
+				var op = run.operators[j];
+				if (op.regexp) {
+					ptr = text.indexOf('/', ptr) + op.regexp.source.length + 2;
+				} else {
+					for (var k = 0; k < op.operands.length; k++) {
+						var operand = op.operands[k];
+						if (operand.variable) {
+							ptr = text.indexOf('>', ptr) + 1;
+						} else if (operand.indirect) {
+							ptr = text.indexOf('}', ptr) + 1;
+						} else {
+							ptr = text.indexOf(']', ptr) + 1;
+						}
+					}
+				}
+			}
+			ptr = text.indexOf(']', ptr) + 1;
+		}
+	}
+	// This bit is a sanity test to ensure we walked the filter correctly.
+	/*
+	ptr = $tw.utils.skipWhiteSpace(text, ptr) ;
+	if (ptr !== text.length) {
+		throw "ptr was only at: " + ptr + " out of " + text.length + " in " + text;
+	}
+	*/
+	return parseTree;
+};
+
+function indexOfTitleClosingQuote(filter, ptr) {
+	switch (filter.charAt(ptr)) {
+	case '"':
+		return filter.indexOf('"', ptr+1);
+	case "'":
+		return filter.indexOf("'", ptr+1);
+	case '[':
+		return filter.indexOf(']]', ptr) + 1;
+	default:
+		var regexp = /(?:\s|\[|\]|$)/g;
+		regexp.lastIndex = ptr;
+		// Go to 1 before the end of the space-less string
+		return regexp.exec(filter).index - 1;
+	}
+};
+
+function bestQuoteFor(title, originalQuote, options) {
+	if (options.placeholders && options.placeholders.present(title)) {
+		// There is a placeholder present here. We can't afford to change
+		// the quotation
+		switch (originalQuote) {
+		case '"':
+			return '"' + title + '"';
+		case "'":
+			return "'" + title + "'";
+		case '[':
+			return "[[" + title + "]]";
+		default:
+			return title;
+		}
+	}
 	if (/^[^\s\[\]\-+~=:'"][^\s\[\]]*$/.test(title)) {
 		return title;
 	}
