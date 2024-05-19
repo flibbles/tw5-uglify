@@ -1,7 +1,10 @@
 title: Macros/links
 tags: $:/tags/Macro
 
-\define wizard(caption) <a class="tc-tiddlylink tc-tiddlylink-resolves" target="_blank" href="./uglified.html">$caption$</a>
+\define wizard(caption)
+\rules except wikilink
+<a class="tc-tiddlylink tc-tiddlylink-resolves" target="_blank" href="./uglified.html">$caption$</a>
+\end
 
 \define .source(caption, link) [ext[$caption$|$link$]]
 \define source(caption) <$importvariables filter=Uglify><$tiddler tiddler=<<plugin>> ><$macrocall $name=".source" caption=<<__caption__>> link={{!!source}} /></$tiddler></$importvariables>

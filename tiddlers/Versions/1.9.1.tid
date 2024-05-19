@@ -1,0 +1,6 @@
+created: 20240519164131185
+
+* Fixed issue that could occur if an entity appeared at start of a block.
+* Fixed corner case that could occur regarding syslinks and whitespace.
+* Fixed same corner case regarding CamelCase links and whitespace.
+* Fixed issue #13 where uglify wouldn't consider if filter titles had placeholders in them and thus needed to be left alone.
