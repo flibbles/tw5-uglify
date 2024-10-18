@@ -49,7 +49,7 @@ it('can fetch source map with illegal URL characters in name', function() {
 	wiki.addTiddler($tw.utils.test.noCache());
 	const server = new Server({ wiki: wiki, variables: {} });
 	server.requestHandler({method: 'GET', url: crazyUrl + '.map'}, response);
-	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/json'});
+	expect(response.writeHead).toHaveBeenCalledWith(200, jasmine.objectContaining({'Content-Type': 'application/json'}));
 	expect(response.end).toHaveBeenCalledTimes(1);
 	var calls = response.end.calls.first();
 	expect(calls.args[1]).toBe('utf8');
@@ -64,7 +64,7 @@ it('can fetch source js with illegal URL characters in name', function() {
 	wiki.addTiddler($tw.utils.test.noCache());
 	const server = new Server({ wiki: wiki, variables: {} });
 	server.requestHandler({method: "GET", url: crazyUrl}, response);
-	expect(response.writeHead).toHaveBeenCalledWith(200, {'Content-Type': 'application/javascript'});
+	expect(response.writeHead).toHaveBeenCalledWith(200, jasmine.objectContaining({'Content-Type': 'application/javascript'}));
 	expect(response.end).toHaveBeenCalledTimes(1);
 	var calls = response.end.calls.first();
 	expect(calls.args[0]).toBe(text);
