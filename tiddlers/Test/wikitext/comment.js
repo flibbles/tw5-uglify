@@ -70,6 +70,18 @@ it('inline does not splice or create blocks', function() {
 	test("A\r\n<!--comment-->\r\nB", "A\n<!---->\nB");
 });
 
+// See git issue #14
+it('inline does not create blocks given following newlines', function() {
+	test(  "<table>\n\t<!-- comment -->\n\t<tr>Line",
+	       "<table>\n\t<!---->\n\t<tr>Line");
+	test(  "\t<!-- comment -->\n\t<tr>Line",
+	       "\n<tr>Line");
+	test(t+"<table>\n\t<!-- comment -->\n\t<tr>Line",
+	       "<table><tr>Line");
+	test(t+"\t<!-- comment -->\n\t<tr>Line",
+	       "\n<tr>Line");
+});
+
 it('preceding content that cannot be at end', function() {
 	test(  "<$reveal/>\n<!--comment-->", "<$reveal/>\n<!---->");
 	test(t+"<$reveal/>\n<!--comment-->", "<$reveal/>");

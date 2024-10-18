@@ -107,6 +107,12 @@ exports.newlineAt = function(source, pos) {
 	}
 };
 
+exports.whiteSpaceAt = function(source, pos) {
+	var c = source.charAt(pos);
+	// Ignores some obscure unicode space
+	return (c === " ") || (c === "\f") || (c === "\n") || (c === "\r") || (c === "\t") || (c === "\v") || (c === "\u00a0");
+};
+
 exports.uglifyFilter = function(text, options) {
 	var uglifier = options.wiki.getUglifier('application/x-tiddler-filter');
 	try {
