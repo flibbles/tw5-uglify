@@ -1,0 +1,3 @@
+created: 20241018022759647
+
+* Fixed issue #14 where uglify would scrap comments needed to maintain widget inline status.
