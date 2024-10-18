@@ -8,11 +8,13 @@ Uglify rule for
 
 \*/
 
+var utils = require("../utils.js");
+
 exports.name = "commentblock";
 
 exports.uglify = function() {
 	this.parse();
-	while (newlineAt(this.parser.source, this.parser.pos)) {
+	while (utils.newlineAt(this.parser.source, this.parser.pos)) {
 		this.parser.pos++;
 	}
 	// If there is trailing whitespace, we can just skip it all.
@@ -20,9 +22,4 @@ exports.uglify = function() {
 	this.parser.skipWhitespace();
 	// We return nothing, because we don't want comments around
 	return '';
-};
-
-function newlineAt(source, pos) {
-	return source[pos] === "\n"
-		|| (source[pos] === "\r" && source[pos+1] === "\n");
 };
