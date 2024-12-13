@@ -72,6 +72,7 @@ exports.stringifyMacro = function(macro, source, options) {
 
 exports.quotifyParam = function(param, allowBrackets, options) {
 	if (param.search(/[\s"']/) < 0
+	&& (!options.nocomma || param.indexOf(",") < 0)
 	&& (options.hasName || param.indexOf(":") < 0)
 	&& param.length > 0
 	&& (allowBrackets || param.indexOf(">") < 0)

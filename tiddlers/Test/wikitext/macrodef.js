@@ -56,6 +56,16 @@ it('parameters do not bleed into next when without quotes', function() {
 	test("\\define m(A:\"[hi]]\", B)$A$-$B$\n<<m B:Y>>[[l]]", "\\define m(A:[hi]] B)$A$-$B$\n<<m B:Y>>[[l]]");
 });
 
+// Fixes github issue #15
+it('parameters with reserved characters are not collapsed', function() {
+	// Define can handle non-quoted comma default args
+	test("\\define m(A:',', B:'value')<<__A__>>-<<__B__>>\n<<m>>", "\\define m(A:, B:value)<<__A__>>-<<__B__>>\n<<m>>");
+	// Everything else must parse arguments differently
+	test("\\procedure m(A:',', B:'value')<<A>>-<<B>>\n<<m>>", "\\procedure m(A:','B:value)<<A>>-<<B>>\n<<m>>");
+	test("\\function m(A:',', B:'value')[<A>] [<B>] +[join[-]]\n<<m>>", "\\function m(A:','B:value)[<A>][<B>]+[join[-]]\n<<m>>");
+	test("\\widget $.m(A:',', B:'value')<<A>>-<<B>>\n<$.m/>", "\\widget $.m(A:','B:value)<<A>>-<<B>>\n<$.m/>");
+});
+
 it('can collapse into single lines', function() {
 	test("\\define m()   text\n<<m>>", "\\define m()text\n<<m>>");
 	test("\\define m()\ntext\n\\end\n<<m>>", "\\define m()text\n<<m>>");

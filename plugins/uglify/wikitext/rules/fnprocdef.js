@@ -60,6 +60,7 @@ exports.uglifyPragmaParams = function(params) {
 			strings.push(":");
 			var options = Object.create(this.parser);
 			options.bracketsAllowed = false;
+			options.nocomma = true;
 			strings.push(utils.quotifyParam(param.default, false, options));
 		}
 	};
