@@ -272,7 +272,7 @@ if ($tw.node) {
 	});
 
 	afterAll(async function() {
-		await fs.rmdir(testDir, {recursive: true});
+		await fs.rm(testDir, {recursive: true});
 	});
 
 } else { // !$tw.node
