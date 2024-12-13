@@ -1,0 +1,3 @@
+created: 20241213171144560
+
+* Fixed issue #15 where commas in fnprocdef could goof up because fnprocdef processes parameters slightly differently from macrodef.
