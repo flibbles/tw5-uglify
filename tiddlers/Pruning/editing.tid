@@ -1,0 +1,9 @@
+title: Pruning/editing
+caption: editing
+tags: Pruning
+
+This pruning rule scraps everything concerning tiddler editing. This includes creating and deleting tiddlers as well. This rule is useful for tiddlywikis which are intended to be customer-facing or in some way "complete", and require no further editing.
+
+Tiddlers can still be modified through actions and messages (such as through buttons or automated behavior).
+
+Currently, this rule is somewhat conservative with what it removes to avoid over-pruning, but if you think any remaining shadow tiddlers can also be scrapped, please feel free to let me know.

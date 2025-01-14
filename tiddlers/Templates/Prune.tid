@@ -5,7 +5,7 @@ title: Templates/Prune
 
 <$tiddler tiddler={{{ [<currentTab>split[/]last[]addprefix[$:/plugins/flibbles/uglify/prune/]] }}}>
 
-!! <$text text={{!!name}} />
+!! <$text text={{!!caption}} />
 
 <$transclude $tiddler=<<currentTab>> />
 

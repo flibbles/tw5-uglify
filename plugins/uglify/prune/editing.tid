@@ -1,0 +1,78 @@
+title: $:/plugins/flibbles/uglify/prune/editing
+caption: Editing components
+
+[prefix[$:/config/EditorToolbarButtons/]]
+[prefix[$:/config/EditTemplateFields/]]
+[prefix[$:/config/EditorToolbarButtons/]]
+$:/config/FieldEditorFilters/default
+
+"""Editor Types""" +[bl[]]
+[prefix[$:/config/EditorTypeMappings/]]
+$:/core/ui/ControlPanel/EditorTypes
+[prefix[$:/language/ControlPanel/EditorTypes/]]
+
+"""Miscellaneous """ +[bl[]]
+$:/core/Filters/Drafts
+$:/language/Filters/Drafts
+$:/core/ui/MoreSideBar/Drafts
+$:/language/SideBar/Drafts/Caption
+$:/core/ui/PageTemplate/drafts
+
+"""Bitmap content""" +[bl[]]
+[module-type[bitmapeditoroperation]]
+$:/language/Docs/ModuleTypes/bitmapeditoroperaton
+[prefix[$:/config/BitmapEditor/]]
+
+"""Text editor content""" +[bl[]]
+[module-type[texteditoroperation]]
+$:/language/Docs/ModuleTypes/texteditoroperation
+
+"""Buttons and their associated language info""" +[bl[]]
+[prefix[$:/language/EditTemplate/]]
+$:/core/ui/Buttons/clone
+$:/language/Buttons/Clone/Caption
+$:/language/Buttons/Clone/Hint
+$:/core/ui/Buttons/delete
+$:/language/Buttons/Delete/Caption
+$:/language/Buttons/Delete/Hint
+$:/core/ui/Buttons/edit
+$:/language/Buttons/Edit/Caption
+$:/language/Buttons/Edit/Hint
+$:/core/ui/Buttons/new-here
+$:/language/Buttons/NewHere/Caption
+$:/language/Buttons/NewHere/Hint
+$:/core/ui/Buttons/new-journal-here
+$:/language/Buttons/NewJournalHere/Caption
+$:/language/Buttons/NewJournalHere/Hint
+$:/core/ui/Buttons/new-tiddler
+$:/language/Buttons/NewTiddler/Caption
+$:/language/Buttons/NewTiddler/Hint
+$:/core/ui/Buttons/new-journal
+$:/language/Buttons/NewJournal/Caption
+$:/language/Buttons/NewJournal/Hint
+$:/core/ui/Buttons/new-image
+$:/language/Buttons/NewImage/Caption
+$:/language/Buttons/NewImage/Hint
+
+
+"""Editor Toolbar configuration in settings""" +[bl[]]
+[[$:/core/ui/ControlPanel/Settings/EditorToolbar]]
+[[$:/config/TextEditor/EnableToolbar]]
+[prefix[$:/language/ControlPanel/Settings/EditorToolbar/]]
+
+"""Editor Toolbar configuration in toolbar""" +[bl[]]
+[[$:/core/ui/ControlPanel/Toolbars/EditorToolbar]]
+[prefix[$:/language/ControlPanel/Toolbars/EditorToolbar/]]
+[[$:/core/ui/ControlPanel/Toolbars/EditToolbar]]
+[prefix[$:/language/ControlPanel/Toolbars/EditToolbar/]]
+
+"""EditTemplate""" +[bl[]]
+[[$:/core/ui/EditTemplate]]
+[[$:/tags/EditTemplate]]
+[prefix[$:/core/ui/EditTemplate/]]
+[tag[$:/tags/EditTemplate]]
+[[$:/tags/EditToolbar]]
+[tag[$:/tags/EditToolbar]]
+[[$:/tags/EditorToolbar]]
+[tag[$:/tags/EditorToolbar]]
+[prefix[$:/core/ui/EditorToolbar/]]
