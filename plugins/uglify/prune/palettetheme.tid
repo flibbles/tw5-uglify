@@ -1,0 +1,33 @@
+title: $:/plugins/flibbles/uglify/prune/palette-theme
+caption: Unused palettes and themes
+
+"""
+
+    Palletes
+
+""" +[bl[]]
+
+"""Language materials""" +[bl[]]
+[prefix[$:/language/Docs/PaletteColours/]]
+[prefix[$:/language/ControlPanel/Palette/]]
+$:/language/Switcher/Subtitle/palette
+
+"""Buttons""" +[bl[]]
+$:/core/ui/Buttons/palette
+$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/palette
+$:/language/Buttons/Palette/Caption
+$:/language/Buttons/Palette/Hint
+
+"""Control Panel""" +[bl[]]
+$:/core/ui/ControlPanel/Palette
+$:/PaletteManager
+$:/snippets/paletteswitcher
+$:/snippets/paletteeditor
+$:/snippets/palettepreview
+$:/snippets/currpalettepreview
+
+"""Switcher configuration""" +[bl[]]
+$:/config/SwitcherTargets/palette
+
+"""All unused palettes""" +[bl[]]
+[tag[$:/tags/Palette]!match{$:/palette}!match[$:/palettes/Vanilla]]

@@ -3,7 +3,7 @@ tags: Documentation Concept
 
 Uglify supports javascript Source Mapping. This is when the server supplies your browser with uglified javascript to use, but if you open your browser's web developer tools, your browser can requests original versions of the javascript from the server, along with a "source map", which maps the executing uglified code to the pretty original versions, thus allowing you to seemlessly debug using pretty code while still reaping the benefits of compressed code.
 
-Source Mapping only works when TW5-Uglify is used [[in conjunction with a Node.JS server|Uglify on Node.JS]]. A standalone Tiddlywiki cannot source map, because it has no server from which to request original files.
+Source Mapping can work both when used [[in conjunction with a Node.JS server|Uglify on Node.JS]], but also with standalone wikis! The sourcemaps and original javavascript will be in directories right next to your tiddlywiki file. See [[Publishing Wikis]] for details on how to do this.
 
 !! Source Mapping is not perfect
 

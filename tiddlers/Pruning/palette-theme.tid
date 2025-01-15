@@ -1,0 +1,9 @@
+title: Pruning/palette-theme
+caption: palette-theme
+tags: Pruning
+
+This pruning rule removes all unused palettes and themes, as well as the infrastructure to modify them. In short, it commits your tiddlywiki to whatever appearance customization it already has.
+
+This is useful for production-ready tiddlywikis that have already been customized.
+
+(The below list of removed tiddlers includes all non-vanilla palettes, but in reality, this rule will keep whatever palette your wiki is using.)
