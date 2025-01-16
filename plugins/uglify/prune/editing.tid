@@ -1,5 +1,6 @@
 title: $:/plugins/flibbles/uglify/prune/editing
 caption: Editing components
+list.shortcuts: add-field delete-field cancel-edit-tiddler bold excise heading-1 heading-2 heading-3 heading-4 heading-5 heading-6 italic link linkify list-bullet list-number mono-block mono-line new-image new-journal new-tiddler picture preview quote save-tiddler stamp strikethrough subscript superscript transcludify underline
 
 [prefix[$:/config/EditorToolbarButtons/]]
 [prefix[$:/config/EditTemplateFields/]]
@@ -30,27 +31,42 @@ $:/language/Docs/ModuleTypes/texteditoroperation
 """Buttons and their associated language info""" +[bl[]]
 [prefix[$:/language/EditTemplate/]]
 $:/core/ui/Buttons/clone
+$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/clone
 $:/language/Buttons/Clone/Caption
 $:/language/Buttons/Clone/Hint
+
 $:/core/ui/Buttons/delete
+$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/delete
 $:/language/Buttons/Delete/Caption
 $:/language/Buttons/Delete/Hint
+
 $:/core/ui/Buttons/edit
+$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/edit
 $:/language/Buttons/Edit/Caption
 $:/language/Buttons/Edit/Hint
+
 $:/core/ui/Buttons/new-here
+$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/new-here
 $:/language/Buttons/NewHere/Caption
 $:/language/Buttons/NewHere/Hint
+
 $:/core/ui/Buttons/new-journal-here
+$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/new-journal-here
 $:/language/Buttons/NewJournalHere/Caption
 $:/language/Buttons/NewJournalHere/Hint
+
 $:/core/ui/Buttons/new-tiddler
+$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-tiddler
 $:/language/Buttons/NewTiddler/Caption
 $:/language/Buttons/NewTiddler/Hint
+
 $:/core/ui/Buttons/new-journal
+$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal
 $:/language/Buttons/NewJournal/Caption
 $:/language/Buttons/NewJournal/Hint
+
 $:/core/ui/Buttons/new-image
+$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-image
 $:/language/Buttons/NewImage/Caption
 $:/language/Buttons/NewImage/Hint
 
@@ -71,8 +87,28 @@ $:/language/Buttons/NewImage/Hint
 [[$:/tags/EditTemplate]]
 [prefix[$:/core/ui/EditTemplate/]]
 [tag[$:/tags/EditTemplate]]
+
 [[$:/tags/EditToolbar]]
 [tag[$:/tags/EditToolbar]]
+[prefix[$:/config/EditToolbarButtons/Visibility/]]
+
 [[$:/tags/EditorToolbar]]
 [tag[$:/tags/EditorToolbar]]
 [prefix[$:/core/ui/EditorToolbar/]]
+[prefix[$:/config/EditorToolbarButtons/Visibility/]]
+
+
+"""Shortcuts""" +[bl[]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/ShortcutInfo/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-mac/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-linux/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-windows/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-not-mac/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-not-linux/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/config/shortcuts-not-windows/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]addprefix[$:/core/ui/KeyboardShortcuts/]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]search-replace[-],[ ]titlecase[]search-replace[ ],[]addprefix[$:/language/Buttons/]addsuffix[/Caption]]
+[list[$:/plugins/flibbles/uglify/prune/editing!!list.shortcuts]search-replace[-],[ ]titlecase[]search-replace[ ],[]addprefix[$:/language/Buttons/]addsuffix[/Hint]]
+[prefix[$:/language/Buttons/Excise/]]
+[prefix[$:/language/Buttons/Stamp/]]
