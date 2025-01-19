@@ -1,0 +1,7 @@
+title: Demo/pruning/notes
+
+\rules except wikilink
+
+In addition to (or instead of) minifying your plugins, //Uglify// has the ability to prune features out of TiddlyWiki. This can be helpful for creating customer-facing productions sites that have been stripped down to only contain features that customers would be expected to use. [[See here for more information.|Pruning]]
+
+Use the example below to select some features to strip from this very demo TiddlyWiki. Then click the download button. You'll download a copy of this demo without those features.

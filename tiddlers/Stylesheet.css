@@ -64,3 +64,14 @@ type: text/css
 	height: 20rem;
 	overflow: scroll;
 }
+
+.uglify-tiddlerlist-header {
+	font-style: italic;
+	text-align: center;
+}
+
+.uglify-pruning-demo-button {
+	margin: 1em;
+	padding-left: 1em;
+	padding-right: 1em;
+}

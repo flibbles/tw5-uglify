@@ -1,42 +1,58 @@
 title: Templates/Demo
 
+\whitespace trim
+
 <$tiddler tiddler=<<currentTab>> >
+
 <!-- We put the first character of the currentTiddler's text into a dummy
      variable, just so that if that tiddler's text changes, it forces a refresh
      of everything contained inside this widget. i.e. the demo-uglify macro.
 -->
-<$list variable="refreshText" filter="[{!!text}first[]]">
+
+<%if [{!!text}first[]] %>
 
 <!-- Encouraging editing plugins through rawtext is a bad idea.
      Lots of exceptions will be thrown.
 -->
 
-<$list variable='notes' filter='[all[current]addsuffix[/notes]is[tiddler]]'>
 
-<$transclude tiddler=<<notes>> />
-
-</$list>
+<$transclude tiddler={{{ [all[current]addsuffix[/notes]is[tiddler]] }}} />
 
 <div>
 
 <p class="uglify-demo-before">
 
-<$list variable="html" filter="[all[current]type[text/vnd.tiddlywiki]]" emptyMessage="<$transclude/>">
+<%if [all[current]type[text/vnd.tiddlywiki]] %>
 
 <$codeblock code={{!!text}} language="html" />
 
-</$list></p>
+<% else %>
+
+<$transclude />
+
+<% endif %>
+</p>
+
+<%if [all[current]addsuffix[/output]is[tiddler]] %>
+
+@@.uglify-demo-after
+
+<$transclude $tiddler=<<condition>> />
+@@
+
+<% else %>
 
 @@.uglify-demo-after
 
 <$codeblock code=<<uglify>> language={{{ [all[current]get[type]!match[text/vnd.tiddlywiki]else[html]] }}} />
 @@
 
+<%endif %>
+
 @@.uglify-demo-description
 <div />
 @@
 
 </div>
-
-</$list>
+<% endif %>
 </$tiddler>

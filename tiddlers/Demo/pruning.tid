@@ -1,0 +1,43 @@
+title: Demo/pruning
+caption: Pruning
+list-after: 
+tags: Demo
+
+\whitespace trim
+
+<ul>
+
+<$list
+	filter="[all[shadows+tiddlers]prefix[$:/plugins/flibbles/uglify/prune/]sort[caption]]">
+	<$let currentRule={{{ [all[current]removeprefix[$:/plugins/flibbles/uglify/prune/]] }}}>
+	<$checkbox
+		tiddler={{{ [<currentRule>addprefix[$:/config/flibbles/uglify/prune/]] }}}
+		checked="yes"
+		unchecked="no"
+		default="no"
+		field="text">
+	<$text text=' Remove '/>
+
+	<$linkcatcher actions="""<$action-setfield $tiddler="$:/state/tab-pruning" text={{{ [<currentRule>addprefix[Pruning/]] }}} /><$action-navigate $to=<<navigateTo>> />""" >
+		<$link to=Pruning><$text text={{!!caption}} /></$link>
+	</$linkcatcher>
+
+	<br>
+	</$checkbox>
+	</$let>
+</$list>
+
+<div class=uglify-prune-demo-download>
+
+	<$button
+		tooltip="Download pared-down demo"
+		class="uglify-pruning-demo-button">
+
+		<$action-sendmessage $param={{$:/config/SaveWikiButton/Template}}filename=<<site-title>>$message=tm-save-wiki/>
+
+		<span class=tc-dirty-indicator>
+			{{$:/core/images/save-button-dynamic}}<span class=tc-btn-text>Download</span>
+		</span>
+	</$button>
+</div>
+

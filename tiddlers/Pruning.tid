@@ -13,5 +13,6 @@ The following rules exist. (It is also possible to [[Build Your Own Rule]].)
 	default={{{ [all[current]tagging[]first[]] }}}
 	template="Templates/Prune"
 	class="tc-vertical"
+	explicitState="$:/state/tab-pruning"
 />
 

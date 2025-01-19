@@ -1,0 +1,32 @@
+title: Demo/pruning/output
+
+\function active.rules() [all[tiddlers]prefix[$:/config/flibbles/uglify/prune/]text[yes]]
+
+\function pruned() [active.rules[]removeprefix[$:/config]addprefix[$:/plugins]] :map:flat[all[shadows+tiddlers]subfilter{!!text}] :filter[all[current]shadowsource[]match[$:/core]]
+
+\procedure header() These rules would prune <$text text={{{ [function[pruned]count[]] }}} /> tiddlers from ~$:/core.
+
+<div class=uglify-tiddlerlist-header>
+
+<$transclude $variable=header $mode=inline/>
+
+</div>
+
+<div class=uglify-tiddlerlist>
+
+<$list
+	variable=list-item
+	join="<br>"
+	filter="[function[pruned]sort[]]">
+
+<$list-template>
+
+<$text text=<<list-item>> />
+
+</$list-template>
+<$list-empty>
+
+//-Select pruning rules on the left to see what shadow tiddlers would be expunged.-//
+
+</$list-empty>
+</$list>

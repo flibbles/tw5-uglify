@@ -1,7 +1,7 @@
 title: Templates/Prune
 
 \rules except syslink
-\function pruned() [all[shadows+tiddlers]subfilter{!!text}] :filter[[$:/core]plugintiddlers[]match<currentTiddler>]
+\function pruned() [all[shadows+tiddlers]subfilter{!!text}] :filter[all[current]shadowsource[]match[$:/core]]
 
 <$tiddler tiddler={{{ [<currentTab>split[/]last[]addprefix[$:/plugins/flibbles/uglify/prune/]] }}}>
 
