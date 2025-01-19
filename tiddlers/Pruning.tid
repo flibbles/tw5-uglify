@@ -3,6 +3,8 @@ tags: Concept
 
 //Uglify// is capable not only of compressing your plugins, but of stripping out unwanted features in order to create leaner versions of Tiddlywiki that do only what you need.
 
+''You can choose to ONLY prune and not uglify if pruning the only feature you're interested in.''
+
 Pruning strips not only from core, but from any other plugins which contain tiddlers matching the pruning rules.
 
 The following rules exist. (It is also possible to [[Build Your Own Rule]].)

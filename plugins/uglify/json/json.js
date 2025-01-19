@@ -15,7 +15,7 @@ exports.type = "application/json";
 exports.uglify = function(text, options) {
 	var wiki = options.wiki,
 		pluginInfo = utils.getPluginInfo(wiki, options.title);
-	if (pluginInfo && !pluginInfo.ugly) {
+	if (pluginInfo) {
 		return compressPlugin(wiki, pluginInfo);
 	} else {
 		return compressJSON(text);

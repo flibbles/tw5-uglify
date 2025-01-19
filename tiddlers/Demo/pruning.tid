@@ -8,7 +8,7 @@ tags: Demo
 <ul>
 
 <$list
-	filter="[all[shadows+tiddlers]prefix[$:/plugins/flibbles/uglify/prune/]sort[caption]]">
+	filter="[all[shadows+tiddlers]prefix[$:/plugins/flibbles/uglify/prune/]!match[$:/plugins/flibbles/uglify/prune/uglify]sort[caption]]">
 	<$let currentRule={{{ [all[current]removeprefix[$:/plugins/flibbles/uglify/prune/]] }}}>
 	<$checkbox
 		tiddler={{{ [<currentRule>addprefix[$:/config/flibbles/uglify/prune/]] }}}
@@ -33,11 +33,9 @@ tags: Demo
 		tooltip="Download pared-down demo"
 		class="uglify-pruning-demo-button">
 
-		<$action-sendmessage $param={{$:/config/SaveWikiButton/Template}}filename=<<site-title>>$message=tm-save-wiki/>
+		<$action-sendmessage $param="Demo/pruning/filter" filename=<<site-title>>$message=tm-download-file/>
 
-		<span class=tc-dirty-indicator>
-			{{$:/core/images/save-button-dynamic}}<span class=tc-btn-text>Download</span>
-		</span>
+		{{$:/core/images/save-button}}<span class=tc-btn-text>Download</span>
 	</$button>
 </div>
 

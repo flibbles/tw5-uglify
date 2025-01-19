@@ -44,8 +44,8 @@ version: 1.0.0
             "type": "application/javascript",
             "module-type": "library"
         },
-        "$:/plugins/Demo/readme": {
-            "text": "\\whitespace trim\nDemonstrates Uglify's ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<dl class=\"demo-math\">\n\t<$list filter=\"[[Demo/plugin]plugintiddlers[]prefix[$:/language]]\">\n\t\t<dt>\n\t\t\t<$text text={{{ [<currentTiddler>split[/]last[]] }}} />\n\t\t</dt>\n\t\t<dd>{{}}</dd>\n\t</$list>\n</dl>",
+        "Demo/plugin/readme": {
+            "text": "\\whitespace trim\nDemonstrates Uglify's ability to compress plugins above and beyond just what it does to javascript.\n\nIncludes a library for a basic Circle class, and a dictionary of a few mathematic constants:\n\n<dl class=\"demo-math\">\n\t<$list filter=\"[[Demo/plugin]plugintiddlers[]prefix[$:/plugins/Demo/language/]]\">\n\t\t<dt>\n\t\t\t<$text text={{{ [<currentTiddler>split[/]last[]] }}} />\n\t\t</dt>\n\t\t<dd>{{}}</dd>\n\t</$list>\n</dl>",
             "tags": "",
             "title": "Demo/plugin/readme"
         }
