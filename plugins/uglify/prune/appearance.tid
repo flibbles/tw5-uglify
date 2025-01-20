@@ -1,7 +1,7 @@
 title: $:/plugins/flibbles/uglify/prune/appearance
 caption: Unused appearance customization
 filter.dependencies: [get[dependents]else[]match[]] ~[all[]each:list-item[dependents]subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.dependencies}] [all[]] -[[]]
-filter.unusedthemes: [plugin-type[theme]] -[{$:/theme}else[$:/themes/tiddlywiki/vanilla]subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.dependencies}]
+filter.unusedthemes: [plugin-type[theme]] -[{$:/theme}!match[]else[$:/themes/tiddlywiki/snowwhite]subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.dependencies}]
 
 """
 
