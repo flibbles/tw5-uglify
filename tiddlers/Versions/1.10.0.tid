@@ -1,0 +1,10 @@
+created: 20250120061847849
+
+''Pruning added''
+
+Uglify now has the ability to remove swaths of features while it's uglifying your plugins. You can also disable uglifying and just remove features if that's all your interested in.
+
+* Wizard has an expandable "Customize" menu where you can select pruning rules. This used to be there, but now it has more options.
+* Servers can be configured to remove features for clients as well.
+
+More rules are possible, and the current rules could probably cull even more than they already are, so I'd love to hear your feedback.
