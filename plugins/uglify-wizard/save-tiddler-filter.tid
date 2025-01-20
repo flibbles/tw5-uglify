@@ -15,5 +15,6 @@ title: $:/plugins/flibbles/uglify-wizard/save-tiddler-filter
 -[[$:/boot/boot.js]]
 -[[$:/boot/bootprefix.js]]
 +[sort[title]]
+-[subfilter{$:/plugins/flibbles/uglify-wizard/pruned-tiddler-filter}]
 \end
 {{$:/core/templates/tiddlywiki5.html}}

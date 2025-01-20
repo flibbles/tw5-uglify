@@ -4,6 +4,12 @@ tags: $:/tags/AboveStory
 \rules except wikilink
 \whitespace trim
 
+\procedure boxed-list(filter)
+<p class=tc-uglify-compress-list><$list filter=<<filter>> >
+<$text text=<<currentTiddler>> /><br>
+</$list></p>
+\end
+
 <div class="tc-uglify-wizard-wrapper">
 
 <div class="tc-uglify-wizard">
@@ -119,9 +125,12 @@ Make sure that you keep a safe copy of your previous TiddlyWiki file.
 
 The following tiddlers will be compressed.
 
-<p class="tc-uglify-compress-list"><$list filter="[all[uglifiable]]">
-<$text text=<<currentTiddler>> /><br>
-</$list></p>
+<<boxed-list "[all[uglifiable]] -[subfilter{$:/plugins/flibbles/uglify-wizard/pruned-tiddler-filter}]">>
+
+The following tiddlers will be removed.
+
+<<boxed-list "[subfilter{$:/plugins/flibbles/uglify-wizard/pruned-tiddler-filter}]">>
+
 Close this browser window to prevent others from being able to access your data.
 
 </$reveal>

@@ -1,0 +1,5 @@
+title: $:/plugins/flibbles/uglify-wizard/pruned-tiddler-filter
+
+[all[shadows+tiddlers]prefix[$:/config/flibbles/uglify/prune/]text[yes]removeprefix[$:/config]addprefix[$:/plugins]]
+:map:flat[all[shadows+tiddlers]subfilter{!!text}]
++[is[tiddler]unique[]sort[]]
