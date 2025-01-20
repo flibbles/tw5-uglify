@@ -31,3 +31,28 @@ $:/config/SwitcherTargets/palette
 
 """All unused palettes""" +[bl[]]
 [tag[$:/tags/Palette]!match{$:/palette}!match[$:/palettes/Vanilla]]
+
+"""
+
+    Themes
+
+""" +[bl[]]
+
+"""Language materials""" +[bl[]]
+[prefix[$:/language/ControlPanel/Theme/]]
+$:/language/Switcher/Subtitle/theme
+
+"""Buttons""" +[bl[]]
+$:/core/ui/Buttons/theme
+$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/theme
+$:/language/Buttons/Theme/Caption
+$:/language/Buttons/Theme/Hint
+$:/snippets/themeswitcher
+$:/snippets/minithemeswitcher
+
+"""Control Panel""" +[bl[]]
+$:/core/ui/ControlPanel/Theme
+
+"""Switcher configuration""" +[bl[]]
+$:/config/RegisterPluginType/theme
+$:/config/SwitcherTargets/theme
