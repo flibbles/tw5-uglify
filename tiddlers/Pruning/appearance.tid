@@ -1,5 +1,5 @@
-title: Pruning/palette-theme
-caption: palette-theme
+title: Pruning/appearance
+caption: appearance
 tags: Pruning
 
 This pruning rule removes all unused palettes and themes, as well as the infrastructure to modify them. In short, it commits your tiddlywiki to whatever appearance customization it already has.

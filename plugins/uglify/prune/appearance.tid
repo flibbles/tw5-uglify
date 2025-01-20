@@ -1,7 +1,7 @@
-title: $:/plugins/flibbles/uglify/prune/palette-theme
-caption: Unused palettes and themes
-filter.dependencies: [get[dependents]else[]match[]] ~[all[]each:list-item[dependents]subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.dependencies}] [all[]] -[[]]
-filter.unusedthemes: [plugin-type[theme]] -[{$:/theme}subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.dependencies}]
+title: $:/plugins/flibbles/uglify/prune/appearance
+caption: Unused appearance customization
+filter.dependencies: [get[dependents]else[]match[]] ~[all[]each:list-item[dependents]subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.dependencies}] [all[]] -[[]]
+filter.unusedthemes: [plugin-type[theme]] -[{$:/theme}else[$:/themes/tiddlywiki/vanilla]subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.dependencies}]
 
 """
 
@@ -61,5 +61,5 @@ $:/config/RegisterPluginType/theme
 $:/config/SwitcherTargets/theme
 
 """All unused themes and their contents""" +[bl[]]
-[subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.unusedthemes}]
-[subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.unusedthemes}plugintiddlers[]]
+[subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.unusedthemes}]
+[subfilter{$:/plugins/flibbles/uglify/prune/appearance!!filter.unusedthemes}plugintiddlers[]]
