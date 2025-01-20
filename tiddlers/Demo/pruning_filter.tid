@@ -1,0 +1,15 @@
+title: Demo/pruning/filter
+
+\define saveTiddlerFilter()
+[is[tiddler]]
+-[[$:/UpgradeLibrary]]
+-[prefix[$:/config/flibbles/uglify/prune/]]
+-[prefix[$:/state/]]
+-[[$:/HistoryList]]
+-[[$:/boot/boot.css]]
+-[type[application/javascript]library[yes]]
+-[[$:/boot/boot.js]]
+-[[$:/boot/bootprefix.js]]
++[sort[title]]
+\end
+{{$:/core/templates/tiddlywiki5.html}}

@@ -1,5 +1,7 @@
 title: $:/plugins/flibbles/uglify/prune/palette-theme
 caption: Unused palettes and themes
+filter.dependencies: [get[dependents]else[]match[]] ~[all[]each:list-item[dependents]subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.dependencies}] [all[]] -[[]]
+filter.unusedthemes: [plugin-type[theme]] -[{$:/theme}subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.dependencies}]
 
 """
 
@@ -36,6 +38,7 @@ $:/config/SwitcherTargets/palette
 
     Themes
 
+    These use the `filter.theme` field, which is a recursive way to get all of the current theme's dependencies. It's important that the recursive call exists within a `~[[]]`, because that conditionally calls the recursion, instead of always calling it and possibly passing nothing.
 """ +[bl[]]
 
 """Language materials""" +[bl[]]
@@ -56,3 +59,7 @@ $:/core/ui/ControlPanel/Theme
 """Switcher configuration""" +[bl[]]
 $:/config/RegisterPluginType/theme
 $:/config/SwitcherTargets/theme
+
+"""All unused themes and their contents""" +[bl[]]
+[subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.unusedthemes}]
+[subfilter{$:/plugins/flibbles/uglify/prune/palette-theme!!filter.unusedthemes}plugintiddlers[]]
