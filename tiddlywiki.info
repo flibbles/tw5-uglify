@@ -10,7 +10,6 @@
 	],
 	"build": {
 		"demo": [
-			"--output", "./docs/",
 			"--uglify",
 				"prune/uglify=no",
 				"prune/server=no",
@@ -21,7 +20,6 @@
 			"--render","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
 		],
 		"wizard": [
-			"--output", "./docs/",
 			"--uglify",
 				"prune/uglify=no",
 				"compress=yes",

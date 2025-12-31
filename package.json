@@ -4,6 +4,7 @@
   "description": "Minify and compress tiddlywiki plugins",
   "main": "index.js",
   "scripts": {
+    "build": "tiddlywiki --build demo wizard",
     "test": "tiddlywiki --build test"
   },
   "repository": {
