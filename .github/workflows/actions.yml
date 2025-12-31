@@ -48,11 +48,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+    - name: List files for debugging before upload
+      run: ls -la ./output
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: ./output
-    - name: List files for debugging
+    - name: List files for debugging after upload
       run: ls -la
     - name: Deploy to GitHub Pages
       id: deployment
