@@ -8,6 +8,10 @@ Other plugins I've developed for TiddlyWiki5
 
 Automatically updates all references to a tiddler when you rename it. //All// references.
 
+!! [[Graph|https://flibbles.github.io/tw5-graph/]]
+
+Tiddlymap's spiritual successor. A framework for combining graph visualizations like Vis-Network or ECharts with TiddlyWiki to create easy, responsive, and easily customizable graphs and charts.
+
 !! [[XML|https://flibbles.github.io/tw5-xml/]]
 
 Toolkit for doing all things XML --- XPath and JQuery-like filters and widgets. XML rendering. Automatic template application. And more.
