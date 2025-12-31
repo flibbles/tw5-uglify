@@ -1,0 +1,27 @@
+{
+  "name": "tw5-uglify",
+  "version": "1.10.0",
+  "description": "Minify and compress tiddlywiki plugins",
+  "main": "index.js",
+  "scripts": {
+    "test": "tiddlywiki --build test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flibbles/tw5-uglify.git"
+  },
+  "keywords": [
+    "uglifyjs",
+    "tiddlywiki5",
+    "tiddlywiki-plugin"
+  ],
+  "author": "Flibbles",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/flibbles/tw5-uglify/issues"
+  },
+  "homepage": "https://github.com/flibbles/tw5-uglify#readme",
+  "dependencies": {
+    "tiddlywiki": "^5.3.0"
+  }
+}
