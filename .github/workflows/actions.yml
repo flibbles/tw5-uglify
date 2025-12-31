@@ -21,6 +21,10 @@ jobs:
     - name: Run tests
       run: npm test
   build:
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -48,6 +52,8 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         path: ./output
+    - name: List files for debugging
+      run: ls -la
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
