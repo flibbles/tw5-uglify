@@ -34,9 +34,6 @@ jobs:
       run: npm ci
     - name: Build Website
       run: npm run build
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@4
   deploy:
     needs: build
     permissions:
@@ -53,4 +50,4 @@ jobs:
         path: ./output
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@4
+      uses: actions/deploy-pages@v4
