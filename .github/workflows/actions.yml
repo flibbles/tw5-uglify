@@ -38,6 +38,10 @@ jobs:
       run: npm ci
     - name: Build Website
       run: npm run build
+    - name: List files for debugging before upload
+      run: |
+        ls -la .
+        ls -la ./output
   deploy:
     needs: build
     permissions:
@@ -49,7 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: List files for debugging before upload
-      run: ls -la ./output
+      run: |
+        ls -la .
+        ls -la ./output
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
