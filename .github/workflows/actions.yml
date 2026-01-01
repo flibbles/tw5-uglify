@@ -25,6 +25,9 @@ jobs:
       contents: write
       pages: write
       id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -38,16 +41,14 @@ jobs:
       run: npm ci
     - name: Build Website
       run: npm run build
-    - name: List files for debugging before upload
-      run: |
-        ls -la .
-        pwd
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: ./output
     - name: List files for debugging after upload
-      run: ls -la
+      run: |
+        ls -la .
+        pwd
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
