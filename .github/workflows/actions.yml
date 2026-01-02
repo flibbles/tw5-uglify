@@ -21,10 +21,6 @@ jobs:
     - name: Run tests
       run: npm test
   build:
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -37,6 +33,11 @@ jobs:
       run: npm ci
     - name: Build Website
       run: npm run build
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v4
+      with:
+        name: output-artifact
+        path: output/
   deploy:
     needs: build
     permissions:
@@ -48,16 +49,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
-    - name: Check the files present
-      run: |
-        ls -la .
-        ls -la output
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./output
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
