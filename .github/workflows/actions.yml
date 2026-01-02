@@ -25,15 +25,11 @@ jobs:
       contents: write
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-    - name: Use Node.js
-      uses: actions/setup-node@v6
+    - uses: actions/setup-node@v6
       with:
         node-version: lts/*
         cache: npm
@@ -41,6 +37,23 @@ jobs:
       run: npm ci
     - name: Build Website
       run: npm run build
+  deploy:
+    needs: build
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
+    - name: Check the files present
+      run: |
+        ls -la .
+        ls -la output
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
