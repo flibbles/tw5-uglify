@@ -228,8 +228,16 @@ exports.tagAtStartOfBlock = function(tag, source) {
 exports.isCurrentTiddlerAttr = function(attr) {
 	switch (attr.type) {
 		case "macro":
-			return attr.value.name === "currentTiddler"
-				&& attr.value.params.length == 0;
+			if (attr.value.name !== undefined) { // This is a pre-v5.4 TW
+				return attr.value.name === "currentTiddler"
+					&& attr.value.params.length == 0;
+			} else { //post-v5.4
+				// With TW 5.4, the legacy name property was dropped in favor
+				// of macros behaving purely like transclusions.
+				var macro = attr.value;
+				return macro.attributes["$variable"].value === "currentTiddler"
+					&& macro.orderedAttributes.length === 1;
+			}
 		case "indirect":
 			return attr.textReference == "!!title";
 		default:
