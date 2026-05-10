@@ -1,4 +1,4 @@
-name: Test plugin
+name: Test plugin and deploy to GitHub pages
 
 on:
   push:
