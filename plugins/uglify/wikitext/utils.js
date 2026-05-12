@@ -125,13 +125,23 @@ exports.uglifyFilter = function(text, options) {
 	}
 };
 
+/*** Migration checks ***/
+
 var _letAvail;
+var _bracketAttrsAvail;
 
 exports.letAvailable = function() {
 	if (_letAvail === undefined) {
 		_letAvail = !$tw.wiki.renderText(null, null, "<$let/>");
 	}
 	return _letAvail;
+};
+
+exports.bracketAttrsAvailable = function() {
+	if (_bracketAttrsAvail === undefined) {
+		_bracketAttrsAvail = $tw.wiki.renderText(null, null, "<$text text=[[text]]/>") == "text";
+	}
+	return _bracketAttrsAvail;
 };
 
 function getOriginalQuoting(param, source, hasName) {
@@ -187,6 +197,12 @@ exports.bestQuoteForAttribute = function(attr, parser) {
 	}
 	if (parser.apostrophesAllowed && string.indexOf("'") < 0) {
 		return "'" + string + "'";
+	}
+	if (exports.bracketAttrsAvailable()
+	&& parser.bracketsAllowed
+	&& string.indexOf("]]") < 0
+	&& string.charAt(string.length-1) !== "]") {
+		return "[[" + string + "]]";
 	}
 	if (string.indexOf('"') < 0) {
 		return '"' + string + '"';

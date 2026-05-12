@@ -14,6 +14,7 @@ const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
 const test = $tw.utils.test.wikitext.test;
 const cmp = $tw.utils.test.wikitext.cmp;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
+const ifBracketAttrsIt = $tw.utils.test.wikitext.ifBracketAttrsIt;
 const t = "\\whitespace trim\n";
 const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 
@@ -26,29 +27,44 @@ it('whitespace among attributes', function() {
 
 it('string attributes', function() {
 	const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[M]getvariable[]join[,]]+[join[;]]}}}/>";
-	test('<$vars a="""X""">'+dump, vars+" a=X>"+dump);
-	test('<$vars a="""file/path""">'+dump, vars+' a="file/path">'+dump);
-	test('<$vars a="""bad>char""">'+dump, vars+' a="bad>char">'+dump);
-	test('<$vars a="""bad=char""">'+dump, vars+' a="bad=char">'+dump);
-	test('<$vars a="""attr space""">'+dump, vars+' a="attr space">'+dump);
-	test('Bob\'s<$vars a="""f/p""">'+dump, "Bob's"+vars+" a='f/p'>"+dump);
-	test('<$vars a="""$love#@<()\\""">'+dump, vars+' a="$love#@<()\\">'+dump);
-	test('<$vars a="""$love#@()\\""">'+dump, vars+" a=$love#@()\\>"+dump);
+	test('<$text text="""X"""/>', "<$text text=X/>");
+	test('<$text text="""file/path"""/>', '<$text text="file/path"/>');
+	test('<$text text="""bad>char"""/>', '<$text text="bad>char"/>');
+	test('<$text text="""bad=char"""/>', '<$text text="bad=char"/>');
+	test('<$text text="""attr space"""/>', '<$text text="attr space"/>');
+	test('Bob\'s<$text text="""f/p"""/>', "Bob's<$text text='f/p'/>");
+	test('<$text text="""$love#@<()\\"""/>', '<$text text="$love#@<()\\"/>');
+	test('<$text text="""$love#@()\\"""/>', "<$text text=$love#@()\\/>");
 	// Prefers single quotes to double brackets
-	test('[[Bob\'s]]<$vars a="""f/p""">'+dump, "[[Bob's]]"+vars+" a='f/p'>"+dump);
+	test('[[Bob\'s]]<$text text="""f/p"""/>', "[[Bob's]]<$text text='f/p'/>");
 	// Quotes in attribute
 	test('<$text text="""f\"p"""/>', '<$text text="""f\"p"""/>');
 	test('Bob\'s<$text text="""f\"p"""/>', "Bob's<$text text='f\"p'/>");
 	test('<$text text="""Nick\'s"""/>', '<$text text="Nick\'s"/>');
 	test('<$text text="Nick\'s"/>', '<$text text="Nick\'s"/>');
 	test('<$text text="$$"/>', '<$text text=$$/>'); // null placeholder test
-	// Brackets aren't treated as quotes
-	test("<$text text=[[content]] />", "<$text text=[[content]]/>");
-	test("<$text text=[[con tent]] />'", "<$text text=[[con tent]]/>'");
+	// Some use of brackets
+	test("<$text text=[[content] />", "<$text text=[[content]/>");
+	test('<$text text="con tent]" />]][[', '<$text text="con tent]"/>]][[');
 	// Backticks as of v5.3.0 are a type of acceptable quotation
 	test('<$text text="```"/>\n', '<$text text="```"/>\n');
 	test("<$text text='`'/>\n", "<$text text='`'/>\n");
 	test('<$text text="A`B"/>\n', '<$text text="A`B"/>\n');
+});
+
+ifBracketAttrsIt("brackets as string attributes", function() {
+	// Brackets are treated as quotes, but only post V5.4
+	test("<$text text=[[content]] />", "<$text text=content/>");
+	test("<$text text=[[con tent]] />'", "<$text text='con tent'/>'");
+	// Also, we can insert brackets when best
+	test('<$text text="""A B""" />[[]]', "<$text text=[[A B]]/>[[]]");
+	test("<$text text=\"t[is te]t\" />[[]]", "<$text text=[[t[is te]t]]/>[[]]");
+	test("<$text text=\"t '`t\" />]]'`[[", "<$text text=[[t '`t]]/>]]'`[[");
+});
+
+it('brackets are not used in older versions of TW', function () {
+	spyOn(parseUtils, "bracketAttrsAvailable").and.returnValue(false);
+	test('<$text text="""A B""" />[[]]', '<$text text="A B"/>[[]]');
 });
 
 // Issues #11
@@ -63,7 +79,6 @@ it('string attributes that might read wrong without quotes', function() {
 	// substituted
 	test('<$text text="`" other="`"/>', '<$text text="`"other="`"/>');
 });
-
 
 it('empty attributes', function() {
 	test('<$text text=""/>', '<$text text=""/>');

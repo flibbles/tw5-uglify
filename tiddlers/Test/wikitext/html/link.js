@@ -20,12 +20,22 @@ it('removes unnecessary to attributes', function() {
 	test('<$link to=<<currentTiddler   >>>Link</$link>', '<$link>Link');
 	test('<$link to={{!!title}}>Link</$link>', '<$link>Link');
 	// These ones should not convert
-	test('<$link to=<< currentTiddler>>>Link</$link>', '<$link to << currentTiddler>>>Link');
 	test('<$link to=<<currentTiddler val>>>Link</$link>', '<$link to=<<currentTiddler val>>>Link');
 	test('<$link to={{!!title }}>Link</$link>', '<$link to={{!!title }}>Link');
 	test('<$link to={{ !!title}}>Link</$link>', '<$link to={{ !!title}}>Link');
 	test('<$link to={{!! title}}>Link</$link>', '<$link to={{!! title}}>Link');
 	test('<$link class=butts to=<<currentTiddler>>>Link</$link>', '<$link class=butts>Link');
+});
+
+it('handles blank macros accordingly depending on version', function() {
+	var input = '<$link to=<< currentTiddler>>>Link</$link>';
+	if ($tw.wiki.renderText(null, null, "<$text text=<< >> />") === "true") {
+		// Old macro parsing
+		test(input, '<$link to << currentTiddler>>>Link');
+	} else {
+		// New macro parsing
+		test(input, '<$link to=<< currentTiddler>>>Link</$link>');
+	}
 });
 
 it('compresses nested tooltip attr', function() {
@@ -36,7 +46,7 @@ it('compresses nested tooltip attr', function() {
 });
 
 it('removes inner content when it could be assumed', function() {
-	const tid = "<$tiddler tiddler=[[TestWiki]]>";
+	const tid = "<$tiddler tiddler=TestWiki>";
 	test(tid+"<$link to=<<currentTiddler>>><$view field=title/></$link>X",
 	     tid+"<$link/>X");
 	test(tid+"<$link to={{!!title}}><$view field=title/></$link>X",

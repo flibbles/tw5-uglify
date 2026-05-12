@@ -17,7 +17,7 @@ const cmp = $tw.utils.test.wikitext.cmp;
 const ifLetIt = $tw.utils.test.wikitext.ifLetIt;
 // Note that this does not print the value of "m", since that's the macro
 // name I use in tests, and it should change.
-const dump = "<$text text={{{[variables[]join[,]]=[variables[]!match[m]getvariable[]join[,]]+[join[;]]}}}/>";
+const dump = "<$text text=<<v>>/>";
 const vars = parseUtils.letAvailable() ? "<$let" : "<$vars";
 const close = parseUtils.letAvailable() ? "</$let>" : "</$vars>";
 
@@ -53,16 +53,29 @@ it('placeholders in value', function() {
 });
 
 it('legal names', function() {
+	function test(input, expected) {
+		const prefix = "\\import X\n";
+		const postfix = "<<dumpvariables>>";
+		const wiki = new $tw.Wiki();
+		wiki.addTiddler({title: "X", text:  `\\define dumpvariables()
+		{{{[variables[]join[,]]}}}
+
+		{{{[variables[]getvariable[]join[,]]}}}
+		\n\\end`});
+		$tw.utils.test.wikitext.test(prefix+input+postfix,
+			prefix+expected+postfix,
+			{wiki: wiki});
+	};
 	// illegal
-	test('<$set  name="" value=v>'+dump, '<$set name=""value=v>'+dump);
-	test('<$set  name="f/s" value=v>'+dump, '<$set name="f/s"value=v>'+dump);
-	test('<$set  name="s p" value=v>'+dump, '<$set name="s p"value=v>'+dump);
-	test('<$set  name="g>t" value=v>'+dump, '<$set name="g>t"value=v>'+dump);
-	test('<$set  name="e=q" value=v>'+dump, '<$set name="e=q"value=v>'+dump);
-	test("<$set  name='q\"t' value=v>"+dump, "<$set name='q\"t'value=v>"+dump);
-	test('<$set  name="a\'p" value=v>'+dump, '<$set name="a\'p"value=v>'+dump);
+	test('<$set  name="" value=v>', '<$set name=""value=v>');
+	test('<$set  name="f/s" value=v>', '<$set name="f/s"value=v>');
+	test('<$set  name="s p" value=v>', '<$set name="s p"value=v>');
+	test('<$set  name="g>t" value=v>', '<$set name="g>t"value=v>');
+	test('<$set  name="e=q" value=v>', '<$set name="e=q"value=v>');
+	test("<$set  name='q\"t' value=v>", "<$set name='q\"t'value=v>");
+	test('<$set  name="a\'p" value=v>', '<$set name="a\'p"value=v>');
 	// legal
-	test('<$set  name="\\()$@:#!" value=v>'+dump, vars+' \\()$@:#!=v>'+dump);
+	test('<$set  name="\\()$@:#!" value=v>', vars+' \\()$@:#!=v>');
 });
 
 it('goes to $vars if $let is not available', function() {
@@ -73,15 +86,15 @@ it('goes to $vars if $let is not available', function() {
 //////// Test the simple filter $set, which can't be converted
 
 it('filter attr gets trimmed up', function() {
-	test('<$set name=n filter="A [[B C]] +[addsuffix[s]]">'+dump,
-	     '<$set filter="A[[B C]]+[addsuffix[s]]"name=n>'+dump);
+	test('<$set name=v filter="A [[B C]] +[addsuffix[s]]">'+dump,
+	     '<$set filter="A[[B C]]+[addsuffix[s]]"name=v>'+dump);
 	// If that macrocall is enterpreted as a string,
 	// it would get wrongfully altered.
-	test('\\define M(a b)$a$-$b$-C\n<$set name=n filter=<<M "x y" [title[z]]>>>'+dump,
-	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M [[x y]][title[z]]>>name=n>'+dump);
+	test('\\define M(a b)$a$-$b$-C\n<$set name=v filter=<<M "x y" [title[z]]>>>'+dump,
+	     '\\define M(a b)$a$-$b$-C\n<$set filter=<<M [[x y]][title[z]]>>name=v>'+dump);
 	// If this were treated as a filter, A and B would smush together.
-	test('<$set name=n filter={{A  B!!title}}>'+dump,
-	     '<$set filter={{A  B!!title}}name=n>'+dump);
+	test('<$set name=v filter={{A  B!!title}}>'+dump,
+	     '<$set filter={{A  B!!title}}name=v>'+dump);
 });
 
 //////// Test of emptyValue and value used with filter
@@ -161,31 +174,32 @@ it('emptyValue & value with filtered attributes', function() {
 });
 
 it('emptyValue & value and quotation in macro arguments ', function() {
+	spyOn(parseUtils, "bracketAttrsAvailable").and.returnValue(false);
 	// Ordinarily, the macrocall stringifier would prefer
 	// to use [[brackets]] rather than "quotes", but that
 	// can't be done for macros inside filters.
-	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n o]]>>value=yes>'+dump);
+	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n o">>>]][['+dump,
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n o]]>>value=yes>]][['+dump);
 	// This seems very dangerous, but it's fine.
-	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n]]o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m n]]o>>value=yes>'+dump);
+	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m "n]]o">>>]][['+dump,
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m n]]o>>value=yes>]][['+dump);
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n]o}}>'+dump,
 	     vars+' v={{{A -A +[then[yes]else{n]o}]}}}>'+dump);
 	// The macro attribute gets parsed differently. Not allowed, even in quotes
-	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m  "n>o">>>'+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n>o]]>>value=yes>'+dump);
+	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m  "n>o">>>]][['+dump,
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n>o]]>>value=yes>]][['+dump);
 });
 
 it('emptyValue & value with bad values', function() {
 	test('<$set name=v filter="A -A" value=yes emptyValue="n}}}o">'+dump,
 	     '<$set name=v filter="A -A"value=yes emptyValue=n}}}o>'+dump);
-	test('<$set name=v filter="A -A" value=yes emptyValue="n]o">'+dump,
-	     '<$set name=v filter="A -A"value=yes emptyValue=n]o>'+dump);
+	test("<$set name=v filter='A -A' value=yes emptyValue='n]o'>"+dump,
+	     "<$set name=v filter='A -A'value=yes emptyValue=n]o>"+dump);
 	// Macros, they only work on the filter attribute
 	test('<$set name=v filter=<<m t}}}s>> value=yes emptyValue=no>'+dump,
 	     '<$set name=v filter=<<m t}}}s>>value=yes emptyValue=no>'+dump);
-	test('<$set name=v filter=<<m "te>st">> value=yes emptyValue=no>'+dump,
-	     '<$set name=v filter=<<m [[te>st]]>>value=yes emptyValue=no>'+dump);
+	test('<$set name=v filter=<<m "te>st">> value=yes emptyValue=no>]][['+dump,
+	     '<$set name=v filter=<<m [[te>st]]>>value=yes emptyValue=no>]][['+dump);
 	// Indirect
 	//		This is actually legal. I wouldn't have thought so.
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n}o}}>'+dump,

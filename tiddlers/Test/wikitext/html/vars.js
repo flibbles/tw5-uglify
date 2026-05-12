@@ -39,8 +39,8 @@ ifLetIt('indirect with specified tiddler', function() {
 	     '<$let y=<<m>>x={{A!!field}}z={{A##index}}>'+d,
 	     {wiki: wiki});
 	// Now while messing with currentTiddler
-	test('<$vars x={{A!!field}} currentTiddler="m h" y=<<m>> z={{A##index}}>'+d,
-	     '<$let y=<<m>>x={{A!!field}}currentTiddler="m h"z={{A##index}}>'+d,
+	test("<$vars x={{A!!field}} currentTiddler='m h' y=<<m>> z={{A##index}}>"+d,
+	     "<$let y=<<m>>x={{A!!field}}currentTiddler='m h'z={{A##index}}>"+d,
 	     {wiki: wiki});
 });
 
@@ -51,19 +51,19 @@ ifLetIt('indirect with current tiddler', function() {
 	test('<$vars x={{!!field}} y=<<m>>>'+d,
 	     '<$let y=<<m>>x={{!!field}}>'+d, {wiki: wiki});
 	// Now while messing with currentTiddler
-	test('<$vars currentTiddler="n o" x=<<m>> y={{!!field}}>'+d,
-	     '<$vars currentTiddler="n o"x=<<m>>y={{!!field}}>'+d, {wiki: wiki});
+	test("<$vars currentTiddler='n o' x=<<m>> y={{!!field}}>"+d,
+	     "<$vars currentTiddler='n o'x=<<m>>y={{!!field}}>"+d, {wiki: wiki});
 	// But we can have one currentTiddler-dependent indirect
-	test('<$vars currentTiddler="n o" y={{!!field}}>'+d,
-	     '<$let y={{!!field}}currentTiddler="n o">'+d, {wiki: wiki});
+	test("<$vars currentTiddler='n o' y={{!!field}}>"+d,
+	     "<$let y={{!!field}}currentTiddler='n o'>"+d, {wiki: wiki});
 });
 
 ifLetIt('placeholders in string attributes', function() {
 	test('\\define y()first\n\\define M(x)<$vars __x__=A y=second z="$x$--$(y)$">'+d+'\n<<M value>>',
 	     '\\define y()first\n\\define M(x)<$let __x__=A z="$x$--$(y)$"y=second>'+d+'\n<<M value>>');
 	// Now a version where __x__ and y don't bump to the end.
-	test('\\define y()first\n\\define M(x)<$vars __x__="A B" y="sec ond" z="$x$--$(y)$">'+d+'\n<<M value>>',
-	     '\\define y()first\n\\define M(x)<$let __x__="A B"y="sec ond"z="$x$--$(y)$">'+d+'\n<<M value>>');
+	test("\\define y()first\n\\define M(x)<$vars __x__='A B' y='sec ond' z='$x$--$(y)$'>"+d+'\n<<M value>>',
+	     "\\define y()first\n\\define M(x)<$let __x__='A B'y='sec ond'z='$x$--$(y)$'>"+d+'\n<<M value>>');
 });
 
 ifLetIt('placeholders in indirect attribute', function() {
@@ -73,12 +73,12 @@ ifLetIt('placeholders in indirect attribute', function() {
 		{title: "test", field: "field_value"},
 		{title: "T", field: "test_field_value"}]);
 	// currentTiddler is sneakily used
-	test(m+'\\define M(x)<$vars currentTiddler="n o" x=<<Z>> y={{$x$!!field}}>'+d+'\n<<M>>',
-	     m+'\\define M(x)<$vars currentTiddler="n o"x=<<Z>>y={{$x$!!field}}>'+d+'\n<<M>>',
+	test(m+"\\define M(x)<$vars currentTiddler='n o' x=<<Z>> y={{$x$!!field}}>"+d+'\n<<M>>',
+	     m+"\\define M(x)<$vars currentTiddler='n o'x=<<Z>>y={{$x$!!field}}>"+d+'\n<<M>>',
 	     {wiki: wiki});
 	// It's okay if placeholders are in the second half of indirects
-	test(m+'\\define M(x)<$vars currentTiddler="n o" x=<<Z>> y={{T!!$x$}}>'+d+'\n<<M field>>',
-	     m+'\\define M(x)<$let x=<<Z>>currentTiddler="n o"y={{T!!$x$}}>'+d+'\n<<M field>>',
+	test(m+"\\define M(x)<$vars currentTiddler='n o' x=<<Z>> y={{T!!$x$}}>"+d+'\n<<M field>>',
+	     m+"\\define M(x)<$let x=<<Z>>currentTiddler='n o'y={{T!!$x$}}>"+d+'\n<<M field>>',
 	     {wiki: wiki});
 });
 

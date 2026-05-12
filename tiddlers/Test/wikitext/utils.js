@@ -50,6 +50,14 @@ exports.ifLetIt = function(description, fn) {
 	}
 };
 
+exports.ifBracketAttrsIt = function(description, fn) {
+	if (parseUtils.bracketAttrsAvailable()) {
+		return it(description, fn);
+	} else {
+		return xit("bracket attrs unavailable (<$ =[[]]/>): " + description);
+	}
+};
+
 exports.ifAtLeastVersion = function(targetVersion) {
 	return ($tw.utils.compareVersions($tw.version, targetVersion) >= 0)?
 		{it: it, describe: describe}:
