@@ -16,9 +16,36 @@ describe('wikitext uglifier', function() {
 
 const test = $tw.utils.test.wikitext.test;
 
-it('tightens up mvv diplays', function() {
-	const prefix = "<$let X={{{A B}}}>\n\n";
-	test(prefix+'((( X )))', prefix+'(((X)))');
+it('tightens up simple variable', function() {
+	const prefix = "<$let X={{{A B}}}>";
+	test(prefix+'((X ))', prefix+'((X))');
+	test(prefix+'((X\n\t ))', prefix+'((X))');
+	test(prefix+'\n\n((X ))', prefix+'\n\n((X))');
+	test(prefix+'\n\n((X ))\n', prefix+'\n\n((X))\n');
+	test('\\whitespace trim\n'+prefix+'\n\n((X ))\n', prefix+'\n\n((X))');
+});
+
+it('tightens up custom separator variable', function() {
+	const prefix = "<$let X={{{A B}}}>";
+	test(prefix+'((X ||))', prefix+'((X||))');
+	test(prefix+'((X ||  c  ))', prefix+'((X||  c  ))');
+	test(prefix+'((X\n\t ||c))', prefix+'((X||c))');
+});
+
+it('tightens up simple filter', function() {
+	const prefix = "<$button>";
+	test(prefix+'((( A B )))', prefix+'(((A B)))');
+	test(prefix+'((( A B\n\t  )))', prefix+'(((A B)))');
+	test(prefix+'\n\n((( A B )))', prefix+'\n\n(((A B)))');
+	test(prefix+'\n\n((( A B )))\n', prefix+'\n\n(((A B)))\n');
+	test('\\whitespace trim\n'+prefix+'\n\n((( A B )))\n',
+	     prefix+'\n\n(((A B)))');
+});
+
+it('tightens up simple filter', function() {
+	test('((( A B ||)))', '(((A B||)))');
+	test('((( A B ||  c  )))', '(((A B||  c  )))');
+	test('((( A B\n\t  ||c)))', '(((A B||c)))');
 });
 
 });});

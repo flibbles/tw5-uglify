@@ -12,23 +12,41 @@ exports.name = "mvvdisplayinline";
 var utils = require("../utils");
 
 exports.uglify = function() {
-	var match = this.nextMatch,
-		filter = match.filter,
-		bits = ["((("];
-	this.parser.pos = match.end;
+	var match = this.nextMatch;
 	this.nextMatch = null;
-	if (this.parser.placeholders && this.parser.placeholders.present(filter) === filter.trim()) {
-		// Special case. If the filter is just a placeholder, we can't safely
-		// trim around it.
+	this.parser.pos = match.end;
+	if (match.type === "filter") {
+		return filter(match, this.parser);
+	} else {
+		return variable(match, this.parser);
+	}
+};
+
+function filter(match, parser) {
+	var bits = ["((("],
+		filter = match.filter;
+	if (parser.placeholders
+	&& parser.placeholders.present(filter) === filter.trim()) {
+		// Special case. If the filter is just a placeholder,
+		// we can't safely trim around it.
 		bits.push(filter);
 	} else {
-		bits.push(utils.uglifyFilter(filter, this.parser));
+		bits.push(utils.uglifyFilter(filter, parser));
 	}
-	if (match.separator !== ", ") { // separator
-		// As far as I can tell, tooltips aren't used in any way, but I
-		// guess if the rule specifies one, the user must want it.
-		bits.push("||", this.match[2]);
+	// Attach custom separator, if one was specified
+	if (match.separator !== ", ") {
+		bits.push("||", match.separator);
 	}
 	bits.push(")))");
-	return [{text: bits.join('')}];
+	return bits.join('');
+};
+
+function variable(match) {
+	var bits = ["((", match.varName.trim()];
+	// Attach custom separator, if one was specified
+	if (match.separator !== ", ") {
+		bits.push("||", match.separator);
+	}
+	bits.push("))");
+	return bits.join('');
 };
