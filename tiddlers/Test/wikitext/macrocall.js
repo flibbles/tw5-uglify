@@ -11,7 +11,6 @@ describe('wikitext uglifier', function() {
 describe('macrocall', function() {
 
 const test = $tw.utils.test.wikitext.test;
-const cmp = $tw.utils.test.wikitext.cmp;
 const m = "\\define m(val t f)\nOutput\n\n$val$,$t$,$f$\n\\end\n";
 
 it('whitespace around invocation', function() {
