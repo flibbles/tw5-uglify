@@ -27,9 +27,13 @@ function filter(match, parser) {
 		filter = match.filter;
 	if (parser.placeholders
 	&& parser.placeholders.present(filter) === filter.trim()) {
+		var trim = filter.trim();
 		// Special case. If the filter is just a placeholder,
 		// we can't safely trim around it.
-		bits.push(filter);
+		bits.push(trim);
+		if (trim !== filter) {
+			bits.push(" ");
+		}
 	} else {
 		bits.push(utils.uglifyFilter(filter, parser));
 	}
@@ -41,8 +45,14 @@ function filter(match, parser) {
 	return bits.join('');
 };
 
-function variable(match) {
-	var bits = ["((", match.varName.trim()];
+function variable(match, parser) {
+	var trim = match.varName.trim(),
+		bits = ["((", trim];
+	if (parser.placeholders
+	&& match.varName !== trim
+	&& parser.placeholders.present(trim) === trim) {
+		bits.push(" ");
+	}
 	// Attach custom separator, if one was specified
 	if (match.separator !== ", ") {
 		bits.push("||", match.separator);

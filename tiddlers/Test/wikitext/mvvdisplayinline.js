@@ -48,4 +48,29 @@ it('tightens up simple filter', function() {
 	test('((( A B\n\t  ||c)))', '(((A B||c)))');
 });
 
+it('empty placeholders do not muck with variables', function() {
+	const execute = "\n<$let X={{{A B}}}>\n\n<<M>>";
+	// Trimming placeholders with filtered transcludes is dangerous,
+	// Same with mvv, but all we need to retain is one space
+	test('\\define M(x)(($x$  ))'+execute, '\\define M(x)(($x$ ))'+execute);
+	test('\\define M(x)(($x$  ||))'+execute, '\\define M(x)(($x$ ||))'+execute);
+	test('\\define M(x)((  $x$))'+execute, '\\define M(x)(($x$ ))'+execute);
+	test('\\define M(x)(($x$))'+execute, '\\define M(x)(($x$))'+execute);
+});
+
+it('empty placeholders do not muck with filters', function() {
+	// Trimming placeholders with filtered transcludes is dangerous,
+	// Same with mvv, but all we need to retain is one space
+	test('\\define M(x)((($x$   )))\n<<M>>', '\\define M(x)((($x$ )))\n<<M>>');
+	test('\\define M(x)((($x$  ||)))\n<<M>>',
+	     '\\define M(x)((($x$ ||)))\n<<M>>');
+	test('\\define M(x)(((  $x$)))\n<<M>>', '\\define M(x)((($x$ )))\n<<M>>');
+	test('\\define M(x)((($x$)))\n<<M>>', '\\define M(x)((($x$)))\n<<M>>');
+});
+
+it('presence of placeholder context does not muff filter trimming', function() {
+	test('\\define M(x)((( $x$  B )))\n<<M>>',
+	     '\\define M(x)((($x$ B)))\n<<M>>');
+});
+
 });});
