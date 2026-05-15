@@ -4,7 +4,6 @@ Tests the wikitext uglifier with ''bold'', //italics//, and others
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('emphasis', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -44,4 +43,4 @@ it('can handle missing close', function() {
 	test("Content\n\n//<$text text='Italics'/>", "Content\n\n//<$text text=Italics/>");
 });
 
-});});
+});

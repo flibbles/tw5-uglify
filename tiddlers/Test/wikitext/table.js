@@ -4,7 +4,6 @@ Tests the wikitext uglifier with code blocks.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('table', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -136,4 +135,4 @@ it('newlines after table', function() {
 	     "<div>\n\n| A1 | <$text text=B1/> |\n| A2 | B2 |");
 });
 
-});});
+});

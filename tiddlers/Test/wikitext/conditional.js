@@ -4,8 +4,6 @@ Tests the wikitext uglifier with conditionals like <%if%>.
 
 \*/
 
-describe('wikitext uglifier', function() {
-
 $tw.utils.test.wikitext.ifAtLeastVersion("5.3.2").
 describe('conditional', function() {
 
@@ -61,4 +59,4 @@ it('missing endif', function() {
 	test("<% if [tag[d]] %>\n\n1<% elseif c %>\n\n2", "<%if [tag[d]]%>\n\n1<%elseif c%>\n\n2");
 });
 
-});});
+});

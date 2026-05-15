@@ -4,8 +4,6 @@ Tests the wikitext uglifier with the multi-value variables parser rule.
 
 \*/
 
-describe('wikitext uglifier', function() {
-
 // We only run these tests if we're working with a TW version that has these
 ($tw.utils.test.mvvPresent()? describe: xdescribe)('mvvdisplayinline', function() {
 
@@ -68,4 +66,4 @@ it('presence of placeholder context does not muff filter trimming', function() {
 	     '\\define M(x)((($x$ B)))\n<<M>>');
 });
 
-});});
+});

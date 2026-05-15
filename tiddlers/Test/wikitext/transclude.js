@@ -4,7 +4,6 @@ Tests the wikitext uglifier with inline and block filteredtranscludes.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('transclude', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -73,4 +72,4 @@ it('handles parameters', function() {
 	test(  '{{tid|cats||lizards}}', '{{tid|cats||lizards}}', {wiki: wiki});
 });
 
-});});
+});

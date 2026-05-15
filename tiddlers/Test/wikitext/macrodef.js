@@ -4,7 +4,6 @@ Tests the wikitext uglifier with macrodefs.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('macrodef', function() {
 
 var test = $tw.utils.test.wikitext.test;
@@ -188,4 +187,4 @@ it('handles named \\end syntax', function() {
 	     '\\define outer(B)\n\\define inner(A)\n<$reveal>\n\n$A$</$reveal>\n\\end inner\n<<inner"""$B$""">>\n\\end\n<<outer Content>>');
 });
 
-});});
+});

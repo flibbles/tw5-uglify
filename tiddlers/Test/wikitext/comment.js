@@ -4,7 +4,6 @@ Tests the wikitext uglifier with inline and block comments.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('comment', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -133,4 +132,4 @@ it('pragma', function() {
 	test("\n\n<!--Comment-->\n\nText", "Text");
 });
 
-});});
+});

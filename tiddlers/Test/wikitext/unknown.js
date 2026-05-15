@@ -7,7 +7,6 @@ The rule is a test rule found in testblock.js and testinline.js
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('unknown', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -62,4 +61,4 @@ it('inline', function() {
 		'<p>F<span class="cl">\n\n\n\tcontent\n\n</span></p>');
 });
 
-});});
+});

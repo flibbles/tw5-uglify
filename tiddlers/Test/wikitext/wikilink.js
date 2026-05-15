@@ -4,7 +4,6 @@ Tests the wikitext uglifier with wikilinks
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('wikilinks', function() {
 
 const t = "\\whitespace trim\n";
@@ -81,4 +80,4 @@ it('disabled prettylinks', function() {
 	     t+"\\rules except prettylink\nMyLink code");
 });
 
-});});
+});

@@ -4,7 +4,6 @@ Tests the wikitext uglifier with inline and block filteredtranscludes.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('filteredtransclude', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -69,4 +68,4 @@ it('handles quotes about macro param placeholders', function() {
 	     '\\define M(x){{{[<A"$x$">]}}}\n\\define A(z)--$z$--\n<<M [[A B]]>>');
 });
 
-});});
+});

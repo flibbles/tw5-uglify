@@ -4,7 +4,6 @@ Tests the wikitext uglifier with code blocks.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('codeblock', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -48,4 +47,4 @@ it('does not expand entities within it', function() {
 	test("A&#32;B\n\n```\nText&#32;This\n```", "A B\n\n```\nText&#32;This");
 });
 
-});});
+});

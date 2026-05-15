@@ -4,7 +4,6 @@ Tests the wikitext uglifier with html and widgets.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('html', function() {
 
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
@@ -297,4 +296,4 @@ it('does not change block value with reveals', function() {
 	     '\\define t()\n<$reveal tag=span type=nomatch>\n\n<$entity entity=&#x2713;/>\n\n\\end\n<<t>>');
 });
 
-});});
+});

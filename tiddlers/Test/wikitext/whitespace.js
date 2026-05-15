@@ -4,7 +4,6 @@ Tests the wikitext uglifier with whitespace and whitespace trimming.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('whitespace', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -106,4 +105,4 @@ it('accounts for v5.3.2 bug concerning pragma', function() {
 	test("<$list filter=''emptyMessage=\"\\whitespace trim\n\\define m()Macro\nempty\"/>", expected);
 });
 
-});});
+});

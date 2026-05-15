@@ -35,6 +35,10 @@
 				"title": {
 					"source": "filename",
 					"prefix": "Test/wikitext/"
+				},
+				"text": {
+					"prefix": "describe('wikitext uglifier', function(){",
+					"suffix": "});"
 				}
 			}
 		},

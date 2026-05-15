@@ -4,7 +4,6 @@ Tests the wikitext uglifier with macrocalls.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('macrocall', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -122,4 +121,4 @@ it('trailing newline or EOF and comments', function() {
 	test(  m+'G\n<<m "x\n\ny">><!--C-->\n', m+'G\n<<m"x\n\ny">>\n');
 });
 
-});});
+});

@@ -4,8 +4,6 @@ Tests the wikitext uglifier with ---
 
 \*/
 
-describe('wikitext uglifier', function() {
-
 describe('horizrule', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -42,4 +40,4 @@ it('Inside element', function() {
 	test("<div>\r\n\r\n---\r\n</div>x", "<div>\n\n---\n</div>x");
 });
 
-});});
+});

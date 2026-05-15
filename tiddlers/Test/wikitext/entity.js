@@ -4,7 +4,6 @@ Tests the wikitext uglifier with entities.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('entity', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -47,4 +46,4 @@ it('entity at start of block', function() {
 	test(t+"C\n\n&#32;<$reveal />", "C\n\n&#32;<$reveal/>");
 });
 
-});});
+});

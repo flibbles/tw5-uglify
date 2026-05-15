@@ -4,7 +4,6 @@ Tests the wikitext uglifier with syslinks
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('syslink', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -62,4 +61,4 @@ it('disabled prettylinks', function() {
 	     t+"\\rules except prettylink\n$:/core code");
 });
 
-});});
+});

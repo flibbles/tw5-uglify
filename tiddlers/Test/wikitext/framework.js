@@ -4,7 +4,6 @@ Tests the wikitext uglifier with inline and block comments.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('framework', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -89,4 +88,4 @@ it('does an identity transform right now', function() {
 
 /**/
 
-});});
+});

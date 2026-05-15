@@ -4,7 +4,6 @@ Tests the wikitext uglifier with whitespace and whitespace trimming.
 
 \*/
 
-describe('wikitext uglifier', function() {
 describe('import', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -64,4 +63,4 @@ it('trims its filter', function() {
 	test('\\import A  B\nText', '\\import A B\nText');
 });
 
-});});
+});

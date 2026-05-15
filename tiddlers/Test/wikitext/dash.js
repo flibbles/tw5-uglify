@@ -4,8 +4,6 @@ Tests the wikitext uglifier with --- em and en dash
 
 \*/
 
-describe('wikitext uglifier', function() {
-
 describe('dash', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -74,4 +72,4 @@ it('Four or more dashes', function() {
 	test(  "<div>\n\n----</div>x", "<div>\n\n----</div>x");
 });
 
-});});
+});

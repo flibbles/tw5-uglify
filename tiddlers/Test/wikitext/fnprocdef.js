@@ -4,7 +4,6 @@ Tests the wikitext uglifier with function pragma.
 
 \*/
 
-describe('wikitext uglifier', function() {
 $tw.utils.test.wikitext.ifAtLeastVersion("5.3.0").
 describe('fnprocdef', function() {
 
@@ -74,4 +73,4 @@ it('respects placeholders inside the body', function() {
 	     '\\define X(A)\n\\define function Y() Front """$A$""" Back +[join[ ]]\n<<Y>>\n\\end\n<<X"""[[c\'d"]]""">>');
 });
 
-});});
+});
