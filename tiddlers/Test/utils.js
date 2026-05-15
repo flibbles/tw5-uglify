@@ -54,6 +54,10 @@ test.exec = function(wiki, /* arguments */) {
 	return wiki;
 };
 
+test.mvvPresent = function() {
+	return $tw.wiki.renderText(null, null, "(((yes)))") === "yes";
+};
+
 test.setting = function(key, value) {
 	return {title: '$:/config/flibbles/uglify/' + key, text: value};
 };

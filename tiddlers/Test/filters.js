@@ -64,7 +64,7 @@ it('processes macro operands', function() {
 	     {prefix: prefix});
 });
 
-it('processes multival operands', function() {
+($tw.utils.test.mvvPresent()? it: xit)('processes multival operands', function() {
 	test('A C  B :let[[X]]D[(X )sort[]]', 'A C B :let[[X]]D[(X)sort[]]');
 	test('A C  B :let[[X]]D[( X )sort[]]', 'A C B :let[[X]]D[( X)sort[]]');
 	// Does not accidentally get treated as a title
