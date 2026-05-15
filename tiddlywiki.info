@@ -17,7 +17,7 @@
 				"sourcemap=no",
 				"blacklist=$:/plugins/flibbles/uglify Demo/plugin",
 			"--setfield", "$:/plugins/flibbles/uglify", "created", "Templates/release-date", "text/plain",
-			"--render","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[Test/]] -$:/plugins/flibbles/uglify-wizard"
+			"--render","$:/core/save/all","index.html","text/plain", "", "publishFilter", "-$:/plugins/tiddlywiki/jasmine -[prefix[$:/test/]] -$:/plugins/flibbles/uglify-wizard"
 		],
 		"wizard": [
 			"--uglify",

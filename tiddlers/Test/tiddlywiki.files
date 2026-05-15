@@ -9,7 +9,7 @@
 				"type": "application/javascript",
 				"title": {
 					"source": "filename",
-					"prefix": "Test/"
+					"prefix": "$:/test/"
 				}
 			}
 		},
@@ -21,7 +21,7 @@
 				"type": "application/javascript",
 				"title": {
 					"source": "filename",
-					"prefix": "Test/modules/"
+					"prefix": "$:/test/modules/"
 				}
 			}
 		},
@@ -34,7 +34,7 @@
 				"type": "application/javascript",
 				"title": {
 					"source": "filename",
-					"prefix": "Test/wikitext/"
+					"prefix": "$:/test/wikitext/"
 				},
 				"text": {
 					"prefix": "describe('wikitext uglifier', function(){",
@@ -51,7 +51,7 @@
 				"type": "application/javascript",
 				"title": {
 					"source": "filename",
-					"prefix": "Test/wikitext/html/"
+					"prefix": "$:/test/wikitext/html/"
 				},
 				"text": {
 					"prefix": "describe('wikitext uglifier', function(){ describe('html', function() {",
