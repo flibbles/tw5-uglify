@@ -64,6 +64,20 @@ it('processes macro operands', function() {
 	     {prefix: prefix});
 });
 
+it('processes multival operands', function() {
+	test('A C  B :let[[X]]D[(X )sort[]]', 'A C B :let[[X]]D[(X)sort[]]');
+	test('A C  B :let[[X]]D[( X )sort[]]', 'A C B :let[[X]]D[( X)sort[]]');
+	// Does not accidentally get treated as a title
+	test('[(X )]', '[(X)]');
+	// mvv does not mess up index hunting for later runs.
+	// Because of the macro substitution, quotation can't change.
+	// To make sure of that, Uglify must pass back through filters to check
+	// quotation, but mvv might mess that up if not accounted for.
+	test('[(X )] "$x$"', '[(X)]"$x$"', {
+		prefix: "\\define A(x)",
+		suffix: "\n<<A'cat [[f]]ancy'>>"});
+});
+
 it('titles and the spaces between them', function() {
 	test('[[B C]]', '[[B C]]');
 	test('[[A]]', 'A');
@@ -260,6 +274,7 @@ it('reduces first[] nth[1] zth[0] limit[1] to nth[]', function() {
 	test("[enlist[A B C D]first[1]]", "[enlist[A B C D]nth[]]");
 	test("[enlist[A B C D]!first[]]", "[enlist[A B C D]!nth[]]");
 	test("[enlist[A B C D]limit[1]]", "[enlist[A B C D]nth[]]");
+	test("[enlist[A B C D]limit[2]]", "[enlist[A B C D]limit[2]]");
 	test("[enlist[A B C D]!limit[1]]", "[enlist[A B C D]!limit[1]]");
 	test("[enlist[A B C D]limit[]]", "[enlist[A B C D]limit[]]");
 	test("[enlist[A B C D]zth[0]]", "[enlist[A B C D]nth[]]");

@@ -75,6 +75,8 @@ exports.uglify = function(text, options) {
 							bits.push('<',utils.stringifyMacro(macro, operand.text, options), '>');
 						} else if (operand.indirect) {
 							bits.push('{', operand.text, '}');
+						} else if (operand.multiValuedVariable) {
+							bits.push('(', operand.text.trimRight(), ')');
 						} else {
 							bits.push('[', operand.text, ']');
 						}
@@ -96,7 +98,9 @@ function runIsSingleTitle(run) {
 		&& !op.suffix
 		&& !op.prefix) {
 			var operand = op.operands[0];
-			if (!operand.variable && !operand.indirect) {
+			if (!operand.variable
+			&& !operand.indirect
+			&& !operand.multiValuedVariable) {
 				return operand.text;
 			}
 		}
@@ -137,6 +141,8 @@ function parseFilter(text, wiki) {
 							ptr = text.indexOf('>', ptr) + 1;
 						} else if (operand.indirect) {
 							ptr = text.indexOf('}', ptr) + 1;
+						} else if (operand.multiValuedVariable) {
+							ptr = text.indexOf('(', ptr) + 1;
 						} else {
 							ptr = text.indexOf(']', ptr) + 1;
 						}
