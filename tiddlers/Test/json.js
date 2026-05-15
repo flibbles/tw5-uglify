@@ -150,9 +150,12 @@ it('malformed', function() {
 		return log.alert.calls.mostRecent().args.join(' ');
 	};
 	var message = test('{ "this": ["is", "malformed"],}');
-	expect(message).toContain("* pos: 30");
+	// We want to make sure we're pulling at least some meta info
+	// But that info can change depending on NodeJS or browser
+	var expectedRegexp = /^\s*\*\s*(?:pos|line|col):/m;
+	expect(message).toMatch(expectedRegexp);
 	message = test('{\n\tx"this": ["is", "malformed"]\n}');
-	expect(message).toContain("* pos: 3");
+	expect(message).toMatch(expectedRegexp);
 });
 
 });

@@ -31,6 +31,12 @@ function compressJSON(text) {
 		if (index >= 0) {
 			err.pos = parseInt(err.message.substr(index + marker.length));
 		}
+		if (err.lineNumber !== undefined) {
+			err.line = err.lineNumber;
+		}
+		if (err.columnNumber !== undefined) {
+			err.col = err.columnNumber;
+		}
 		throw err;
 	}
 };
