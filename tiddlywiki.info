@@ -41,7 +41,7 @@
 				"$:/core/save/all",
 				"test.html",
 				"text/plain", "",
-				"publishFilter", "-$:/plugins/flibbles/uglify-wizard",
+				"publishFilter", "-$:/DefaultTiddlers -[!is[system]] -$:/plugins/flibbles/uglify-wizard",
 			"--test"
 		],
 		"empty": [
