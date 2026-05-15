@@ -14,6 +14,18 @@
 			}
 		},
 		{
+			"path": "./modules",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"type": "application/javascript",
+				"title": {
+					"source": "filename",
+					"prefix": "Test/modules/"
+				}
+			}
+		},
+		{
 			"path": "./wikitext",
 			"filesRegExp": "^.*\\.js$",
 			"isTiddlerFile": true,
