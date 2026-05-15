@@ -1,6 +1,4 @@
 /*\
-title: Test/wikitext/testblock.js
-type: application/javascript
 module-type: wikirule
 
 Fake rule for testing unknown rules containing blocks in wikitext.

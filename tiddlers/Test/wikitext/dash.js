@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/dash.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with --- em and en dash
 

@@ -1,9 +1,7 @@
 /*\
-title: Test/javascript.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the uglify compressor.
+
 \*/
 
 describe('javascript uglifier', function() {

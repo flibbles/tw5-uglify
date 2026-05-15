@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/table.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with code blocks.
 

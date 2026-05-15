@@ -1,7 +1,4 @@
 /*\
-title: Test/library.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the server ability to fetch source maps.
 Currently only javascript can supply them.

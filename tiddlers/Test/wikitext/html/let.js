@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/html/let.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier's ability to fold $let widgets together
 

@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/emphasis.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with ''bold'', //italics//, and others
 

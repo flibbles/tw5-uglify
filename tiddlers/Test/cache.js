@@ -1,7 +1,4 @@
 /*\
-title: Test/cache.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the file caching mechanism.
 

@@ -1,7 +1,4 @@
 /*\
-title: Test/prune.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the hidden pruning feature of uglify. Makes sure it prunes itself.
 

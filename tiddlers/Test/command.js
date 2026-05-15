@@ -1,7 +1,4 @@
 /*\
-title: Test/command.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the uglify command.
 

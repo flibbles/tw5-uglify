@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/framework.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with inline and block comments.
 

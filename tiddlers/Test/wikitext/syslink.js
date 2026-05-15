@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/syslink.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with syslinks
 

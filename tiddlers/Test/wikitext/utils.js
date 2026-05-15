@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/utils.js
-type: application/javascript
-tags: $:/tags/test-spec
 list-before: 
 
 Utils for the wikitext uglifying.

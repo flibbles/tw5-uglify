@@ -1,7 +1,4 @@
 /*\
-title: Test/json.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the uglify compressor and what it does to json and plugins.
 

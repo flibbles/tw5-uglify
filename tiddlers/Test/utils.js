@@ -1,6 +1,4 @@
 /*\
-title: Test/utils.js
-type: application/javascript
 module-type: utils
 
 Utilities for testing. This makes them all accessable from $tw.utils.test.

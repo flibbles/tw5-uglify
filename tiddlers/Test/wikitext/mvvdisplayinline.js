@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/mvvdisplayinline.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with the multi-value variables parser rule.
 

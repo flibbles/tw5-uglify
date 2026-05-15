@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/html/link.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with html attributes
 which contain more wikitext.

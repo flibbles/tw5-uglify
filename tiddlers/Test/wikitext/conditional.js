@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/conditional.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with conditionals like <%if%>.
 

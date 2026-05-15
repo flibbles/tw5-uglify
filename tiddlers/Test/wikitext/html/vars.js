@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/html/vars.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier's ability to convert $vars to $let
 

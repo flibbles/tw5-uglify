@@ -1,7 +1,4 @@
 /*\
-title: Test/compatibility.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests some general compatibility concerns. This isn't perfect, but it helps
 pick up some anti-IE11 stuff.

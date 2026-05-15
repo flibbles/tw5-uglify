@@ -1,7 +1,4 @@
 /*\
-title: Test/wikimethod.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 This ensures that only a stub of the plugin shows up on the browser.
 

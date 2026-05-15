@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/whitespace.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with whitespace and whitespace trimming.
 

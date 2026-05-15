@@ -1,7 +1,4 @@
 /*\
-title: Test/route.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the server ability to route browser requests for maps and source.
 

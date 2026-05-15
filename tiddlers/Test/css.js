@@ -1,9 +1,7 @@
 /*\
-title: Test/css.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the uglify compressor.
+
 \*/
 
 const logger = require('$:/plugins/flibbles/uglify/logger.js');

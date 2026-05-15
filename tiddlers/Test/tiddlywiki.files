@@ -1,0 +1,43 @@
+{
+	"directories": [
+		{
+			"path": ".",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"tags": "$:/tags/test-spec",
+				"type": "application/javascript",
+				"title": {
+					"source": "filename",
+					"prefix": "Test/"
+				}
+			}
+		},
+		{
+			"path": "./wikitext",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"tags": "$:/tags/test-spec",
+				"type": "application/javascript",
+				"title": {
+					"source": "filename",
+					"prefix": "Test/wikitext/"
+				}
+			}
+		},
+		{
+			"path": "./wikitext/html",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"tags": "$:/tags/test-spec",
+				"type": "application/javascript",
+				"title": {
+					"source": "filename",
+					"prefix": "Test/wikitext/html/"
+				}
+			}
+		}
+	]
+}

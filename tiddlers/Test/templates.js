@@ -1,7 +1,4 @@
 /*\
-title: Test/templates.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests some general purpose stuff about the plugin.
 

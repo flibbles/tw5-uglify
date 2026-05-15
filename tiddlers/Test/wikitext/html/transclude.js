@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/html/transclude.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with html and widgets.
 

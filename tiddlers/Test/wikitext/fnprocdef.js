@@ -1,7 +1,4 @@
 /*\
-title: Test/wikitext/fnprocdef.js
-type: application/javascript
-tags: $:/tags/test-spec
 
 Tests the wikitext uglifier with function pragma.
 
