@@ -7,9 +7,14 @@ Tests the uglify command.
 const logger = require('$:/plugins/flibbles/uglify/logger.js');
 const prefix = '$:/config/flibbles/uglify/';
 
-var exec = $tw.utils.test.exec;
+($tw.browser? xdescribe: describe)('command', function() {
 
-describe('command', function() {
+function exec(wiki, /* arguments */) {
+	const args = Array.prototype.slice.call(arguments, 1);
+	const command = new $tw.commands.uglify.Command(args, {wiki: wiki});
+	command.execute();
+	return wiki;
+};
 
 it('can toggle compression', function() {
 	const wiki = exec(new $tw.Wiki(), 'compress', 'no');
@@ -60,7 +65,7 @@ it('can work with string arrays', function() {
 
 it('prints out current settings with no arguments', function() {
 	const wiki = exec(new $tw.Wiki(), 'cache', 'no', 'blacklist', 'pluginA [[plugin B]]');
-	$tw.utils.test.exec(wiki, 'prune/uglify=yes');
+	exec(wiki, 'prune/uglify=yes');
 	var log = spyOn(console, 'log');
 	exec(wiki);
 	expect(log).toHaveBeenCalledWith('compress:                    ', 'yes');

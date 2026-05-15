@@ -59,11 +59,11 @@ it("can have pruning disabled", function() {
 			{title: tiddlerName, type: 'application/javascript', text: text}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	wiki.addTiddler($tw.wiki.getTiddler("$:/plugins/flibbles/uglify/prune/uglify"));
-	$tw.utils.test.exec(wiki, 'cache=no', 'prune/uglify=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', 'prune/uglify': 'yes'});
 	var output = wiki.getTiddlerUglifiedText("$:/plugins/flibbles/uglify");
 	expect(output).not.toContain("$:/anything");
 	// Now we disable pruning
-	$tw.utils.test.exec(wiki, 'prune/uglify=no');
+	$tw.utils.test.setEnvironment(wiki, {'prune/uglify': 'no'});
 	output = wiki.getTiddlerUglifiedText("$:/plugins/flibbles/uglify");
 	expect(output).toContain("$:/anything");
 });
@@ -77,7 +77,7 @@ it("custom rules can be added", function() {
 			{title: '$:/readme', text: 'This is the readme file'}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/added", text: tiddlerName});
-	$tw.utils.test.exec(wiki, 'cache=no', 'prune/added=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', 'prune/added': 'yes'});
 	var output = JSON.parse(wiki.getTiddlerUglifiedText(pluginName));
 	expect(output.tiddlers['$:/readme'].text).toBe('This is the readme file');
 	expect(output.tiddlers[tiddlerName]).toBeUndefined();
@@ -95,7 +95,7 @@ it("'server' can pick up imported modules", function() {
 			{title: '$:/readme', text: 'This is the readme file'}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers);
 	wiki.addTiddler($tw.wiki.getTiddler("$:/plugins/flibbles/uglify/prune/server"));
-	$tw.utils.test.exec(wiki, 'cache=no', 'prune/server=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', 'prune/server': 'yes'});
 	var output = JSON.parse(wiki.getTiddlerUglifiedText(pluginName));
 	expect(output.tiddlers['$:/readme'].text).toBe('This is the readme file');
 	expect(output.tiddlers[tiddlerName]).toBeUndefined();

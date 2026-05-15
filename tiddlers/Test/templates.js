@@ -16,7 +16,7 @@ it("compresses when exporting offline-external-js", function() {
 	const text = '<$text text=<<jsontiddlers "[[$:/core]]">>/>';
 	var tiddlers = [{title: "$:/jsfile.js", text: "exports.mymethod = function() { var myvariable = 5; return myvariable; }", type: "application/javascript"}];
 	$tw.utils.test.addPlugin(wiki, "$:/core", tiddlers);
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	var output = wiki.renderText("text/plain", "text/vnd.tiddlywiki", text);
 	expect(output).toContain("mymethod");
 	expect(output).not.toContain("myvariable");
@@ -30,7 +30,7 @@ it("compresses when exporting all-external-js", function() {
 			type: "application/javascript",
 			text: "// Comment\nexports.method = function(argument) { return argument; }"}
 	]);
-	$tw.utils.test.exec(wiki, 'cache=no', 'sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', sourcemap: 'yes'});
 	const text = '{{ $:/boot/bootprefix.js || $:/core/templates/tiddlywiki.js/load-tiddler}}';
 	var output = wiki.renderText("text/plain", "text/vnd.tiddlywiki", text);
 	expect(output).not.toContain("Comment");

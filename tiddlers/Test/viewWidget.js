@@ -55,7 +55,7 @@ it('does not add extraneous newlines to non-javascript', function() {
 		title = '$:/boot/boot.css',
 		text =  '/* comment */\n.class { cssPresent: red; }';
 	wiki.addTiddler({title: title, type: 'text/css', text: text});
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	expect(renderTiddler(wiki, title)).toBe('.class{cssPresent:red}');
 });
 
@@ -69,25 +69,25 @@ it('respects the blacklist', function() {
 	var text;
 	$tw.utils.test.addPlugin(wiki, name, tiddlers);
 	// Let's not worry about caching for this test.
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	// Test without a blacklist
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme\\n\\ntext');
 	expect(text).not.toContain('longArgName');
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain(name);
 	// Now we use a filled out blacklist
-	$tw.utils.test.exec(wiki, 'blacklist=' + name);
+	$tw.utils.test.setEnvironment(wiki, {blacklist: name});
 	wiki.addTiddler($tw.utils.test.blacklist([name]));
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme\\n\\n\\ntext');
 	expect(text).toContain('longArgName');
 	// Now with a blank blacklist
-	$tw.utils.test.exec(wiki, 'blacklist=');
+	$tw.utils.test.setEnvironment(wiki, {blacklist: null});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme\\n\\ntext');
 	expect(text).not.toContain('longArgName');
 	// Now see if we can ban specific shadow tiddlers
-	$tw.utils.test.exec(wiki, 'blacklist=$:/readme');
+	$tw.utils.test.setEnvironment(wiki, {blacklist: '$:/readme'});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('readme\\n\\n\\ntext');
 	expect(text).not.toContain('longArgName');
@@ -103,7 +103,7 @@ it('javascript settings and boot code', function() {
 		{title: "$:/boot/bootprefix.js",
 		 type: "application/javascript",
 		 text: "exports.func = function(longPrefixName) {return longPrefixName;}"}]);
-	$tw.utils.test.exec(wiki, 'cache=no sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', sourcemap: 'yes'});
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).not.toContain('longArgName');
 	expect(renderTiddler(wiki, "$:/boot/bootprefix.js")).not.toContain('longPrefixName');
 	expect(renderTiddler(wiki, "$:/boot/boot.js")).toContain('function');
@@ -133,12 +133,12 @@ it('can toggle particular uglifiers for system files', function() {
 	wiki.addTiddler({title: tiddler, text: stylesheet, type: "text/css"});
 	// We don't cache for this test, because this file actually exists,
 	// and we'd constantly be blasting the REAL cache with this test.
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	var output = renderTiddler(wiki, tiddler);
 	expect(output).toContain('cssPresent');
 	expect(output).not.toContain('comment');
 	// But now we disable css
-	$tw.utils.test.exec(wiki, 'text/css=no');
+	$tw.utils.test.setEnvironment(wiki, {'text/css': 'no'});
 	var output = renderTiddler(wiki, tiddler);
 	expect(output).toContain('cssPresent');
 	expect(output).toContain('comment');
@@ -164,7 +164,7 @@ it("prune settings", function() {
 	// no should not prune on either Node or browser, but it will compress
 	//wiki.addTiddler($tw.utils.test.setting({title: '$:/config/flibbles/uglify/stub', text: 'no'});
 	wiki.addTiddler({title: "$:/plugins/flibbles/uglify/prune/uglify", text: "$:/zebra [tag[RemoveThis]]"});
-	$tw.utils.test.exec(wiki, 'prune/uglify=no');
+	$tw.utils.test.setEnvironment(wiki, {'prune/uglify': 'no'});
 	text = renderTiddler(wiki, name);
 	expect(text).toContain('$:/elephant');
 	expect(text).toContain('$:/zebra');
@@ -173,7 +173,7 @@ it("prune settings", function() {
 	expect(console.log.calls.mostRecent().args.join(' ')).toContain('uglify: Compressing: $:/plugins/flibbles/uglify');
 
 	// yes should stub on Node.JS, but still NOT stub on browser
-	$tw.utils.test.exec(wiki, 'prune/uglify=yes');
+	$tw.utils.test.setEnvironment(wiki, {'prune/uglify': 'yes'});
 	text = renderTiddler(wiki, name);
 	expect(text).not.toContain('$:/elephant');
 	expect(text).not.toContain('$:/zebra');

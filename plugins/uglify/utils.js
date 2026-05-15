@@ -59,6 +59,23 @@ exports.getSettings = function(wiki) {
 	return settings;
 };
 
+exports.setEnvironment = function(wiki, settingsMap) {
+	if (settingsMap) {
+		for (var property in settingsMap) {
+			var title = '$:/config/flibbles/uglify/' + property;
+			var value = settingsMap[property];
+			if (value) {
+				wiki.addTiddler({title: title, text: value});
+			} else {
+				wiki.deleteTiddler(title);
+			}
+		}
+	}
+	// Now that we've changed the settings, the uglify sourcemapping
+	// environment may need updating.
+	setSourcemapping(wiki);
+};
+
 exports.sourceMappingEnabled = function(wiki) {
 	var setting = exports.getSetting(wiki, "sourcemap");
 	if (setting === "server" && $tw.boot.origin) {
@@ -67,7 +84,7 @@ exports.sourceMappingEnabled = function(wiki) {
 	return setting === "yes";
 };
 
-exports.setEnvironment = function(wiki) {
+function setSourcemapping(wiki) {
 	var title = "$:/temp/library/flibbles/uglify.js";
 	if (exports.sourceMappingEnabled(wiki)
 	&& exports.getSetting(wiki, "compress")

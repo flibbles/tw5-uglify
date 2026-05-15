@@ -30,6 +30,7 @@ Command.prototype.execute = function() {
 	if (this.params.length == 0) {
 		return list(wiki);
 	}
+	var properties = {};
 	for (var i = 0; i < this.params.length; i++) {
 		var value, property = this.params[i];
 		var equals = property.indexOf('=');
@@ -40,20 +41,13 @@ Command.prototype.execute = function() {
 			value = this.params[i+1];
 			i++;
 		}
-		if (utils.getSetting(wiki, property) !== undefined) {
-			var title = '$:/config/flibbles/uglify/' + property;
-			if (value) {
-				wiki.addTiddler({title: title, text: value});
-			} else {
-				wiki.deleteTiddler(title);
-			}
-		} else {
+		if (utils.getSetting(wiki, property) === undefined) {
 			logger.warn('Unrecognized configuration flag: ' + property);
+		} else {
+			properties[property] = value;
 		}
 	}
-	// Now that we've changed the settings, the uglify environment may
-	// need updating.
-	utils.setEnvironment(wiki);
+	utils.setEnvironment(wiki, properties);
 };
 
 function list(wiki) {

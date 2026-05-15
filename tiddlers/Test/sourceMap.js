@@ -42,7 +42,7 @@ it('server adds directives to boot files', function() {
 	var out;
 	var oldOrigin = $tw.boot.origin;
 	$tw.boot.origin = undefined;
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).toContain("sourceURL=");
@@ -50,19 +50,19 @@ it('server adds directives to boot files', function() {
 	expect(out).not.toContain("argName");
 	$tw.boot.origin = 'anything';
 	// We have to set this again just to force an environment reset
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
 	// Without sourcemapping can be controlled through configuration
-	$tw.utils.test.exec(wiki, 'sourcemap=no');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'no'});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).toContain("sourceURL=");
 	expect(out).not.toContain("sourceMappingURL=");
 	expect(out).not.toContain("argName");
 	// Now with sourcemap explciitly enabled
-	$tw.utils.test.exec(wiki, 'sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'yes'});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
@@ -77,7 +77,7 @@ it('server can customize source directory', function() {
 	var out;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
-	$tw.utils.test.exec(wiki, 'sourcemap=yes', 'sourceDirectory=source/x?#$:?');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'yes', sourceDirectory: 'source/x?#$:?'});
 	expect(wiki.getTiddlerUglifiedText(boot)).toContain("sourceMappingURL=source/x%3F%23$:%3F/boot/boot.js");
 });
 
@@ -87,11 +87,11 @@ it('server adds directives to boot that already has directives', function() {
 		text = 'exports.func = function(argName) {return argName;}\n\n//# sourceURL='+boot;
 	wiki.addTiddler($tw.utils.test.noCache());
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
-	$tw.utils.test.exec(wiki, 'sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'yes'});
 	var out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceURL=");
 	expect(out).toContain("sourceMappingURL=");
-	$tw.utils.test.exec(wiki, 'sourcemap=no');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'no'});
 	out = wiki.getTiddlerUglifiedText(boot);
 	expect(out).not.toContain("sourceMappingURL=");
 	// There should only be one directive
@@ -103,7 +103,7 @@ it('server adds directives to boots that have directive-like code', function() {
 		boot = '$:/boot/boot.js',
 		text = 'exports.func = function(argName) {return "//# sourceURL="+argName;}';
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
-	$tw.utils.test.exec(wiki, 'cache=no', 'sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', sourcemap: 'yes'});
 	var out = wiki.getTiddlerUglifiedText(boot);
 	expect(count(out,"sourceURL=")).toBe(1);
 	expect(out).toContain("sourceMappingURL=");
@@ -114,13 +114,13 @@ it("server won't muck directives to boots it failed to compress", function() {
 		boot = '$:/boot/boot.js',
 		text = 'exports.func = function(argName, ...) {return argName;}\n\n//# sourceURL='+boot;
 	wiki.addTiddler({title: boot, text: text, type: "application/javascript"});
-	$tw.utils.test.exec(wiki, 'cache=no', 'sourcemap=yes');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', sourcemap: 'yes'});
 	var warn = spyOn($tw.utils.Logger.prototype, "alert");
 	var out = wiki.getTiddlerUglifiedText(boot);
 	// It failed to compress. No sourceMapping wanted
 	expect(out).toContain("sourceURL=");
 	expect(out).not.toContain("sourceMappingURL=");
-	$tw.utils.test.exec(wiki, 'sourcemap=no');
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'no'});
 	expect(warn).toHaveBeenCalledTimes(1);
 	warn.calls.reset();
 	out = wiki.getTiddlerUglifiedText(boot);
@@ -177,7 +177,7 @@ it('gets source maps for shadow tiddlers', function() {
 it('gets source maps for boot.js and bootprefix.js', function() {
 	const javascript = 'exports.jsPresent = function(arg) {return arg;}';
 	const wiki = new $tw.Wiki();
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	wiki.addTiddler({title: "$:/boot/boot.js", text: javascript, type: 'application/javascript'});
 	var map = wiki.getTiddlerSourceMap('$:/boot/boot.js');
 	// We have to introduce 2 semicolons into boot files to adjust for how

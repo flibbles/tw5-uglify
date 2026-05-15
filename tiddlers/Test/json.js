@@ -60,7 +60,7 @@ it('does not pick up overridden types', function() {
 	const tiddlers = [
 		{title: '$:/name/js.js', type: 'application/javascript', text: text}];
 	// We turn off wikitext compression to ensure that doesn't stop it either.
-	$tw.utils.test.exec(wiki, 'cache=no', 'text/vnd.tiddlywiki=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', 'text/vnd.tiddlywiki': 'no'});
 	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
 	wiki.addTiddler({title: "$:/name/js.js", type: 'text/vnd.tiddlywiki', text: text});
 	var output = JSON.parse(wiki.getTiddlerUglifiedText('$:/name'));
@@ -75,7 +75,7 @@ it('does not pick up overridden text', function() {
 	const tiddlers = [
 		{title: title, type: 'application/javascript', text: text}];
 	// We turn off wikitext compression to ensure that doesn't stop it either.
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
 	wiki.addTiddler({title: title, type: 'application/javascript', text: 'exports.value = 3; //comment'});
 	var output = JSON.parse(wiki.getTiddlerUglifiedText('$:/name'));
@@ -92,14 +92,14 @@ it('json within plugins', function() {
 	// plugins despite the settings, and the wikimethod always compresses.
 	const macro = Object.create($tw.macros.jsontiddler);
 	macro.wiki = wiki;
-	$tw.utils.test.exec(wiki, 'cache=no');
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no'});
 	$tw.utils.test.addPlugin(wiki, '$:/name', tiddlers);
 	var output = JSON.parse(JSON.parse(macro.run('$:/name')).text);
 	expect(output.tiddlers['$:/name/json'].text).toBe(JSON.stringify(JSON.parse(text)));
 	expect(output.ugly).toBe(true);
 	// Now we confirm that if we turn off json compression, that pluglins
 	// still compress, but the json inside of them does not.
-	$tw.utils.test.exec(wiki, 'application/json=no');
+	$tw.utils.test.setEnvironment(wiki, {'application/json': 'no'});
 	output = JSON.parse(JSON.parse(macro.run('$:/name')).text);
 	expect(output.tiddlers['$:/name/json'].text).toBe(text);
 	expect(output.ugly).toBe(true);

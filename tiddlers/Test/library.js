@@ -33,7 +33,7 @@ it('adds directive to shadow modules', function() {
 		tiddlers = [
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
-	$tw.utils.test.exec(wiki, "cache", "no", "sourcemap", "yes");
+	$tw.utils.test.setEnvironment(wiki, {cache: 'no', sourcemap: 'yes'});
 	var directive = clientEval(wiki, tiddlerName);
 	expect(directive).toContain("sourceMappingURL=");
 	expect(directive).not.toContain("sourceURL=");
@@ -52,7 +52,7 @@ it('properly escapes sourceMappingURL', function() {
 		tiddlers = [
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
-	$tw.utils.test.exec(wiki, "sourcemap", "yes");
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'yes'});
 	var output = clientEval(wiki, tiddlerName);
 	// We hard-code this expected result, because this URL gets passed
 	// to the browser. In other words, contact with an outside program.
@@ -84,26 +84,26 @@ it('can customize the source directory', function() {
 			{title: tiddlerName, type: 'application/javascript', text: text, "module-type": "library"}];
 	$tw.utils.test.addPlugin(wiki, pluginName, tiddlers, {ugly: true});
 	wiki.addTiddler($tw.utils.test.noCache());
-	$tw.utils.test.exec(wiki, "sourcemap", "yes");
-	$tw.utils.test.exec(wiki, "sourceDirectory", "my/dir");
+	$tw.utils.test.setEnvironment(wiki, {sourcemap: 'yes'});
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: 'my/dir'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=my/dir/plugin/file.js");
-	$tw.utils.test.exec(wiki, "sourceDirectory", "source/");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: 'source/'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=source/plugin/file.js");
-	$tw.utils.test.exec(wiki, "sourceDirectory", ".");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: '.'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=./plugin/file.js");
 	// This makes the path absolute, which is very tricky, but allowed.
-	$tw.utils.test.exec(wiki, "sourceDirectory", "/source");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: '/source'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=/source/plugin/file.js");
-	$tw.utils.test.exec(wiki, "sourceDirectory", "/");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: '/'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=/plugin/file.js");
 	// Local paths work too
-	$tw.utils.test.exec(wiki, "sourceDirectory", "..");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: '..'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=../plugin/file.js");
 	// Filter
-	$tw.utils.test.exec(wiki, "sourceDirectory", "[[x-]addsuffix<version>]");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: '[[x-]addsuffix<version>]'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=x-"+$tw.version+"/plugin/file.js");
 	// Illegal characters
-	$tw.utils.test.exec(wiki, "sourceDirectory", "x?#$:");
+	$tw.utils.test.setEnvironment(wiki, {sourceDirectory: 'x?#$:'});
 	expect(clientEval(wiki, tiddlerName)).toContain("=x%3F%23$:/plugin/file.js");
 });
 
