@@ -4,8 +4,6 @@ Tests the wikitext uglifier with html and widgets.
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('$transclude', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -79,4 +77,4 @@ it('respects disabled transclude rules', function() {
 	test(noinline+"<$transclude/>", noinline+"<$transclude/>");
 });
 
-});});});
+});

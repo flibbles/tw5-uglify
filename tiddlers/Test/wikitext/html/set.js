@@ -4,8 +4,6 @@ Tests the wikitext uglifier with html and widgets.
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('$set', function() {
 
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
@@ -235,4 +233,4 @@ it('standalone tiddler={{!!title}}', function() {
 	test("<$set name=v tiddler=<<currentTiddler>> field='field'>"+dump, "<$set name=v tiddler={{!!title}}field=field>"+dump);
 });
 
-});});});
+});

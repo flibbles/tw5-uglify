@@ -5,8 +5,6 @@ which contain more wikitext.
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('nested', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -125,4 +123,4 @@ it('maintains inline or block status', function() {
 	test(t+"<div>\n\n<$link><$view field=title/></$link>\n", "<div>\n\n<$link>");
 });
 
-});});});
+});

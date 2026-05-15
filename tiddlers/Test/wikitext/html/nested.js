@@ -5,8 +5,6 @@ which contain more wikitext.
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('nested', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -84,4 +82,4 @@ it('handles both filter and wikitext attributes', function() {
 	     '<$list emptyMessage="<$text text=nope/>"filter=[all[/>');
 });
 
-});});});
+});

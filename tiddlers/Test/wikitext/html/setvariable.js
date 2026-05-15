@@ -4,8 +4,6 @@ Tests the wikitext uglifier with $setvariable widgets
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('$setvariable', function() {
 
 const test = $tw.utils.test.wikitext.test;
@@ -23,4 +21,4 @@ it('converts to $let', function() {
 	     vars+' v=var>'+dump);
 });
 
-});});});
+});

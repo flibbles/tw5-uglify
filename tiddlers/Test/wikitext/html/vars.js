@@ -4,8 +4,6 @@ Tests the wikitext uglifier's ability to convert $vars to $let
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('$vars', function() {
 
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
@@ -103,4 +101,4 @@ ifLetIt('does not impact qualify widgets and macros', function() {
 	     '<$let transclusion=5><$vars transclusion=4><<qualify>>');
 });
 
-});});});
+});

@@ -4,8 +4,6 @@ Tests the wikitext uglifier's ability to fold $let widgets together
 
 \*/
 
-describe('wikitext uglifier', function() {
-describe('html', function() {
 describe('$let', function() {
 
 const parseUtils = require("$:/plugins/flibbles/uglify/wikitext/utils.js");
@@ -243,4 +241,4 @@ ifLetIt('does not impact qualify widgets and macros', function() {
 });
 
 
-});});});
+});
