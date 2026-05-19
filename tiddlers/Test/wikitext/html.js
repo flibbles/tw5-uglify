@@ -41,6 +41,7 @@ it('string attributes', function() {
 	test('<$text text="$$"/>', '<$text text=$$/>'); // null placeholder test
 	// Some use of brackets
 	test("<$text text=[[content] />", "<$text text=[[content]/>");
+	test("<$text text=[[cont]ent />", "<$text text=[[cont]ent/>");
 	test('<$text text="con tent]" />]][[', '<$text text="con tent]"/>]][[');
 	// Backticks as of v5.3.0 are a type of acceptable quotation
 	test('<$text text="```"/>\n', '<$text text="```"/>\n');

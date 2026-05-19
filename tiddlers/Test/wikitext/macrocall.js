@@ -121,4 +121,47 @@ it('trailing newline or EOF and comments', function() {
 	test(  m+'G\n<<m "x\n\ny">><!--C-->\n', m+'G\n<<m"x\n\ny">>\n');
 });
 
+($tw.wiki.renderText(null, null, "\\define X(A) $A$\n<<X A=V>>") === "V"?
+describe: xdescribe)('macros as attributes', function() {
+// We are on a TW version that supports macroParameters as Attributes.
+// Let's test for that
+
+const m = "\\define m(val t f)\nOutput\n\n$val$,$t$,$f$\n\\end\n";
+
+it('mixing with old style parameters', function() {
+	test(m+'<<m val = output >>', m+'<<m val=output>>');
+	// Tricky values don't change assignment operator
+	test(m+'<<m t : T=T val = tr:cky >>', m+'<<m t:T=T val=tr:cky>>');
+	test(m+'<<m val = tr:cky t : T=T >>', m+'<<m val=tr:cky t:T=T>>');
+	// They can collapse spaces between each other
+	test(m+"<<m t : 'A B' val = C >>', m+'<<m t:'A B'val=C>>");
+	test(m+"<<m t = 'A B' val : C >>', m+'<<m t='A B'val:C>>");
+});
+
+it('handles indirect parameters', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: "Test", text: "Content", field: "Field"});
+	test(m+'<<m val = {{Test}} >>', m+'<<m val={{Test}}>>', {wiki: wiki});
+});
+
+it('handles indirect parameters', function() {
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: "Test", text: "Content", field: "Field"});
+	test(m+'<<m val = {{Test}} t=v>>', m+'<<m val={{Test}}t=v>>', {wiki: wiki});
+});
+
+it('handles macro parameters', function() {
+	test(m+'<<m val = <<m  x>>  t = v>>', m+'<<m val=<<m x>>t=v>>');
+});
+
+it('handles substitution parameters', function() {
+	test(m+'<<m val = `Bats`  t = v>>', m+'<<m val=`Bats`t=v>>');
+});
+
+it('handles filter parameters', function() {
+	test(m+'<<m val = {{{ A B }}}  t = v>>', m+'<<m val={{{A B}}}t=v>>');
+});
+
+});
+
 });

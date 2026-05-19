@@ -11,17 +11,14 @@ var rules = $tw.modules.getModulesByTypeAsHashmap("uglifyfilterrule");
 
 exports.type = "application/x-tiddler-filter";
 
-exports.uglify = function(text, options) {
-	var parseTree = parseFilter(text, options.wiki),
+exports.uglify = function(text, parser) {
+	var parseTree = parseFilter(text, parser.wiki),
 		bits = [],
 		title,
 		needsSpace = false,
-		options = {
-			wiki: options.wiki,
-			placeholders: options.placeholders,
-			apostrophesAllowed: text.indexOf("'") >= 0,
-			bracketsAllowed: text.indexOf("]") >= 0
-		};
+		options = Object.create(parser);
+	options.apostrophesAllowed = text.indexOf("'") >= 0;
+	options.bracketsAllowed = text.indexOf("]") >= 0;
 	for (var name in rules) {
 		// Let every rule have a chance to apply its magic
 		rules[name].transform(parseTree, options);
@@ -72,7 +69,8 @@ exports.uglify = function(text, options) {
 						firstOperand = false;
 						if (operand.variable) {
 							var macro = $tw.utils.parseFilterVariable(operand.text);
-							bits.push('<',utils.stringifyMacro(macro, operand.text, options), '>');
+							options.source = operand.text;
+							bits.push('<',utils.stringifyMacro(macro, options), '>');
 						} else if (operand.indirect) {
 							bits.push('{', operand.text, '}');
 						} else if (operand.multiValuedVariable) {

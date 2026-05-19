@@ -58,10 +58,10 @@ exports.uglifyPragmaParams = function(params) {
 		strings.push(param.name);
 		if (param.default) {
 			strings.push(":");
-			var options = Object.create(this.parser);
-			options.bracketsAllowed = false;
-			options.nocomma = true;
-			strings.push(utils.quotifyParam(param.default, false, options));
+			var newParser = Object.create(this.parser);
+			newParser.bracketsAllowed = false;
+			newParser.nocomma = true;
+			strings.push(utils.quotifyParamValue(param.default, newParser, false));
 		}
 	};
 	strings.push(")");

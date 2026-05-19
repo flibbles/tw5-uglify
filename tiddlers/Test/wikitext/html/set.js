@@ -182,7 +182,7 @@ it('emptyValue & value and quotation in macro arguments ', function() {
 	     vars+' v={{{A -A +[then[yes]else{n]o}]}}}>'+dump);
 	// The macro attribute gets parsed differently. Not allowed, even in quotes
 	test('\\define m(b)test $b$\n<$set name=v filter="A B" value=yes emptyValue=<<m  "n>o">>>]][['+dump,
-	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m [[n>o]]>>value=yes>]][['+dump);
+	     '\\define m(b)test $b$\n<$set name=v filter="A B"emptyValue=<<m n>o>>value=yes>]][['+dump);
 });
 
 it('emptyValue & value with bad values', function() {
@@ -194,7 +194,7 @@ it('emptyValue & value with bad values', function() {
 	test('<$set name=v filter=<<m t}}}s>> value=yes emptyValue=no>'+dump,
 	     '<$set name=v filter=<<m t}}}s>>value=yes emptyValue=no>'+dump);
 	test('<$set name=v filter=<<m "te>st">> value=yes emptyValue=no>]][['+dump,
-	     '<$set name=v filter=<<m [[te>st]]>>value=yes emptyValue=no>]][['+dump);
+	     '<$set name=v filter=<<m te>st>>value=yes emptyValue=no>]][['+dump);
 	// Indirect
 	//		This is actually legal. I wouldn't have thought so.
 	test('<$set name=v filter="A -A" value=yes emptyValue={{n}o}}>'+dump,

@@ -17,78 +17,98 @@ exports.joinNodeArray = function(array) {
 	return string.join('');
 };
 
-exports.stringifyMacro = function(macro, source, options) {
+exports.stringifyMacro = function(macro, parser) {
+	// Depending on the TW version, the macro name may be in different places
 	var strings = [macro.name !== undefined? macro.name: macro.attributes["$variable"].value],
-		needsSpace = true,
-		value,
-		hasName,
-		positionalName = 0;
+		options = {params: macro.params};
 	$tw.utils.each(macro.params || macro.orderedAttributes, function(param) {
-		if (macro.params === undefined && param.name === "$variable") {
+		if (options.params === undefined && param.name === "$variable") {
 			// This is a v5.3.0 macrocall, which is really just a transclusion
 			// We need to ignore the $variable argument
 			return;
 		}
-		if (
-			param.name === undefined
-			// >=v5.3.0, name may be present, but only as a positional
-			|| (macro.params === undefined && param.name == positionalName.toString())) {
-			// If it was an unnamed parameters, we need to increment this
-			// so it'll match with the next unnamed parameter.
-			positionalName++;
-			hasName = false;
-		} else {
-			if (needsSpace) {
-				// If param key is there, we always need preceding space
-				strings.push(" ");
-				needsSpace = false;
-			}
-			strings.push(param.name, ":");
-			hasName = true;
-		}
-		if (options.placeholders && options.placeholders.present(param.value)) {
-			// If there is a placeholder in the value, we can't change the
-			// quotes to something else, or we might break something
-			value = getOriginalQuoting(param, source, hasName);
-		} else {
-			var newOptions = Object.create(options);
-			newOptions.hasName = hasName;
-			value = exports.quotifyParam(param.value, false, newOptions);
-		}
-		if (value === param.value || value[0] === "[") {
-			if (needsSpace) {
-				// If value is unquoted, we need preceding space
-				strings.push(" ");
-			}
-			// We won't need a following space if [[brackets]] were used.
-			needsSpace = (value === param.value);
-		} else {
-			needsSpace = false;
-		}
-		strings.push(value);
+		strings.push(exports.uglifyMacroParameter(param, parser, options));
 	});
 	return strings.join("");
 };
 
-exports.quotifyParam = function(param, allowBrackets, options) {
-	if (param.search(/[\s"']/) < 0
-	&& (!options.nocomma || param.indexOf(",") < 0)
-	&& (options.hasName || param.indexOf(":") < 0)
-	&& param.length > 0
-	&& (allowBrackets || param.indexOf(">") < 0)
-	&& (param[0] !== "[" || param[1] !== "[")) {
-		return param;
+exports.uglifyMacroParameter = function(param, parser, options) {
+	options.positionalName = options.positionalName || 0;
+	var strings = [], value, hasName;
+	if (
+		param.name === undefined
+		// >=v5.3.0, name may be present, but only as a positional
+		|| (options.params === undefined
+			&& param.name == options.positionalName.toString())) {
+		// If it was an unnamed parameters, we need to increment this
+		// so it'll match with the next unnamed parameter.
+		options.positionalName++;
+		hasName = false;
+	} else {
+		if (!options.collapseSpace) {
+			// If param key is there, we always need preceding space
+			strings.push(" ");
+			options.collapseSpace = true;
+		}
+		hasName = true;
 	}
-	if (options.apostrophesAllowed && param.indexOf("'") < 0) {
-		return "'" + param + "'";
+	if (parser.placeholders && parser.placeholders.present(param.value)) {
+		options.hasName = hasName;
+		if (param.assignmentOperator !== "=" && options.hasName) {
+			strings.push(param.name, ":");
+		}
+		// If there is a placeholder in the value, we can't change the
+		// quotes to something else, or we might break something
+		value = getOriginalQuoting(param, parser.source, hasName);
+	} else {
+		options.hasName = hasName;
+		if (param.assignmentOperator === "=") {
+			value = exports.uglifyAttribute(param, parser, options);
+		} else {
+			if (options.hasName) {
+				strings.push(param.name, ":");
+			}
+			value = exports.quotifyParamValue(param.value, parser, parser.bracketsAllowed, options);
+		}
 	}
-	if (options.bracketsAllowed && param.indexOf("]") < 0) {
-		return "[[" + param + "]]";
+	// We only consider space collapsing for old style, because attributes
+	// figure it out for themselves.
+	if (param.assignmentOperator !== '=') {
+		if (value === param.value || value[0] === "[") {
+			if (!options.collapseSpace) {
+				// If value is unquoted, we need preceding space
+				strings.push(" ");
+			}
+			// We won't need a following space if [[brackets]] were used.
+			options.collapseSpace = (value !== param.value);
+		} else {
+			options.collapseSpace = true;
+		}
 	}
-	if (param.indexOf('"') < 0) {
-		return '"' + param + '"';
+	strings.push(value);
+	return strings.join('');
+};
+
+exports.quotifyParamValue = function(value, parser, allowBrackets, options) {
+	options = options || {};
+	if (value.search(/[\s"']/) < 0
+	&& (!parser.nocomma || value.indexOf(",") < 0)
+	&& (options.hasName || value.indexOf(":") < 0)
+	&& value.length > 0
+	&& (allowBrackets || value.indexOf(">") < 0)
+	&& (value[0] !== "[" || value[1] !== "[")) {
+		return value;
 	}
-	return '"""' + param + '"""';
+	if (parser.apostrophesAllowed && value.indexOf("'") < 0) {
+		return "'" + value + "'";
+	}
+	if (parser.bracketsAllowed && value.indexOf("]") < 0) {
+		return "[[" + value + "]]";
+	}
+	if (value.indexOf('"') < 0) {
+		return '"' + value + '"';
+	}
+	return '"""' + value + '"""';
 };
 
 // Returns the length of the newline if it's there, otherwise 0.
@@ -212,7 +232,7 @@ exports.bestQuoteForAttribute = function(attr, parser) {
 
 // This optimization puts an attribute that does not need quotes at the end
 // That way we don't have to put a space after it.
-// This optimization will save exactly 1 byte. Fuck yeah...
+// This optimization will save: exactly 1 byte.
 exports.optimizeAttributeOrdering = function(orderedAttrs, parser) {
 	if (orderedAttrs) {
 		for (var i = orderedAttrs.length-1; i >= 0; i--) {
@@ -259,4 +279,49 @@ exports.isCurrentTiddlerAttr = function(attr) {
 		default:
 			return false;
 	}
+};
+
+exports.uglifyAttribute = function(attr, parser, options) {
+	var tagParts = [];
+	if (!options.collapseSpace) {
+		tagParts.push(" ");
+		options.collapseSpace = true;
+	}
+	tagParts.push(attr.name);
+	switch(attr.type) {
+	case "string":
+		if (attr.value !== "true") {
+			var value = exports.bestQuoteForAttribute(attr, parser);
+			if (value === attr.value) {
+				options.collapseSpace = false;
+			}
+			tagParts.push("=", value);
+		} else {
+			options.collapseSpace = false;
+		}
+		break;
+	case "indirect":
+		tagParts.push("={{", attr.textReference, "}}");
+		break;
+	case "macro":
+		if (exports.isCurrentTiddlerAttr(attr)) {
+			tagParts.push("={{!!title}}");
+		} else {
+			tagParts.push("=<<", exports.stringifyMacro(attr.value, parser),">>");
+		}
+		break;
+	case "filtered":
+		tagParts.push("={{{", exports.uglifyFilter(attr.filter,parser),"}}}");
+		break;
+	case "substituted":
+		if (attr.rawValue.indexOf("`") >= 0) {
+			tagParts.push("=```", attr.rawValue, "```");
+		} else {
+			tagParts.push("=`", attr.rawValue, "`");
+		}
+		break;
+	default:
+		throw "Not Implemented";
+	}
+	return tagParts.join('');
 };

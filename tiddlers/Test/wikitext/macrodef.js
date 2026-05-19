@@ -123,8 +123,8 @@ it('inner html respects quotation of local placeholders', function() {
 it('inner macrocall respects quotation of local placeholders', function() {
 	test('\\define B(c)$c$\n\\define A(a,b) <<B """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
 		'\\define B(c)$c$\n\\define A(a b)<<B"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
-	test('\\define B(c)$c$\n\\define A(a,b) <<B  c  : """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
-		'\\define B(c)$c$\n\\define A(a b)<<B c:"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
+	test('\\define B(x,c)$c$\n\\define A(a,b) <<B  c  : """b$a$""">>\n<$text text="love"/>\n<<A [[a"b"c]]>>',
+		'\\define B(x c)$c$\n\\define A(a b)<<B c:"""b$a$""">>\n<$text text=love/>\n<<A [[a"b"c]]>>');
 	test('\\define B(c)$c$\n\\define A(a,b) <<B "b$a$">>\n<$text text="love"/>\n<<A [[a\'b\'c]]>>',
 		'\\define B(c)$c$\n\\define A(a b)<<B"b$a$">>\n<$text text=love/>\n<<A [[a\'b\'c]]>>');
 	test('\\define B(c)$c$\n\\define A(a,b) <<B [[b$a$]]>>\n<$text text="love"/>\n<<A "a\'b\'c">>',

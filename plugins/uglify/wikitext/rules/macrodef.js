@@ -32,7 +32,7 @@ exports.uglify = function() {
 			if (this.parser.placeholders && this.parser.placeholders.present(param.default)) {
 				strings.push(getOriginalQuoting(param, this.parser));
 			} else {
-				strings.push(utils.quotifyParam(param.default, true, this.parser));
+				strings.push(utils.quotifyParamValue(param.default, this.parser, true));
 			}
 		}
 		placeholders.add(param.name);

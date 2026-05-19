@@ -36,48 +36,9 @@ exports.uglify = function() {
 	var attributes = tag.orderedAttributes || tag.attributes;
 	var parser = this.parser;
 	var tree = [{}];
-	var needsSpace = true;
+	var options = {};
 	$tw.utils.each(attributes, function(attr) {
-		if (needsSpace) {
-			tagParts.push(" ");
-			needsSpace = false;
-		}
-		tagParts.push(attr.name);
-		switch(attr.type) {
-		case "string":
-			if (attr.value !== "true") {
-				var value = utils.bestQuoteForAttribute(attr, parser);
-				if (value === attr.value) {
-					needsSpace = true;
-				}
-				tagParts.push("=", value);
-			} else {
-				needsSpace = true;
-			}
-			break;
-		case "indirect":
-			tagParts.push("={{", attr.textReference, "}}");
-			break;
-		case "macro":
-			if (utils.isCurrentTiddlerAttr(attr)) {
-				tagParts.push("={{!!title}}");
-			} else {
-				tagParts.push("=<<", utils.stringifyMacro(attr.value, parser.source, parser),">>");
-			}
-			break;
-		case "filtered":
-			tagParts.push("={{{", utils.uglifyFilter(attr.filter,parser),"}}}");
-			break;
-		case "substituted":
-			if (attr.rawValue.indexOf("`") >= 0) {
-				tagParts.push("=```", attr.rawValue, "```");
-			} else {
-				tagParts.push("=`", attr.rawValue, "`");
-			}
-			break;
-		default:
-			throw "Not Implemented";
-		}
+		tagParts.push(utils.uglifyAttribute(attr, parser, options));
 	});
 	if ($tw.config.htmlVoidElements.indexOf(tag.tag) >= 0) {
 		tagParts.push(">");
