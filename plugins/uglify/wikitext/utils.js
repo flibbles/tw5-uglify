@@ -52,10 +52,15 @@ exports.uglifyMacroParameter = function(param, parser, options) {
 		}
 		hasName = true;
 	}
-	if (parser.placeholders && parser.placeholders.present(param.value)) {
-		options.hasName = hasName;
-		if (param.assignmentOperator !== "=" && options.hasName) {
-			strings.push(param.name, ":");
+	if (parser.placeholders
+	&& typeof param.value === "string"
+	&& parser.placeholders.present(param.value)) {
+		if (hasName) {
+			if (param.assignmentOperator !== "=") {
+				strings.push(param.name, ":");
+			} else {
+				strings.push(param.name, "=");
+			}
 		}
 		// If there is a placeholder in the value, we can't change the
 		// quotes to something else, or we might break something
@@ -63,6 +68,8 @@ exports.uglifyMacroParameter = function(param, parser, options) {
 	} else {
 		options.hasName = hasName;
 		if (param.assignmentOperator === "=") {
+			// In this case, we don't add param.name, "="
+			// Because uglifyAttribute does that for us.
 			value = exports.uglifyAttribute(param, parser, options);
 		} else {
 			if (options.hasName) {

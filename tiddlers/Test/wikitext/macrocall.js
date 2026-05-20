@@ -141,12 +141,6 @@ it('mixing with old style parameters', function() {
 it('handles indirect parameters', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: "Test", text: "Content", field: "Field"});
-	test(m+'<<m val = {{Test}} >>', m+'<<m val={{Test}}>>', {wiki: wiki});
-});
-
-it('handles indirect parameters', function() {
-	const wiki = new $tw.Wiki();
-	wiki.addTiddler({title: "Test", text: "Content", field: "Field"});
 	test(m+'<<m val = {{Test}} t=v>>', m+'<<m val={{Test}}t=v>>', {wiki: wiki});
 });
 
@@ -160,6 +154,19 @@ it('handles substitution parameters', function() {
 
 it('handles filter parameters', function() {
 	test(m+'<<m val = {{{ A B }}}  t = v>>', m+'<<m val={{{A B}}}t=v>>');
+});
+
+it('handles placeholders', function() {
+	test(m+'\\define X(x) <<m t="-$x$-">>\n<<X "A B">>',
+	     m+'\\define X(x)<<m t="-$x$-">>\n<<X"A B">>');
+	// Placeholder checks don't crash when non-string macro param
+	const wiki = new $tw.Wiki();
+	wiki.addTiddler({title: "Test", text: "Output"});
+	test(m+'\\define X(x) <<m t={{$x$}}>>\n<<X Test>>',
+	     m+'\\define X(x)<<m t={{$x$}}>>\n<<X Test>>', {wiki: wiki});
+	// Or mess up with macro macro params
+	test(m+'\\define X(x) <<m t=<<m $x$>> >>\n<<X Test>>',
+	     m+'\\define X(x)<<m t=<<m $x$>>>>\n<<X Test>>');
 });
 
 });
