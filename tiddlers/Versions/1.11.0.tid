@@ -1,0 +1,9 @@
+created: 20260528022842391
+
+Bringing TW-Uglify up to date with TiddlyWiki's new v5.4.x line.
+
+* Support for new macro parameters-as-attributes
+* Support for mvvdisplayinline syntax
+* Support for mvv operands in filters
+* Many under-the-hood improvements to the testing environment
+* ''No'' support for macro parameters in filter operands, because as far as I can tell, it's not actually a feature. Even the examples on tiddlywiki.com don't work. If someone actually wants this, open a github issue.
