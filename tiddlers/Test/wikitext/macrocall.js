@@ -138,6 +138,10 @@ it('mixing with old style parameters', function() {
 	test(m+"<<m t = 'A B' val : C >>', m+'<<m t='A B'val:C>>");
 });
 
+it('handles dangerous bracket combinations', function() {
+	test(m+'<<m val="[[" t="]]" >>', m+'<<m val=[[[[]]t=]]>>');
+});
+
 it('handles indirect parameters', function() {
 	const wiki = new $tw.Wiki();
 	wiki.addTiddler({title: "Test", text: "Content", field: "Field"});
