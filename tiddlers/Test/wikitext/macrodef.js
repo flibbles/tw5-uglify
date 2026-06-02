@@ -37,7 +37,7 @@ it('empty default parameters', function() {
 	test('\\define m(A:"", B) '+dump+'\n<<m>>',
 	     '\\define m(A B)'+dump+'\n<<m>>');
 	test('\\define m(A:"") <$list filter="[[__A__]is[variable]]" emptyMessage="undefined">defined</$list>\n<<m>>',
-	     '\\define m(A)<$list filter=[[__A__]is[variable]] emptyMessage=undefined>defined\n<<m>>');
+	     '\\define m(A)<$list filter="[[__A__]is[variable]]"emptyMessage=undefined>defined\n<<m>>');
 	// ensure that removing default params doesn't prevent setting
 	test('\\define m(X:"") '+dump+'\n<$let __X__=hidden>\n\n<<m>>',
 	     '\\define m(X)'+dump+'\n<$let __X__=hidden>\n\n<<m>>');

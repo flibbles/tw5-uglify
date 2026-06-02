@@ -39,9 +39,10 @@ it('string attributes', function() {
 	test('<$text text="""Nick\'s"""/>', '<$text text="Nick\'s"/>');
 	test('<$text text="Nick\'s"/>', '<$text text="Nick\'s"/>');
 	test('<$text text="$$"/>', '<$text text=$$/>'); // null placeholder test
-	// Some use of brackets
-	test("<$text text=[[content] />", "<$text text=[[content]/>");
-	test("<$text text=[[cont]ent />", "<$text text=[[cont]ent/>");
+	// Some use of brackets. Initial opening brackets are treated as
+	// dangerous, even if it's fine pre-v5.4.0
+	test("<$text text=[[content] />'", "<$text text='[[content]'/>'");
+	test("<$text text=[[cont]ent />'", "<$text text='[[cont]ent'/>'");
 	test('<$text text="con tent]" />]][[', '<$text text="con tent]"/>]][[');
 	// Backticks as of v5.3.0 are a type of acceptable quotation
 	test('<$text text="```"/>\n', '<$text text="```"/>\n');
@@ -57,6 +58,11 @@ ifBracketAttrsIt("brackets as string attributes", function() {
 	test('<$text text="""A B""" />[[]]', "<$text text=[[A B]]/>[[]]");
 	test("<$text text=\"t[is te]t\" />[[]]", "<$text text=[[t[is te]t]]/>[[]]");
 	test("<$text text=\"t '`t\" />]]'`[[", "<$text text=[[t '`t]]/>]]'`[[");
+});
+
+// Issue #17
+ifBracketAttrsIt("starting brackets can still be dangerous", function() {
+	test("<$text text='[[' also=']]' />", "<$text text='[['also=]]/>");
 });
 
 it('brackets are not used in older versions of TW', function () {
