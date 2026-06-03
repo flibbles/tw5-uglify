@@ -152,6 +152,11 @@ it('handles macro parameters', function() {
 	test(m+'<<m val = <<m  x>>  t = v>>', m+'<<m val=<<m x>>t=v>>');
 });
 
+it('handles mvv parameters', function() {
+	var l = "<$let values={{{A B C}}}>\n\n";
+	test(m+l+'<<m val = ((values ))  t = v>>', m+l+'<<m val=((values))t=v>>');
+});
+
 it('handles substitution parameters', function() {
 	test(m+'<<m val = `Bats`  t = v>>', m+'<<m val=`Bats`t=v>>');
 });
