@@ -1,0 +1,4 @@
+created: 20260602031610084
+
+* Fix for issue #17, where certain configuration of attribute values containing brackets could cause a faulty minifying.
+* Also for #17, made Uglify recognize mvv attributes, even though they appear to be useless.
