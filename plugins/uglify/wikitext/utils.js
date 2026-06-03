@@ -221,6 +221,7 @@ exports.bestQuoteForAttribute = function(attr, parser) {
 	}
 	if (string.search(/(?:[\/\s<>"'=`]|^\{\{)/) < 0
 	&& string.length > 0
+	&& (string.substr(0,2) !== "((" || string.indexOf("))") < 0)
 	&& string.substr(0,2) !== "[[") {
 		return string;
 	}
@@ -313,7 +314,9 @@ exports.uglifyAttribute = function(attr, parser, options) {
 		tagParts.push("={{", attr.textReference, "}}");
 		break;
 	case "macro":
-		if (exports.isCurrentTiddlerAttr(attr)) {
+		if (attr.isMVV) {
+			tagParts.push("=((", exports.stringifyMacro(attr.value, parser),"))");
+		} else if (exports.isCurrentTiddlerAttr(attr)) {
 			tagParts.push("={{!!title}}");
 		} else {
 			tagParts.push("=<<", exports.stringifyMacro(attr.value, parser),">>");

@@ -47,8 +47,7 @@ it('string attributes', function() {
 	// Backticks as of v5.3.0 are a type of acceptable quotation
 	test('<$text text="```"/>\n', '<$text text="```"/>\n');
 	test("<$text text='`'/>\n", "<$text text='`'/>\n");
-	test('<$text text="A`B"/>\n', '<$text text="A`B"/>\n');
-});
+	test('<$text text="A`B"/>\n', '<$text text="A`B"/>\n'); });
 
 ifBracketAttrsIt("brackets as string attributes", function() {
 	// Brackets are treated as quotes, but only post V5.4
@@ -62,7 +61,23 @@ ifBracketAttrsIt("brackets as string attributes", function() {
 
 // Issue #17
 ifBracketAttrsIt("starting brackets can still be dangerous", function() {
-	test("<$text text='[[' also=']]' />", "<$text text='[['also=]]/>");
+	test('<$text text="[[" also="]]" />', "<$text text=[[[[]]also=]]/>");
+});
+
+ifBracketAttrsIt("starting (( in string attrs can be dangerous", function() {
+	test('<$text text="((content))" />', '<$text text="((content))"/>');
+	test('<$text text="((con))tent" />', '<$text text="((con))tent"/>');
+	test('<$text text="((conten)t)" />', '<$text text=((conten)t)/>');
+	test('<$text text="((conten)t)" />', '<$text text=((conten)t)/>');
+	test('<$text text="((content" />))', '<$text text=((content/>))');
+	// multi-value filter expressions aren't actually a thing
+	test('<$text text="(((content)))" />', '<$text text="(((content)))"/>');
+	test('<$text text="(((X" also=")))" />', '<$text text=(((X also=)))/>');
+});
+
+ifBracketAttrsIt("multi-value attributes", function() {
+	test('\\procedure X(input)<$text text={{{[(input)join[-]]}}}/>\n<$let values={{{A B}}}><$transclude $variable=X input=((values))/>',
+	     '\\procedure X(input)<$text text={{{[(input)join[-]]}}}/>\n<$let values={{{A B}}}><$transclude input=((values))$variable=X/>');
 });
 
 it('brackets are not used in older versions of TW', function () {
