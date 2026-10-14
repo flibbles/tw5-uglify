@@ -13,7 +13,8 @@ exports.uglify = function() {
 		array = [{text: "<%if "}],
 		isBlock = this.is.block,
 		inElse = false,
-		ex;
+		ex,
+		bodyStart = this.parser.pos;
 	this.parser.pos = this.terminateIfMatch.index + this.terminateIfMatch[0].length;
 	var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>|\\<\\%\\s*(else)\\s*\\%\\>|\\<\\%\\s*(elseif)\\s+([\\s\\S]+?)\\%\\>";
 	array.push({text: utils.uglifyFilter(filter, this.parser)});
@@ -38,7 +39,8 @@ exports.uglify = function() {
 		// when the template is empty, which would render the condition's
 		// output as visible text. An empty else branch renders nothing
 		// either way, so it needs no guard.
-		if(!inElse && branchIsEmpty(ex.tree)) {
+		var blockString = this.parser.source.substring(bodyStart, this.parser.pos);
+		if(!inElse && needsPlaceholder(ex.tree, blockString)) {
 			array.push({text: "<!---->"});
 		}
 		if (ex.match) {
@@ -66,9 +68,18 @@ function doubleLineBreakAtPos(parser) {
 	return !!$tw.utils.parseTokenRegExp(parser.source, parser.pos, /([^\S\n\r]*\r?\n(?:[^\S\n\r]*\r?\n|$))/g);
 };
 
-// A branch counts as empty if serialising it yielded nothing but whitespace
-// or empty-comment placeholders (which postProcess may still strip as junk).
-function branchIsEmpty(tree) {
+// A branch renders nothing if serialising it yielded nothing but whitespace
+// but it contained non-whitespace elements, like comment placeholders
+// (which postProcess may still strip as junk).
+function needsPlaceholder(tree, body) {
+	if (!body || !/<!--/.test(body)) {
+		return false;
+	}
+	// This branch is completely empty, so it'll perform default rendering,
+	// not render nothing.
+	if(tree.length === 0) {
+		return true;
+	}
 	for (var i = 0; i < tree.length; i++) {
 		var text = tree[i].text;
 		if(text && text.trim() !== "" && text !== "<!---->") {

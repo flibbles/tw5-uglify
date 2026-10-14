@@ -68,19 +68,16 @@ it('empty branches (issue #18)', function() {
 	     "<%if dog%><!---->");
 	test("<% if dog %><!-- nothing --><% endif %>Tail",
 	     "<%if dog%><!----><%endif%>Tail");
-
 	// elseif also needs the placeholder
 	test("<% if dog %>Content<% elseif cat %><!-- nothing --><% else %>Other<% endif %>",
 	     "<%if dog%>Content<%elseif cat%><!----><%else%>Other");
 	test("<% if dog %>Content<% elseif [tag[x]] %><!-- nothing --><% endif %>",
 	     "<%if dog%>Content<%elseif [tag[x]]%><!---->");
-
 	// empty else branch needs no placeholder (renders nothing either way)
 	test("<% if dog %>Content<% else %><!-- nothing --><% endif %>",
 	     "<%if dog%>Content<%else%>");
 	test("<% if dog %>Content<% else %><!-- nothing --><% endif %>Tail",
 	     "<%if dog%>Content<%else%><%endif%>Tail");
-
 	// whitespace-trim + block forms
 	test(t + "<% if dog %><!-- nothing --><% endif %>",
 	     "<%if dog%><!---->");
@@ -88,6 +85,27 @@ it('empty branches (issue #18)', function() {
 	     "<%if dog%>\n\n<!---->");
 	test("<% if dog %>\n\n<!-- nothing -->\n<% else %>\n\nCrocodile<% endif %>",
 	     "<%if dog%>\n\n<!----><%else%>\n\nCrocodile");
+});
+
+it('truly empty branches stay empty', function() {
+	// Pure empty then/elseif branches should remain empty
+	// (they already render as a link via core $list default; we don't invent a placeholder)
+	test("<% if dog %><% endif %>", "<%if dog%>");
+	test("<% if dog %><% endif %>Tail", "<%if dog%><%endif%>Tail");
+	test("<% if dog %><% else %>Other<% endif %>", "<%if dog%><%else%>Other");
+	test("<% if dog %>Content<% elseif cat %><% else %>Other<% endif %>",
+	     "<%if dog%>Content<%elseif cat%><%else%>Other");
+	test("<% if dog %>Content<% elseif [tag[x]] %><% endif %>",
+	     "<%if dog%>Content<%elseif [tag[x]]%>");
+	// Block / whitespace-trim forms
+	test("<% if dog %>\n\n<% endif %>", "<%if dog%>\n\n");
+	test(t + "<% if dog %><% endif %>", "<%if dog%>");
+	test("<% if dog %>\n\n<% else %>\n\nOther<% endif %>",
+	     "<%if dog%>\n\n<%else%>\n\nOther");
+	// Empty else is already expected to stay empty (no placeholder)
+	test("<% if dog %>Content<% else %><% endif %>", "<%if dog%>Content<%else%>");
+	test("<% if dog %>Content<% else %><% endif %>Tail",
+	     "<%if dog%>Content<%else%><%endif%>Tail");
 });
 
 });
