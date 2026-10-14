@@ -100,6 +100,7 @@ it('truly empty branches stay empty', function() {
 	// Block / whitespace-trim forms
 	test("<% if dog %>\n\n<% endif %>", "<%if dog%>\n\n");
 	test(t + "<% if dog %><% endif %>", "<%if dog%>");
+	test(t + "<% if dog %>\n\n<% endif %>Tail", "<%if dog%>\n\n<%endif%>Tail");
 	test("<% if dog %>\n\n<% else %>\n\nOther<% endif %>",
 	     "<%if dog%>\n\n<%else%>\n\nOther");
 	// Empty else is already expected to stay empty (no placeholder)
