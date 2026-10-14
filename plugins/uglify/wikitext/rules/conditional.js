@@ -12,6 +12,7 @@ exports.uglify = function() {
 	var filter = this.parser.source.substring(this.match.index + this.match[0].length, this.terminateIfMatch.index),
 		array = [{text: "<%if "}],
 		isBlock = this.is.block,
+		inElse = false,
 		ex;
 	this.parser.pos = this.terminateIfMatch.index + this.terminateIfMatch[0].length;
 	var reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>|\\<\\%\\s*(else)\\s*\\%\\>|\\<\\%\\s*(elseif)\\s+([\\s\\S]+?)\\%\\>";
@@ -31,6 +32,15 @@ exports.uglify = function() {
 			ex = this.parser.parseInlineRunTerminatedExtended(reEnd,{eatTerminator: true});
 		}
 		array = array.concat(ex.tree);
+		// A then/elseif branch that uglifies down to nothing must keep a
+		// placeholder. The conditional desugars to a $list widget, and core
+		// falls back to its default item template (a link to each title)
+		// when the template is empty, which would render the condition's
+		// output as visible text. An empty else branch renders nothing
+		// either way, so it needs no guard.
+		if(!inElse && branchIsEmpty(ex.tree)) {
+			array.push({text: "<!---->"});
+		}
 		if (ex.match) {
 			if (ex.match[3] === "elseif") {
 				array.push({text: "<%elseif "});
@@ -38,6 +48,7 @@ exports.uglify = function() {
 				continue;
 			} else if (ex.match[2] === "else") {
 				array.push({text: "<%else"});
+				inElse = true;
 				reEndString = "\\<\\%\\s*(endif)\\s*\\%\\>";
 				continue;
 			}
@@ -53,4 +64,16 @@ exports.uglify = function() {
 
 function doubleLineBreakAtPos(parser) {
 	return !!$tw.utils.parseTokenRegExp(parser.source, parser.pos, /([^\S\n\r]*\r?\n(?:[^\S\n\r]*\r?\n|$))/g);
+};
+
+// A branch counts as empty if serialising it yielded nothing but whitespace
+// or empty-comment placeholders (which postProcess may still strip as junk).
+function branchIsEmpty(tree) {
+	for (var i = 0; i < tree.length; i++) {
+		var text = tree[i].text;
+		if(text && text.trim() !== "" && text !== "<!---->") {
+			return false;
+		}
+	}
+	return true;
 };

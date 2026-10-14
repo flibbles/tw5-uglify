@@ -59,4 +59,35 @@ it('missing endif', function() {
 	test("<% if [tag[d]] %>\n\n1<% elseif c %>\n\n2", "<%if [tag[d]]%>\n\n1<%elseif c%>\n\n2");
 });
 
+// Test for Issue #18
+it('empty branches (issue #18)', function() {
+	// Comment-only then-branch must not become empty (would render as a link)
+	test("<% if [[Elephant]] %><!-- nothing to render --><% else %>Crocodile<% endif %>",
+	     "<%if Elephant%><!----><%else%>Crocodile");
+	test("<% if dog %><!-- nothing --><% endif %>",
+	     "<%if dog%><!---->");
+	test("<% if dog %><!-- nothing --><% endif %>Tail",
+	     "<%if dog%><!----><%endif%>Tail");
+
+	// elseif also needs the placeholder
+	test("<% if dog %>Content<% elseif cat %><!-- nothing --><% else %>Other<% endif %>",
+	     "<%if dog%>Content<%elseif cat%><!----><%else%>Other");
+	test("<% if dog %>Content<% elseif [tag[x]] %><!-- nothing --><% endif %>",
+	     "<%if dog%>Content<%elseif [tag[x]]%><!---->");
+
+	// empty else branch needs no placeholder (renders nothing either way)
+	test("<% if dog %>Content<% else %><!-- nothing --><% endif %>",
+	     "<%if dog%>Content<%else%>");
+	test("<% if dog %>Content<% else %><!-- nothing --><% endif %>Tail",
+	     "<%if dog%>Content<%else%><%endif%>Tail");
+
+	// whitespace-trim + block forms
+	test(t + "<% if dog %><!-- nothing --><% endif %>",
+	     "<%if dog%><!---->");
+	test("<% if dog %>\n\n<!-- nothing -->\n<% endif %>",
+	     "<%if dog%>\n\n<!---->");
+	test("<% if dog %>\n\n<!-- nothing -->\n<% else %>\n\nCrocodile<% endif %>",
+	     "<%if dog%>\n\n<!----><%else%>\n\nCrocodile");
+});
+
 });
