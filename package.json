@@ -1,6 +1,6 @@
 {
   "name": "tw5-uglify",
-  "version": "1.11.1",
+  "version": "1.11.2",
   "description": "Minify and compress tiddlywiki plugins",
   "scripts": {
     "build": "tiddlywiki --build demo wizard",

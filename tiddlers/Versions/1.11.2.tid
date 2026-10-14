@@ -1,0 +1,3 @@
+created: 20261014132100000
+
+* Fix for issue #18: `<%if%>` / `<%elseif%>` branches that contained only HTML comments (or other non-rendering content) were being stripped down too much when comments were present.
